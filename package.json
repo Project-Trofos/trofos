@@ -2,8 +2,8 @@
   "name": "trofos",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
+    "start": "lerna run --parallel start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "cz"
   },
@@ -19,11 +19,17 @@
   },
   "homepage": "https://github.com/Project-Trofos/trofos#readme",
   "devDependencies": {
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "lerna": "^5.4.3",
+    "typescript": "^4.7.4"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "private": true
 }
