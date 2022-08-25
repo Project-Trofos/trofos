@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { createProject } from '../../api/project';
+import { useAppDispatch } from '../../app/hooks';
+import { addProject } from '../../reducers/projectsReducer';
+
 
 /**
  * Modal for creating projects
@@ -11,17 +13,21 @@ export default function ProjectCreationModal(props: {
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { isModalVisible, setIsModalVisible } = props;
+  const dispatch = useAppDispatch();
+  const [form] = Form.useForm();
 
   const handleOk = () => {
     setIsModalVisible(false);
+    form.resetFields();
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    form.resetFields();
   };
 
   const onFinish = (values: { projectKey: string; projectName: string }) => {
-    createProject({ id: values.projectName, name: values.projectName, key: values.projectKey });
+    dispatch(addProject({ id: values.projectName, name: values.projectName, key: values.projectKey }));
     handleOk();
   };
 
@@ -43,6 +49,7 @@ export default function ProjectCreationModal(props: {
       <p>You can change these details anytime in your project settings.</p>
       <Form
         name="project-creation-form"
+        form={form}
         layout="vertical"
         wrapperCol={{ span: 20 }}
         onFinish={onFinish}

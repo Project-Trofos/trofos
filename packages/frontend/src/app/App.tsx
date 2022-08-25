@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainLayout from './components/MainLayout';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Project from './pages/Project';
-import Projects from './pages/Projects';
+import MainLayout from '../components/MainLayout';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import Project from '../pages/Project';
+import Projects from '../pages/Projects';
+
+import './App.css';
 
 function App() {
   return (

@@ -2,7 +2,10 @@ import React from 'react';
 import { Card, Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { deleteProject, Project } from '../../api/project';
+
+import { removeProjectById } from '../../reducers/projectsReducer';
+import { useAppDispatch } from '../../app/hooks';
+import { Project } from '../../api/project';
 
 const { Meta } = Card;
 
@@ -12,10 +15,11 @@ type ProjectCardProps = {
 
 export default function ProjectCard(props: ProjectCardProps): JSX.Element {
   const { project } = props;
+  const dispatch = useAppDispatch();
 
   const menu = (
     <Menu
-      onClick={() => deleteProject(project)}
+      onClick={() => dispatch(removeProjectById(project.id))}
       items={[
         {
           label: 'delete',

@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Button, Typography, Row, Col } from 'antd';
 
-import { getProjects, Project } from '../api/project';
+import { useAppSelector } from '../app/hooks';
+
 import ProjectCard from '../components/ProjectCard';
 import ProjectCreationModal from '../components/ProjectCreationModal';
+
 
 const { Title, Paragraph } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
-  const [projects] = useState<Project[]>(() => getProjects());
+  const projects = useAppSelector(state => state.projects.projects);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {

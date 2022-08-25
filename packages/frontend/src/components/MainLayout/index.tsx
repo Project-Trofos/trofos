@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Layout } from 'antd';
 import Menu from 'antd/lib/menu';
 import type { MenuProps } from 'antd';
 import { HomeOutlined, ProjectOutlined } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
-import { getProjects, Project } from '../../api/project';
+import { useAppSelector } from '../../app/hooks';
+import { selectProjects } from '../../reducers/projectsReducer';
 
 const { Header, Sider, Content } = Layout;
 
@@ -26,7 +27,7 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
  * Main layout of the application.
  */
 export default function MainLayout() {
-  const [projects] = useState<Project[]>(() => getProjects());
+  const { projects } = useAppSelector(selectProjects);
 
   const menuItems: MenuItem[] = useMemo(
     () => [
