@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.22.6",
+    "@ant-design/icons": "^4.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "6",
