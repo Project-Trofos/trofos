@@ -1,0 +1,732 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders new backlog modal with correct fields 1`] = `
+<body
+  class="ant-scrolling-effect"
+  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
+>
+  <div>
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        New Backlog
+      </span>
+    </button>
+  </div>
+  <div>
+    <div
+      class="ant-modal-root"
+    >
+      <div
+        class="ant-modal-mask"
+      />
+      <div
+        class="ant-modal-wrap"
+        tabindex="-1"
+      >
+        <div
+          aria-labelledby="test-id"
+          aria-modal="true"
+          class="ant-modal"
+          role="dialog"
+          style="width: 600px;"
+        >
+          <div
+            aria-hidden="true"
+            style="width: 0px; height: 0px; overflow: hidden; outline: none;"
+            tabindex="0"
+          />
+          <div
+            class="ant-modal-content"
+          >
+            <button
+              aria-label="Close"
+              class="ant-modal-close"
+              type="button"
+            >
+              <span
+                class="ant-modal-close-x"
+              >
+                <span
+                  aria-label="close"
+                  class="anticon anticon-close ant-modal-close-icon"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="close"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+                    />
+                  </svg>
+                </span>
+              </span>
+            </button>
+            <div
+              class="ant-modal-header"
+            >
+              <div
+                class="ant-modal-title"
+                id="test-id"
+              >
+                New Backlog
+              </div>
+            </div>
+            <div
+              class="ant-modal-body"
+            >
+              <form
+                class="ant-form ant-form-horizontal"
+                id="newBacklog"
+              >
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <input
+                            class="ant-input summary-input"
+                            id="summary"
+                            placeholder="* Type summary here..."
+                            type="text"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="type"
+                        title="Type"
+                      >
+                        Type
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-select ant-select-in-form-item type-select ant-select-single ant-select-show-arrow"
+                          >
+                            <div
+                              class="ant-select-selector"
+                            >
+                              <span
+                                class="ant-select-selection-search"
+                              >
+                                <input
+                                  aria-activedescendant="type_list_0"
+                                  aria-autocomplete="list"
+                                  aria-controls="type_list"
+                                  aria-haspopup="listbox"
+                                  aria-owns="type_list"
+                                  autocomplete="off"
+                                  class="ant-select-selection-search-input"
+                                  id="type"
+                                  readonly=""
+                                  role="combobox"
+                                  style="opacity: 0;"
+                                  type="search"
+                                  unselectable="on"
+                                  value=""
+                                />
+                              </span>
+                              <span
+                                class="ant-select-selection-placeholder"
+                              >
+                                Type of backlog
+                              </span>
+                            </div>
+                            <span
+                              aria-hidden="true"
+                              class="ant-select-arrow"
+                              style="user-select: none;"
+                              unselectable="on"
+                            >
+                              <span
+                                aria-label="down"
+                                class="anticon anticon-down ant-select-suffix"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="down"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                  />
+                                </svg>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        for="sprint"
+                        title="Sprint"
+                      >
+                        Sprint
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-select ant-select-in-form-item sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                          >
+                            <div
+                              class="ant-select-selector"
+                            >
+                              <span
+                                class="ant-select-selection-search"
+                              >
+                                <input
+                                  aria-activedescendant="sprint_list_0"
+                                  aria-autocomplete="list"
+                                  aria-controls="sprint_list"
+                                  aria-haspopup="listbox"
+                                  aria-owns="sprint_list"
+                                  autocomplete="off"
+                                  class="ant-select-selection-search-input"
+                                  id="sprint"
+                                  readonly=""
+                                  role="combobox"
+                                  style="opacity: 0;"
+                                  type="search"
+                                  unselectable="on"
+                                  value=""
+                                />
+                              </span>
+                              <span
+                                class="ant-select-selection-placeholder"
+                              >
+                                Select Sprint
+                              </span>
+                            </div>
+                            <span
+                              aria-hidden="true"
+                              class="ant-select-arrow"
+                              style="user-select: none;"
+                              unselectable="on"
+                            >
+                              <span
+                                aria-label="down"
+                                class="anticon anticon-down ant-select-suffix"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="down"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                  />
+                                </svg>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        for="priority"
+                        title="Priority"
+                      >
+                        Priority
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-select ant-select-in-form-item priority-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                          >
+                            <div
+                              class="ant-select-selector"
+                            >
+                              <span
+                                class="ant-select-selection-search"
+                              >
+                                <input
+                                  aria-activedescendant="priority_list_0"
+                                  aria-autocomplete="list"
+                                  aria-controls="priority_list"
+                                  aria-haspopup="listbox"
+                                  aria-owns="priority_list"
+                                  autocomplete="off"
+                                  class="ant-select-selection-search-input"
+                                  id="priority"
+                                  readonly=""
+                                  role="combobox"
+                                  style="opacity: 0;"
+                                  type="search"
+                                  unselectable="on"
+                                  value=""
+                                />
+                              </span>
+                              <span
+                                class="ant-select-selection-placeholder"
+                              >
+                                Select Priority
+                              </span>
+                            </div>
+                            <span
+                              aria-hidden="true"
+                              class="ant-select-arrow"
+                              style="user-select: none;"
+                              unselectable="on"
+                            >
+                              <span
+                                aria-label="down"
+                                class="anticon anticon-down ant-select-suffix"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="down"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                  />
+                                </svg>
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                  >
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class="ant-form-item-required"
+                            for="reporter"
+                            title="Reporter"
+                          >
+                            Reporter
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <div
+                                class="ant-select ant-select-in-form-item reporter-select ant-select-single ant-select-show-arrow"
+                              >
+                                <div
+                                  class="ant-select-selector"
+                                >
+                                  <span
+                                    class="ant-select-selection-search"
+                                  >
+                                    <input
+                                      aria-activedescendant="reporter_list_0"
+                                      aria-autocomplete="list"
+                                      aria-controls="reporter_list"
+                                      aria-haspopup="listbox"
+                                      aria-owns="reporter_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="reporter"
+                                      readonly=""
+                                      role="combobox"
+                                      style="opacity: 0;"
+                                      type="search"
+                                      unselectable="on"
+                                      value=""
+                                    />
+                                  </span>
+                                  <span
+                                    class="ant-select-selection-placeholder"
+                                  />
+                                </div>
+                                <span
+                                  aria-hidden="true"
+                                  class="ant-select-arrow"
+                                  style="user-select: none;"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-select-suffix"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                  >
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="assignee"
+                            title="Assignee"
+                          >
+                            Assignee
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <div
+                                class="ant-select ant-select-in-form-item assignee-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                              >
+                                <div
+                                  class="ant-select-selector"
+                                >
+                                  <span
+                                    class="ant-select-selection-search"
+                                  >
+                                    <input
+                                      aria-activedescendant="assignee_list_0"
+                                      aria-autocomplete="list"
+                                      aria-controls="assignee_list"
+                                      aria-haspopup="listbox"
+                                      aria-owns="assignee_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="assignee"
+                                      readonly=""
+                                      role="combobox"
+                                      style="opacity: 0;"
+                                      type="search"
+                                      unselectable="on"
+                                      value=""
+                                    />
+                                  </span>
+                                  <span
+                                    class="ant-select-selection-placeholder"
+                                  />
+                                </div>
+                                <span
+                                  aria-hidden="true"
+                                  class="ant-select-arrow"
+                                  style="user-select: none;"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-select-suffix"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        for="points"
+                        title="Points"
+                      >
+                        Points
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-input-number ant-input-number-in-form-item points-input"
+                          >
+                            <div
+                              class="ant-input-number-handler-wrap"
+                            >
+                              <span
+                                aria-disabled="false"
+                                aria-label="Increase Value"
+                                class="ant-input-number-handler ant-input-number-handler-up"
+                                role="button"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="up"
+                                  class="anticon anticon-up ant-input-number-handler-up-inner"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="up"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                              <span
+                                aria-disabled="false"
+                                aria-label="Decrease Value"
+                                class="ant-input-number-handler ant-input-number-handler-down"
+                                role="button"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="down"
+                                  class="anticon anticon-down ant-input-number-handler-down-inner"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="down"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              class="ant-input-number-input-wrap"
+                            >
+                              <input
+                                aria-valuemin="1"
+                                autocomplete="off"
+                                class="ant-input-number-input"
+                                id="points"
+                                role="spinbutton"
+                                step="1"
+                                value=""
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <textarea
+                            class="ant-input description-textarea"
+                            id="description"
+                            placeholder="Description..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-modal-footer"
+            >
+              <button
+                class="ant-btn ant-btn-primary"
+                form="newBacklog"
+                type="submit"
+              >
+                <span>
+                  Create
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            aria-hidden="true"
+            style="width: 0px; height: 0px; overflow: hidden; outline: none;"
+            tabindex="0"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
