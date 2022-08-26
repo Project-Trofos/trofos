@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { Layout } from 'antd';
+import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
 import Menu from 'antd/lib/menu';
-import type { MenuProps } from 'antd';
-import { HomeOutlined, ProjectOutlined } from '@ant-design/icons';
+import { BellOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
 import { useAppSelector } from '../../app/hooks';
 import { selectProjects } from '../../reducers/projectsReducer';
+
+import './index.css';
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,6 +30,8 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
 export default function MainLayout() {
   const { projects } = useAppSelector(selectProjects);
 
+  const USERNAME = 'username';
+
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, 'sidebar-home', <HomeOutlined />),
@@ -46,6 +49,28 @@ export default function MainLayout() {
     [projects],
   );
 
+  const renderHeader = () => (
+    <Row justify='end' align='middle' gutter={16}>
+      <Col>
+        <SearchOutlined />
+      </Col>
+      <Col>
+        <QuestionCircleOutlined />
+      </Col>
+      <Col>
+        <BellOutlined />
+      </Col>
+      <Col>
+        <div className='avatar-group'>
+          <Avatar />
+          <span>
+            {USERNAME}
+          </span>
+        </div>
+      </Col>
+    </Row>
+  );
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider theme="dark" style={{ backgroundColor: '#32A2AC' }} breakpoint="lg" collapsedWidth="0">
@@ -53,13 +78,15 @@ export default function MainLayout() {
         <Menu mode="inline" defaultSelectedKeys={['1']} items={menuItems} />
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }} />
-        <Content style={{ margin: '24px 16px 0' }}>
-          <div style={{ padding: 24, minHeight: 360 }}>
-            <Outlet />
-          </div>
+        <Header style={{ background: '#fff', padding: '0 16px' }}>
+          {renderHeader()}
+        </Header>
+        <Content style={{ padding: '48px 48px 0', minHeight: 360 }}>
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
   );
+
+
 }
