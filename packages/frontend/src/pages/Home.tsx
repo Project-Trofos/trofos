@@ -4,5 +4,5 @@ import { Typography } from 'antd';
 const { Title } = Typography;
 
 export default function HomePage(): JSX.Element {
-  return <Title>Welcome to Project Trofos!</Title>;
+  return <Title style={{ margin: '48px' }}>Welcome to Project Trofos!</Title>;
 }

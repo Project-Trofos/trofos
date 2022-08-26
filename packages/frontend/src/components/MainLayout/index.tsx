@@ -78,10 +78,10 @@ export default function MainLayout() {
         <Menu mode="inline" defaultSelectedKeys={['1']} items={menuItems} />
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: '0 16px' }}>
+        <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
           {renderHeader()}
         </Header>
-        <Content style={{ padding: '48px 48px 0', minHeight: 360 }}>
+        <Content style={{ minHeight: 360 }}>
           <Outlet />
         </Content>
       </Layout>

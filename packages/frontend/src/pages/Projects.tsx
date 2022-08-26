@@ -20,19 +20,19 @@ export default function ProjectsPage(): JSX.Element {
 
   if (projects.length === 0) {
     return (
-      <>
+      <main style={{ margin: '48px' }}>
         <Title>Projects</Title>
         <Paragraph>It seems that you do not have a project yet...</Paragraph>
         <Button onClick={showModal} type="primary">
           Create Project
         </Button>
         <ProjectCreationModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} />
-      </>
+      </main>
     );
   }
 
   return (
-    <>
+    <main style={{ margin: '48px' }}>
       <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', alignItems: 'center' }}>
         <Title>Projects</Title>
 
@@ -49,6 +49,6 @@ export default function ProjectsPage(): JSX.Element {
         ))}
       </Row>
       <ProjectCreationModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} />
-    </>
+    </main>
   );
 }
