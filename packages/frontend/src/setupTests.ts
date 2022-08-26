@@ -6,10 +6,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import '@testing-library/jest-dom';
 
-global.matchMedia = global.matchMedia || function () {
-  return {
+// https://github.com/ant-design/ant-design/issues/21096
+Object.defineProperty(window, 'matchMedia', {
+  value: () => ({
     matches: false,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-  };
-};
+    addListener: () => {},
+    removeListener: () => {},
+  }),
+});
