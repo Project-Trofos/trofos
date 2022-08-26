@@ -3,10 +3,10 @@ import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
 import Menu from 'antd/lib/menu';
 import { BellOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
-import { useAppSelector } from '../../app/hooks';
-import { selectProjects } from '../../reducers/projectsReducer';
+import { useAppSelector } from '../app/hooks';
+import { selectProjects } from '../reducers/projectsReducer';
 
-import './index.css';
+import './MainLayout.css';
 
 const { Header, Sider, Content } = Layout;
 
