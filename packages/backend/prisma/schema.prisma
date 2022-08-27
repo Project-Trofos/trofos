@@ -1,35 +1,14 @@
-model Backlog {
-    id          Int               @id
-    summary     String
-    type        BacklogType?
-    sprint      Sprint?           @relation(fields: [sprintId], references: [id])
-    sprintId    Int?
-    priority    BacklogPriority?
-    reporter    User              @relation("reportedBacklogs", fields: [reporterId], references: [id])
-    reporterId  Int
-    assignee    User?             @relation("assignedBacklogs", fields: [assigneeId], references: [id])
-    assigneeId  Int?
-    points      Int?
-    description String?
-    project     Project           @relation(fields: [projectId], references: [id])
-    projectId   Int
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Sprint {
-    id          Int
-    backlogs    Backlog[]
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-enum BacklogType {
-    STORY
-    TASK
-    BUG
-}
-
-enum BacklogPriority {
-    VERY_HIGH
-    HIGH
-    MEDIUM
-    LOW
-    VERY_LOW
+model User {
+  user_id Int @id @default(autoincrement())
+  user_email String @unique @db.VarChar(320)
+  user_password_hash String? @db.VarChar(4000)
 }
