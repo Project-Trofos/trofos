@@ -26,7 +26,7 @@ async function createUserSession(userEmail: string, prisma: PrismaClient) : Prom
       if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE) {
         throw e;
       }
-      //If the error was due to a unique constraint violation, we generate the sessionId again.
+      // If the error was due to a unique constraint violation, we generate the sessionId again.
       sessionId = crypto.randomBytes(16).toString('base64');
     }
   } while (!isSessionCreated);
