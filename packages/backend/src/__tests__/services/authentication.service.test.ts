@@ -9,7 +9,6 @@ beforeEach(() => {
   mockReset(prismaMock);
 });
 
-
 describe('authentication.service tests', () => {
   test('ValidUser_ReturnsTrue', async () => {
     const prismaResponseObject : User = {
