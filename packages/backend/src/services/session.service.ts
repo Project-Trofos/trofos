@@ -1,16 +1,15 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from '.prisma/client';
 import crypto from 'crypto';
 
-const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
+const PRISMA_UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
 
 async function createUserSession(userEmail: string, prisma: PrismaClient) : Promise<string> {
 
   let isSessionCreated = false;
-  let sessionId = crypto.randomBytes(16).toString('base64');
+  const sessionId = crypto.randomBytes(16).toString('base64');
 
   do {
     try {
-      // eslint-disable-next-line no-await-in-loop
       await prisma.userSession.create({
         data : {
           session_id : sessionId,
@@ -24,11 +23,9 @@ async function createUserSession(userEmail: string, prisma: PrismaClient) : Prom
         throw e;
       }
       const prismaError = e as Prisma.PrismaClientKnownRequestError;
-      if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE) {
+      if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION) {
         throw e;
       }
-      // If the error was due to a unique constraint violation, we generate the sessionId again.
-      sessionId = crypto.randomBytes(16).toString('base64');
     }
   } while (!isSessionCreated);
 
