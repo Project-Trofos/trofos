@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "start": "npm run build && node dist/index.js",
-    "test": "jest --colors --detectOpenHandles"
+    "test": "jest --colors --detectOpenHandles --coverage"
   },
   "author": "",
   "license": "ISC",
