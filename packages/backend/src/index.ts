@@ -1,33 +1,61 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import authentication from './controllers/authentication';
-import courseRouter from './routes/course.route';
-import projectRouter from './routes/project.route';
 
+const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
 const prisma = new PrismaClient();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
-app.use(cors());
 
-app.get('/', (req : express.Request, res: express.Response) => {
+app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/login', (req : express.Request, res: express.Response) => {
-  authentication.loginUser(req, res, prisma);
+app.post('/newBacklog', async (req, res) => {
+  const {
+    summary,
+    type,
+    sprintId,
+    priority,
+    reporterId,
+    assigneeId,
+    points,
+    description,
+    projectId,
+  } = req.body;
+  try {
+    const backlog = await prisma.backlog.create({
+      data: {
+        summary,
+        type,
+        sprint : {
+          connect: { id: sprintId },
+        },
+        priority,
+        reporter: {
+          connect: { id: reporterId },
+        },
+        assignee: {
+          connect: { id: assigneeId },
+        },
+        points,
+        description,
+        project: {
+          connect: { id: projectId },
+        },
+      },
+    });
+
+    res.status(200).json({ backlog });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Failed to create new backlog');
+  } finally {
+    await prisma.$disconnect();
+  }
 });
-
-// Routes for course
-app.use('/course', courseRouter);
-
-// Routes for project
-app.use('/project', projectRouter);
-
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
