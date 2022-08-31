@@ -1,7 +1,7 @@
 import express from 'express';
 import StatusCodes from 'http-status-codes';
 import { mockDeep } from 'jest-mock-extended';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import authentication from '../../controllers/authentication';
 import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
