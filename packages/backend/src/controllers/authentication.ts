@@ -19,7 +19,7 @@ const loginUser = async (req : express.Request, res: express.Response, prisma : 
     const sessionId = await sessionService.createUserSession(userEmail, prisma);
 
     res.cookie(TROFOS_SESSIONCOOKIE, sessionId);
-    res.status(StatusCodes.OK).send();
+    return res.status(StatusCodes.OK).send();
   } catch (e) {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
