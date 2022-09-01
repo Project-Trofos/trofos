@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authentication from './controllers/authentication';
@@ -12,6 +13,7 @@ const port = 3001;
 const prisma = new PrismaClient();
 
 app.use(cookieParser());
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
