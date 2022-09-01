@@ -3,7 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authentication from './controllers/authentication';
-import backlogController from './controllers/backlog';
+import courseRouter from './routes/course.route';
+import projectRouter from './routes/project.route';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -31,6 +32,13 @@ app.get('/', (req : express.Request, res: express.Response) => {
 app.post('/login', (req : express.Request, res: express.Response) => {
   authentication.loginUser(req, res, prisma);
 });
+
+// Routes for course
+app.use('/course', courseRouter);
+
+// Routes for project
+app.use('/project', projectRouter);
+
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

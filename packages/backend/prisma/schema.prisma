@@ -11,6 +11,8 @@ model User {
   user_id Int @id @default(autoincrement())
   user_email String @unique @db.VarChar(320)
   user_password_hash String? @db.VarChar(4000)
+  projects      UsersOnProjects[]
+  courses       UsersOnCourses[]
 }
 
 model UserSession {
@@ -19,37 +21,43 @@ model UserSession {
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
-model Backlog {
-  id          Int               @id @default(autoincrement())
-  summary     String
-  type        BacklogType?
-  sprint      Sprint?           @relation(fields: [sprintId], references: [id])
-  sprintId    Int?
-  priority    BacklogPriority?
-  //reporter    Participates      @relation("reportedBacklogs", fields: [reporterId, projectId], references: [user_id, project_id])
-  reporterId  Int
-  //assignee    Participates?     @relation("assignedBacklogs", fields: [assigneeId, project_id], references: [user_id, project_id])
-  assigneeId  Int?
-  projectId   Int
-  points      Int?
-  description String?
+model Course {
+  id            Int               @id @default(autoincrement())
+  cname         String            @db.VarChar(256)
+  description   String?
+  users         UsersOnCourses[]
+  projects      Project[]
+  public        Boolean           @default(false)
+  createdAt     DateTime          @default(now())
 }
 
-model Sprint {
-  id          Int               @id
-  backlogs    Backlog[]
+model UsersOnCourses {
+  course_id     Int
+  course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  user_id       Int
+  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  @@id([course_id, user_id])
 }
 
-enum BacklogType {
-  story
-  task
-  bug
+model Project {
+  id            Int               @id @default(autoincrement())
+  pname         String            @db.VarChar(256)
+  pkey          String?           @db.VarChar(64)
+  description   String?
+  // A project might not belong to a course (open project)
+  course_id     Int?
+  course        Course?           @relation(fields: [course_id], references: [id])
+  users         UsersOnProjects[]
+  public        Boolean           @default(false)
+  createdAt     DateTime          @default(now())
 }
 
-enum BacklogPriority {
-  very_high
-  high
-  medium
-  low
-  very_low
+model UsersOnProjects {
+  project_id    Int
+  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user_id       Int
+  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  @@id([project_id, user_id])
 }
