@@ -2,25 +2,20 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import authentication from './controllers/authentication';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
 import backlogRouter from './routes/backlog.route';
 
-const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
 const prisma = new PrismaClient();
 
+app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
-
-app.get('/', (req, res) => {
+app.get('/', (req : express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
 

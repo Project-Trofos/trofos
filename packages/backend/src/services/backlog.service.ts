@@ -39,7 +39,7 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
         assignee: {
           connect: {
             project_id_user_id: {
-              user_id: reporter_id,
+              user_id: assignee_id,
               project_id,
             },
           },
