@@ -1,5 +1,5 @@
 import express from 'express';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import authentication from './controllers/authentication';

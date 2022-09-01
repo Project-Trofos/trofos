@@ -1,7 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import crypto from 'crypto';
 
-const PRISMA_UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
+const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
 async function createUserSession(userEmail: string, prisma: PrismaClient) : Promise<string> {
 
@@ -23,7 +23,7 @@ async function createUserSession(userEmail: string, prisma: PrismaClient) : Prom
         throw e;
       }
       const prismaError = e as Prisma.PrismaClientKnownRequestError;
-      if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION) {
+      if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE) {
         throw e;
       }
     }
