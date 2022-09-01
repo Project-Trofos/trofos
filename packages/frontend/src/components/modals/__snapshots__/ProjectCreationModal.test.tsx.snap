@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders create project modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
@@ -15,8 +12,6 @@ exports[`renders create project modal with correct fields 1`] = `
         Create Project
       </span>
     </button>
-  </div>
-  <div>
     <div
       class="ant-modal-root"
     >
@@ -25,6 +20,7 @@ exports[`renders create project modal with correct fields 1`] = `
       />
       <div
         class="ant-modal-wrap"
+        style=""
         tabindex="-1"
       >
         <div

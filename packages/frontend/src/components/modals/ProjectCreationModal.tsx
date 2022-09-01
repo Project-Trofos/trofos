@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { useAppDispatch } from '../../app/hooks';
-import { addProject } from '../../reducers/projectsReducer';
+import { useAddProjectMutation } from '../../api';
 
 
 /**
@@ -10,7 +9,7 @@ import { addProject } from '../../reducers/projectsReducer';
  */
 export default function ProjectCreationModal() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const dispatch = useAppDispatch();
+  const [addProject] = useAddProjectMutation();
 
   const [form] = Form.useForm();
 
@@ -29,7 +28,7 @@ export default function ProjectCreationModal() {
   };
 
   const onFinish = (values: { projectKey: string; projectName: string }) => {
-    dispatch(addProject({ id: values.projectName, name: values.projectName, key: values.projectKey }));
+    addProject({ pname: values.projectName, pkey: values.projectKey });
     handleOk();
   };
 
@@ -43,6 +42,7 @@ export default function ProjectCreationModal() {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        getContainer={false}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
             Cancel
@@ -73,7 +73,10 @@ export default function ProjectCreationModal() {
           <Form.Item
             label="Key"
             name="projectKey"
-            rules={[{ pattern: /[\d\w]*/, message: 'The key must be alphanumeric' }]}
+            rules={[
+              { pattern: /^[a-zA-Z0-9-]*$/, message: 'The key must be alphanumeric.' },
+              { max: 64, message: 'The key must be at most 64 characters long.'  },
+            ]}
             tooltip={{ title: 'This key will be used as a prefix to the issues.', icon: <InfoCircleOutlined /> }}
           >
             <Input />
