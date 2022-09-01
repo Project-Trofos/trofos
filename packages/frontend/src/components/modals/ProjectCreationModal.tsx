@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddProjectMutation } from '../../api';
@@ -12,10 +12,6 @@ export default function ProjectCreationModal() {
   const [addProject] = useAddProjectMutation();
 
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    form.validateFields(['projectName']);
-  }, [form]);
 
   const showModal = () => {
     setIsModalVisible(true);
