@@ -1,16 +1,5 @@
-import { PrismaClient, BacklogType, BacklogPriority } from '@prisma/client';
-
-type BacklogFields = {
-  summary: string;
-  type: BacklogType;
-  sprintId: number | undefined;
-  priority: BacklogPriority | undefined;
-  reporterId: number;
-  assigneeId: number | undefined;
-  points: number | undefined;
-  description: string | undefined;
-  projectId: number;
-};
+import { PrismaClient } from '@prisma/client';
+import { BacklogFields } from './types/backlog.service.types';
 
 async function createBacklog(backlogFields : BacklogFields, prisma : PrismaClient) : Promise<boolean> {
   const {
