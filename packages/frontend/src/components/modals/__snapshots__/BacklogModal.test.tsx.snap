@@ -7,6 +7,7 @@ exports[`renders new backlog modal with correct fields 1`] = `
 >
   <div>
     <button
+      ant-click-animating-without-extra-node="false"
       class="ant-btn ant-btn-primary"
       type="button"
     >
@@ -215,7 +216,7 @@ exports[`renders new backlog modal with correct fields 1`] = `
                     >
                       <label
                         class=""
-                        for="sprint"
+                        for="sprintId"
                         title="Sprint"
                       >
                         Sprint
@@ -240,14 +241,14 @@ exports[`renders new backlog modal with correct fields 1`] = `
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="sprint_list_0"
+                                  aria-activedescendant="sprintId_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="sprint_list"
+                                  aria-controls="sprintId_list"
                                   aria-haspopup="listbox"
-                                  aria-owns="sprint_list"
+                                  aria-owns="sprintId_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
-                                  id="sprint"
+                                  id="sprintId"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -401,7 +402,7 @@ exports[`renders new backlog modal with correct fields 1`] = `
                         >
                           <label
                             class="ant-form-item-required"
-                            for="reporter"
+                            for="reporterId"
                             title="Reporter"
                           >
                             Reporter
@@ -426,14 +427,14 @@ exports[`renders new backlog modal with correct fields 1`] = `
                                     class="ant-select-selection-search"
                                   >
                                     <input
-                                      aria-activedescendant="reporter_list_0"
+                                      aria-activedescendant="reporterId_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="reporter_list"
+                                      aria-controls="reporterId_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="reporter_list"
+                                      aria-owns="reporterId_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="reporter"
+                                      id="reporterId"
                                       readonly=""
                                       role="combobox"
                                       style="opacity: 0;"
@@ -493,7 +494,7 @@ exports[`renders new backlog modal with correct fields 1`] = `
                         >
                           <label
                             class=""
-                            for="assignee"
+                            for="assigneeId"
                             title="Assignee"
                           >
                             Assignee
@@ -518,14 +519,14 @@ exports[`renders new backlog modal with correct fields 1`] = `
                                     class="ant-select-selection-search"
                                   >
                                     <input
-                                      aria-activedescendant="assignee_list_0"
+                                      aria-activedescendant="assigneeId_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="assignee_list"
+                                      aria-controls="assigneeId_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="assignee_list"
+                                      aria-owns="assigneeId_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="assignee"
+                                      id="assigneeId"
                                       readonly=""
                                       role="combobox"
                                       style="opacity: 0;"

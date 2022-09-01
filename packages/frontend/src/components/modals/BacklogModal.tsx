@@ -6,7 +6,7 @@ import './BacklogModal.css';
 const { Option } = Select;
 const { TextArea } = Input;
 
-function BacklogModal() {
+function BacklogModal(): JSX.Element {
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
   const TYPES: BacklogSelect[] = [
@@ -26,12 +26,15 @@ function BacklogModal() {
     { id: '2', name: 'Sprint 2' },
     { id: '3', name: 'Sprint 3' },
   ];
-  const USERS: BacklogSelect[] = [
-    { id: 'user1', name: 'User1' },
-    { id: 'user2', name: 'User2' },
+  const USERS = [
+    { id: 1, name: 'User1' },
+    { id: 2, name: 'User2' },
   ];
 
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [form] = Form.useForm();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -45,53 +48,83 @@ function BacklogModal() {
     setIsModalVisible(false);
   };
 
-  const renderFooter = (): JSX.Element[] => (
-    [
-      <Button form="newBacklog" key="submit" type="primary" htmlType="submit">
-        Create
-      </Button>,
-    ]
-  );
+  const handleFormSubmit = async (data: FormData): Promise<void> => {
+    setIsLoading(true);
 
-  const renderTypeSelect = () => (
+    // for development
+    const payload: BacklogFormFields = {
+      ...data,
+      projectId: 123,
+    };
+    try {
+      const res = await fetch('http://localhost:3001/newBacklog', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status !== 200) {
+        console.error('Something went wrong. Please try again');
+      }
+
+      setIsModalVisible(false);
+      form.resetFields();
+      console.log('Success');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderFooter = (): JSX.Element[] => [
+    <Button form="newBacklog" key="submit" type="primary" htmlType="submit" loading={isLoading}>
+      Create
+    </Button>,
+  ];
+
+  const renderTypeSelect = (): JSX.Element => (
     <Form.Item name="type" label="Type" rules={[{ required: true }]}>
-      <Select
-        className="type-select"
-        placeholder="Type of backlog"
-      >
-        {TYPES.map(type => <Option key={type.id} value={type.id}>{type.name}</Option>)}
+      <Select className="type-select" placeholder="Type of backlog">
+        {TYPES.map((type) => (
+          <Option key={type.id} value={type.id}>
+            {type.name}
+          </Option>
+        ))}
       </Select>
     </Form.Item>
   );
 
-  const renderSprintSelect = () => (
-    <Form.Item name="sprint" label="Sprint">
-      <Select
-        className="sprint-select"
-        placeholder="Select Sprint"
-        allowClear
-      >
-        {SPRINTS.map(sprint => <Option key={sprint.id} value={sprint.id}>{sprint.name}</Option>)}
+  const renderSprintSelect = (): JSX.Element => (
+    <Form.Item name="sprintId" label="Sprint">
+      <Select className="sprint-select" placeholder="Select Sprint" allowClear>
+        {SPRINTS.map((sprint) => (
+          <Option key={sprint.id} value={sprint.id}>
+            {sprint.name}
+          </Option>
+        ))}
       </Select>
     </Form.Item>
   );
 
-  const renderPrioritySelect = () => (
+  const renderPrioritySelect = (): JSX.Element => (
     <Form.Item name="priority" label="Priority">
-      <Select
-        className="priority-select"
-        placeholder="Select Priority"
-        allowClear
-      >
-        {PRIORITIES.map(priority => <Option key={priority.id} value={priority.id}>{priority.name}</Option>)}
+      <Select className="priority-select" placeholder="Select Priority" allowClear>
+        {PRIORITIES.map((priority) => (
+          <Option key={priority.id} value={priority.id}>
+            {priority.name}
+          </Option>
+        ))}
       </Select>
     </Form.Item>
   );
 
-  const renderReporterSelect = () => (
-    <Form.Item name="reporter" label="Reporter" rules={[{ required: true }]}>
+  const renderReporterSelect = (): JSX.Element => (
+    <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
       <Select className="reporter-select">
-        {USERS.map(user => (
+        {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
             <Avatar className="reporter-avatar" style={{ backgroundColor: '#85041C' }} icon={<UserOutlined />} />
             <span className="select-username-text">{user.name}</span>
@@ -101,10 +134,10 @@ function BacklogModal() {
     </Form.Item>
   );
 
-  const renderAssigneeSelect = () => (
-    <Form.Item name="assignee" label="Assignee">
+  const renderAssigneeSelect = (): JSX.Element => (
+    <Form.Item name="assigneeId" label="Assignee">
       <Select className="assignee-select" allowClear>
-        {USERS.map(user => (
+        {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
             <Avatar className="assignee-avatar" style={{ backgroundColor: '#ccc' }} icon={<UserOutlined />} />
             <span className="select-username-text">{user.name}</span>
@@ -114,12 +147,8 @@ function BacklogModal() {
     </Form.Item>
   );
 
-  const handleFormSubmit = (data: FormData) => {
-    console.log('Submitted:', data);
-  };
-
-  const renderContent = () => (
-    <Form id="newBacklog" onFinish={handleFormSubmit}>
+  const renderContent = (): JSX.Element => (
+    <Form id="newBacklog" form={form} onFinish={handleFormSubmit}>
       <Form.Item name="summary" rules={[{ required: true }]}>
         <Input className="summary-input" placeholder="* Type summary here..." />
       </Form.Item>
@@ -127,22 +156,14 @@ function BacklogModal() {
       {renderSprintSelect()}
       {renderPrioritySelect()}
       <Row>
-        <Col span={12}>
-          {renderReporterSelect()}
-        </Col>
-        <Col span={12}>
-          {renderAssigneeSelect()}
-        </Col>
+        <Col span={12}>{renderReporterSelect()}</Col>
+        <Col span={12}>{renderAssigneeSelect()}</Col>
       </Row>
       <Form.Item name="points" label="Points">
         <InputNumber className="points-input" min={1} />
       </Form.Item>
       <Form.Item name="description">
-        <TextArea
-          className="description-textarea"
-          placeholder="Description..."
-          autoSize={{ minRows: 5, maxRows: 8 }}
-        />
+        <TextArea className="description-textarea" placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />
       </Form.Item>
     </Form>
   );
@@ -152,7 +173,7 @@ function BacklogModal() {
       <Button type="primary" onClick={showModal}>
         New Backlog
       </Button>
-      <Modal 
+      <Modal
         title="New Backlog"
         visible={isModalVisible}
         onOk={handleOk}
@@ -164,6 +185,10 @@ function BacklogModal() {
       </Modal>
     </>
   );
+}
+
+interface BacklogFormFields extends FormData {
+  projectId: number;
 }
 
 type BacklogSelect = {

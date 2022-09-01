@@ -18,3 +18,38 @@ model UserSession {
   user_email String
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
+
+model Backlog {
+  id          Int               @id @default(autoincrement())
+  summary     String
+  type        BacklogType?
+  sprint      Sprint?           @relation(fields: [sprintId], references: [id])
+  sprintId    Int?
+  priority    BacklogPriority?
+  //reporter    Participates      @relation("reportedBacklogs", fields: [reporterId, projectId], references: [user_id, project_id])
+  reporterId  Int
+  //assignee    Participates?     @relation("assignedBacklogs", fields: [assigneeId, project_id], references: [user_id, project_id])
+  assigneeId  Int?
+  projectId   Int
+  points      Int?
+  description String?
+}
+
+model Sprint {
+  id          Int               @id
+  backlogs    Backlog[]
+}
+
+enum BacklogType {
+  story
+  task
+  bug
+}
+
+enum BacklogPriority {
+  very_high
+  high
+  medium
+  low
+  very_low
+}
