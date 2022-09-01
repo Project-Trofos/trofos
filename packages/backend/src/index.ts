@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authentication from './controllers/authentication';
 import courseRouter from './routes/course.route';
@@ -11,6 +12,7 @@ const prisma = new PrismaClient();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 app.get('/', (req : express.Request, res: express.Response) => {
   res.send('Hello World!');
