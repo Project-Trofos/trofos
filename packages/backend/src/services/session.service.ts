@@ -10,6 +10,7 @@ async function createUserSession(userEmail: string, prisma: PrismaClient) : Prom
 
   do {
     try {
+      // eslint-disable-next-line no-await-in-loop
       await prisma.userSession.create({
         data : {
           session_id : sessionId,

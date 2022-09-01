@@ -11,10 +11,53 @@ model User {
   user_id Int @id @default(autoincrement())
   user_email String @unique @db.VarChar(320)
   user_password_hash String? @db.VarChar(4000)
+  projects      UsersOnProjects[]
+  courses       UsersOnCourses[]
 }
 
 model UserSession {
   session_id String @id
   user_email String
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
+}
+
+model Course {
+  id            Int               @id @default(autoincrement())
+  cname         String            @db.VarChar(256)
+  description   String?
+  users         UsersOnCourses[]
+  projects      Project[]
+  public        Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+}
+
+model UsersOnCourses {
+  course_id     Int
+  course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  user_id       Int
+  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  @@id([course_id, user_id])
+}
+
+model Project {
+  id            Int               @id @default(autoincrement())
+  pname         String            @db.VarChar(256)
+  pkey          String?           @db.VarChar(64)
+  description   String?
+  // A project might not belong to a course (open project)
+  course_id     Int?
+  course        Course?           @relation(fields: [course_id], references: [id])
+  users         UsersOnProjects[]
+  public        Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+}
+
+model UsersOnProjects {
+  project_id    Int
+  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user_id       Int
+  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  @@id([project_id, user_id])
 }
