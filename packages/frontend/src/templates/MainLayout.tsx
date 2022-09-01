@@ -3,10 +3,9 @@ import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
 import Menu from 'antd/lib/menu';
 import { BellOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
-import { useAppSelector } from '../app/hooks';
-import { selectProjects } from '../reducers/projectsReducer';
 
 import './MainLayout.css';
+import { useGetAllProjectsQuery } from '../api';
 
 const { Header, Sider, Content } = Layout;
 
@@ -28,7 +27,7 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
  * Main layout of the application.
  */
 export default function MainLayout() {
-  const { projects } = useAppSelector(selectProjects);
+  const { data: projects } = useGetAllProjectsQuery();
 
   const USERNAME = 'username';
 
@@ -39,10 +38,10 @@ export default function MainLayout() {
         <Link to="/projects">Project</Link>,
         'sidebar-project',
         <ProjectOutlined />,
-        projects.length === 0
+        (projects === undefined || projects.length === 0)
           ? undefined
           : projects.map((project) =>
-            getItem(<Link to={`/project/${project.id}`}>{project.name}</Link>, `project-${project.id}`),
+            getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `project-${project.id}`),
           ),
       ),
     ],

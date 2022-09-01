@@ -1,18 +1,25 @@
 import React from 'react';
 import { Typography, Row, Col } from 'antd';
 
-import { useAppSelector } from '../app/hooks';
-
 import ProjectCard from '../components/cards/ProjectCard';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
+import { useGetAllProjectsQuery } from '../api';
 
 
 const { Title, Paragraph } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
-  const projects = useAppSelector(state => state.projects.projects);
+  const { data: projects, isLoading } = useGetAllProjectsQuery();
 
-  if (projects.length === 0) {
+  if (isLoading) {
+    return (
+      <main style={{ margin: '48px' }}>
+        Loading...
+      </main>
+    );
+  }
+  
+  if (projects === undefined || projects.length === 0) {
     return (
       <main style={{ margin: '48px' }}>
         <Title>Projects</Title>

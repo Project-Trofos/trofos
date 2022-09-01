@@ -1,56 +1,65 @@
 import React, { useMemo } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
-import { Button, Dropdown, Menu, PageHeader, Tabs } from 'antd';
+import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Tabs, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useAppSelector } from '../app/hooks';
-import { selectProjects } from '../reducers/projectsReducer';
-import { Project } from '../api/project';
+import { useGetAllProjectsQuery, useRemoveProjectMutation } from '../api';
 
-const menu = (
-  <Menu
-    items={[
-      {
-        key: '1',
-        label: 'Delete project',
-      },
-    ]}
-  />
-);
 
-function DropdownMenu() {
+function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
   return (
-    <Dropdown key="more" overlay={menu} placement="bottomRight">
+    <Dropdown key="more" overlay={projectMenu} placement="bottomRight">
       <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
 }
 
+
 export default function ProjectPage(): JSX.Element {
   const params = useParams();
-  const projects = useAppSelector(selectProjects);
-  const project: Project = useMemo(() => (
-    projects.projects.filter((p) => p.id === params.projectId)[0]
-  ), [projects, params.projectId]);
+  const navigate = useNavigate();
 
-  const routes = [
-    {
-      path: '/projects',
-      breadcrumbName: 'Projects',
-    },
-    {
-      path: `/project/${project.id}`,
-      breadcrumbName: project.name,
-    },
-  ];
+  const { data: projects } = useGetAllProjectsQuery();
+  const [removeProject] = useRemoveProjectMutation();
 
+  const project = useMemo(() => {
+    if (!projects || projects.length === 0 || !params.projectId) {
+      return undefined;
+    }
+    return projects.filter(p => p.id.toString() === params.projectId)[0];
+  }, [projects, params.projectId]);
+
+  if (!params.projectId || !project) {
+    return (
+    <Typography.Title>This project does not exist!</Typography.Title>
+    );
+  }
+  
+  const projectMenu = (
+    <Menu
+      onClick={() => removeProject({ id: project.id }).then(() => navigate('/projects'))}
+      items={[
+        {
+          key: '1',
+          label: 'Delete project',
+        },
+      ]}
+    />
+  );
+
+  const breadCrumbs = (
+    <Breadcrumb>
+      <Breadcrumb.Item><Link to='/projects'>Project</Link></Breadcrumb.Item>
+      <Breadcrumb.Item>{project.pname}</Breadcrumb.Item>
+    </Breadcrumb>
+  );
   return (
     <>
       <PageHeader
-        title={project.id}
+        title={project.pname}
         className="site-page-header"
         subTitle={project.description}
-        extra={[<DropdownMenu key="more" />]}
-        breadcrumb={{ routes }}
+        extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
+        breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
           <Tabs defaultActiveKey="1">

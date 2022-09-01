@@ -1,6 +1,6 @@
 import React from 'react';
 
 export default function Backlog(): JSX.Element {
-  return <h1>Backlog Placeholder</h1>;
+  return <h1 style={{ margin: 20 }}>Backlog Placeholder</h1>;
 }
 
