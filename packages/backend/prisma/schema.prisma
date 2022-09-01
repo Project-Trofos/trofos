@@ -54,10 +54,47 @@ model Project {
 }
 
 model UsersOnProjects {
-  project_id    Int
-  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  user_id       Int
-  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at    DateTime          @default(now())
+  project_id        Int
+  project           Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user_id           Int
+  user              User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at        DateTime      @default(now())
+  reported_backlogs Backlog[]     @relation("ReportedBacklogs")
+  assigned_backlogs Backlog[]     @relation("AssignedBacklogs")
   @@id([project_id, user_id])
+}
+
+model Backlog {
+  id            Int               @id @default(autoincrement())
+  summary       String
+  type          BacklogType?
+  sprint        Sprint?           @relation(fields: [sprint_id], references: [id])
+  sprint_id     Int?
+  priority      BacklogPriority?
+  reporter      UsersOnProjects   @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id])
+  reporter_id   Int
+  assignee      UsersOnProjects?  @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id])
+  assignee_id   Int?
+  project_id    Int
+  points        Int?
+  description   String?
+}
+
+model Sprint {
+  id          Int               @id
+  backlogs    Backlog[]
+}
+
+enum BacklogType {
+  story
+  task
+  bug
+}
+
+enum BacklogPriority {
+  very_high
+  high
+  medium
+  low
+  very_low
 }

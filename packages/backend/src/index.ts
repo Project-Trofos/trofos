@@ -6,6 +6,7 @@ import cors from 'cors';
 import authentication from './controllers/authentication';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
+import backlogRouter from './routes/backlog.route';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -23,14 +24,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/newBacklog', async (req, res) => {
-  backlogController.newBacklog(req, res, prisma);
-});
-
-app.get('/', (req : express.Request, res: express.Response) => {
-  res.send('Hello World!');
-});
-
 app.post('/login', (req : express.Request, res: express.Response) => {
   authentication.loginUser(req, res, prisma);
 });
@@ -41,6 +34,8 @@ app.use('/course', courseRouter);
 // Routes for project
 app.use('/project', projectRouter);
 
+// Routes for backlog
+app.use('/backlog', backlogRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

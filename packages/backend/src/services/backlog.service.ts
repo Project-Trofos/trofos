@@ -1,42 +1,56 @@
-import { PrismaClient } from '@prisma/client';
+import { Backlog } from '@prisma/client';
+import prisma from '../models/prismaClient';
 import { BacklogFields } from './types/backlog.service.types';
 
-async function createBacklog(backlogFields : BacklogFields, prisma : PrismaClient) : Promise<boolean> {
+async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
+  /* eslint-disable @typescript-eslint/naming-convention */
   const {
     summary,
     type,
-    sprintId,
+    sprint_id,
     priority,
-    reporterId,
-    assigneeId,
+    reporter_id,
+    assignee_id,
     points,
     description,
-    projectId,
+    project_id,
   } = backlogFields;
+  /* eslint-enable @typescript-eslint/naming-convention */
     
   const backlog = await prisma.backlog.create({
     data: {
       summary,
       type,
-      ...sprintId && {
+      ...sprint_id && {
         sprint: {
-          connect: { id: sprintId },
+          connect: { id: sprint_id },
         },
       },
       priority: priority || null,
-      reporterId,
-      assigneeId: assigneeId || null,
+      reporter: {
+        connect: {
+          project_id_user_id: {
+            user_id: reporter_id,
+            project_id,
+          },
+        },
+      },
+      ...assignee_id && {
+        assignee: {
+          connect: {
+            project_id_user_id: {
+              user_id: reporter_id,
+              project_id,
+            },
+          },
+        },
+      },
       points: points || null,
       description: description || null,
-      projectId,
     },
   });
 
-  if (!backlog) {
-    return false;
-  }
-
-  return true;
+  return backlog;
 }
 
 export default {

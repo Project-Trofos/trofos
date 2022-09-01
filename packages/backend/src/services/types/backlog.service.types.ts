@@ -3,11 +3,11 @@ import { BacklogType, BacklogPriority } from '@prisma/client';
 export type BacklogFields = {
   summary: string;
   type: BacklogType;
-  sprintId: number | undefined;
-  priority: BacklogPriority | undefined;
-  reporterId: number;
-  assigneeId: number | undefined;
-  points: number | undefined;
-  description: string | undefined;
-  projectId: number;
+  sprint_id?: number;
+  priority?: BacklogPriority;
+  reporter_id: number;
+  assignee_id?: number;
+  points?: number;
+  description?: string;
+  project_id: number;
 };

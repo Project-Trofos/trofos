@@ -2,6 +2,7 @@ import { Avatar, Button, Col, Form, Input, InputNumber, Modal, Row, Select } fro
 import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import './BacklogModal.css';
+import { useParams } from 'react-router-dom';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -31,6 +32,7 @@ function BacklogModal(): JSX.Element {
     { id: 2, name: 'User2' },
   ];
 
+  const params = useParams();
   const [form] = Form.useForm();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -54,10 +56,10 @@ function BacklogModal(): JSX.Element {
     // for development
     const payload: BacklogFormFields = {
       ...data,
-      projectId: 123,
+      project_id: Number(params.projectId),
     };
     try {
-      const res = await fetch('http://localhost:3001/newBacklog', {
+      const res = await fetch('http://localhost:3001/backlog/newBacklog', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -98,7 +100,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderSprintSelect = (): JSX.Element => (
-    <Form.Item name="sprintId" label="Sprint">
+    <Form.Item name="sprint_id" label="Sprint">
       <Select className="sprint-select" placeholder="Select Sprint" allowClear>
         {SPRINTS.map((sprint) => (
           <Option key={sprint.id} value={sprint.id}>
@@ -122,7 +124,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderReporterSelect = (): JSX.Element => (
-    <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
+    <Form.Item name="reporter_id" label="Reporter" rules={[{ required: true }]}>
       <Select className="reporter-select">
         {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
@@ -135,7 +137,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderAssigneeSelect = (): JSX.Element => (
-    <Form.Item name="assigneeId" label="Assignee">
+    <Form.Item name="assignee_id" label="Assignee">
       <Select className="assignee-select" allowClear>
         {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
@@ -188,7 +190,7 @@ function BacklogModal(): JSX.Element {
 }
 
 interface BacklogFormFields extends FormData {
-  projectId: number;
+  project_id: number;
 }
 
 type BacklogSelect = {

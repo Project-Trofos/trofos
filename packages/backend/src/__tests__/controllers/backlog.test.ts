@@ -1,58 +1,62 @@
-import express from 'express';
 import StatusCodes from 'http-status-codes';
-import { mockDeep } from 'jest-mock-extended';
-import { PrismaClient } from '@prisma/client';
+import { createRequest, createResponse } from 'node-mocks-http';
+import { Backlog } from '@prisma/client';
 import { PrismaClientValidationError } from '@prisma/client/runtime';
 import backlogController from '../../controllers/backlog';
 import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../services/types/backlog.service.types';
 
-const backlogServiceCreateBacklogSpy = jest.spyOn(backlogService, 'createBacklog');
-const prismaMock = mockDeep<PrismaClient>();
+const spies = {
+  createBacklog: jest.spyOn(backlogService, 'createBacklog'),
+};
 
 describe('backlogController tests', () => {
   const mockBacklog: BacklogFields = {
-    assigneeId: 1,
+    assignee_id: 1,
     description: 'A test description here',
     points: 1,
     priority: 'very_high',
-    projectId: 123,
-    reporterId: 1,
+    project_id: 123,
+    reporter_id: 1,
     summary: 'A Test Summary',
-    sprintId: 123,
+    sprint_id: 123,
     type: 'story',
   };
 
-  const mockRequest = {
+  const expectedBacklog: Backlog = {
+    id: 1,
+    summary: 'A Test Summary',
+    type: 'story',
+    priority: 'very_high',
+    sprint_id: 123,
+    reporter_id: 1,
+    assignee_id: 1,
+    points: 1,
+    description: 'A test description here',
+    project_id: 123,
+  };
+
+  const mockRequest = createRequest({
     body : mockBacklog,
-  } as express.Request;
-
-  const mockResponse = {
-    send() {},
-    status(s : number) {this.statusCode = s; return this;},
-  } as express.Response;
-
-  test('newBacklog_validBacklog_ReturnsHTTP200', async () => {
-    backlogServiceCreateBacklogSpy.mockResolvedValueOnce(true);
-
-    await backlogController.newBacklog(mockRequest, mockResponse, prismaMock);
-    expect(backlogServiceCreateBacklogSpy).toHaveBeenCalledWith(mockBacklog, prismaMock);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
   });
 
-  test('newBacklog_FailedToCreateBacklog_ReturnsHTTP500', async () => {
-    backlogServiceCreateBacklogSpy.mockResolvedValueOnce(false);
+  const mockResponse = createResponse();
 
-    await backlogController.newBacklog(mockRequest, mockResponse, prismaMock);
-    expect(backlogServiceCreateBacklogSpy).toHaveBeenCalledWith(mockBacklog, prismaMock);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+  test('newBacklog_validBacklog_ReturnsHTTP200AndBacklog', async () => {
+    spies.createBacklog.mockResolvedValueOnce(expectedBacklog);
+
+    await backlogController.newBacklog(mockRequest, mockResponse);
+    expect(spies.createBacklog).toHaveBeenCalledWith(mockBacklog);
+    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+    // eslint-disable-next-line no-underscore-dangle
+    expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
   });
 
   test('newBacklog_createBacklogThrowsError_ReturnsHTTP500', async () => {
-    backlogServiceCreateBacklogSpy.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
-		
-    await backlogController.newBacklog(mockRequest, mockResponse, prismaMock);
-    expect(backlogServiceCreateBacklogSpy).toHaveBeenCalledWith(mockBacklog, prismaMock);
+    spies.createBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+
+    await backlogController.newBacklog(mockRequest, mockResponse);
+    expect(spies.createBacklog).toHaveBeenCalledWith(mockBacklog);
     expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 });
