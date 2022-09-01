@@ -1,10 +1,21 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import cookieParser from 'cookie-parser';
+import authentication from './controllers/authentication';
 
 const app = express();
 const port = 3001;
+const prisma = new PrismaClient();
 
-app.get('/', (req, res) => {
+app.use(express.json());
+app.use(cookieParser());
+
+app.get('/', (req : express.Request, res: express.Response) => {
   res.send('Hello World!');
+});
+
+app.post('/login', (req : express.Request, res: express.Response) => {
+  authentication.loginUser(req, res, prisma);
 });
 
 const server = app.listen(port, () => {

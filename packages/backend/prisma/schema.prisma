@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id Int @id @default(autoincrement())
+  user_email String @unique @db.VarChar(320)
+  user_password_hash String? @db.VarChar(4000)
+}
+
+model UserSession {
+  session_id String @id
+  user_email String
+  session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
+}
