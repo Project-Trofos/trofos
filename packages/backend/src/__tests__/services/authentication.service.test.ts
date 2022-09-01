@@ -1,6 +1,6 @@
 import { mockDeep, mockReset } from 'jest-mock-extended';
 import bcrypt from 'bcrypt';
-import { PrismaClient, User } from '.prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import authenticationService from '../../services/authentication.service';
 
 const prismaMock = mockDeep<PrismaClient>();

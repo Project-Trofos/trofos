@@ -1,4 +1,4 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import authenticationService  from '../services/authentication.service';

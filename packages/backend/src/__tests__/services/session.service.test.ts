@@ -1,5 +1,5 @@
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import { Prisma, PrismaClient, UserSession } from '.prisma/client';
+import { Prisma, PrismaClient, UserSession } from '@prisma/client';
 import sessionService from '../../services/session.service';
 
 const prismaMock = mockDeep<PrismaClient>();

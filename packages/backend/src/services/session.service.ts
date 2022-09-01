@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '.prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import crypto from 'crypto';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
