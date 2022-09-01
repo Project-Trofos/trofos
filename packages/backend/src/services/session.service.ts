@@ -6,7 +6,7 @@ const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 async function createUserSession(userEmail: string, prisma: PrismaClient) : Promise<string> {
 
   let isSessionCreated = false;
-  const sessionId = crypto.randomBytes(16).toString('base64');
+  let sessionId = crypto.randomBytes(16).toString('base64');
 
   do {
     try {
@@ -26,6 +26,8 @@ async function createUserSession(userEmail: string, prisma: PrismaClient) : Prom
       if (prismaError.code !== PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE) {
         throw e;
       }
+      //If the error was due to a unique constraint violation, we generate the sessionId again.
+      sessionId = crypto.randomBytes(16).toString('base64');
     }
   } while (!isSessionCreated);
 
