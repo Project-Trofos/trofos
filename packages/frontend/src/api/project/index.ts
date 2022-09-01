@@ -5,5 +5,5 @@ export type Project = {
   description: string | null;
   course_id: number | null,
   public: boolean,
-  created_at: string,
+  createdAt: string,
 };
