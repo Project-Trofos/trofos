@@ -28,7 +28,7 @@ model Course {
   users         UsersOnCourses[]
   projects      Project[]
   public        Boolean           @default(false)
-  createdAt     DateTime          @default(now())
+  created_at    DateTime          @default(now())
 }
 
 model UsersOnCourses {
@@ -36,7 +36,7 @@ model UsersOnCourses {
   course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
   user_id       Int
   user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  createdAt     DateTime          @default(now())
+  created_at    DateTime          @default(now())
   @@id([course_id, user_id])
 }
 
@@ -50,7 +50,7 @@ model Project {
   course        Course?           @relation(fields: [course_id], references: [id])
   users         UsersOnProjects[]
   public        Boolean           @default(false)
-  createdAt     DateTime          @default(now())
+  created_at    DateTime          @default(now())
 }
 
 model UsersOnProjects {
@@ -58,6 +58,6 @@ model UsersOnProjects {
   project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
   user_id       Int
   user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  createdAt     DateTime          @default(now())
+  created_at    DateTime          @default(now())
   @@id([project_id, user_id])
 }
