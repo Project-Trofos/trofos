@@ -6,9 +6,9 @@ describe('course.service tests', () => {
 
   // Mock data for courses
   const coursesData: Course[] = [
-    { id: 1, cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
-    { id: 2, cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: true },
-    { id: 3, cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
+    { id: 1, cname: 'c1', createdAt: new Date(Date.now()), description: 'd1', public: false },
+    { id: 2, cname: 'c2', createdAt: new Date(Date.now()), description: 'd2', public: true },
+    { id: 3, cname: 'c3', createdAt: new Date(Date.now()), description: 'd3', public: false },
   ];
 
   // Mock data for projects
@@ -20,7 +20,7 @@ describe('course.service tests', () => {
       pkey: null,
       public: false,
       course_id: 1,
-      created_at: new Date(Date.now()),
+      createdAt: new Date(Date.now()),
     },
   ];
 
@@ -121,7 +121,7 @@ describe('course.service tests', () => {
       const resultMock: UsersOnCourses = {
         course_id: COURSE_ID,
         user_id: USER_ID,
-        created_at: new Date(Date.now()),
+        createdAt: new Date(Date.now()),
       }; 
       prismaMock.usersOnCourses.create.mockResolvedValueOnce(resultMock);
 
@@ -137,7 +137,7 @@ describe('course.service tests', () => {
       const resultMock: UsersOnCourses = {
         course_id: COURSE_ID,
         user_id: USER_ID,
-        created_at: new Date(Date.now()),
+        createdAt: new Date(Date.now()),
       }; 
       prismaMock.usersOnCourses.delete.mockResolvedValueOnce(resultMock);
 

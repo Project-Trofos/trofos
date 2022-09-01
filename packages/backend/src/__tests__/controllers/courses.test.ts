@@ -33,21 +33,21 @@ describe('course controller tests', () => {
 
   // Mock data for projects
   const projectsData: Project[] = [
-    { id: 1, pname: 'c1', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd1', public: false },
-    { id: 2, pname: 'c2', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd2', public: false },
-    { id: 3, pname: 'c3', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd3', public: false },
+    { id: 1, pname: 'c1', createdAt: new Date(Date.now()), course_id: null, pkey: null, description: 'd1', public: false },
+    { id: 2, pname: 'c2', createdAt: new Date(Date.now()), course_id: null, pkey: null, description: 'd2', public: false },
+    { id: 3, pname: 'c3', createdAt: new Date(Date.now()), course_id: null, pkey: null, description: 'd3', public: false },
   ];
 
   // Mock data for users on courses
   const usersCourseData: UsersOnCourses[] = [
-    { course_id: 1, user_id: 1, created_at: new Date(Date.now()) },
+    { course_id: 1, user_id: 1, createdAt: new Date(Date.now()) },
   ];
 
   // Mock data for courses
   const coursesData: Course[] = [
-    { id: 1, cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
-    { id: 2, cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: false },
-    { id: 3, cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
+    { id: 1, cname: 'c1', createdAt: new Date(Date.now()), description: 'd1', public: false },
+    { id: 2, cname: 'c2', createdAt: new Date(Date.now()), description: 'd2', public: false },
+    { id: 3, cname: 'c3', createdAt: new Date(Date.now()), description: 'd3', public: false },
   ];
 
   describe('getAll', () => {
