@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authentication from './controllers/authentication';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
+import backlogRouter from './routes/backlog.route';
 
 const app = express();
 const port = 3001;
@@ -28,6 +29,8 @@ app.use('/course', courseRouter);
 // Routes for project
 app.use('/project', projectRouter);
 
+// Routes for backlog
+app.use('/backlog', backlogRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
