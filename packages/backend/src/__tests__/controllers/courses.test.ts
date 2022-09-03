@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import StatusCodes from 'http-status-codes';
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';

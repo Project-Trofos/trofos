@@ -5,6 +5,9 @@
     "jest": true
   },
   "extends": ["eslint:recommended", "airbnb", "prettier"],
+  "rules": {
+    "no-underscore-dangle": "off"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],

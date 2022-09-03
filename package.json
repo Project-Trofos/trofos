@@ -6,7 +6,7 @@
     "start": "lerna run --parallel start",
     "test": "lerna run test --stream",
     "commit": "cz",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix && stylelint **/*.css --fix"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,9 @@
     "eslint-plugin-promise": "^6.0.0",
     "lerna": "^5.4.3",
     "prettier": "^2.7.1",
+    "stylelint": "^14.11.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^28.0.0",
     "typescript": "^4.7.4"
   },
   "config": {

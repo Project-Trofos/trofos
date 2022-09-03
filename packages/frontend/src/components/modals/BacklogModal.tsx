@@ -56,7 +56,7 @@ function BacklogModal(): JSX.Element {
     // for development
     const payload: BacklogFormFields = {
       ...data,
-      project_id: Number(params.projectId),
+      projectId: Number(params.projectId),
     };
     try {
       const res = await fetch('http://localhost:3001/backlog/newBacklog', {
@@ -100,7 +100,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderSprintSelect = (): JSX.Element => (
-    <Form.Item name="sprint_id" label="Sprint">
+    <Form.Item name="sprintId" label="Sprint">
       <Select className="sprint-select" placeholder="Select Sprint" allowClear>
         {SPRINTS.map((sprint) => (
           <Option key={sprint.id} value={sprint.id}>
@@ -124,7 +124,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderReporterSelect = (): JSX.Element => (
-    <Form.Item name="reporter_id" label="Reporter" rules={[{ required: true }]}>
+    <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
       <Select className="reporter-select">
         {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
@@ -137,7 +137,7 @@ function BacklogModal(): JSX.Element {
   );
 
   const renderAssigneeSelect = (): JSX.Element => (
-    <Form.Item name="assignee_id" label="Assignee">
+    <Form.Item name="assigneeId" label="Assignee">
       <Select className="assignee-select" allowClear>
         {USERS.map((user) => (
           <Option key={user.id} value={user.id}>
@@ -190,7 +190,7 @@ function BacklogModal(): JSX.Element {
 }
 
 interface BacklogFormFields extends FormData {
-  project_id: number;
+  projectId: number;
 }
 
 type BacklogSelect = {
