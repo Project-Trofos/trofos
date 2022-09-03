@@ -12,14 +12,14 @@ const backlogServiceCreateBacklogSpy = {
 
 describe('backlogController tests', () => {
   const mockBacklog: BacklogFields = {
-    assignee_id: 1,
+    assigneeId: 1,
     description: 'A test description here',
     points: 1,
     priority: 'very_high',
-    project_id: 123,
-    reporter_id: 1,
+    projectId: 123,
+    reporterId: 1,
     summary: 'A Test Summary',
-    sprint_id: 123,
+    sprintId: 123,
     type: 'story',
   };
 
@@ -48,7 +48,6 @@ describe('backlogController tests', () => {
     await backlogController.newBacklog(mockRequest, mockResponse);
     expect(backlogServiceCreateBacklogSpy.createBacklog).toHaveBeenCalledWith(mockBacklog);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    // eslint-disable-next-line no-underscore-dangle
     expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
   });
 
