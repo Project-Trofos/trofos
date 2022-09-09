@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
 import Menu from 'antd/lib/menu';
-import { BellOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
 
 import './MainLayout.css';
-import { useGetAllProjectsQuery } from '../api';
+import { useGetAllProjectsQuery } from '../api/project';
+import { useGetAllCoursesQuery } from '../api/course';
 
 const { Header, Sider, Content } = Layout;
 
@@ -28,12 +29,23 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
  */
 export default function MainLayout() {
   const { data: projects } = useGetAllProjectsQuery();
+  const { data: courses } = useGetAllCoursesQuery();
 
   const USERNAME = 'username';
 
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, 'sidebar-home', <HomeOutlined />),
+      getItem(
+        <Link to="/courses">Courses</Link>,
+        'sidebar-course',
+        <BookOutlined />,
+        (courses === undefined || courses.length === 0)
+          ? undefined
+          : courses.map((course) =>
+            getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `course-${course.id}`),
+          ),
+      ),
       getItem(
         <Link to="/projects">Project</Link>,
         'sidebar-project',
@@ -45,7 +57,7 @@ export default function MainLayout() {
           ),
       ),
     ],
-    [projects],
+    [projects, courses],
   );
 
   const renderHeader = () => (
@@ -72,7 +84,7 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider theme="dark" style={{ backgroundColor: '#32A2AC' }} breakpoint="lg" collapsedWidth="0">
+      <Sider breakpoint="lg" collapsedWidth="0">
         <div style={{ fontSize: '2rem', padding: '1rem', color: 'white' }}>Trofos</div>
         <Menu mode="inline" defaultSelectedKeys={['1']} items={menuItems} />
       </Sider>

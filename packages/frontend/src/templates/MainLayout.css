@@ -1,3 +1,7 @@
+:root {
+    --sider-bg-color: #32A2AC;
+}
+
 .avatar-group {
     display: flex;
     flex-direction: row;
@@ -5,3 +9,10 @@
     align-items: center;
     gap: 8px;
 }
+
+
+/* Menu */
+.ant-layout-sider-children {
+    background-color: var(--sider-bg-color);
+}
+
