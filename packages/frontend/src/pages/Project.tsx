@@ -36,9 +36,8 @@ export default function ProjectPage(): JSX.Element {
       removeProject({ id: project.id }).then(() => navigate('/projects'));
     } else if (key === '2') {
       // TODO: add/detach from course modal
-      console.log(courses);
     }
-  }, [project, courses, navigate, removeProject]);
+  }, [project, navigate, removeProject]);
 
   if (!params.projectId || !project) {
     return (
@@ -46,8 +45,6 @@ export default function ProjectPage(): JSX.Element {
     );
   }
 
-  console.log(project);
-  
   const projectMenu = (
     <Menu
       onClick={(e) => handleMenuClick(e.key)}

@@ -1,109 +1,45 @@
-import React, { useCallback, useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import React from 'react';
+import { Form, Input } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddProjectMutation } from '../../api/project';
 import { useAddProjectAndCourseMutation } from '../../api/course';
+import MultistepFormModal from './MultistepModalForm';
 
 
 /**
  * Modal for creating projects
  */
 export default function ProjectCreationModal() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [data, setData] = useState<{ projectName?: string; projectKey?: string; cid?: string; cname?: string; }>({});
-  const [step, setStep] = useState<number>(1);
 
   const [addProject] = useAddProjectMutation();
   const [addProjectAndCourse] = useAddProjectAndCourseMutation();
 
-
   const [form] = Form.useForm();
 
-  const showModal = () => {
-    setStep(1);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setStep(1);
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onFinish = () => {
-    const partialData = form.getFieldsValue();
-    console.log(partialData, data);
-    if (partialData.courseCode && partialData.courseName && data.projectName) {
+  const onFinish = (data: { projectName?: string; projectKey?: string; courseName?: string; courseCode?: string }) => {
+    const { courseCode, courseName, projectKey, projectName } = data;
+    if (courseCode && courseName && projectName) {
       addProjectAndCourse({ 
-        projectName: data.projectName,
-        projectKey: data.projectKey,
-        courseId: partialData.courseCode,
-        courseName: partialData.courseName,
+        projectName,
+        projectKey,
+        courseId: courseCode,
+        courseName,
       });
-    } else if (data.projectName) {
-      addProject({ pname: data.projectName, pkey: data.projectKey });
+    } else if (projectName) {
+      addProject({ pname: projectName, pkey: projectKey });
     } else {
       throw new Error('Invalid data!');
     }
-    handleOk();
-  };
-
-  const onNext = () => {
-    form.validateFields().then(() => {
-      const partialData = form.getFieldsValue();
-      setData(d => ({ ...d, ...partialData }));
-      setStep(i => i + 1);
-    });
   };
 
   return (
-    <>
-      <Button onClick={showModal} type="primary">
-        Create Project
-      </Button>
-      <Modal
-        title="Create Project"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        getContainer={false}
-        footer={step === 1 ? [
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="next" type="primary" onClick={onNext}>
-            Next
-          </Button>,
-        ] : [
-          <Button key="prev" type="primary" onClick={() => setStep(step - 1)}>
-            Back
-          </Button>,
-          <Button type="primary" form="project-creation-form" key="submit" htmlType="submit">
-            Create
-          </Button>,
-        ]}
-      >
-        <Form
-          name="project-creation-form"
-          layout="vertical"
-          form={form}
-          wrapperCol={{ span: 20 }}
-          onFinish={onFinish}
-          autoComplete="off"
-        >
-          {step === 1 ? <FormStep1/> : <FormStep2/>}
-        </Form>
-      </Modal>
-    </>
+    <MultistepFormModal buttonName='Create Project' form={form} formSteps={[FormStep1(), FormStep2()]} onSubmit={onFinish} />
   );
 }
 
 function FormStep1(): JSX.Element {
   return (
-    <div>
+    <>
       <p>You can change these details anytime in your project settings.</p>
       <Form.Item
         label="Name"
@@ -125,13 +61,13 @@ function FormStep1(): JSX.Element {
       >
         <Input />
       </Form.Item>
-    </div>
+    </>
   );
 }
 
 function FormStep2(): JSX.Element {
   return (
-    <div>
+    <>
       <p>You can attach this project to a course.</p>
 
       <Form.Item
@@ -154,7 +90,6 @@ function FormStep2(): JSX.Element {
       >
         <Input />
       </Form.Item>
-    </div>
+    </>
   );
 }
-
