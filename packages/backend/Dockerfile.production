@@ -1,0 +1,31 @@
+# Base image
+FROM node:16.17.0-alpine as base
+
+# Expose port to access server
+EXPOSE 3001
+
+# Make folder to put our files in
+RUN mkdir -p /usr/src/app/backend
+
+# Set working directory so that all subsequent command runs in this folder
+WORKDIR /usr/src/app/backend
+
+# Copy package json and install dependencies
+COPY package*.json ./
+
+# Test stage for CI
+FROM base as test
+RUN npm ci
+# Copy our app
+COPY . .
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+CMD ["sh", "-c", "npm run prisma-migrate-ci ; npm run test"]
+
+# Production stage
+FROM base as prod
+RUN npm ci
+# Copy our app
+COPY . .
+# Command to run our app
+CMD ["sh", "-c", "npm run prisma-migrate-prod ; npm run start-prod"]

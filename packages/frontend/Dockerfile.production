@@ -1,0 +1,29 @@
+# Base image
+FROM node:16.17.0-alpine as base
+
+# Expose port to access server
+EXPOSE 3000
+
+# Make folder to put our files in
+RUN mkdir -p /usr/src/app/frontend
+
+# Set working directory so that all subsequent command runs in this folder
+WORKDIR /usr/src/app/frontend
+
+# Copy package json and install dependencies
+COPY package*.json ./
+
+# Test stage for CI
+FROM base as test
+RUN npm ci
+# Copy our app
+COPY . .
+CMD ["npm", "run", "test"]
+
+# Production stage
+FROM base as prod
+RUN npm ci
+# Copy our app
+COPY . .
+# Command to run our app
+CMD ["npm", "run", "start-dev"]

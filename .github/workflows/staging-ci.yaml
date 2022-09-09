@@ -1,0 +1,30 @@
+name: CI Test for staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-with-docker:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER_CI }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Build Docker containers
+        run: npm run setup:ci
+      - name: Run backend test
+        run: docker run --rm --network="trofos_default" trofos_backend
+      - name: Run frontend test
+        run: docker run --rm --network="trofos_default" trofos_frontend
+      - name: Clean up containers
+        run: npm run cleanup:ci
