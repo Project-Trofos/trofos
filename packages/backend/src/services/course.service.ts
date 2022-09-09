@@ -9,7 +9,7 @@ async function getAll(): Promise<Course[]> {
 }
 
 
-async function getById(id: number): Promise<Course> {
+async function getById(id: string): Promise<Course> {
   const result = await prisma.course.findUniqueOrThrow({
     where: {
       id,
@@ -20,9 +20,10 @@ async function getById(id: number): Promise<Course> {
 }
 
 
-async function create(name: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function create(name: string, isPublic?: boolean, description?: string, id?: string): Promise<Course> {
   const result = await prisma.course.create({
     data: {
+      id,
       cname: name,
       public: isPublic,
       description,
@@ -33,7 +34,7 @@ async function create(name: string, isPublic?: boolean, description?: string): P
 }
 
 
-async function update(id: number, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function update(id: string, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
   const result = await prisma.course.update({
     where: {
       id,
@@ -49,7 +50,7 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 }
 
 
-async function remove(id: number): Promise<Course> {
+async function remove(id: string): Promise<Course> {
   const result = await prisma.course.delete({
     where: {
       id,
@@ -60,7 +61,7 @@ async function remove(id: number): Promise<Course> {
 }
 
 
-async function getUsers(id: number): Promise<User[]> {
+async function getUsers(id: string): Promise<User[]> {
   const result = await prisma.usersOnCourses.findMany({
     where: {
       course_id: id,
@@ -74,7 +75,7 @@ async function getUsers(id: number): Promise<User[]> {
 }
 
 
-async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
+async function addUser(courseId: string, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
@@ -86,7 +87,7 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
 }
 
 
-async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
+async function removeUser(courseId: string, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.delete({
     where: {
       course_id_user_id: {
@@ -100,7 +101,7 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
 }
 
 
-async function getProjects(id: number): Promise<Project[]> {
+async function getProjects(id: string): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
       course_id: id,
@@ -111,8 +112,34 @@ async function getProjects(id: number): Promise<Project[]> {
 }
 
 
+// Add project and link to course, create course if necessary
+async function addProjectAndCourse(courseId: string, courseName: string, projectName: string, projectKey?: string, projectIsPublic?: boolean, projectDesc?: string): Promise<Project> {
+
+  const result = prisma.project.create({
+    data: {
+      pname: projectName,
+      pkey: projectKey,
+      description: projectDesc,
+      course: {
+        connectOrCreate: {
+          where: {
+            id: courseId,
+          },
+          create: {
+            id: courseId,
+            cname: courseName,
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}
+
+
 // Add project to course
-async function addProject(courseId: number, projectId: number): Promise<Project> {
+async function addProject(courseId: string, projectId: number): Promise<Project> {
   const result = await prisma.project.update({
     where: {
       id: projectId,
@@ -127,7 +154,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
 
 
 // Remove project from course
-async function removeProject(courseId: number, projectId: number): Promise<Project> {
+async function removeProject(courseId: string, projectId: number): Promise<Project> {
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
@@ -163,4 +190,5 @@ export default {
   getProjects,
   addProject,
   removeProject,
+  addProjectAndCourse,
 };

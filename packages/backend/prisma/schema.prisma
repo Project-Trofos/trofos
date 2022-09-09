@@ -22,7 +22,7 @@ model UserSession {
 }
 
 model Course {
-  id            Int               @id @default(autoincrement())
+  id            String               @id @default(uuid())
   cname         String            @db.VarChar(256)
   description   String?
   users         UsersOnCourses[]
@@ -32,7 +32,7 @@ model Course {
 }
 
 model UsersOnCourses {
-  course_id     Int
+  course_id     String
   course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
   user_id       Int
   user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
@@ -46,7 +46,7 @@ model Project {
   pkey          String?           @db.VarChar(64)
   description   String?
   // A project might not belong to a course (open project)
-  course_id     Int?
+  course_id     String?
   course        Course?           @relation(fields: [course_id], references: [id])
   users         UsersOnProjects[]
   public        Boolean           @default(false)
