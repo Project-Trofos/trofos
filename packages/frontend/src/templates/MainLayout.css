@@ -10,9 +10,21 @@
     gap: 8px;
 }
 
-
 /* Menu */
-.ant-layout-sider-children {
+.main-layout-sider .ant-layout-sider-children {
     background-color: var(--sider-bg-color);
 }
 
+/* Prevent link from changing text color */
+.main-layout-sider .ant-menu-title-content a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.main-layout-sider .ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child:after {
+    border-right: 3px solid var(--sider-bg-color);
+}
+
+.main-layout-sider .ant-menu-item.ant-menu-item-selected:after {
+    border-right: 3px solid var(--sider-bg-color);
+}

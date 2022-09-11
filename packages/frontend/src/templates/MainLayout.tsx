@@ -84,7 +84,7 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider breakpoint="lg" collapsedWidth="0">
+      <Sider breakpoint="lg" collapsedWidth="0" className='main-layout-sider'>
         <div style={{ fontSize: '2rem', padding: '1rem', color: 'white' }}>Trofos</div>
         <Menu mode="inline" defaultSelectedKeys={['1']} items={menuItems} />
       </Sider>
