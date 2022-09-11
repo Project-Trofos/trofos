@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Form, FormInstance, Modal } from 'antd';
 
-type MultistepFromModalProps<T> = {
+export type MultistepFromModalProps<T> = {
+  title: string;
   form: FormInstance<T>;
   formSteps: React.ReactNode[];
   onSubmit: (data: T) => void;
@@ -12,7 +13,7 @@ type MultistepFromModalProps<T> = {
  * A multi-step form built around Antd's Form and Modal
  */
 export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>) {
-  const { form, formSteps, onSubmit, buttonName } = props;
+  const { form, formSteps, onSubmit, buttonName, title } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState<Partial<T>>({});
@@ -40,7 +41,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
       const completeData = { ...data, ...partialData };
       onSubmit(completeData);
       handleOk();
-    });
+    }).catch(e => {});
   };
 
   const onNext = () => {
@@ -48,7 +49,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
       const partialData = form.getFieldsValue();
       setData(d => ({ ...d, ...partialData }));
       setStep(i => i + 1);
-    });
+    }).catch(e => {});
   };
 
   return (
@@ -57,7 +58,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
         {buttonName}
       </Button>
       <Modal
-        title="Create Project"
+        title={title}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}

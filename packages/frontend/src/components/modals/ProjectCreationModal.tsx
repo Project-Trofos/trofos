@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddProjectMutation } from '../../api/project';
@@ -33,7 +33,12 @@ export default function ProjectCreationModal() {
   };
 
   return (
-    <MultistepFormModal buttonName='Create Project' form={form} formSteps={[FormStep1(), FormStep2()]} onSubmit={onFinish} />
+    <MultistepFormModal 
+      title='Create Project'
+      buttonName='Create Project'
+      form={form} formSteps={[<FormStep1 />, <FormStep2 />]}
+      onSubmit={onFinish}
+    />
   );
 }
 
@@ -66,6 +71,9 @@ function FormStep1(): JSX.Element {
 }
 
 function FormStep2(): JSX.Element {
+
+  const [courseName, setCourseName] = useState('');
+
   return (
     <>
       <p>You can attach this project to a course.</p>
@@ -78,14 +86,13 @@ function FormStep2(): JSX.Element {
           { max: 64, message: 'The key must be at most 64 characters long.' },
         ]}
       >
-        <Input />
+        <Input value={courseName} onChange={e => setCourseName(e.target.value)} />
       </Form.Item>
 
       <Form.Item
         label="Course Code"
         name="courseCode"
-        required
-        rules={[{ required: true, message: "Please input your course's code!" }]}
+        rules={[{ required: courseName !== '', message: "Please input your course's code!" }]}
         tooltip={{ title: 'Course code will be used to uniquely identify this course.', icon: <InfoCircleOutlined /> }}
       >
         <Input />

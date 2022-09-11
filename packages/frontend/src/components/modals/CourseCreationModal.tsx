@@ -1,9 +1,11 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import { Form, Input, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddCourseMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 
+
+const { Paragraph } = Typography;
 
 /**
  * Modal for creating courses
@@ -18,8 +20,9 @@ export default function CourseCreationModal() {
   };
 
   return (
-    <MultistepFormModal buttonName='Create course' form={form} onSubmit={(data) => onFinish(data)} formSteps={[
+    <MultistepFormModal title='Create Course' buttonName='Create Course' form={form} onSubmit={(data) => onFinish(data)} formSteps={[
       <>
+        <Paragraph>Please input the details for your course.</Paragraph>
         <Form.Item
           label="Name"
           name="courseName"
