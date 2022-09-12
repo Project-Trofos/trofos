@@ -79,6 +79,15 @@ function FormStep2(): JSX.Element {
       <p>You can attach this project to a course.</p>
 
       <Form.Item
+        label="Course Code"
+        name="courseCode"
+        rules={[{ required: courseName !== '', message: "Please input your course's code!" }]}
+        tooltip={{ title: 'Course code will be used to uniquely identify this course.', icon: <InfoCircleOutlined /> }}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
         label="Course Name"
         name="courseName"
         rules={[
@@ -87,15 +96,6 @@ function FormStep2(): JSX.Element {
         ]}
       >
         <Input value={courseName} onChange={e => setCourseName(e.target.value)} />
-      </Form.Item>
-
-      <Form.Item
-        label="Course Code"
-        name="courseCode"
-        rules={[{ required: courseName !== '', message: "Please input your course's code!" }]}
-        tooltip={{ title: 'Course code will be used to uniquely identify this course.', icon: <InfoCircleOutlined /> }}
-      >
-        <Input />
       </Form.Item>
     </>
   );

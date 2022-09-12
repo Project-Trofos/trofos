@@ -185,19 +185,20 @@ async function addProjectAndCourse(req : express.Request, res: express.Response)
     courseId: string;
     courseName: string;
     projectName: string;
-    projectKey: string;
-    projectIsPublic: boolean;
-    projectDescription: string;
+    projectKey?: string;
+    isProjectPublic?: boolean;
+    isCoursePublic?: boolean;
+    projectDescription?: string;
   };
 
   try {
-    const { courseId, courseName, projectName, projectKey, projectIsPublic, projectDescription }: RequestBodyLocal = req.body;
+    const { courseId, courseName, projectName, projectKey, projectDescription, isCoursePublic, isProjectPublic }: RequestBodyLocal = req.body;
 
     if (!courseId || !courseName || !projectName) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
     }
 
-    const result = await course.addProjectAndCourse(courseId, courseName, projectName, projectKey, projectIsPublic, projectDescription);
+    const result = await course.addProjectAndCourse(courseId, courseName, projectName, projectKey, isCoursePublic, isProjectPublic, projectDescription);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error: any) {

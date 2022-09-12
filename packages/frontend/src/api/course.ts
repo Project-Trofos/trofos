@@ -1,4 +1,5 @@
 import trofosApiSlice from '.';
+import { Project } from './project';
 
 export type Course = {
   id: string;
@@ -35,18 +36,19 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Course', 'Project'],
     }),
-    addProjectAndCourse: builder.mutation<Course, {
+    addProjectAndCourse: builder.mutation<Project, {
       courseId?: string;
       courseName?: string;
       projectName: string;
       projectKey?: string;
-      projectIsPublic?: boolean;
+      isCoursePublic?: boolean;
+      isProjectPublic?: boolean;
       projectDescription?: string;
     }>({
-      query: (course) => ({
+      query: (body) => ({
         url: 'course/project',
         method: 'POST',
-        body: { ...course },
+        body,
       }),
       invalidatesTags: ['Project', 'Course'],
     }),

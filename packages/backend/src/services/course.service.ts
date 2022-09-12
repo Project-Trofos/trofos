@@ -113,13 +113,15 @@ async function getProjects(id: string): Promise<Project[]> {
 
 
 // Add project and link to course, create course if necessary
-async function addProjectAndCourse(courseId: string, courseName: string, projectName: string, projectKey?: string, projectIsPublic?: boolean, projectDesc?: string): Promise<Project> {
+async function addProjectAndCourse(courseId: string, courseName: string, 
+  projectName: string, projectKey?: string, isCoursePublic?: boolean, isProjectPublic?: boolean, projectDesc?: string): Promise<Project> {
 
   const result = prisma.project.create({
     data: {
       pname: projectName,
       pkey: projectKey,
       description: projectDesc,
+      public: isCoursePublic,
       course: {
         connectOrCreate: {
           where: {
@@ -128,6 +130,7 @@ async function addProjectAndCourse(courseId: string, courseName: string, project
           create: {
             id: courseId,
             cname: courseName,
+            public: isProjectPublic,
           },
         },
       },
