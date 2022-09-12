@@ -11,6 +11,9 @@
     "start-dev": "npm run build && dotenv -e .env.development.local -- node dist/index.js",
     "test": "jest --colors --detectOpenHandles --coverage"
   },
+  "prisma" : {
+    "seed" : "ts-node prisma/seed.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
