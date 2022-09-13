@@ -3,22 +3,22 @@ import { Card, Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
-import { Project, useRemoveProjectMutation } from '../../api/project';
+import { Course, useRemoveCourseMutation } from '../../api/course';
 
 
 const { Meta } = Card;
 
-type ProjectCardProps = {
-  project: Project;
+type CourseCardProps = {
+  course: Course;
 };
 
-export default function ProjectCard(props: ProjectCardProps): JSX.Element {
-  const { project } = props;
-  const [removeProject] = useRemoveProjectMutation();
+export default function CourseCard(props: CourseCardProps): JSX.Element {
+  const { course } = props;
+  const [removeCourse] = useRemoveCourseMutation();
 
   const menu = (
     <Menu
-      onClick={() => removeProject({ id: project.id })}
+      onClick={() => removeCourse({ id: course.id })}
       items={[
         {
           label: 'delete',
@@ -39,8 +39,8 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
       ]}
     >
       <Meta
-        title={<Link to={`/project/${project.id}`}>{project.pname}</Link>}
-        description={project.description ?? 'No description'}
+        title={<Link to={`/course/${course.id}`}>{course.cname}</Link>}
+        description={course.id ?? 'No id'}
       />
     </Card>
   );

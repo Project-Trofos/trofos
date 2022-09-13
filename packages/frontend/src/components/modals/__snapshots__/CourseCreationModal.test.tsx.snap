@@ -9,7 +9,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
       type="button"
     >
       <span>
-        Create Project
+        Create Course
       </span>
     </button>
     <div
@@ -74,7 +74,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 class="ant-modal-title"
                 id="test-id"
               >
-                Create Project
+                Create Course
               </div>
             </div>
             <div
@@ -85,9 +85,11 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 class="ant-form ant-form-vertical"
                 id="multi-step-modal-form"
               >
-                <p>
-                  You can change these details anytime in your project settings.
-                </p>
+                <div
+                  class="ant-typography"
+                >
+                  Please input the details for your course.
+                </div>
                 <div
                   class="ant-form-item"
                 >
@@ -99,7 +101,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                     >
                       <label
                         class="ant-form-item-required"
-                        for="multi-step-modal-form_projectName"
+                        for="multi-step-modal-form_courseName"
                         title="Name"
                       >
                         Name
@@ -116,7 +118,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="multi-step-modal-form_projectName"
+                            id="multi-step-modal-form_courseName"
                             type="text"
                             value=""
                           />
@@ -136,10 +138,10 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                     >
                       <label
                         class=""
-                        for="multi-step-modal-form_projectKey"
-                        title="Key"
+                        for="multi-step-modal-form_courseCode"
+                        title="Code"
                       >
-                        Key
+                        Code
                         <span
                           aria-label="info-circle"
                           class="anticon anticon-info-circle ant-form-item-tooltip"
@@ -176,7 +178,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="multi-step-modal-form_projectKey"
+                            id="multi-step-modal-form_courseCode"
                             type="text"
                             value=""
                           />
@@ -195,15 +197,16 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 type="button"
               >
                 <span>
-                  Cancel
+                  Back
                 </span>
               </button>
               <button
                 class="ant-btn ant-btn-primary"
+                form="multi-step-modal-form"
                 type="button"
               >
                 <span>
-                  Next
+                  Finish
                 </span>
               </button>
             </div>

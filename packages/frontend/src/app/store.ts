@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { trofosApiSlice } from '../api';
+import trofosApiSlice from '../api';
 
 const store = configureStore({
   reducer: {
