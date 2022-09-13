@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test project creation modal renders modal with correct fields 1`] = `
+exports[`test button form modal modal should appear when button is pressed 1`] = `
 <body>
   <div>
     <button
@@ -9,7 +9,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
       type="button"
     >
       <span>
-        Create Project
+        button-name
       </span>
     </button>
     <div
@@ -74,7 +74,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 class="ant-modal-title"
                 id="test-id"
               >
-                Create Project
+                title
               </div>
             </div>
             <div
@@ -85,46 +85,6 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 class="ant-form ant-form-vertical"
                 id="multi-step-modal-form"
               >
-                <p>
-                  You can change these details anytime in your project settings.
-                </p>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="multi-step-modal-form_projectName"
-                        title="Name"
-                      >
-                        Name
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-col-20 ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <input
-                            class="ant-input"
-                            id="multi-step-modal-form_projectName"
-                            type="text"
-                            value=""
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div
                   class="ant-form-item"
                 >
@@ -136,33 +96,10 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                     >
                       <label
                         class=""
-                        for="multi-step-modal-form_projectKey"
-                        title="Key"
+                        for="multi-step-modal-form_attrName"
+                        title="label"
                       >
-                        Key
-                        <span
-                          aria-label="info-circle"
-                          class="anticon anticon-info-circle ant-form-item-tooltip"
-                          role="img"
-                          title=""
-                        >
-                          <svg
-                            aria-hidden="true"
-                            data-icon="info-circle"
-                            fill="currentColor"
-                            focusable="false"
-                            height="1em"
-                            viewBox="64 64 896 896"
-                            width="1em"
-                          >
-                            <path
-                              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
-                            />
-                            <path
-                              d="M464 336a48 48 0 1096 0 48 48 0 10-96 0zm72 112h-48c-4.4 0-8 3.6-8 8v272c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V456c0-4.4-3.6-8-8-8z"
-                            />
-                          </svg>
-                        </span>
+                        label
                       </label>
                     </div>
                     <div
@@ -176,7 +113,7 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="multi-step-modal-form_projectKey"
+                            id="multi-step-modal-form_attrName"
                             type="text"
                             value=""
                           />
@@ -195,15 +132,16 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
                 type="button"
               >
                 <span>
-                  Cancel
+                  Back
                 </span>
               </button>
               <button
                 class="ant-btn ant-btn-primary"
+                form="multi-step-modal-form"
                 type="button"
               >
                 <span>
-                  Next
+                  Finish
                 </span>
               </button>
             </div>
@@ -215,6 +153,30 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
           />
         </div>
       </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`test button form modal render modal correctly 1`] = `
+<body>
+  <div>
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        button-name
+      </span>
+    </button>
+    <div
+      class="ant-modal-root"
+    >
+      <div
+        class="ant-modal-wrap"
+        style="display: none;"
+        tabindex="-1"
+      />
     </div>
   </div>
 </body>

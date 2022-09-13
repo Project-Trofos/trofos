@@ -9,6 +9,9 @@ router.get('/', course.getAll);
 // Create course
 router.post('/', course.create);
 
+// Create project and attach or create course
+router.post('/project', course.addProjectAndCourse);
+
 // Get course by courseId
 router.get('/:courseId', course.get);
 

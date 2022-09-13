@@ -17,6 +17,7 @@ const spies = {
   getProjects: jest.spyOn(course, 'getProjects'),
   addProject: jest.spyOn(course, 'addProject'),
   removeProject: jest.spyOn(course, 'removeProject'),
+  addProjectAndCourse: jest.spyOn(course, 'addProjectAndCourse'),
 };
 
 describe('course controller tests', () => {
@@ -39,14 +40,14 @@ describe('course controller tests', () => {
 
   // Mock data for users on courses
   const usersCourseData: UsersOnCourses[] = [
-    { course_id: 1, user_id: 1, created_at: new Date(Date.now()) },
+    { course_id: '1', user_id: 1, created_at: new Date(Date.now()) },
   ];
 
   // Mock data for courses
   const coursesData: Course[] = [
-    { id: 1, cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
-    { id: 2, cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: false },
-    { id: 3, cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
+    { id: '1', cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
+    { id: '2', cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: false },
+    { id: '3', cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
   ];
 
   describe('getAll', () => {
@@ -359,5 +360,41 @@ describe('course controller tests', () => {
   });
 
 
+  describe('addProjectAndCourse', () => {
+    test('should return added course', async () => {
+      spies.addProjectAndCourse.mockResolvedValueOnce(projectsData[0]);
+      const mockReq = createRequest({
+        params: {
+        },
+        body: {
+          courseId: coursesData[0].id.toString(),
+          courseName: coursesData[0].cname.toString(),
+          projectName: projectsData[0].pname.toString(),
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.addProjectAndCourse(mockReq, mockRes);
+
+      expect(spies.addProjectAndCourse).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
+    });
+
+    test('should return error if no courseId given', async () => {
+      const mockReq = createRequest({
+        params: {
+        },
+        body: {
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.addProjectAndCourse(mockReq, mockRes);
+
+      expect(spies.addProjectAndCourse).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
 
 });

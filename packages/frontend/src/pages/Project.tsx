@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Tabs, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useGetAllProjectsQuery, useRemoveProjectMutation } from '../api';
+import { useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
+import { useGetAllCoursesQuery } from '../api/course';
 
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
@@ -19,6 +20,8 @@ export default function ProjectPage(): JSX.Element {
   const navigate = useNavigate();
 
   const { data: projects } = useGetAllProjectsQuery();
+  const { data: courses } = useGetAllCoursesQuery();
+
   const [removeProject] = useRemoveProjectMutation();
 
   const project = useMemo(() => {
@@ -28,19 +31,31 @@ export default function ProjectPage(): JSX.Element {
     return projects.filter(p => p.id.toString() === params.projectId)[0];
   }, [projects, params.projectId]);
 
+  const handleMenuClick = useCallback((key: string) => {
+    if (key === '1' && project) {
+      removeProject({ id: project.id }).then(() => navigate('/projects'));
+    } else if (key === '2') {
+      // TODO: add/detach from course modal
+    }
+  }, [project, navigate, removeProject]);
+
   if (!params.projectId || !project) {
     return (
     <Typography.Title>This project does not exist!</Typography.Title>
     );
   }
-  
+
   const projectMenu = (
     <Menu
-      onClick={() => removeProject({ id: project.id }).then(() => navigate('/projects'))}
+      onClick={(e) => handleMenuClick(e.key)}
       items={[
         {
           key: '1',
           label: 'Delete project',
+        },
+        {
+          key: '2',
+          label: project.course_id ? 'Detach from course' : 'Attach to course',
         },
       ]}
     />
@@ -57,7 +72,7 @@ export default function ProjectPage(): JSX.Element {
       <PageHeader
         title={project.pname}
         className="site-page-header"
-        subTitle={project.description}
+        subTitle={(courses?.filter((c) => c.id === project.course_id)[0])?.cname}
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
