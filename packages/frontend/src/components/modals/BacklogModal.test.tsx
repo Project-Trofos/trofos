@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import BacklogModal from './BacklogModal';
 
 describe('BacklogModal tests', () => {
-  test('renders new backlog modal with correct fields', () => {
+  it('renders new backlog modal with correct fields', () => {
     const mockUpdateBacklogs = jest.fn();
     const { baseElement } = render(<BacklogModal updateBacklogs={mockUpdateBacklogs} />);
   

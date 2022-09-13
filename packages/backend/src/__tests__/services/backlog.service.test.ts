@@ -4,7 +4,7 @@ import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../services/types/backlog.service.types';
 
 describe('backlog.service tests',  ()=> {
-  describe('backlog.service create backlog', () => {
+  describe('create backlog', () => {
     it('should create and return backlog when called with valid fields', async () => {
       const mockReturnedBacklog: Backlog = {
         id: 1,
@@ -64,7 +64,7 @@ describe('backlog.service tests',  ()=> {
     });
   });
   
-  describe('backlog.service get backlogs', () => {
+  describe('get backlogs', () => {
     it('should return backlogs when called with valid project id', async () => {
       const mockReturnedBacklogs: Backlog[] = [
         {
