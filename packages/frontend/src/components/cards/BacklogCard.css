@@ -1,0 +1,14 @@
+li.backlog-card-container {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 12px;
+}
+
+.backlog-card-container div {
+    margin-right: 8px;
+}
+
+.backlog-card-summary {
+    display: flex;
+    flex: 1 1 0%;
+}

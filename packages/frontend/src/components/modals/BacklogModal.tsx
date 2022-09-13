@@ -3,11 +3,12 @@ import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import './BacklogModal.css';
 import { useParams } from 'react-router-dom';
+import type { Backlog } from '../../api/backlog';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-function BacklogModal(): JSX.Element {
+function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
   const TYPES: BacklogSelect[] = [
@@ -22,10 +23,10 @@ function BacklogModal(): JSX.Element {
     { id: 'low', name: 'Low' },
     { id: 'very_low', name: 'Very Low' },
   ];
-  const SPRINTS: BacklogSelect[] = [
-    { id: '1', name: 'Sprint 1' },
-    { id: '2', name: 'Sprint 2' },
-    { id: '3', name: 'Sprint 3' },
+  const SPRINTS = [
+    { id: 1, name: 'Sprint 1' },
+    { id: 2, name: 'Sprint 2' },
+    { id: 3, name: 'Sprint 3' },
   ];
   const USERS = [
     { id: 1, name: 'User1' },
@@ -71,9 +72,11 @@ function BacklogModal(): JSX.Element {
         console.error('Something went wrong. Please try again');
       }
 
+      const backlog = await res.json();
       setIsModalVisible(false);
       form.resetFields();
       console.log('Success');
+      updateBacklogs(backlog);
     } catch (e) {
       console.error(e);
     } finally {
@@ -172,7 +175,7 @@ function BacklogModal(): JSX.Element {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button className='new-backlog-btn' type="primary" onClick={showModal}>
         New Backlog
       </Button>
       <Modal
@@ -189,13 +192,17 @@ function BacklogModal(): JSX.Element {
   );
 }
 
-interface BacklogFormFields extends FormData {
-  projectId: number;
-}
+type BacklogModalProps = {
+  updateBacklogs(backlog: Backlog): void;
+};
 
 type BacklogSelect = {
   id: string;
   name: string;
 };
+
+interface BacklogFormFields extends FormData {
+  projectId: number;
+}
 
 export default BacklogModal;
