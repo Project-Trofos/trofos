@@ -1,9 +1,10 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '../models/prismaClient';
 import crypto from 'crypto';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
-async function createUserSession(userEmail: string, prisma: PrismaClient) : Promise<string> {
+async function createUserSession(userEmail: string) : Promise<string> {
 
   let isSessionCreated = false;
   let sessionId = crypto.randomBytes(16).toString('base64');

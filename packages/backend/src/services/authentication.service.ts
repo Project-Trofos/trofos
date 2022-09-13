@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../models/prismaClient';
 import bcrypt from 'bcrypt';
 
 
-async function validateUser(userEmail: string, userPassword: string, prisma: PrismaClient) : Promise<boolean> {
+async function validateUser(userEmail: string, userPassword: string) : Promise<boolean> {
   const userLoginInformation = await prisma.user.findUnique({
     where: {
       user_email : userEmail,
