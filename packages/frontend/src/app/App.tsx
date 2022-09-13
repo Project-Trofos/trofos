@@ -12,7 +12,7 @@ import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklog from '../pages/ProjectBacklog';
 import ProjectKanban from '../pages/ProjectKanban';
 
-import './App.css';
+import './App.less';
 
 function App() {
   return (
