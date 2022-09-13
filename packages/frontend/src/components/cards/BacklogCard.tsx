@@ -6,8 +6,8 @@ function BacklogCard(props: BacklogCardProps): JSX.Element {
   const { backlog } = props;
   return (
     <>
-			<div>{backlog.id}</div>
-      <div className='backlog-card-summary'>{backlog.summary}</div>
+      <div>{backlog.id}</div>
+      <div className="backlog-card-summary">{backlog.summary}</div>
       <div>{backlog.type}</div>
       <div>{backlog.priority}</div>
       <div>{backlog.assignee_id}</div>
