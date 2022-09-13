@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BacklogCard test renders backlog card with correct details 1`] = `
+<body>
+  <div>
+    <div>
+      111
+    </div>
+    <div
+      class="backlog-card-summary"
+    >
+      A Test Summary
+    </div>
+    <div>
+      story
+    </div>
+    <div>
+      very_high
+    </div>
+    <div>
+      222
+    </div>
+    <div>
+      3
+    </div>
+  </div>
+</body>
+`;
