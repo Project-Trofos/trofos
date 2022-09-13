@@ -55,7 +55,7 @@ async function getBacklogs(projectId : number) : Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
-    }
+    },
   });
 
   return backlogs;

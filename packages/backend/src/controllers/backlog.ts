@@ -23,7 +23,7 @@ const listBacklogs = async (req : express.Request, res: express.Response) => {
   } catch (error: any) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
-}
+};
 
 export default {
   newBacklog,
