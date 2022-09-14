@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Typography } from 'antd';
+import { Form, Input, Typography, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddCourseMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
@@ -16,7 +16,11 @@ export default function CourseCreationModal() {
   const [form] = Form.useForm();
 
   const onFinish = (values: { courseCode: string; courseName: string }) => {
-    addCourse({ id: values.courseCode, cname: values.courseName });
+    addCourse({ id: values.courseCode, cname: values.courseName }).then(() => {
+      message.success(`Course ${values.courseName} has been created!`);
+    }).catch(err => {
+      message.error(err);
+    });
   };
 
   return (

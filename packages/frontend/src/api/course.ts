@@ -1,4 +1,5 @@
 import trofosApiSlice from '.';
+import { PickRename } from '../helpers/types';
 import { Project } from './project';
 
 export type Course = {
@@ -30,8 +31,28 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: ['Course'],
     }),
     removeCourse: builder.mutation<Course, Pick<Course, 'id'>>({
-      query: (course) => ({
-        url: `course/${course.id}`,
+      query: (param) => ({
+        url: `course/${param.id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Course', 'Project'],
+    }),
+    addProjectToCourse: builder.mutation<Course, PickRename<Course, 'id', 'courseId'> & PickRename<Project, 'id', 'projectId'>>({
+      query: (param) => ({
+        url: `course/${param.courseId}/project`,
+        body: {
+          projectId: param.projectId,
+        },
+        method: 'POST',
+      }),
+      invalidatesTags: ['Course', 'Project'],
+    }),
+    removeProjectFromCourse: builder.mutation<Course, PickRename<Course, 'id', 'courseId'> & PickRename<Project, 'id', 'projectId'>>({
+      query: (param) => ({
+        url: `course/${param.courseId}/project`,
+        body: {
+          projectId: param.projectId,
+        },
         method: 'DELETE',
       }),
       invalidatesTags: ['Course', 'Project'],
@@ -56,4 +77,11 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAddCourseMutation, useGetAllCoursesQuery, useRemoveCourseMutation, useAddProjectAndCourseMutation } = extendedApi;
+export const { 
+  useAddCourseMutation, 
+  useGetAllCoursesQuery, 
+  useRemoveCourseMutation, 
+  useAddProjectAndCourseMutation, 
+  useRemoveProjectFromCourseMutation, 
+  useAddProjectToCourseMutation, 
+} = extendedApi;

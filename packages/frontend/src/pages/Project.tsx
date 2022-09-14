@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Tabs, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
-import { useGetAllCoursesQuery } from '../api/course';
+import { useGetAllCoursesQuery, useRemoveProjectFromCourseMutation } from '../api/course';
+import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
+import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
@@ -14,7 +16,6 @@ function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }
   );
 }
 
-
 export default function ProjectPage(): JSX.Element {
   const params = useParams();
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function ProjectPage(): JSX.Element {
   const { data: courses } = useGetAllCoursesQuery();
 
   const [removeProject] = useRemoveProjectMutation();
+  const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
   const project = useMemo(() => {
     if (!projects || projects.length === 0 || !params.projectId) {
@@ -31,13 +33,21 @@ export default function ProjectPage(): JSX.Element {
     return projects.filter(p => p.id.toString() === params.projectId)[0];
   }, [projects, params.projectId]);
 
+
+  const course = useMemo(() => {
+    if (!project || !project.course_id || !courses) {
+      return undefined;
+    }
+    return courses.filter((c) => c.id === project.course_id)[0];
+  }, [project, courses]);
+
   const handleMenuClick = useCallback((key: string) => {
     if (key === '1' && project) {
-      removeProject({ id: project.id }).then(() => navigate('/projects'));
-    } else if (key === '2') {
-      // TODO: add/detach from course modal
+      confirmDeleteProject(() => removeProject({ id: project.id }).then(() => navigate('/projects')).catch(message.error));
+    } else if (key === '2' && project) {
+      confirmDetachProject(() => removeProjectFromCourse({ courseId: project.course_id ?? '', projectId: project.id }).catch(message.error));
     }
-  }, [project, navigate, removeProject]);
+  }, [project, navigate, removeProject, removeProjectFromCourse]);
 
   if (!params.projectId || !project) {
     return (
@@ -52,10 +62,6 @@ export default function ProjectPage(): JSX.Element {
         {
           key: '1',
           label: 'Delete project',
-        },
-        {
-          key: '2',
-          label: project.course_id ? 'Detach from course' : 'Attach to course',
         },
       ]}
     />
@@ -72,8 +78,35 @@ export default function ProjectPage(): JSX.Element {
       <PageHeader
         title={project.pname}
         className="site-page-header"
-        subTitle={(courses?.filter((c) => c.id === project.course_id)[0])?.cname}
-        extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
+        subTitle={
+          course ?
+          <>
+            <Tag>
+              {course?.id}
+            </Tag>
+            <span>
+              {course?.cname}
+            </span>
+          </>
+            :
+          <Tag>
+            Independent Project
+          </Tag>
+        }
+        extra={[
+          project.course_id ? 
+          <Button
+            key="detach"
+            onClick={() => confirmDetachProject(
+              () => removeProjectFromCourse({ courseId: project.course_id ?? '', projectId: project.id }),
+            )}
+          >
+            Detach from course
+          </Button>
+            :
+          <ProjectAttachModal project={project} key="attach" />,
+          <DropdownMenu projectMenu={projectMenu} key="more" />,
+        ]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={

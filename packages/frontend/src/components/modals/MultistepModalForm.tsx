@@ -71,6 +71,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
             Next
           </Button>,
         ] : [
+          formSteps.length === 1 ? undefined :
           <Button key="prev" onClick={() => setStep(step - 1)}>
             Back
           </Button>,

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
 import Menu from 'antd/lib/menu';
 import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 import './MainLayout.css';
 import { useGetAllProjectsQuery } from '../api/project';
@@ -31,29 +31,31 @@ export default function MainLayout() {
   const { data: projects } = useGetAllProjectsQuery();
   const { data: courses } = useGetAllCoursesQuery();
 
+  const location = useLocation();
+
   const USERNAME = 'username';
 
   const menuItems: MenuItem[] = useMemo(
     () => [
-      getItem(<Link to="/">Home</Link>, 'sidebar-home', <HomeOutlined />),
+      getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
       getItem(
         <Link to="/courses">Courses</Link>,
-        'sidebar-course',
+        '/courses',
         <BookOutlined />,
         (courses === undefined || courses.length === 0)
           ? undefined
           : courses.map((course) =>
-            getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `course-${course.id}`),
+            getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
           ),
       ),
       getItem(
         <Link to="/projects">Project</Link>,
-        'sidebar-project',
+        '/projects',
         <ProjectOutlined />,
         (projects === undefined || projects.length === 0)
           ? undefined
           : projects.map((project) =>
-            getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `project-${project.id}`),
+            getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
           ),
       ),
     ],
@@ -86,7 +88,7 @@ export default function MainLayout() {
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint="lg" collapsedWidth="0" className='main-layout-sider'>
         <div style={{ fontSize: '2rem', padding: '1rem', color: 'white' }}>Trofos</div>
-        <Menu mode="inline" defaultSelectedKeys={['1']} items={menuItems} />
+        <Menu mode="inline" selectedKeys={[location.pathname]} items={menuItems} />
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>

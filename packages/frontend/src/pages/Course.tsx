@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
-import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Tabs, Typography } from 'antd';
+import React, { useCallback, useMemo } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Space, Tabs, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useGetAllCoursesQuery, useRemoveCourseMutation } from '../api/course';
+import ProjectTable from '../components/tables/ProjectTable';
+import { confirmDeleteCourse } from '../components/modals/confirm';
+import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
@@ -12,7 +15,6 @@ function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) 
     </Dropdown>
   );
 }
-
 
 export default function CoursePage(): JSX.Element {
   const params = useParams();
@@ -28,15 +30,23 @@ export default function CoursePage(): JSX.Element {
     return courses.filter(p => p.id.toString() === params.courseId)[0];
   }, [courses, params.courseId]);
 
+  const handleMenuClick = useCallback((key: string) => {
+    if (key === '1' && course) {
+      confirmDeleteCourse(() => removeCourse({ id: course.id }).then(() => navigate('/courses')).catch(message.error));
+    }
+  }, [course, navigate, removeCourse]);
+
   if (!params.courseId || !course) {
     return (
-    <Typography.Title>This course does not exist!</Typography.Title>
+      <Space>
+        <Typography.Title>This course does not exist!</Typography.Title>
+      </Space>
     );
   }
   
   const courseMenu = (
     <Menu
-      onClick={() => removeCourse({ id: course.id }).then(() => navigate('/courses'))}
+      onClick={(e) => handleMenuClick(e.key)}
       items={[
         {
           key: '1',
@@ -52,21 +62,25 @@ export default function CoursePage(): JSX.Element {
       <Breadcrumb.Item>{course.cname}</Breadcrumb.Item>
     </Breadcrumb>
   );
+
   return (
     <>
       <PageHeader
         title={course.cname}
-        className="site-page-header"
-        subTitle={course.description}
-        extra={[<DropdownMenu courseMenu={courseMenu} key="more" />]}
+        subTitle={course.id}
+        extra={[
+          <ProjectCreationModal key="create-project" courseId={course.id} />,
+          <DropdownMenu key="more" courseMenu={courseMenu} />,
+        ]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
           <Tabs defaultActiveKey="1" />
         }
       />
-      <section>
-        <Outlet />
+      {/* TODO: make this responsive */}
+      <section style={{ margin: '2em' }}>
+        <ProjectTable courseId={course.id} />
       </section>
     </>
   );

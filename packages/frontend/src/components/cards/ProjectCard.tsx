@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Dropdown, Menu } from 'antd';
+import { Card, Dropdown, Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 import { Project, useRemoveProjectMutation } from '../../api/project';
+import { confirmDeleteProject } from '../modals/confirm';
 
 
 const { Meta } = Card;
@@ -18,7 +19,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
 
   const menu = (
     <Menu
-      onClick={() => removeProject({ id: project.id })}
+      onClick={() => confirmDeleteProject(() => removeProject({ id: project.id }).catch(message.error))}
       items={[
         {
           label: 'delete',

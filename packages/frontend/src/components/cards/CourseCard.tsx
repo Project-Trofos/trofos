@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Dropdown, Menu } from 'antd';
+import { Card, Dropdown, Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 import { Course, useRemoveCourseMutation } from '../../api/course';
+import { confirmDeleteCourse } from '../modals/confirm';
 
 
 const { Meta } = Card;
@@ -18,7 +19,7 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
 
   const menu = (
     <Menu
-      onClick={() => removeCourse({ id: course.id })}
+      onClick={() => confirmDeleteCourse(() => removeCourse({ id: course.id }).catch(message.error))}
       items={[
         {
           label: 'delete',
