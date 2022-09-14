@@ -1,21 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Button, Form, Input } from 'antd';
 import './Login.css';
+import { useLoginUserMutation } from '../api';
+import { UserLoginInfo } from '../api/user';
 
 export default function LoginPage(): JSX.Element {
 
+  const [loginUser] = useLoginUserMutation();
+
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
-    axios.post('http://localhost:3001/login', values, { withCredentials: true })
-      .then((res) => {
-        navigate('/projects');
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  const onFinish = async (userLoginInfo: UserLoginInfo) => {
+    try {
+      await loginUser(userLoginInfo).unwrap();
+      navigate('/projects');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {

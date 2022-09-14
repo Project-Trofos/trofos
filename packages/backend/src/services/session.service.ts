@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, UserSession } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import crypto from 'crypto';
 
@@ -36,6 +36,25 @@ async function createUserSession(userEmail: string) : Promise<string> {
   return sessionId;
 }
 
+async function deleteUserSession(sessionId: string) {
+  await prisma.userSession.delete({
+    where : {
+      session_id: sessionId
+    }
+  })
+}
+
+async function getUserSession(sessionId: string) : Promise<Partial<UserSession>> {
+  const sessionInfo = await prisma.userSession.findFirstOrThrow({
+    where: {
+      session_id: sessionId
+    },
+  })
+  return sessionInfo
+}
+
 export default {
   createUserSession,
+  deleteUserSession,
+  getUserSession
 };
