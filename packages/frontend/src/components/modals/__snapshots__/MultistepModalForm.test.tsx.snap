@@ -128,14 +128,6 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn ant-btn-default"
-                type="button"
-              >
-                <span>
-                  Back
-                </span>
-              </button>
-              <button
                 class="ant-btn ant-btn-primary"
                 form="multi-step-modal-form"
                 type="button"

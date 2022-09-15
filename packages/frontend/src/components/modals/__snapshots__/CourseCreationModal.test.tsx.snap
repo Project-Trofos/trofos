@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test project creation modal renders modal with correct fields 1`] = `
+exports[`test project creation modal should render modal with correct fields 1`] = `
 <body>
   <div>
     <button
@@ -192,14 +192,6 @@ exports[`test project creation modal renders modal with correct fields 1`] = `
             <div
               class="ant-modal-footer"
             >
-              <button
-                class="ant-btn ant-btn-default"
-                type="button"
-              >
-                <span>
-                  Back
-                </span>
-              </button>
               <button
                 class="ant-btn ant-btn-primary"
                 form="multi-step-modal-form"

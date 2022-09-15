@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test project creation modal renders modal with correct fields 1`] = `
+exports[`test ProjectCreationModal should render modal with correct fields 1`] = `
 <body>
   <div>
     <button

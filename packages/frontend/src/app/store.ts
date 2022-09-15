@@ -1,12 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import trofosApiSlice from '../api';
+import trofosApiSlice, { nusmodsApiSlice } from '../api';
 
 const store = configureStore({
   reducer: {
     [trofosApiSlice.reducerPath]: trofosApiSlice.reducer,
+    [nusmodsApiSlice.reducerPath]: nusmodsApiSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(trofosApiSlice.middleware),
+  middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware()
+      .concat(trofosApiSlice.middleware)
+      .concat(nusmodsApiSlice.middleware),
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

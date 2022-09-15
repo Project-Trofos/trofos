@@ -8,4 +8,12 @@ const trofosApiSlice = createApi({
   endpoints: () => ({}),
 });
 
+
+// Define a service using a base URL and expected endpoints
+export const nusmodsApiSlice = createApi({
+  reducerPath: 'nusmodsApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.nusmods.com/v2/2022-2023' }),
+  endpoints: () => ({}),
+});
+
 export default trofosApiSlice;
