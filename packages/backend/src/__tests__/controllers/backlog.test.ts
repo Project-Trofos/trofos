@@ -6,56 +6,127 @@ import backlogController from '../../controllers/backlog';
 import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../services/types/backlog.service.types';
 
-const backlogServiceCreateBacklogSpy = {
+const backlogServiceSpies = {
   createBacklog: jest.spyOn(backlogService, 'createBacklog'),
+  getBacklogs: jest.spyOn(backlogService, 'getBacklogs'),
 };
 
 describe('backlogController tests', () => {
-  const mockBacklog: BacklogFields = {
-    assigneeId: 1,
-    description: 'A test description here',
-    points: 1,
-    priority: 'very_high',
-    projectId: 123,
-    reporterId: 1,
-    summary: 'A Test Summary',
-    sprintId: 123,
-    type: 'story',
-  };
-
-  const expectedBacklog: Backlog = {
-    id: 1,
-    summary: 'A Test Summary',
-    type: 'story',
-    priority: 'very_high',
-    sprint_id: 123,
-    reporter_id: 1,
-    assignee_id: 1,
-    points: 1,
-    description: 'A test description here',
-    project_id: 123,
-  };
-
-  const mockRequest = createRequest({
-    body : mockBacklog,
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  const mockResponse = createResponse();
+  describe('create backlog', () => {
+    const mockBacklog: BacklogFields = {
+      assigneeId: 1,
+      description: 'A test description here',
+      points: 1,
+      priority: 'very_high',
+      projectId: 123,
+      reporterId: 1,
+      summary: 'A Test Summary',
+      sprintId: 123,
+      type: 'story',
+    };
 
-  test('newBacklog_validBacklog_ReturnsHTTP200AndBacklog', async () => {
-    backlogServiceCreateBacklogSpy.createBacklog.mockResolvedValueOnce(expectedBacklog);
+    const expectedBacklog: Backlog = {
+      id: 1,
+      summary: 'A Test Summary',
+      type: 'story',
+      priority: 'very_high',
+      sprint_id: 123,
+      reporter_id: 1,
+      assignee_id: 1,
+      points: 1,
+      description: 'A test description here',
+      project_id: 123,
+    };
 
-    await backlogController.newBacklog(mockRequest, mockResponse);
-    expect(backlogServiceCreateBacklogSpy.createBacklog).toHaveBeenCalledWith(mockBacklog);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
+    const mockRequest = createRequest({
+      body: mockBacklog,
+    });
+
+    const mockResponse = createResponse();
+
+    it('should return new backlog and status 200 when new backlog is successfully created', async () => {
+      backlogServiceSpies.createBacklog.mockResolvedValueOnce(expectedBacklog);
+
+      await backlogController.newBacklog(mockRequest, mockResponse);
+      expect(backlogServiceSpies.createBacklog).toHaveBeenCalledWith(mockBacklog);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
+    });
+
+    it('should throw an error and return status 500 when new backlog failed to be created', async () => {
+      backlogServiceSpies.createBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+
+      await backlogController.newBacklog(mockRequest, mockResponse);
+      expect(backlogServiceSpies.createBacklog).toHaveBeenCalledWith(mockBacklog);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
   });
 
-  test('newBacklog_createBacklogThrowsError_ReturnsHTTP500', async () => {
-    backlogServiceCreateBacklogSpy.createBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+  describe('list backlogs', () => {
+    const mockProjectId = {
+      projectId: 123,
+    };
 
-    await backlogController.newBacklog(mockRequest, mockResponse);
-    expect(backlogServiceCreateBacklogSpy.createBacklog).toHaveBeenCalledWith(mockBacklog);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    const mockRequest = createRequest({
+      params: mockProjectId,
+    });
+
+    const mockResponse = createResponse();
+
+    it('should return array of backlogs and status 200 when called with valid projectId', async () => {
+      const expectedBacklogs: Backlog[] = [
+        {
+          id: 1,
+          summary: 'A Test Summary',
+          type: 'story',
+          priority: 'very_high',
+          sprint_id: 123,
+          reporter_id: 1,
+          assignee_id: 1,
+          points: 1,
+          description: 'A test description here',
+          project_id: 123,
+        },
+        {
+          id: 2,
+          summary: 'Another Test Summary',
+          type: 'task',
+          priority: 'high',
+          sprint_id: 123,
+          reporter_id: 1,
+          assignee_id: 2,
+          points: 1,
+          description: 'Another test description here',
+          project_id: 123,
+        },
+      ];
+      backlogServiceSpies.getBacklogs.mockResolvedValueOnce(expectedBacklogs);
+
+      await backlogController.listBacklogs(mockRequest, mockResponse);
+      expect(backlogServiceSpies.getBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
+    });
+
+    it('should throw an error and return status 500 when projectId is missing', async () => {
+      const mockMissingProjectIdRequest = createRequest({
+        body: {},
+      });
+      await backlogController.listBacklogs(mockMissingProjectIdRequest, mockResponse);
+      expect(backlogServiceSpies.getBacklogs).not.toHaveBeenCalled();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error and return status 500 when backlogs failed to be retrieved', async () => {
+      backlogServiceSpies.getBacklogs.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+
+      await backlogController.listBacklogs(mockRequest, mockResponse);
+      expect(backlogServiceSpies.getBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
   });
 });
