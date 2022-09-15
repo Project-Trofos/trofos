@@ -2,12 +2,14 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 async function createUserSeed(prisma: PrismaClient) {
+  const userId = 1;
   const userEmail = 'testUser@test.com';
   const userPassword = 'testPassword';
-  const saltRounds = 10; //Default salt rounds in bcrypt documentation
+  const saltRounds = 10; // Default salt rounds in bcrypt documentation
   const userPasswordHash = bcrypt.hashSync(userPassword, saltRounds);
   const user = await prisma.user.create({
-    data: {
+    data : {
+      user_id: userId,
       user_email: userEmail,
       user_password_hash: userPasswordHash,
     },
