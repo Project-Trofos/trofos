@@ -51,6 +51,17 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
   return backlog;
 }
 
+async function getBacklogs(projectId : number) : Promise<Backlog[]> {
+  const backlogs = await prisma.backlog.findMany({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return backlogs;
+}
+
 export default {
   createBacklog,
+  getBacklogs,
 };

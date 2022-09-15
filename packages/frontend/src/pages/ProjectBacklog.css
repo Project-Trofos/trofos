@@ -1,0 +1,13 @@
+.project-backlog-container {
+    margin: 16px 8px;
+}
+
+.project-backlog-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.7em;
+}
+
+.project-backlog-title {
+    margin-bottom: 0.2em !important;
+}
