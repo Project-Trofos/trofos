@@ -12,7 +12,7 @@ const backlogServiceSpies = {
 };
 
 describe('backlogController tests', () => {
-  afterEach(() => {    
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -28,7 +28,7 @@ describe('backlogController tests', () => {
       sprintId: 123,
       type: 'story',
     };
-  
+
     const expectedBacklog: Backlog = {
       id: 1,
       summary: 'A Test Summary',
@@ -41,42 +41,42 @@ describe('backlogController tests', () => {
       description: 'A test description here',
       project_id: 123,
     };
-  
+
     const mockRequest = createRequest({
-      body : mockBacklog,
+      body: mockBacklog,
     });
-  
+
     const mockResponse = createResponse();
-  
+
     it('should return new backlog and status 200 when new backlog is successfully created', async () => {
       backlogServiceSpies.createBacklog.mockResolvedValueOnce(expectedBacklog);
-  
+
       await backlogController.newBacklog(mockRequest, mockResponse);
       expect(backlogServiceSpies.createBacklog).toHaveBeenCalledWith(mockBacklog);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
-  
+
     it('should throw an error and return status 500 when new backlog failed to be created', async () => {
       backlogServiceSpies.createBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
-  
+
       await backlogController.newBacklog(mockRequest, mockResponse);
       expect(backlogServiceSpies.createBacklog).toHaveBeenCalledWith(mockBacklog);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
-  
+
   describe('list backlogs', () => {
     const mockProjectId = {
       projectId: 123,
     };
-  
+
     const mockRequest = createRequest({
-      body : mockProjectId,
+      params: mockProjectId,
     });
-  
+
     const mockResponse = createResponse();
-  
+
     it('should return array of backlogs and status 200 when called with valid projectId', async () => {
       const expectedBacklogs: Backlog[] = [
         {
@@ -105,25 +105,25 @@ describe('backlogController tests', () => {
         },
       ];
       backlogServiceSpies.getBacklogs.mockResolvedValueOnce(expectedBacklogs);
-  
+
       await backlogController.listBacklogs(mockRequest, mockResponse);
       expect(backlogServiceSpies.getBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
     });
-  
+
     it('should throw an error and return status 500 when projectId is missing', async () => {
       const mockMissingProjectIdRequest = createRequest({
-        body : {},
+        body: {},
       });
       await backlogController.listBacklogs(mockMissingProjectIdRequest, mockResponse);
       expect(backlogServiceSpies.getBacklogs).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
-  
+
     it('should throw an error and return status 500 when backlogs failed to be retrieved', async () => {
       backlogServiceSpies.getBacklogs.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
-  
+
       await backlogController.listBacklogs(mockRequest, mockResponse);
       expect(backlogServiceSpies.getBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);

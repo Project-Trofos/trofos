@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const trofosApiSlice = createApi({
   reducerPath: 'trofosApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
-  tagTypes: ['Project', 'Course'],
+  tagTypes: ['Project', 'Course', 'Backlog'],
   endpoints: () => ({}),
 });
 

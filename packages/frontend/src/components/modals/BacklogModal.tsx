@@ -3,12 +3,13 @@ import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import './BacklogModal.css';
 import { useParams } from 'react-router-dom';
-import type { Backlog } from '../../api/backlog';
+import { useAddBacklogMutation } from '../../api/backlog';
+import type { BacklogSelect, BacklogFormFields } from './types/BacklogModal.types';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
+function BacklogModal(): JSX.Element {
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
   const TYPES: BacklogSelect[] = [
@@ -23,18 +24,16 @@ function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
     { id: 'low', name: 'Low' },
     { id: 'very_low', name: 'Very Low' },
   ];
-  const SPRINTS = [
-    { id: 1, name: 'Sprint 1' },
-    { id: 2, name: 'Sprint 2' },
-    { id: 3, name: 'Sprint 3' },
-  ];
+  const SPRINTS = [{ id: 1, name: 'Sprint 1' }];
   const USERS = [
-    { id: 1, name: 'User1' },
-    { id: 2, name: 'User2' },
+    { id: 901, name: 'User1' },
+    { id: 902, name: 'User2' },
   ];
 
   const params = useParams();
   const [form] = Form.useForm();
+
+  const [addBacklog] = useAddBacklogMutation();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,23 +59,10 @@ function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
       projectId: Number(params.projectId),
     };
     try {
-      const res = await fetch('http://localhost:3001/backlog/newBacklog', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-
-      if (res.status !== 200) {
-        console.error('Something went wrong. Please try again');
-      }
-
-      const backlog = await res.json();
+      await addBacklog(payload).unwrap();
       setIsModalVisible(false);
       form.resetFields();
       console.log('Success');
-      updateBacklogs(backlog);
     } catch (e) {
       console.error(e);
     } finally {
@@ -175,7 +161,7 @@ function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
 
   return (
     <>
-      <Button className='new-backlog-btn' type="primary" onClick={showModal}>
+      <Button className="new-backlog-btn" type="primary" onClick={showModal}>
         New Backlog
       </Button>
       <Modal
@@ -190,19 +176,6 @@ function BacklogModal({ updateBacklogs }: BacklogModalProps): JSX.Element {
       </Modal>
     </>
   );
-}
-
-type BacklogModalProps = {
-  updateBacklogs(backlog: Backlog): void;
-};
-
-type BacklogSelect = {
-  id: string;
-  name: string;
-};
-
-interface BacklogFormFields extends FormData {
-  projectId: number;
 }
 
 export default BacklogModal;
