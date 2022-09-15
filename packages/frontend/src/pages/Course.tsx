@@ -6,6 +6,7 @@ import { useGetAllCoursesQuery, useRemoveCourseMutation } from '../api/course';
 import ProjectTable from '../components/tables/ProjectTable';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
+import { useGetAllProjectsQuery } from '../api/project';
 
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
@@ -21,6 +22,7 @@ export default function CoursePage(): JSX.Element {
   const navigate = useNavigate();
 
   const { data: courses } = useGetAllCoursesQuery();
+  const { data: projects, isLoading } = useGetAllProjectsQuery();
   const [removeCourse] = useRemoveCourseMutation();
 
   const course = useMemo(() => {
@@ -29,6 +31,13 @@ export default function CoursePage(): JSX.Element {
     }
     return courses.filter(p => p.id.toString() === params.courseId)[0];
   }, [courses, params.courseId]);
+
+  const filteredProjects = useMemo(() => {
+    if (!course || !projects) {
+      return [];
+    }
+    return projects.filter(p => p.course_id === course.id);
+  }, [course, projects]);
 
   const handleMenuClick = useCallback((key: string) => {
     if (key === '1' && course) {
@@ -80,7 +89,7 @@ export default function CoursePage(): JSX.Element {
       />
       {/* TODO: make this responsive */}
       <section style={{ margin: '2em' }}>
-        <ProjectTable courseId={course.id} />
+        <ProjectTable projects={filteredProjects} isLoading={isLoading} />
       </section>
     </>
   );

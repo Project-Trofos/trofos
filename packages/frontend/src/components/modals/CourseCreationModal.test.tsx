@@ -4,17 +4,27 @@ import { Provider } from 'react-redux';
 
 import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
-
+import server from '../../mocks/server';
 
 describe('test project creation modal', () => {
 
+  // Establish API mocking before all tests.
+  beforeAll(() => server.listen());
+
+  // Reset any request handlers that we may add during the tests,
+  // so they don't affect other tests.
+
+  afterEach(() => server.resetHandlers());
+
+  // Clean up after the tests are finished.
+  afterAll(() => server.close());
+  
   const setup = () => {
     const { baseElement, debug } = render(<Provider store={store}><CourseCreationModal /></Provider>);
     return { baseElement, debug };
   };
 
-
-  test('renders modal with correct fields', () => {
+  it('should render modal with correct fields', () => {
     const { baseElement } = setup();
 
     // Open modal
@@ -30,7 +40,7 @@ describe('test project creation modal', () => {
   });
 
 
-  test('course name should be required', async () => {
+  it('should be required course name', async () => {
     setup();
 
     const button = screen.getByText(/create course/i);
@@ -43,7 +53,7 @@ describe('test project creation modal', () => {
   });
 
 
-  test('modal should be submitted correctly if fields are typed in', async () => {
+  it('should submit correctly if fields are typed in', async () => {
     setup();
     const button = screen.getByText(/create course/i);
     fireEvent.click(button);
@@ -53,7 +63,7 @@ describe('test project creation modal', () => {
     fireEvent.change(input, { target: { value: 'name' } });
 
     fireEvent.click(finishButton);
-    
+
     // Modal is closed
     await waitFor(() => expect(screen.queryByText('Please input the details for your course.')).toBeNull());
   });

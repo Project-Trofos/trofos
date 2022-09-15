@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Form, Input, Segmented, Select, Typography, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddProjectMutation } from '../../api/project';
@@ -23,7 +23,7 @@ export default function ProjectCreationModal({ courseId } : { courseId?: string 
 
   const [form] = Form.useForm();
 
-  const onFinish = (data: { projectName?: string; projectKey?: string; courseName?: string; courseCode?: string }) => {
+  const onFinish = useCallback((data: { projectName?: string; projectKey?: string; courseName?: string; courseCode?: string }) => {
     const { courseCode, courseName, projectKey, projectName } = data;
     if (!projectName) {
       throw new Error('Invalid data!');
@@ -65,7 +65,7 @@ export default function ProjectCreationModal({ courseId } : { courseId?: string 
       });
     }
     
-  };
+  }, [addProject, addProjectAndCourse, courseId, courses, modules]);
 
   return (
     <MultistepFormModal 
@@ -118,28 +118,21 @@ function FormStep2(): JSX.Element {
   const [type, setType] = useState<string>('Independent');
 
   const courseOptions = useMemo(() => {
-    const results: JSX.Element[] = [];
+    const results: Set<{ id: string, name: string }> = new Set();
     if (modules) {
-      results.push(...modules.map(m => 
-        <Option key={`${m.moduleCode} ${m.title}`} value={m.moduleCode}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{m.moduleCode}</span>
-            <span>{m.title}</span>
-          </div>
-        </Option>,
-      ));
+      modules.forEach(m => results.add({ id: m.moduleCode, name: m.title }));
     }
     if (courses) {
-      results.push(...courses.map(c => 
-        <Option key={`${c.id} ${c.cname}`} value={c.id}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>{c.id}</span>
-            <span>{c.cname}</span>
-          </div>
-        </Option>,
-      ));
+      courses.forEach(c => results.add({ id: c.id, name: c.cname }));
     }
-    return results;
+    return Array.from(results).map(x => 
+      <Option key={`${x.id} ${x.name}`} value={x.id}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span>{x.id}</span>
+        <span>{x.name}</span>
+      </div>
+    </Option>,
+    );
   }, [courses, modules]);
 
   return (

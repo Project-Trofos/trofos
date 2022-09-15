@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Button, Card, message, Space, Table, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Project, useGetAllProjectsQuery, useRemoveProjectMutation } from '../../api/project';
+import { Project, useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject, confirmDetachProject } from '../modals/confirm';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';
 
@@ -10,26 +10,17 @@ import { useRemoveProjectFromCourseMutation } from '../../api/course';
 /**
  * Table for listing projects
  */
-export default function ProjectTable({ courseId }: { courseId: string }) {
+export default function ProjectTable({ projects, isLoading }: { projects: Project[], isLoading: boolean }) {
 
-  const { data: projects, isLoading } = useGetAllProjectsQuery();
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
-
-  const filteredProjects = useMemo(() => {
-    if (!projects) {
-      return [];
-    }
-    return projects.filter((p) => p.course_id === courseId);
-  }, [projects, courseId]);
-
 
   return (
     <Card>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <Typography style={{ fontSize: '2em' }}>Projects</Typography>
         <Table
-          dataSource={filteredProjects}
+          dataSource={projects}
           rowKey={(project) => project.id}
           loading={isLoading} 
           bordered
