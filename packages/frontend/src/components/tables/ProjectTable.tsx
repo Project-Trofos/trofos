@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { Button, Card, message, Space, Table, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { Project, useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject, confirmDetachProject } from '../modals/confirm';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';
+import { getErrorMessage } from '../../helpers/error';
 
 
 
@@ -14,6 +15,30 @@ export default function ProjectTable({ projects, isLoading }: { projects: Projec
 
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
+
+  const handleDeleteProject = useCallback((project: Project) => {
+    try {
+      confirmDeleteProject(async () => {
+        await removeProject({ id: project.id }).unwrap();
+      });
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [removeProject]);
+
+  const handleRemoveProjectFromCourse = useCallback(async (project: Project) => {
+    try {
+      if (!project.course_id) {
+        throw Error('Invalid project to be deleted!');
+      }
+
+      confirmDetachProject(async () => {
+        removeProjectFromCourse({ projectId: project.id, courseId: project.course_id ?? '' }).unwrap();
+      });
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [removeProjectFromCourse]);
 
   return (
     <Card>
@@ -34,11 +59,9 @@ export default function ProjectTable({ projects, isLoading }: { projects: Projec
             render={(_, record: Project) => (
               <Space size="middle">
                 <Link to={`/project/${record.id}`}>Go to</Link>
-                <Button size='small' onClick={() => confirmDeleteProject(() => removeProject({ id: record.id }).catch(message.error))}>Delete</Button>
+                <Button size='small' onClick={() => handleDeleteProject(record)}>Delete</Button>
                 {record.course_id &&
-                  <Button size='small' onClick={
-                    () => confirmDetachProject(() => removeProjectFromCourse({ courseId: record.course_id ?? '', projectId: record.id }).catch(message.error))
-                  }>
+                  <Button size='small' onClick={() => handleRemoveProjectFromCourse(record)}>
                     Detach
                   </Button>
                 }

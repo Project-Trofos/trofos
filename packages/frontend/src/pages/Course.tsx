@@ -7,6 +7,7 @@ import ProjectTable from '../components/tables/ProjectTable';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useGetAllProjectsQuery } from '../api/project';
+import { getErrorMessage } from '../helpers/error';
 
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
@@ -40,8 +41,15 @@ export default function CoursePage(): JSX.Element {
   }, [course, projects]);
 
   const handleMenuClick = useCallback((key: string) => {
-    if (key === '1' && course) {
-      confirmDeleteCourse(() => removeCourse({ id: course.id }).then(() => navigate('/courses')).catch(message.error));
+    try {
+      if (key === '1' && course) {
+        confirmDeleteCourse(async () => {
+          removeCourse({ id: course.id }).unwrap();
+          navigate('/courses');
+        });
+      }
+    } catch (err) {
+      message.error(getErrorMessage(err));
     }
   }, [course, navigate, removeCourse]);
 

@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
-import { Form, Select } from 'antd';
+import React, { useCallback, useMemo } from 'react';
+import { Form, message, Select } from 'antd';
 import { Project } from '../../api/project';
 import { useAddProjectToCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
+import { getErrorMessage } from '../../helpers/error';
 
 const { Option } = Select;
 
@@ -16,14 +17,17 @@ export default function ProjectAttachModal({ project } : { project: Project }) {
 
   const [form] = Form.useForm();
 
-  const onFinish = (data: { courseCode?: string }) => {
-    const { courseCode } = data;
-    if (!courseCode) {
-      throw new Error('Invalid data!');
+  const onFinish = useCallback(async (data: { courseCode?: string }) => {
+    try {
+      const { courseCode } = data;
+      if (!courseCode) {
+        throw new Error('Invalid data!');
+      }
+      await addProjectToCourse({ courseId: courseCode, projectId: project.id }).unwrap();
+    } catch (err) {
+      message.error(getErrorMessage(err));
     }
-    
-    addProjectToCourse({ courseId: courseCode, projectId: project.id });
-  };
+  }, [project.id, addProjectToCourse]);
 
   return (
     <MultistepFormModal 

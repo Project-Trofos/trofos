@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Card, Dropdown, Menu, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 import { Project, useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject } from '../modals/confirm';
+import { getErrorMessage } from '../../helpers/error';
 
 
 const { Meta } = Card;
@@ -17,9 +18,19 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
   const { project } = props;
   const [removeProject] = useRemoveProjectMutation();
 
+  const handleOnClick = useCallback(() => {
+    try {
+      confirmDeleteProject(async () => {
+        await removeProject({ id: project.id }).unwrap();
+      });
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [removeProject, project.id]);
+
   const menu = (
     <Menu
-      onClick={() => confirmDeleteProject(() => removeProject({ id: project.id }).catch(message.error))}
+      onClick={handleOnClick}
       items={[
         {
           label: 'delete',

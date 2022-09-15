@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Form, Input, Typography, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddCourseMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
+import { getErrorMessage } from '../../helpers/error';
 
 
 const { Paragraph } = Typography;
@@ -15,13 +16,14 @@ export default function CourseCreationModal() {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values: { courseCode: string; courseName: string }) => {
-    addCourse({ id: values.courseCode, cname: values.courseName }).then(() => {
+  const onFinish = useCallback(async (values: { courseCode: string; courseName: string }) => {
+    try {
+      await addCourse({ id: values.courseCode, cname: values.courseName });
       message.success(`Course ${values.courseName} has been created!`);
-    }).catch(err => {
-      message.error(err);
-    });
-  };
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [addCourse]);
 
   return (
     <MultistepFormModal title='Create Course' buttonName='Create Course' form={form} onSubmit={(data) => onFinish(data)} formSteps={[

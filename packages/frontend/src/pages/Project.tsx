@@ -2,10 +2,11 @@ import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
+import { Project, useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
 import { useGetAllCoursesQuery, useRemoveProjectFromCourseMutation } from '../api/course';
 import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
 import ProjectAttachModal from '../components/modals/ProjectAttachModal';
+import { getErrorMessage } from '../helpers/error';
 
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
@@ -33,7 +34,6 @@ export default function ProjectPage(): JSX.Element {
     return projects.filter(p => p.id.toString() === params.projectId)[0];
   }, [projects, params.projectId]);
 
-
   const course = useMemo(() => {
     if (!project || !project.course_id || !courses) {
       return undefined;
@@ -41,13 +41,33 @@ export default function ProjectPage(): JSX.Element {
     return courses.filter((c) => c.id === project.course_id)[0];
   }, [project, courses]);
 
-  const handleMenuClick = useCallback((key: string) => {
-    if (key === '1' && project) {
-      confirmDeleteProject(() => removeProject({ id: project.id }).then(() => navigate('/projects')).catch(message.error));
-    } else if (key === '2' && project) {
-      confirmDetachProject(() => removeProjectFromCourse({ courseId: project.course_id ?? '', projectId: project.id }).catch(message.error));
+  const handleMenuClick = useCallback(async (key: string) => {
+    try {
+      if (key === '1' && project) {
+        confirmDeleteProject(async () => {
+          removeProject({ id: project.id }).unwrap();
+          navigate('/projects');
+        });
+      } else if (key === '2' && project) {
+        confirmDetachProject(async () => {
+          removeProjectFromCourse({ courseId: project.course_id ?? '', projectId: project.id }).unwrap();
+        });
+      }
+    } catch (err) {
+      message.error(getErrorMessage(err));
     }
   }, [project, navigate, removeProject, removeProjectFromCourse]);
+
+  // Handle detach of project from course
+  const handleDetach = useCallback((p: Project) => confirmDetachProject(
+    async () => {
+      try {
+        removeProjectFromCourse({ courseId: p.course_id ?? '', projectId: p.id }).unwrap();
+      } catch (err) {
+        message.error(getErrorMessage(err));
+      }
+    },
+  ), [removeProjectFromCourse]);
 
   if (!params.projectId || !project) {
     return (
@@ -97,9 +117,7 @@ export default function ProjectPage(): JSX.Element {
           project.course_id ? 
           <Button
             key="detach"
-            onClick={() => confirmDetachProject(
-              () => removeProjectFromCourse({ courseId: project.course_id ?? '', projectId: project.id }),
-            )}
+            onClick={() => handleDetach(project)}
           >
             Detach from course
           </Button>

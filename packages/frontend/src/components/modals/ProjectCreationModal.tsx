@@ -5,6 +5,7 @@ import { useAddProjectMutation } from '../../api/project';
 import { useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { useGetAllModulesQuery } from '../../api/nusmods';
+import { getErrorMessage } from '../../helpers/error';
 
 const { Option } = Select;
 
@@ -23,46 +24,39 @@ export default function ProjectCreationModal({ courseId } : { courseId?: string 
 
   const [form] = Form.useForm();
 
-  const onFinish = useCallback((data: { projectName?: string; projectKey?: string; courseName?: string; courseCode?: string }) => {
-    const { courseCode, courseName, projectKey, projectName } = data;
-    if (!projectName) {
-      throw new Error('Invalid data!');
-    }
+  const onFinish = useCallback(async (data: { projectName?: string; projectKey?: string; courseName?: string; courseCode?: string }) => {
+    try {
+      const { courseCode, courseName, projectKey, projectName } = data;
+      if (!projectName) {
+        throw new Error('Invalid data!');
+      }
 
-    if (courseCode) {
-      addProjectAndCourse({ 
-        projectName,
-        projectKey,
-        courseId: courseCode,
-        courseName: courseName
+      if (courseCode) {
+        await addProjectAndCourse({ 
+          projectName,
+          projectKey,
+          courseId: courseCode,
+          courseName: courseName
           // Add in names if possible
           ?? (courses?.filter(c => c.id === courseCode)[0])?.cname
           ?? (modules?.filter(m => m.moduleCode === courseCode)[0])?.title,
-      }).then(() => {
-        message.success(`Project ${projectName} has been created!`);
-      }).catch(err => {
-        message.error(err);
-      });
-    } else if (courseId) {
-      addProjectAndCourse({ 
-        projectName,
-        projectKey,
-        courseId,
-        courseName: courseName
+        }).unwrap();
+      } else if (courseId) {
+        await addProjectAndCourse({ 
+          projectName,
+          projectKey,
+          courseId,
+          courseName: courseName
           // Add in names if possible
           ?? (courses?.filter(c => c.id === courseId)[0])?.cname
           ?? (modules?.filter(m => m.moduleCode === courseId)[0])?.title,
-      }).then(() => {
-        message.success(`Project ${projectName} has been created!`);
-      }).catch(err => {
-        message.error(err);
-      });
-    } else {
-      addProject({ pname: projectName, pkey: projectKey }).then(() => {
-        message.success(`Project ${projectName} has been created!`);
-      }).catch(err => {
-        message.error(err);
-      });
+        }).unwrap();
+      } else {
+        await addProject({ pname: projectName, pkey: projectKey }).unwrap();
+      }
+      message.success(`Project ${projectName} has been created!`);
+    } catch (err) {
+      message.error(getErrorMessage(err));
     }
     
   }, [addProject, addProjectAndCourse, courseId, courses, modules]);
