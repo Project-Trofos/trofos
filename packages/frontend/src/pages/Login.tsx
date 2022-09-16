@@ -2,8 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input } from 'antd';
 import './Login.css';
-import { useLoginUserMutation } from '../api';
-import { UserLoginInfo } from '../api/user';
+import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 
 export default function LoginPage(): JSX.Element {
 

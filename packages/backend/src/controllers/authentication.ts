@@ -27,15 +27,15 @@ const loginUser = async (req : express.Request, res: express.Response) => {
 };
 
 const logoutUser = async (req : express.Request, res: express.Response) => {
-  const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME]
+  const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
   
   if (sessionId === undefined) {
-    return res.status(StatusCodes.UNAUTHORIZED).send()
+    return res.status(StatusCodes.UNAUTHORIZED).send();
   }
 
   try {
-    await sessionService.deleteUserSession(sessionId)
-    return res.status(StatusCodes.OK).send()
+    await sessionService.deleteUserSession(sessionId);
+    return res.status(StatusCodes.OK).send();
   } catch (e) {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
@@ -44,25 +44,25 @@ const logoutUser = async (req : express.Request, res: express.Response) => {
 };
 
 const getUserInfo = async (req: express.Request, res: express.Response) => {
-  const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME]
+  const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
   if (sessionId === undefined) {
-    return res.status(StatusCodes.UNAUTHORIZED).send()
+    return res.status(StatusCodes.UNAUTHORIZED).send();
   }
 
   try {
-    const sessionInformation = await sessionService.getUserSession(sessionId)
+    const sessionInformation = await sessionService.getUserSession(sessionId);
     const userInformation = {
-      userEmail : sessionInformation.user_email
-    }
-    return res.status(StatusCodes.OK).json(userInformation)
+      userEmail : sessionInformation.user_email,
+    };
+    return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
-}
+};
 
 export default {
   loginUser,
   logoutUser,
-  getUserInfo
+  getUserInfo,
 };

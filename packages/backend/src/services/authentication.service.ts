@@ -1,5 +1,5 @@
-import prisma from '../models/prismaClient';
 import bcrypt from 'bcrypt';
+import prisma from '../models/prismaClient';
 
 
 async function validateUser(userEmail: string, userPassword: string) : Promise<boolean> {

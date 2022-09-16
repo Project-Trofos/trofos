@@ -58,6 +58,7 @@ function BacklogModal(): JSX.Element {
       ...data,
       projectId: Number(params.projectId),
     };
+
     try {
       await addBacklog(payload).unwrap();
       setIsModalVisible(false);

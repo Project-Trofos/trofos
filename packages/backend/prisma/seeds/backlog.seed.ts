@@ -14,15 +14,15 @@ type BacklogDataType = {
   points: number | null;
   description: string | null;
   assignee?:
-    | {
-        connect: {
-          project_id_user_id: {
-            user_id: number;
-            project_id: number;
-          };
-        };
-      }
-    | undefined;
+  | {
+    connect: {
+      project_id_user_id: {
+        user_id: number;
+        project_id: number;
+      };
+    };
+  }
+  | undefined;
   priority: BacklogPriority | null;
   reporter: {
     connect: {
@@ -33,10 +33,10 @@ type BacklogDataType = {
     };
   };
   sprint?:
-    | {
-        connect: { id: number };
-      }
-    | undefined;
+  | {
+    connect: { id: number };
+  }
+  | undefined;
   summary: string;
   type: BacklogType;
 };
@@ -61,7 +61,7 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
         data: userToCreate,
       });
       console.log('created user %s', user);
-    })
+    }),
   );
 }
 
@@ -92,7 +92,7 @@ async function createUsersOnProjectForBacklogSeed(prisma: PrismaClient) {
         data: userToAdd,
       });
       console.log('created userOnProject %s', userOnProject);
-    })
+    }),
   );
 }
 
@@ -245,7 +245,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
         data: backlogToAdd,
       });
       console.log('created backlog %s', backlog);
-    })
+    }),
   );
 }
 

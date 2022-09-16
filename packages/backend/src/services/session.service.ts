@@ -1,6 +1,6 @@
 import { Prisma, UserSession } from '@prisma/client';
-import prisma from '../models/prismaClient';
 import crypto from 'crypto';
+import prisma from '../models/prismaClient';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
@@ -39,22 +39,22 @@ async function createUserSession(userEmail: string) : Promise<string> {
 async function deleteUserSession(sessionId: string) {
   await prisma.userSession.delete({
     where : {
-      session_id: sessionId
-    }
-  })
+      session_id: sessionId,
+    },
+  });
 }
 
 async function getUserSession(sessionId: string) : Promise<Partial<UserSession>> {
   const sessionInfo = await prisma.userSession.findFirstOrThrow({
     where: {
-      session_id: sessionId
+      session_id: sessionId,
     },
-  })
-  return sessionInfo
+  });
+  return sessionInfo;
 }
 
 export default {
   createUserSession,
   deleteUserSession,
-  getUserSession
+  getUserSession,
 };

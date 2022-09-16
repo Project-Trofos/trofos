@@ -8,6 +8,7 @@ const newBacklog = async (req: express.Request, res: express.Response) => {
     const backlog: Backlog = await backlogService.createBacklog(req.body);
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error: any) {
+    console.log(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
 };

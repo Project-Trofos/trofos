@@ -1,6 +1,6 @@
-import { prismaMock } from '../../models/mock/mockPrismaClient';
 import bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
+import { prismaMock } from '../../models/mock/mockPrismaClient';
 import authenticationService from '../../services/authentication.service';
 
 describe('authentication.service tests', () => {

@@ -9,6 +9,7 @@ import { useGetAllProjectsQuery } from '../api/project';
 import { useGetAllCoursesQuery } from '../api/course';
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import  trofosApiSlice from '../api/index';
+
 const { Header, Sider, Content } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];

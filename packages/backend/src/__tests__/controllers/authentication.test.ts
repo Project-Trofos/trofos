@@ -12,11 +12,11 @@ const sessionServiceDeleteUserSessionSpy = jest.spyOn(sessionService, 'deleteUse
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
 
 beforeEach(() => {
-  authenticationServiceValidateUserSpy.mockReset()
-  sessionServiceCreateUserSessionSpy.mockReset()
-  sessionServiceDeleteUserSessionSpy.mockReset()
-  sessionServiceGetUserSessionSpy.mockReset()
-})
+  authenticationServiceValidateUserSpy.mockReset();
+  sessionServiceCreateUserSessionSpy.mockReset();
+  sessionServiceDeleteUserSessionSpy.mockReset();
+  sessionServiceGetUserSessionSpy.mockReset();
+});
 
 describe('authentication.loginUser tests', () => {
   test('UserNotValid_HTTP401Returned', async () => {
@@ -181,7 +181,7 @@ describe('authentication.getUserInfo tests', () => {
       session_id : 'testSessionId',
       user_email : 'testUser@test.com',
       session_expiry : new Date('2022-08-31T15:19:39.104Z'),
-    }
+    };
     sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
     const testCookie = 'testCookie';
     const mockRequest = {
@@ -191,13 +191,13 @@ describe('authentication.getUserInfo tests', () => {
     } as express.Request;
     const mockResponse = {
       send() {},
-      json(j: any) { this.json = j; return this },
+      json(j: any) { this.json = j; return this; },
       status(s : number) {this.statusCode = s; return this;},
     } as express.Response;
     await authentication.getUserInfo(mockRequest, mockResponse);
     expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com' })
+    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com' });
   });
 
   test('NoSessionInRequest_HTTP401Returned', async () => {
