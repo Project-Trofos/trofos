@@ -4,12 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prisma-migrate-prod": "dotenv -e .env.production.local -- npx prisma migrate dev --name init",
+    "prisma-migrate-prod": "dotenv -e .env.production.local -- npx prisma migrate deploy --name init",
     "prisma-migrate-dev": "dotenv -e .env.development.local -- npx prisma migrate dev --name init",
     "build": "tsc --project tsconfig.build.json",
     "start-prod": "npm run build && dotenv -e .env.production.local -- node dist/index.js",
     "start-dev": "npm run build && dotenv -e .env.development.local -- node dist/index.js",
-    "test": "jest --colors --detectOpenHandles --coverage"
+    "test": "jest --colors --detectOpenHandles --coverage",
+    "test-e2e": "jest --colors --runInBand ./packages/backend/src/__tests__/e2e "
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
