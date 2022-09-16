@@ -32,11 +32,6 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
 export default function MainLayout() {
   const { data: projects } = useGetAllProjectsQuery();
   const { data: courses } = useGetAllCoursesQuery();
-<<<<<<< HEAD
-=======
-
-  const location = useLocation();
->>>>>>> main
 
   const location = useLocation();
 
