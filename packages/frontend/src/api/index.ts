@@ -16,5 +16,3 @@ export const nusmodsApiSlice = createApi({
 });
 
 export default trofosApiSlice;
-
-
