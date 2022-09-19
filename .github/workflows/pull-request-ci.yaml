@@ -8,6 +8,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_PR_CI }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER_CI }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -16,10 +21,29 @@ jobs:
         with:
           node-version: '16'
       - name: Install dependencies
-        run: npm ci
-      - name: Setup Prisma Client
+        run: |-
+          npm ci
+      - name: Install wait-on
+        run: npm i -g wait-on@6.0.1
+      - name: Setup Postgres
+        run: docker compose -f docker-compose-ci.yml up -d postgres
+      - name: Wait for Postgres to start
+        run: wait-on --timeout 60000 tcp:5432
+      - name: Setup Prisma client
         run: |-
           cd packages/backend
-          npx prisma generate
+          npx prisma migrate dev --name init
+          npx prisma migrate reset --force
       - name: Run test
         run: npm run test
+      - name: Start backend and frontend
+        run: npm start &
+      - name: Wait for backend and frontend to start
+        run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
+      - name: Run e2e test
+        run: |-
+          cd packages/backend
+          npm run test-e2e
+      - name: Cleanup container
+        if: always()
+        run: npm run cleanup:ci

@@ -1,11 +1,12 @@
 import { Browser, Builder, By, until, WebDriver, WebElement } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
 
 jest.setTimeout(30000);
 
 let driver : WebDriver;
 
 beforeEach(async () => {
-  driver = await new Builder().forBrowser(Browser.CHROME).build();
+  driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(new chrome.Options().addArguments('--no-sandbox', '--headless')).build();
 });
 
 afterEach(async () => {
