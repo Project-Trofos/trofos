@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders create project modal with correct fields 1`] = `
+exports[`test ProjectCreationModal should render modal with correct fields 1`] = `
 <body>
   <div>
     <button
@@ -80,14 +80,14 @@ exports[`renders create project modal with correct fields 1`] = `
             <div
               class="ant-modal-body"
             >
-              <p>
-                You can change these details anytime in your project settings.
-              </p>
               <form
                 autocomplete="off"
                 class="ant-form ant-form-vertical"
-                id="project-creation-form"
+                id="multi-step-modal-form"
               >
+                <p>
+                  You can change these details anytime in your project settings.
+                </p>
                 <div
                   class="ant-form-item"
                 >
@@ -99,7 +99,7 @@ exports[`renders create project modal with correct fields 1`] = `
                     >
                       <label
                         class="ant-form-item-required"
-                        for="project-creation-form_projectName"
+                        for="multi-step-modal-form_projectName"
                         title="Name"
                       >
                         Name
@@ -116,7 +116,7 @@ exports[`renders create project modal with correct fields 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="project-creation-form_projectName"
+                            id="multi-step-modal-form_projectName"
                             type="text"
                             value=""
                           />
@@ -136,7 +136,7 @@ exports[`renders create project modal with correct fields 1`] = `
                     >
                       <label
                         class=""
-                        for="project-creation-form_projectKey"
+                        for="multi-step-modal-form_projectKey"
                         title="Key"
                       >
                         Key
@@ -176,7 +176,7 @@ exports[`renders create project modal with correct fields 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="project-creation-form_projectKey"
+                            id="multi-step-modal-form_projectKey"
                             type="text"
                             value=""
                           />
@@ -200,11 +200,10 @@ exports[`renders create project modal with correct fields 1`] = `
               </button>
               <button
                 class="ant-btn ant-btn-primary"
-                form="project-creation-form"
-                type="submit"
+                type="button"
               >
                 <span>
-                  Create
+                  Next
                 </span>
               </button>
             </div>

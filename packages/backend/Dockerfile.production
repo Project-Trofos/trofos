@@ -28,4 +28,4 @@ RUN npm ci
 # Copy our app
 COPY . .
 # Command to run our app
-CMD ["sh", "-c", "npm run prisma-migrate-prod ; npm run start-prod"]
+CMD ["sh", "-c", "npm run prisma-generate; npm run prisma-migrate-prod; npm run start-prod"]

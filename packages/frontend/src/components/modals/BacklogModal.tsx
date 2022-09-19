@@ -3,6 +3,8 @@ import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import './BacklogModal.css';
 import { useParams } from 'react-router-dom';
+import { useAddBacklogMutation } from '../../api/backlog';
+import type { BacklogSelect, BacklogFormFields } from './types/BacklogModal.types';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -22,18 +24,16 @@ function BacklogModal(): JSX.Element {
     { id: 'low', name: 'Low' },
     { id: 'very_low', name: 'Very Low' },
   ];
-  const SPRINTS: BacklogSelect[] = [
-    { id: '1', name: 'Sprint 1' },
-    { id: '2', name: 'Sprint 2' },
-    { id: '3', name: 'Sprint 3' },
-  ];
+  const SPRINTS = [{ id: 1, name: 'Sprint 1' }];
   const USERS = [
-    { id: 1, name: 'User1' },
-    { id: 2, name: 'User2' },
+    { id: 901, name: 'User1' },
+    { id: 902, name: 'User2' },
   ];
 
   const params = useParams();
   const [form] = Form.useForm();
+
+  const [addBacklog] = useAddBacklogMutation();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,19 +58,9 @@ function BacklogModal(): JSX.Element {
       ...data,
       projectId: Number(params.projectId),
     };
+
     try {
-      const res = await fetch('http://localhost:3001/backlog/newBacklog', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-
-      if (res.status !== 200) {
-        console.error('Something went wrong. Please try again');
-      }
-
+      await addBacklog(payload).unwrap();
       setIsModalVisible(false);
       form.resetFields();
       console.log('Success');
@@ -172,7 +162,7 @@ function BacklogModal(): JSX.Element {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button className="new-backlog-btn" type="primary" onClick={showModal}>
         New Backlog
       </Button>
       <Modal
@@ -188,14 +178,5 @@ function BacklogModal(): JSX.Element {
     </>
   );
 }
-
-interface BacklogFormFields extends FormData {
-  projectId: number;
-}
-
-type BacklogSelect = {
-  id: string;
-  name: string;
-};
 
 export default BacklogModal;

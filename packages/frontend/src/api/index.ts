@@ -1,42 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { Project } from './project/index';
 
 // Define a service using a base URL and expected endpoints
-export const trofosApiSlice = createApi({
+const trofosApiSlice = createApi({
   reducerPath: 'trofosApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
-  tagTypes: ['Project'],
-  endpoints: (builder) => ({
-
-    // Project management APIs
-    getAllProjects: builder.query<Project[], void>({
-      query: () => 'project/',
-      providesTags: ['Project'],
-    }),
-    addProject: builder.mutation<Project, Partial<Project> & Pick<Project, 'pname'>>({
-      query: (project) => ({
-        url: 'project/',
-        method: 'POST',
-        body: {
-          name: project.pname,
-          key: project.pkey,
-          isPublic: project.public,
-          description: project.description,
-        },
-      }),
-      invalidatesTags: ['Project'],
-    }),
-    removeProject: builder.mutation<Project, Pick<Project, 'id'>>({
-      query: (project) => ({
-        url: `project/${project.id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Project'],
-    }),
-
-  }),
+  tagTypes: ['Project', 'UserInfo', 'Course', 'Backlog'],
+  endpoints: () => ({}),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetAllProjectsQuery, useAddProjectMutation, useRemoveProjectMutation } = trofosApiSlice;
+// Define a service using a base URL and expected endpoints
+export const nusmodsApiSlice = createApi({
+  reducerPath: 'nusmodsApi',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.nusmods.com/v2/2022-2023' }),
+  endpoints: () => ({}),
+});
+
+export default trofosApiSlice;

@@ -6,9 +6,9 @@ describe('course.service tests', () => {
 
   // Mock data for courses
   const coursesData: Course[] = [
-    { id: 1, cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
-    { id: 2, cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: true },
-    { id: 3, cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
+    { id: '1', cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
+    { id: '2', cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: true },
+    { id: '3', cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
   ];
 
   // Mock data for projects
@@ -19,7 +19,7 @@ describe('course.service tests', () => {
       description: null,
       pkey: null,
       public: false,
-      course_id: 1,
+      course_id: '1',
       created_at: new Date(Date.now()),
     },
   ];
@@ -50,7 +50,7 @@ describe('course.service tests', () => {
     });
 
     it('should throw if course with the same id does not exist', async () => {
-      const invalidId = 999;
+      const invalidId = '999';
       prismaMock.course.findUniqueOrThrow.mockRejectedValue(Error());
       
       await expect(course.getById(invalidId)).rejects.toThrow(Error);
@@ -103,7 +103,7 @@ describe('course.service tests', () => {
 
   describe('getUser', () => {
     it('should return users in a course', async () => {
-      const COURSE_ID = 1;
+      const COURSE_ID = '1';
       // TODO: get the type right
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -116,7 +116,7 @@ describe('course.service tests', () => {
 
   describe('addUser', () => {
     it('should return added user', async () => {
-      const COURSE_ID = 1;
+      const COURSE_ID = '1';
       const USER_ID = 1;
       const resultMock: UsersOnCourses = {
         course_id: COURSE_ID,
@@ -132,7 +132,7 @@ describe('course.service tests', () => {
 
   describe('removeUser', () => {
     it('should return removed user', async () => {
-      const COURSE_ID = 1;
+      const COURSE_ID = '1';
       const USER_ID = 1;
       const resultMock: UsersOnCourses = {
         course_id: COURSE_ID,
@@ -150,7 +150,7 @@ describe('course.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectData);
 
-      const result = await course.getProjects(projectData[0].course_id ?? 1);
+      const result = await course.getProjects(projectData[0].course_id ?? '1');
       expect(result).toEqual<Project[]>(projectData);
     });
   });
@@ -160,7 +160,7 @@ describe('course.service tests', () => {
       const resultMock: Project = projectData[0];
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
 
-      const result = await course.addProject(resultMock.course_id ?? 1, resultMock.id);
+      const result = await course.addProject(resultMock.course_id ?? '1', resultMock.id);
       expect(result).toEqual<Project>(resultMock);
     });
   });
@@ -171,16 +171,30 @@ describe('course.service tests', () => {
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
 
-      const result = await course.removeProject(resultMock.course_id ?? 1, resultMock.id);
+      const result = await course.removeProject(resultMock.course_id ?? '1', resultMock.id);
       expect(result).toEqual<Project>(resultMock);
     });
 
     it('should throw error if courseId does not match', async () => {
-      const INVALID_ID = 999;
+      const INVALID_ID = '999';
       const resultMock: Project = projectData[0];
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
       expect(course.removeProject(INVALID_ID, resultMock.id)).rejects.toThrow();
     });
   });
+
+  describe('addProjectAndCourse', () => {
+    it('should return created project', async () => {
+      const resultMock: Project = projectData[0];
+      prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
+      prismaMock.project.update.mockResolvedValueOnce(resultMock);
+
+      const result = await course.removeProject(resultMock.course_id ?? '1', resultMock.id);
+      expect(result).toEqual<Project>(resultMock);
+    });
+    // TODO: Not sure how to test the connectOrCreate part
+  });
+
+
 
 });

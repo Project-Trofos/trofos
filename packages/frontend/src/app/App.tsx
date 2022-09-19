@@ -5,6 +5,8 @@ import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Project from '../pages/Project';
 import Projects from '../pages/Projects';
+import Courses from '../pages/Courses';
+import Course from '../pages/Course';
 
 import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklog from '../pages/ProjectBacklog';
@@ -24,6 +26,8 @@ function App() {
             <Route path="backlog" element={<ProjectBacklog />} />
             <Route path="kanban" element={<ProjectKanban />} />
           </Route>
+          <Route path="courses" element={<Courses />} />
+          <Route path="course/:courseId" element={<Course />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route
