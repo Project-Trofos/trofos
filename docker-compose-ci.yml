@@ -19,6 +19,7 @@ services:
       target: test
       args:
         DATABASE_URL: ${DATABASE_URL}
+      network: host
     image: trofos_backend
     ports:
       - "3001:3001"

@@ -18,7 +18,9 @@ FROM base as test
 RUN npm ci
 # Copy our app
 COPY . .
-CMD ["npm", "run", "test"]
+# Run unit test
+RUN npm test
+CMD ["npm", "start"]
 
 # Production stage
 FROM base as prod
