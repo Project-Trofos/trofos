@@ -15,7 +15,6 @@ COPY package*.json ./
 
 # Test stage for CI
 FROM base as test
-
 # Install ChromeDriver
 RUN apk update && apk add --no-cache bash \
         alsa-lib \
@@ -45,17 +44,15 @@ RUN apk update && apk add --no-cache bash \
         zlib-dev \
         chromium \
         chromium-chromedriver
-
 # Install dependencies
 RUN npm ci
 COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
-
 # Run unit test
 RUN npm run prisma-migrate-ci
 RUN npm run test
-CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
 
 # Production stage
 FROM base as prod
@@ -63,4 +60,4 @@ RUN npm ci
 # Copy our app
 COPY . .
 # Command to run our app
-CMD ["sh", "-c", "npm run prisma-generate; npm run prisma-migrate-prod; npm run start-prod"]
+ENTRYPOINT ["sh", "-c", "npm run prisma-generate; npm run prisma-migrate-prod; npm run start-prod"]

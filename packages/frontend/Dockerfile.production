@@ -20,7 +20,7 @@ RUN npm ci
 COPY . .
 # Run unit test
 RUN npm test
-CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
 
 # Production stage
 FROM base as prod
@@ -28,4 +28,4 @@ RUN npm ci
 # Copy our app
 COPY . .
 # Command to run our app
-CMD ["npm", "run", "start-dev"]
+ENTRYPOINT ["npm", "run", "start-dev"]

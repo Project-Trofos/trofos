@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL_PR_CI }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER_CI }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
@@ -28,7 +28,9 @@ jobs:
       - name: Setup Postgres
         run: docker compose -f docker-compose-ci.yml up -d postgres
       - name: Wait for Postgres to start
-        run: wait-on --timeout 60000 tcp:5432
+        run: |-
+          wait-on --timeout 60000 tcp:5432
+          sleep 3
       - name: Setup Prisma client
         run: |-
           cd packages/backend
@@ -44,6 +46,6 @@ jobs:
         run: |-
           cd packages/backend
           npm run test-e2e
-      - name: Cleanup container
+      - name: Clean up container
         if: always()
         run: npm run cleanup:ci
