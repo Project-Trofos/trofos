@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import { Avatar, Col, Layout, Row, MenuProps, Button } from 'antd';
 import Menu from 'antd/lib/menu';
 import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
 import './MainLayout.css';
 import { useGetAllProjectsQuery } from '../api/project';
 import { useGetAllCoursesQuery } from '../api/course';
+import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
+import  trofosApiSlice from '../api/index';
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,7 +35,22 @@ export default function MainLayout() {
 
   const location = useLocation();
 
-  const USERNAME = 'username';
+  // Temporary until we implement a proper user auth/info flow
+
+  const dispatch = useDispatch();
+
+  const { data: userInfo } = useGetUserInfoQuery();
+  const [ logoutUser, { isSuccess } ] = useLogoutUserMutation();
+
+  const LogoutComponent = (
+    <Button onClick={() => { logoutUser();  dispatch(trofosApiSlice.util.resetApiState()); }}>Log Out</Button>
+  );
+
+  const AuthComponent = (
+    !userInfo ? <Link to="/login">Log in</Link> : LogoutComponent
+  );
+
+  // End of temporary section
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -77,7 +94,7 @@ export default function MainLayout() {
         <div className='avatar-group'>
           <Avatar />
           <span>
-            {USERNAME}
+            {AuthComponent}
           </span>
         </div>
       </Col>

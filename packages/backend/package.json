@@ -4,9 +4,17 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "prisma-generate": "dotenv -e .env.production.local -- npx prisma generate",
+    "prisma-migrate-prod": "dotenv -e .env.production.local -- npx prisma migrate deploy",
+    "prisma-migrate-dev": "dotenv -e .env.development.local -- npx prisma migrate dev",
     "build": "tsc --project tsconfig.build.json",
-    "start": "npm run build && node dist/index.js",
-    "test": "jest --colors --detectOpenHandles --coverage"
+    "start-prod": "npm run build && dotenv -e .env.production.local -- node dist/index.js",
+    "start-dev": "npm run build && dotenv -e .env.development.local -- node dist/index.js",
+    "test": "jest --colors --detectOpenHandles --coverage --testPathIgnorePatterns=src/__tests__/e2e/*",
+    "test-e2e": "jest --colors --runInBand ./packages/backend/src/__tests__/e2e "
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +23,7 @@
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dotenv-cli": "^6.0.0",
     "express": "^4.18.1",
     "http-status-codes": "^2.2.0",
     "node-mocks-http": "^1.11.0"
@@ -32,6 +41,7 @@
     "prisma": "^4.2.1",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.8",
+    "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   }
 }
