@@ -49,6 +49,8 @@ RUN npm ci
 COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
+ARG CI
+ENV CI=$CI
 # Run unit test
 RUN npm run prisma-migrate-ci
 RUN npm run test
