@@ -33,8 +33,7 @@ jobs:
       - name: Setup Prisma client
         run: |-
           cd packages/backend
-          npx prisma migrate dev --name init
-          npx prisma migrate reset --force
+          npm run prisma-migrate-ci
       - name: Run test
         run: npm run test
       - name: Start backend and frontend
