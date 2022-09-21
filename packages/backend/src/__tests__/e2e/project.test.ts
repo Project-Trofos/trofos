@@ -6,7 +6,11 @@ jest.setTimeout(30000);
 let driver : WebDriver;
 
 beforeEach(async () => {
-  driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(new chrome.Options().addArguments('--no-sandbox', '--headless')).build();
+  if (process.env.CI) {
+    driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(new chrome.Options().addArguments('--no-sandbox', '--headless')).build();
+  } else {
+    driver = await new Builder().forBrowser(Browser.CHROME).build();
+  }
 });
 
 afterEach(async () => {
