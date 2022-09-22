@@ -5,7 +5,10 @@
   "scripts": {
     "start-prod": "docker-compose -f docker-compose-production.yml --env-file .\\.env  up -d",
     "start-dev": "docker-compose -f docker-compose-development.yml --env-file .\\.env  up -d && lerna run --parallel start-dev",
+    "start": "lerna run --parallel start",
     "test": "lerna run test --stream",
+    "setup:ci": "docker compose -f docker-compose-ci.yml up -d postgres",
+    "cleanup:ci": "docker compose -f docker-compose-ci.yml down && docker stop frontend || true && docker stop backend || true",
     "commit": "cz",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix && stylelint **/*.css --fix"
   },

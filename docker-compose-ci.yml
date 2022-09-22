@@ -4,10 +4,11 @@ services:
     build: 
       context: ./packages/frontend
       dockerfile: Dockerfile.production
-      target: prod
+      target: test
+    image: trofos_frontend
     ports:
       - "3000:3000"
-    container_name: trofos-frontend-production
+    container_name: trofos-frontend-ci
     restart: always
     links:
       - backend
@@ -15,10 +16,15 @@ services:
     build:
       context: ./packages/backend
       dockerfile: Dockerfile.production
-      target: prod
+      target: test
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        CI: ${CI}
+      network: host
+    image: trofos_backend
     ports:
       - "3001:3001"
-    container_name: trofos-backend-production
+    container_name: trofos-backend-ci
     restart: always
     links:
       - postgres
@@ -32,6 +38,4 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres:/var/lib/postgresql/data
-volumes:
-  postgres:
+      - /var/lib/postgresql/data

@@ -1,11 +1,18 @@
 import { Browser, Builder, By, until, WebDriver, WebElement } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
 
 jest.setTimeout(30000);
 
-let driver : WebDriver;
+let driver: WebDriver;
 
 beforeEach(async () => {
-  driver = await new Builder().forBrowser(Browser.CHROME).build();
+  if (process.env.CI) {
+    driver = await new Builder().forBrowser(Browser.CHROME)
+      .setChromeOptions(new chrome.Options()
+        .addArguments('--no-sandbox', '--headless')).build();
+  } else {
+    driver = await new Builder().forBrowser(Browser.CHROME).build();
+  }
 });
 
 afterEach(async () => {
@@ -16,7 +23,7 @@ describe('Projects', () => {
 
   describe('when the user tries to create/delete a project', () => {
 
-    it('should successfully create/delete the project', async () => {   
+    it('should successfully create/delete the project', async () => {
       await driver.get('http://localhost:3000');
 
       // Click login button
@@ -83,14 +90,14 @@ describe('Projects', () => {
       // Click logout button
       await driver.findElement(By.xpath('//*[@id="root"]/section/section/header/div/div[4]/div/span[2]/button')).click();
     });
-        
+
   });
 
   describe('when the user tries to create a backlog', () => {
 
-    it('should successfully create the backlog', async () => {   
+    it('should successfully create the backlog', async () => {
       await driver.get('http://localhost:3000');
-            
+
       // Click login button
       await driver.findElement(By.xpath('//*[@id="root"]/section/section/header/div/div[4]/div/span[2]/a')).click();
 
@@ -107,7 +114,7 @@ describe('Projects', () => {
       // Click on the test backlog project and within it, click on backlog
       await driver.findElement(By.js('return document.querySelector("#root > section > section > main > main > div.ant-row > div:nth-child(4) > div > div > div > div > div.ant-card-meta-title > a")')).click();
 
-      const backlogItemsBefore =  (await driver.findElements(By.xpath('//*[@id="root"]/section/section/main/section/div/div[2]/div/div/ul/li'))).length;
+      const backlogItemsBefore = (await driver.findElements(By.xpath('//*[@id="root"]/section/section/main/section/div/div[2]/div/div/ul/li'))).length;
 
       await driver.findElement(By.js('return document.querySelector("#rc-tabs-1-tab-2 > a")')).click();
       await driver.findElement(By.xpath('//*[@id="root"]/section/section/main/section/div/div[1]/button')).click();
@@ -138,11 +145,11 @@ describe('Projects', () => {
       // Create backlog
       await driver.findElement(By.xpath('/html/body/div[2]/div/div[2]/div/div[2]/div[3]/button')).click();
 
-      const backlogItemsAfter =  (await driver.findElements(By.xpath('//*[@id="root"]/section/section/main/section/div/div[2]/div/div/ul/li'))).length;
+      const backlogItemsAfter = (await driver.findElements(By.xpath('//*[@id="root"]/section/section/main/section/div/div[2]/div/div/ul/li'))).length;
 
       // There should be 1 more backlog item than before
       expect(backlogItemsBefore === backlogItemsAfter + 1);
     });
-        
+
   });
 });

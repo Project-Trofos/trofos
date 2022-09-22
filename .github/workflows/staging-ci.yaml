@@ -1,0 +1,41 @@
+name: CI Test for staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-with-docker:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER_CI }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install wait-on
+        run: npm i -g wait-on@6.0.1
+      - name: Setup Postgres container
+        run: npm run setup:ci
+      - name: Build and test backend
+        run: docker compose -f docker-compose-ci.yml build backend
+      - name: Build and test frontend
+        run: docker compose -f docker-compose-ci.yml build frontend
+      - name: Run backend and frontend containers
+        run: |- 
+          docker run --rm --network host --name backend -d trofos_backend
+          docker run --rm --network host --name frontend -d trofos_frontend
+      - name: Wait for backend and frontend containers to start
+        run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
+      - name: Run e2e test
+        run: docker exec backend npm run test-e2e
+      - name: Clean up containers
+        if: always()
+        run: npm run cleanup:ci
