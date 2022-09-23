@@ -121,11 +121,9 @@ function FormStep2(): JSX.Element {
     }
     return Array.from(results).map(x => 
       <Option key={`${x.id} ${x.name}`} value={x.id}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <span>{x.id}</span>
-        <span>{x.name}</span>
-      </div>
-    </Option>,
+        {x.id} {'  '}
+        {x.name}
+      </Option>,
     );
   }, [courses, modules]);
 
