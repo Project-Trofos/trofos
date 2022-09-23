@@ -22,22 +22,27 @@ model UserSession {
 }
 
 model Course {
-  id            String               @id @default(uuid())
+  id            String            @default(uuid())
+  year          Int
+  sem           Int               
   cname         String            @db.VarChar(256)
   description   String?
   users         UsersOnCourses[]
   projects      Project[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
+  @@id([id, year, sem])
 }
 
 model UsersOnCourses {
   course_id     String
-  course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  course_year   Int
+  course_sem    Int
+  course        Course            @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: Cascade)
   user_id       Int
   user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   created_at    DateTime          @default(now())
-  @@id([course_id, user_id])
+  @@id([course_id, course_year, course_sem, user_id])
 }
 
 model Project {
@@ -45,9 +50,13 @@ model Project {
   pname         String            @db.VarChar(256)
   pkey          String?           @db.VarChar(64)
   description   String?
+
   // A project might not belong to a course (open project)
   course_id     String?
-  course        Course?           @relation(fields: [course_id], references: [id])
+  course_year   Int?
+  course_sem    Int?
+  course        Course?           @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: Cascade)
+
   users         UsersOnProjects[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())

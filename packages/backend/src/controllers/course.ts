@@ -1,188 +1,212 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import course from '../services/course.service';
-
+import {
+  assertCourseIdIsValid,
+  assertCourseNameIsValid,
+  assertCourseSemIsNumber,
+  assertCourseYearIsNumber,
+  assertProjectIdIsValid,
+  assertUserIdIsValid,
+  BadRequestError,
+  getDefaultErrorRes,
+} from '../helpers/error';
 
 type RequestBody = {
   id?: string;
   name?: string;
+  year?: string;
+  sem?: string;
   isPublic?: boolean;
   description?: string;
 };
 
-
-async function getAll(req : express.Request, res: express.Response) {
+async function getAll(req: express.Request, res: express.Response) {
   try {
     const result = await course.getAll();
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function get(req : express.Request, res: express.Response) {
+async function get(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
 
-    const result = await course.getById(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+
+    const result = await course.getByPk(courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function create(req : express.Request, res: express.Response) {
+async function create(req: express.Request, res: express.Response) {
   try {
-    const { id, name, isPublic, description } = req.body as RequestBody;
+    const { id, year, sem, name, isPublic, description } = req.body as RequestBody;
 
-    if (!name) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide course name!' });
-    }
+    assertCourseYearIsNumber(year);
+    assertCourseSemIsNumber(sem);
+    assertCourseIdIsValid(id);
+    assertCourseNameIsValid(name);
 
-    const result = await course.create(name, isPublic, description, id);
+    const result = await course.create(name, Number(year), Number(sem), id, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function update(req : express.Request, res: express.Response) {
+async function update(req: express.Request, res: express.Response) {
   try {
     const { name, isPublic, description } = req.body as RequestBody;
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
+
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
 
     if (!name && !isPublic && !description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
 
-    const result = await course.update(courseId, name, isPublic, description);
+    const result = await course.update(courseId, Number(courseYear), Number(courseSem), name, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function remove(req : express.Request, res: express.Response) {
+async function remove(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
 
-    const result = await course.remove(courseId);
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+
+    const result = await course.remove(courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function getUsers(req : express.Request, res: express.Response) {
+async function getUsers(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
 
-    const result = await course.getUsers(courseId);
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+
+    const result = await course.getUsers(courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function addUser(req : express.Request, res: express.Response) {
+async function addUser(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
     const { userId }: { userId?: string } = req.body;
 
-    if (!courseId || !userId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    assertUserIdIsValid(userId);
 
-    const result = await course.addUser(courseId, Number(userId));
+    const result = await course.addUser(courseId, Number(courseYear), Number(courseSem), Number(userId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function removeUser(req : express.Request, res: express.Response) {
+async function removeUser(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
     const { userId }: { userId?: string } = req.body;
 
-    if (!courseId || !userId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    assertUserIdIsValid(userId);
 
-    const result = await course.removeUser(courseId, Number(userId));
+    const result = await course.removeUser(courseId, Number(courseYear), Number(courseSem), Number(userId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-
-async function getProjects(req : express.Request, res: express.Response) {
+async function getProjects(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
 
-    const result = await course.getProjects(courseId);
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+
+    const result = await course.getProjects(courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function addProject(req : express.Request, res: express.Response) {
+async function addProject(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
     const { projectId }: { projectId?: string } = req.body;
 
-    if (!courseId || !projectId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    assertProjectIdIsValid(projectId);
 
-    const result = await course.addProject(courseId, Number(projectId));
+    const result = await course.addProject(courseId, Number(courseYear), Number(courseSem), Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function removeProject(req : express.Request, res: express.Response) {
+async function removeProject(req: express.Request, res: express.Response) {
   try {
-    const { courseId } = req.params;
+    const { courseId, courseYear, courseSem } = req.params;
     const { projectId }: { projectId?: string } = req.body;
 
-    if (!courseId || !projectId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    assertProjectIdIsValid(projectId);
 
-    const result = await course.removeProject(courseId, Number(projectId));
+    const result = await course.removeProject(courseId, Number(courseYear), Number(courseSem), Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-async function addProjectAndCourse(req : express.Request, res: express.Response) {
-
+async function addProjectAndCourse(req: express.Request, res: express.Response) {
   type RequestBodyLocal = {
     courseId: string;
+    courseYear: string;
+    courseSem: string;
     courseName: string;
     projectName: string;
     projectKey?: string;
@@ -192,20 +216,46 @@ async function addProjectAndCourse(req : express.Request, res: express.Response)
   };
 
   try {
-    const { courseId, courseName, projectName, projectKey, projectDescription, isCoursePublic, isProjectPublic }: RequestBodyLocal = req.body;
+    const {
+      courseId,
+      courseYear,
+      courseSem,
+      courseName,
+      projectName,
+      projectKey,
+      projectDescription,
+      isCoursePublic,
+      isProjectPublic,
+    }: RequestBodyLocal = req.body;
 
-    if (!courseId || !courseName || !projectName) {
+    assertCourseIdIsValid(courseId);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    if (!projectName) {
+      throw new BadRequestError('Please provide a project name!');
+    }
+
+    if (!projectName) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
     }
 
-    const result = await course.addProjectAndCourse(courseId, courseName, projectName, projectKey, isCoursePublic, isProjectPublic, projectDescription);
+    const result = await course.addProjectAndCourse(
+      courseId,
+      Number(courseYear),
+      Number(courseSem),
+      courseName,
+      projectName,
+      projectKey,
+      isCoursePublic,
+      isProjectPublic,
+      projectDescription,
+    );
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
-
 
 export default {
   getAll,

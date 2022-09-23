@@ -4,7 +4,6 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import projectController from '../../controllers/project';
 
-
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
   create: jest.spyOn(project, 'create'),
@@ -17,26 +16,51 @@ const spies = {
 };
 
 describe('project controller tests', () => {
-
-  afterEach(() => {    
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   // Mock data for users
-  const usersData: User[] = [
-    { user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' },
-  ];
+  const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
   // Mock data for users on projects
-  const usersProjectData: UsersOnProjects[] = [
-    { project_id: 1, user_id: 1, created_at: new Date(Date.now()) },
-  ];
+  const usersProjectData: UsersOnProjects[] = [{ project_id: 1, user_id: 1, created_at: new Date(Date.now()) }];
 
   // Mock data for projects
   const projectsData: Project[] = [
-    { id: 1, pname: 'c1', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd1', public: false },
-    { id: 2, pname: 'c2', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd2', public: false },
-    { id: 3, pname: 'c3', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd3', public: false },
+    {
+      id: 1,
+      pname: 'c1',
+      created_at: new Date(Date.now()),
+      course_id: null,
+      course_year: null,
+      course_sem: null,
+      pkey: null,
+      description: 'd1',
+      public: false,
+    },
+    {
+      id: 2,
+      pname: 'c2',
+      created_at: new Date(Date.now()),
+      course_id: null,
+      course_year: null,
+      course_sem: null,
+      pkey: null,
+      description: 'd2',
+      public: false,
+    },
+    {
+      id: 3,
+      pname: 'c3',
+      created_at: new Date(Date.now()),
+      course_id: null,
+      course_year: null,
+      course_sem: null,
+      pkey: null,
+      description: 'd3',
+      public: false,
+    },
   ];
 
   describe('getAll', () => {
@@ -74,11 +98,11 @@ describe('project controller tests', () => {
   describe('create', () => {
     test('should return project created', async () => {
       spies.create.mockResolvedValueOnce(projectsData[0]);
-      const mockReq = createRequest({ 
-        body: { 
+      const mockReq = createRequest({
+        body: {
           name: projectsData[0].pname,
           description: projectsData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -91,10 +115,10 @@ describe('project controller tests', () => {
 
     test('should return bad request if name is not provided', async () => {
       spies.create.mockResolvedValueOnce(projectsData[0]);
-      const mockReq = createRequest({ 
-        body: { 
+      const mockReq = createRequest({
+        body: {
           description: projectsData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -108,14 +132,14 @@ describe('project controller tests', () => {
   describe('update', () => {
     test('should return project updated', async () => {
       spies.update.mockResolvedValueOnce(projectsData[0]);
-      const mockReq = createRequest({ 
+      const mockReq = createRequest({
         params: {
           projectId: projectsData[0].id.toString(),
         },
-        body: { 
+        body: {
           name: projectsData[0].pname,
           description: projectsData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -127,12 +151,11 @@ describe('project controller tests', () => {
     });
 
     test('should return bad request if update fields are not provided', async () => {
-      const mockReq = createRequest({ 
+      const mockReq = createRequest({
         params: {
           projectId: projectsData[0].id.toString(),
         },
-        body: { 
-        }, 
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -205,8 +228,7 @@ describe('project controller tests', () => {
         params: {
           projectId: projectsData[0].id.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -243,8 +265,7 @@ describe('project controller tests', () => {
         params: {
           projectId: projectsData[0].id.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -254,5 +275,4 @@ describe('project controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });
-
 });

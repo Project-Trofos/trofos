@@ -12,31 +12,31 @@ router.post('/', course.create);
 // Create project and attach or create course
 router.post('/project', course.addProjectAndCourse);
 
-// Get course by courseId
-router.get('/:courseId', course.get);
+// Get course
+router.get('/:courseYear/:courseSem/:courseId', course.get);
 
-// Update course by courseId
-router.put('/:courseId', course.update);
+// Update course
+router.put('/:courseYear/:courseSem/:courseId', course.update);
 
-// Delete course by courseId
-router.delete('/:courseId', course.remove);
+// Delete course
+router.delete('/:courseYear/:courseSem/:courseId', course.remove);
 
 // Get all users of a course
-router.get('/:courseId/user', course.getUsers);
+router.get('/:courseYear/:courseSem/:courseId/user', course.getUsers);
 
 // Add a user to a course
-router.post('/:courseId/user', course.addUser);
+router.post('/:courseYear/:courseSem/:courseId/user', course.addUser);
 
 // Remove a user from a course
-router.delete('/:courseId/user', course.removeUser);
+router.delete('/:courseYear/:courseSem/:courseId/user', course.removeUser);
 
 // Get all projects of a course
-router.get('/:courseId/project', course.getProjects);
+router.get('/:courseYear/:courseSem/:courseId/project', course.getProjects);
 
 // Add a user to a course
-router.post('/:courseId/project', course.addProject);
+router.post('/:courseYear/:courseSem/:courseId/project', course.addProject);
 
 // Remove a user from a course
-router.delete('/:courseId/project', course.removeProject);
+router.delete('/:courseYear/:courseSem/:courseId/project', course.removeProject);
 
 export default router;

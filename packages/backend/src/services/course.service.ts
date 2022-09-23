@@ -9,10 +9,14 @@ async function getAll(): Promise<Course[]> {
 }
 
 
-async function getById(id: string): Promise<Course> {
+async function getByPk(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.findUniqueOrThrow({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
   });
 
@@ -20,10 +24,12 @@ async function getById(id: string): Promise<Course> {
 }
 
 
-async function create(name: string, isPublic?: boolean, description?: string, id?: string): Promise<Course> {
+async function create(name: string, year: number, sem: number, id?: string, isPublic?: boolean, description?: string): Promise<Course> {
   const result = await prisma.course.create({
     data: {
       id,
+      year,
+      sem,
       cname: name,
       public: isPublic,
       description,
@@ -34,10 +40,14 @@ async function create(name: string, isPublic?: boolean, description?: string, id
 }
 
 
-async function update(id: string, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function update(id: string, year: number, sem: number, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
   const result = await prisma.course.update({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
     data: {
       cname: name,
@@ -50,10 +60,14 @@ async function update(id: string, name?: string, isPublic?: boolean, description
 }
 
 
-async function remove(id: string): Promise<Course> {
+async function remove(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.delete({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
   });
 
@@ -61,10 +75,12 @@ async function remove(id: string): Promise<Course> {
 }
 
 
-async function getUsers(id: string): Promise<User[]> {
+async function getUsers(id: string, year: number, sem: number): Promise<User[]> {
   const result = await prisma.usersOnCourses.findMany({
     where: {
       course_id: id,
+      course_year: year,
+      course_sem: sem,
     },
     select: {
       user: true,
@@ -75,10 +91,12 @@ async function getUsers(id: string): Promise<User[]> {
 }
 
 
-async function addUser(courseId: string, userId: number): Promise<UsersOnCourses> {
+async function addUser(courseId: string, courseYear: number, courseSem: number, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
+      course_year: courseYear,
+      course_sem: courseSem,
       user_id: userId,
     },
   });
@@ -87,11 +105,13 @@ async function addUser(courseId: string, userId: number): Promise<UsersOnCourses
 }
 
 
-async function removeUser(courseId: string, userId: number): Promise<UsersOnCourses> {
+async function removeUser(courseId: string, courseYear: number, courseSem: number, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.delete({
     where: {
-      course_id_user_id: {
+      course_id_course_year_course_sem_user_id: {
         course_id: courseId,
+        course_year: courseYear,
+        course_sem: courseSem,
         user_id: userId,
       },
     },
@@ -101,10 +121,13 @@ async function removeUser(courseId: string, userId: number): Promise<UsersOnCour
 }
 
 
-async function getProjects(id: string): Promise<Project[]> {
+// Get project by any combination of id, year or sem
+async function getProjects(id?: string, year?: number, sem?: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
       course_id: id,
+      course_year: year,
+      course_sem: sem,
     },
   });
 
@@ -113,8 +136,10 @@ async function getProjects(id: string): Promise<Project[]> {
 
 
 // Add project and link to course, create course if necessary
-async function addProjectAndCourse(courseId: string, courseName: string, 
-  projectName: string, projectKey?: string, isCoursePublic?: boolean, isProjectPublic?: boolean, projectDesc?: string): Promise<Project> {
+async function addProjectAndCourse(courseId: string, 
+  courseYear: number, courseSem: number, courseName: string, 
+  projectName: string, projectKey?: string, isCoursePublic?: boolean, 
+  isProjectPublic?: boolean, projectDesc?: string): Promise<Project> {
 
   const result = prisma.project.create({
     data: {
@@ -125,10 +150,16 @@ async function addProjectAndCourse(courseId: string, courseName: string,
       course: {
         connectOrCreate: {
           where: {
-            id: courseId,
+            id_year_sem: {
+              id: courseId,
+              year: courseYear,
+              sem: courseSem,
+            },
           },
           create: {
             id: courseId,
+            year: courseYear,
+            sem: courseSem,
             cname: courseName,
             public: isProjectPublic,
           },
@@ -142,13 +173,15 @@ async function addProjectAndCourse(courseId: string, courseName: string,
 
 
 // Add project to course
-async function addProject(courseId: string, projectId: number): Promise<Project> {
+async function addProject(courseId: string, courseYear: number, courseSem: number, projectId: number): Promise<Project> {
   const result = await prisma.project.update({
     where: {
       id: projectId,
     },
     data: {
       course_id: courseId,
+      course_year: courseYear,
+      course_sem: courseSem,
     },
   });
 
@@ -157,14 +190,14 @@ async function addProject(courseId: string, projectId: number): Promise<Project>
 
 
 // Remove project from course
-async function removeProject(courseId: string, projectId: number): Promise<Project> {
+async function removeProject(courseId: string, courseYear: number, courseSem: number, projectId: number): Promise<Project> {
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
     },
   });
 
-  if (project.course_id !== courseId) {
+  if (project.course_id !== courseId || project.course_year !== courseYear || project.course_sem !== courseSem) {
     throw Error('Project ID does not match!');
   }
 
@@ -174,6 +207,8 @@ async function removeProject(courseId: string, projectId: number): Promise<Proje
     },
     data: {
       course_id: null,
+      course_year: null,
+      course_sem: null,
     },
   });
 
@@ -183,7 +218,7 @@ async function removeProject(courseId: string, projectId: number): Promise<Proje
 
 export default {
   create, 
-  getById,
+  getByPk,
   getAll,
   update,
   remove,
