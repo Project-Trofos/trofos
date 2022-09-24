@@ -13,8 +13,8 @@ beforeEach(async () => {
         .addArguments('--no-sandbox', '--headless')).build();
   } else {
     driver = await new Builder().forBrowser(Browser.CHROME).build();
-    driver.manage().setTimeouts({ implicit : 10000 });
   }
+  driver.manage().setTimeouts({ implicit : 10000 });
 });
 
 afterEach(async () => {
