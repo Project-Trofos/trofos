@@ -14,7 +14,10 @@ export type Project = {
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllProjects: builder.query<Project[], void>({
-      query: () => 'project/',
+      query: () => ({
+        url : 'project/',
+        credentials: 'include',
+      }),
       providesTags: ['Project'],
     }),
     addProject: builder.mutation<Project, Partial<Project> & Pick<Project, 'pname'>>({
@@ -27,6 +30,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           isPublic: project.public,
           description: project.description,
         },
+        credentials: 'include',
       }),
       invalidatesTags: ['Project'],
     }),
@@ -34,6 +38,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       query: (project) => ({
         url: `project/${project.id}`,
         method: 'DELETE',
+        credentials: 'include',
       }),
       invalidatesTags: ['Project', 'Course'],
     }),

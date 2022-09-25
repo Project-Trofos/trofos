@@ -6,7 +6,8 @@ export type UserLoginInfo = {
 };
 
 export type UserInfo = {
-  userEmail: string
+  userEmail: string,
+  userRole: number
 };
 
 // Auth APIs
