@@ -3,6 +3,7 @@ import StatusCodes from 'http-status-codes';
 import authentication from '../../controllers/authentication';
 import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
+import roleService from '../../services/role.service';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -10,12 +11,15 @@ const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, '
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
 const sessionServiceDeleteUserSessionSpy = jest.spyOn(sessionService, 'deleteUserSession');
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
+const roleServiceGetUserRoleId = jest.spyOn(roleService, 'getUserRoleId');
+
 
 beforeEach(() => {
   authenticationServiceValidateUserSpy.mockReset();
   sessionServiceCreateUserSessionSpy.mockReset();
   sessionServiceDeleteUserSessionSpy.mockReset();
   sessionServiceGetUserSessionSpy.mockReset();
+  roleServiceGetUserRoleId.mockReset();
 });
 
 describe('authentication.loginUser tests', () => {
@@ -62,6 +66,7 @@ describe('authentication.loginUser tests', () => {
 
   test('UserValid_CreateUserSessionThrowsError_HTTP500Returned', async () => {
     const createUserSessionError = new Error('test error');
+    roleServiceGetUserRoleId.mockResolvedValueOnce(1);
     authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
     sessionServiceCreateUserSessionSpy.mockRejectedValueOnce(createUserSessionError);
     const testUserEmail = 'testEmail@test.com';
@@ -78,7 +83,7 @@ describe('authentication.loginUser tests', () => {
     } as express.Response;
     await authentication.loginUser(mockRequest, mockResponse);
     expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail);
+    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1);
     expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 
@@ -86,6 +91,7 @@ describe('authentication.loginUser tests', () => {
     const sessionId = 'testSession';
     authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
+    roleServiceGetUserRoleId.mockResolvedValueOnce(1);
     const testUserEmail = 'testEmail@test.com';
     const testUserPassword = 'testPassword';
     const mockRequest = {
@@ -101,7 +107,7 @@ describe('authentication.loginUser tests', () => {
     } as express.Response;
     await authentication.loginUser(mockRequest, mockResponse);
     expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail);
+    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
   });
 });
@@ -181,6 +187,7 @@ describe('authentication.getUserInfo tests', () => {
       session_id : 'testSessionId',
       user_email : 'testUser@test.com',
       session_expiry : new Date('2022-08-31T15:19:39.104Z'),
+      user_role_id: 1,
     };
     sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
     const testCookie = 'testCookie';
@@ -197,20 +204,6 @@ describe('authentication.getUserInfo tests', () => {
     await authentication.getUserInfo(mockRequest, mockResponse);
     expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com' });
-  });
-
-  test('NoSessionInRequest_HTTP401Returned', async () => {
-    const mockRequest = {
-      cookies : {
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.getUserInfo(mockRequest, mockResponse);
-    expect(sessionServiceGetUserSessionSpy).toBeCalledTimes(0);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
+    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userRole : 1 });
   });
 });

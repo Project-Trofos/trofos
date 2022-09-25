@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prisma-generate": "dotenv -e .env.production.local -- npx prisma generate",
+    "prisma-db-push": "dotenv -e .env.development.local -- npx prisma db push",
     "prisma-migrate-prod": "dotenv -e .env.production.local -- npx prisma migrate deploy",
     "prisma-migrate-dev": "dotenv -e .env.development.local -- npx prisma migrate dev",
     "prisma-migrate-ci": "npx prisma migrate dev --name init && npx prisma migrate reset --force",

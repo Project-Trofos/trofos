@@ -13,11 +13,13 @@ model User {
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
   courses       UsersOnCourses[]
+  roles         UsersOnRoles[]
 }
 
 model UserSession {
   session_id String @id
   user_email String
+  user_role_id Int
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
@@ -83,6 +85,40 @@ model Backlog {
 model Sprint {
   id          Int               @id
   backlogs    Backlog[]
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  role_name String @unique @db.VarChar(50)
+  actions ActionsOnRoles[]
+  users UsersOnRoles[]
+}
+
+model ActionsOnRoles {
+  role_id Int
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  action Action
+  @@unique([role_id, action])
+}
+
+model UsersOnRoles {
+  user_email String @unique @db.VarChar(320)
+  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  role_id Int
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+}
+
+enum Action {
+  // Course related actions
+  create_course
+  read_course
+  update_course
+  delete_course
+  // Project related actions
+  create_project
+  read_project
+  update_project
+  delete_project
 }
 
 enum BacklogType {

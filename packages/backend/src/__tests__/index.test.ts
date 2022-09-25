@@ -2,9 +2,11 @@ import request from 'supertest';
 import server from '../index';
 import sessionService from '../services/session.service';
 import authenticationService from '../services/authentication.service';
+import roleService from '../services/role.service';
 
 const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, 'validateUser');
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
+const roleServiceGetUserRoleIdSpy = jest.spyOn(roleService, 'getUserRoleId');
 
 afterAll(done => {
   server.close();
@@ -21,6 +23,7 @@ describe('index.ts', () => {
     const sessionId = 'testSession';
     authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
+    roleServiceGetUserRoleIdSpy.mockResolvedValue(1);
     const postData = {
       body : {
         userEmail : 'testUser@test.com',
