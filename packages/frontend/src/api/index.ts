@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Define a service using a base URL and expected endpoints
 const trofosApiSlice = createApi({
   reducerPath: 'trofosApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
+  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001' }),
   tagTypes: ['Project', 'UserInfo', 'Course', 'Backlog'],
   endpoints: () => ({}),
 });
