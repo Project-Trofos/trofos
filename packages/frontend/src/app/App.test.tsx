@@ -7,6 +7,6 @@ import App from './App';
 
 test('renders main page', async () => {
   render(<Provider store={store}><App /></Provider>);
-  const linkElement = await screen.findByText('Welcome to project Trofos', { exact: false });
+  const linkElement = await screen.findByText('Trofos', { exact: false });
   expect(linkElement).toBeInTheDocument();
 });

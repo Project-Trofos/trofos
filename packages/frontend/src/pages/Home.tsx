@@ -1,8 +1,9 @@
 import React from 'react';
 import { Typography } from 'antd';
+import ProjectsPage from './Projects';
 
 const { Title } = Typography;
 
 export default function HomePage(): JSX.Element {
-  return <Title style={{ margin: '48px' }}>Welcome to Project Trofos!</Title>;
+  return <ProjectsPage />;
 }

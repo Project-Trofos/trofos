@@ -1,10 +1,48 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, getByText, queryByText, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
+import { Select as AntdSelect } from 'antd';
 import ProjectCreationModal from './ProjectCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd');
+
+  function Select(props: React.ComponentProps<typeof AntdSelect>) {
+
+    const { mode, value, defaultValue, className, onChange, disabled, children } = props;
+
+    const multiple = ['tags', 'multiple'].includes(mode ?? '');
+
+    return (
+      <select
+        value={value as React.SelectHTMLAttributes<HTMLSelectElement>['value']}
+        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLSelectElement>['defaultValue']}
+        multiple={multiple}
+        disabled={disabled}
+        className={className}
+        onChange={e => {
+          if (onChange) {
+            onChange(multiple ? Array.from(e.target.selectedOptions).map((option) => option.value) : e.target.value, {});
+          }
+        }}
+      >
+        {children}
+      </select>
+    );
+  }
+
+  Select.Option = function ({ children, ...otherProps }: { children: React.ReactNode }) {
+    return <option {...otherProps}>{children}</option>;
+  };
+  Select.OptGroup = function ({ children, ...otherProps }: { children: React.ReactNode }) {
+    return <optgroup {...otherProps}>{children}</optgroup>;
+  };
+
+  return { ...antd, Select };
+});
 
 describe('test ProjectCreationModal', () => {
 
@@ -26,7 +64,7 @@ describe('test ProjectCreationModal', () => {
   };
 
   const goToSecondStep = async () => {
-    await setup();
+    const setupData = await setup();
     const button = screen.getByText('Create Project');
     fireEvent.click(button);
 
@@ -37,6 +75,8 @@ describe('test ProjectCreationModal', () => {
     fireEvent.click(nextButton);
 
     await screen.findByText('You can attach this project to a course.');
+
+    return setupData;
   };
 
   it('should render modal with correct fields', async () => {
@@ -83,15 +123,15 @@ describe('test ProjectCreationModal', () => {
   });
 
   // Can't get this test to work
-  it.skip('should allow choosing a course from existing courses', async () => {
+  it('should allow choosing a course from existing courses', async () => {
     await goToSecondStep();
     const segment = screen.getByText(/existing/i);
     fireEvent.click(segment);
 
-    const select = screen.getByLabelText('Course');
+    const input = await screen.findByRole('combobox');
+    fireEvent.click(input);
 
-    // ? I can't change the course
-    fireEvent.change(select, { value: 'CS3203' });
+    fireEvent.change(input, { target: { value: 'CS3203' } });
 
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
