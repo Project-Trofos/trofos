@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Button } from 'antd';
 import Menu from 'antd/lib/menu';
 import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
 import { useGetAllProjectsQuery } from '../api/project';
@@ -34,6 +34,7 @@ export default function MainLayout() {
   const { data: courses } = useGetAllCoursesQuery();
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Temporary until we implement a proper user auth/info flow
 
@@ -43,7 +44,7 @@ export default function MainLayout() {
   const [ logoutUser, { isSuccess } ] = useLogoutUserMutation();
 
   const LogoutComponent = (
-    <Button onClick={() => { logoutUser();  dispatch(trofosApiSlice.util.resetApiState()); }}>Log Out</Button>
+    <Button onClick={() => { logoutUser();  dispatch(trofosApiSlice.util.resetApiState()); navigate('/');}}>Log Out</Button>
   );
 
   const AuthComponent = (
@@ -55,7 +56,7 @@ export default function MainLayout() {
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
-      getItem(
+      userInfo?.userRole === 1 ? getItem(
         <Link to="/courses">Courses</Link>,
         '/courses',
         <BookOutlined />,
@@ -64,8 +65,8 @@ export default function MainLayout() {
           : courses.map((course) =>
             getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
           ),
-      ),
-      getItem(
+      ) : null,
+      userInfo ? getItem(
         <Link to="/projects">Project</Link>,
         '/projects',
         <ProjectOutlined />,
@@ -74,9 +75,9 @@ export default function MainLayout() {
           : projects.map((project) =>
             getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
           ),
-      ),
+      ) : null,
     ],
-    [projects, courses],
+    [projects, courses, userInfo],
   );
 
   const renderHeader = () => (
