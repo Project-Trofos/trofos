@@ -121,8 +121,7 @@ function FormStep2(): JSX.Element {
     }
     return Array.from(results).map(x => 
       <Option key={`${x.id} ${x.name}`} value={x.id}>
-        {x.id} {'  '}
-        {x.name}
+        {`${x.id} ${x.name}`}
       </Option>,
     );
   }, [courses, modules]);
