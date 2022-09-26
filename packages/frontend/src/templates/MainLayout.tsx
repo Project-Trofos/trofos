@@ -41,7 +41,7 @@ export default function MainLayout() {
   const dispatch = useDispatch();
 
   const { data: userInfo } = useGetUserInfoQuery();
-  const [ logoutUser, { isSuccess } ] = useLogoutUserMutation();
+  const [ logoutUser ] = useLogoutUserMutation();
 
   const LogoutComponent = (
     <Button onClick={() => { logoutUser();  dispatch(trofosApiSlice.util.resetApiState()); navigate('/');}}>Log Out</Button>
