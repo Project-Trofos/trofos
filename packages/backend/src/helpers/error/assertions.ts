@@ -7,11 +7,11 @@ export function assertStringIsNumberOrThrow(str: string | undefined, errorMessag
 }
 
 export function assertCourseYearIsNumber(year: string | undefined) {
-  assertStringIsNumberOrThrow(year, 'Please provide a valid year');
+  assertStringIsNumberOrThrow(year, `Please provide a valid year! Provided ${year}`);
 }
 
 export function assertCourseSemIsNumber(sem: string | undefined) {
-  assertStringIsNumberOrThrow(sem, 'Please provide a valid semester!');
+  assertStringIsNumberOrThrow(sem, `Please provide a valid semester! Provided ${sem}`);
 }
 
 export function assertCourseIdIsValid(courseId: string | undefined) {

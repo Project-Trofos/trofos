@@ -1,4 +1,5 @@
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
@@ -28,6 +29,24 @@ describe('course.service tests', () => {
 
       const result = await course.getAll();
       expect(result).toEqual<Course[]>(coursesData);
+    });
+
+    it('should return past courses', async () => {
+      const pastCourses = coursesData.filter(
+        (p) => p.year < CURRENT_SEM || (p.year === CURRENT_YEAR && p.sem < CURRENT_SEM),
+      );
+      prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
+
+      const result = await course.getAll('past');
+      expect(result).toEqual<Course[]>(pastCourses);
+    });
+
+    it('should return current projects', async () => {
+      const currentCourses = coursesData.filter((c) => c.sem === CURRENT_SEM && c.year === CURRENT_YEAR);
+      prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
+
+      const result = await course.getAll('current');
+      expect(result).toEqual<Course[]>(currentCourses);
     });
   });
 

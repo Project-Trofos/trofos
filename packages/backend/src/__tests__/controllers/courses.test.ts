@@ -5,6 +5,7 @@ import course from '../../services/course.service';
 import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
 import projectsData from '../mocks/projectData';
+import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
@@ -35,7 +36,7 @@ describe('course controller tests', () => {
   ];
 
   describe('getAll', () => {
-    test('should return all courses', async () => {
+    it('should return all courses', async () => {
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
@@ -46,10 +47,60 @@ describe('course controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData));
     });
+
+    it('should return all past courses', async () => {
+      const pastCourses = coursesData.filter(
+        (c) => c.year < CURRENT_YEAR || (c.year === CURRENT_YEAR && c.sem < CURRENT_SEM),
+      );
+      spies.getAll.mockResolvedValueOnce(pastCourses);
+      const mockReq = createRequest({
+        body: {
+          option: 'past',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(pastCourses));
+    });
+
+    it('should return all current courses', async () => {
+      const currentCourses = coursesData.filter((c) => c.year === CURRENT_YEAR && c.sem === CURRENT_SEM);
+      spies.getAll.mockResolvedValueOnce(currentCourses);
+      const mockReq = createRequest({
+        body: {
+          option: 'current',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(currentCourses));
+    });
+
+    it('should throw if option is incorrect', async () => {
+      const mockReq = createRequest({
+        body: {
+          option: 'some option',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('get', () => {
-    test('should return course', async () => {
+    it('should return course', async () => {
       spies.getByPk.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
@@ -60,7 +111,7 @@ describe('course controller tests', () => {
       });
       const mockRes = createResponse();
 
-      console.log(JSON.stringify((await courseController.get(mockReq, mockRes)).json()));
+      await courseController.get(mockReq, mockRes);
 
       expect(spies.getByPk).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
@@ -69,7 +120,7 @@ describe('course controller tests', () => {
   });
 
   describe('create', () => {
-    test('should return course created', async () => {
+    it('should return course created', async () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         body: {
@@ -89,7 +140,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    test('should return bad request if name is not provided', async () => {
+    it('should return bad request if name is not provided', async () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         body: {
@@ -106,7 +157,7 @@ describe('course controller tests', () => {
   });
 
   describe('update', () => {
-    test('should return course updated', async () => {
+    it('should return course updated', async () => {
       spies.update.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
@@ -128,7 +179,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    test('should return bad request if update fields are not provided', async () => {
+    it('should return bad request if update fields are not provided', async () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
@@ -147,7 +198,7 @@ describe('course controller tests', () => {
   });
 
   describe('get', () => {
-    test('should return course', async () => {
+    it('should return course', async () => {
       spies.remove.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
@@ -167,7 +218,7 @@ describe('course controller tests', () => {
   });
 
   describe('getUsers', () => {
-    test('should return all users', async () => {
+    it('should return all users', async () => {
       spies.getUsers.mockResolvedValueOnce(usersData);
       const mockReq = createRequest({
         params: {
@@ -187,7 +238,7 @@ describe('course controller tests', () => {
   });
 
   describe('addUser', () => {
-    test('should return added user relation', async () => {
+    it('should return added user relation', async () => {
       spies.addUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
@@ -208,7 +259,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(usersCourseData[0]));
     });
 
-    test('should return error if no userId given', async () => {
+    it('should return error if no userId given', async () => {
       spies.addUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
@@ -228,7 +279,7 @@ describe('course controller tests', () => {
   });
 
   describe('removeUser', () => {
-    test('should return removed user relation', async () => {
+    it('should return removed user relation', async () => {
       spies.removeUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
@@ -249,7 +300,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(usersCourseData[0]));
     });
 
-    test('should return error if no userId given', async () => {
+    it('should return error if no userId given', async () => {
       spies.removeUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
@@ -269,7 +320,7 @@ describe('course controller tests', () => {
   });
 
   describe('getProjects', () => {
-    test('should return all projects', async () => {
+    it('should return all projects', async () => {
       spies.getProjects.mockResolvedValueOnce(projectsData);
       const mockReq = createRequest({
         params: {
@@ -289,7 +340,7 @@ describe('course controller tests', () => {
   });
 
   describe('addProject', () => {
-    test('should return added project', async () => {
+    it('should return added project', async () => {
       spies.addProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
@@ -310,7 +361,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no projectId given', async () => {
+    it('should return error if no projectId given', async () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
@@ -329,7 +380,7 @@ describe('course controller tests', () => {
   });
 
   describe('removeProject', () => {
-    test('should return removed project', async () => {
+    it('should return removed project', async () => {
       spies.removeProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
@@ -350,7 +401,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no projectId given', async () => {
+    it('should return error if no projectId given', async () => {
       spies.removeProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
@@ -370,7 +421,7 @@ describe('course controller tests', () => {
   });
 
   describe('addProjectAndCourse', () => {
-    test('should return added course', async () => {
+    it('should return added course', async () => {
       spies.addProjectAndCourse.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {},
@@ -391,7 +442,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no courseId given', async () => {
+    it('should return error if no courseId given', async () => {
       const mockReq = createRequest({
         params: {},
         body: {},

@@ -1,13 +1,44 @@
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 
-
-async function getAll(): Promise<Course[]> {
-  const result = await prisma.course.findMany();
-
+async function getAll(option?: 'current' | 'past' | 'all'): Promise<Course[]> {
+  let result;
+  if (option === 'current') {
+    result = await prisma.course.findMany({
+      where: {
+        year: CURRENT_YEAR,
+        sem: CURRENT_SEM,
+      },
+    });
+  } else if (option === 'past') {
+    // year < current_year OR year == current_year and sem < current_sem
+    result = await prisma.course.findMany({
+      where: {
+        OR: [
+          {
+            AND: {
+              year: {
+                lt: CURRENT_YEAR,
+              },
+            },
+          },
+          {
+            AND: {
+              year: CURRENT_YEAR,
+              sem: {
+                lt: CURRENT_SEM,
+              },
+            },
+          },
+        ],
+      },
+    });
+  } else {
+    result = await prisma.course.findMany();
+  }
   return result;
 }
-
 
 async function getByPk(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.findUniqueOrThrow({
@@ -23,8 +54,14 @@ async function getByPk(id: string, year: number, sem: number): Promise<Course> {
   return result;
 }
 
-
-async function create(name: string, year: number, sem: number, id?: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function create(
+  name: string,
+  year: number,
+  sem: number,
+  id?: string,
+  isPublic?: boolean,
+  description?: string,
+): Promise<Course> {
   const result = await prisma.course.create({
     data: {
       id,
@@ -39,8 +76,14 @@ async function create(name: string, year: number, sem: number, id?: string, isPu
   return result;
 }
 
-
-async function update(id: string, year: number, sem: number, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function update(
+  id: string,
+  year: number,
+  sem: number,
+  name?: string,
+  isPublic?: boolean,
+  description?: string,
+): Promise<Course> {
   const result = await prisma.course.update({
     where: {
       id_year_sem: {
@@ -59,7 +102,6 @@ async function update(id: string, year: number, sem: number, name?: string, isPu
   return result;
 }
 
-
 async function remove(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.delete({
     where: {
@@ -73,7 +115,6 @@ async function remove(id: string, year: number, sem: number): Promise<Course> {
 
   return result;
 }
-
 
 async function getUsers(id: string, year: number, sem: number): Promise<User[]> {
   const result = await prisma.usersOnCourses.findMany({
@@ -90,8 +131,12 @@ async function getUsers(id: string, year: number, sem: number): Promise<User[]> 
   return result.map((x) => x.user);
 }
 
-
-async function addUser(courseId: string, courseYear: number, courseSem: number, userId: number): Promise<UsersOnCourses> {
+async function addUser(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  userId: number,
+): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
@@ -104,8 +149,12 @@ async function addUser(courseId: string, courseYear: number, courseSem: number, 
   return result;
 }
 
-
-async function removeUser(courseId: string, courseYear: number, courseSem: number, userId: number): Promise<UsersOnCourses> {
+async function removeUser(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  userId: number,
+): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.delete({
     where: {
       course_id_course_year_course_sem_user_id: {
@@ -120,7 +169,6 @@ async function removeUser(courseId: string, courseYear: number, courseSem: numbe
   return result;
 }
 
-
 // Get project by any combination of id, year or sem
 async function getProjects(id?: string, year?: number, sem?: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
@@ -134,13 +182,18 @@ async function getProjects(id?: string, year?: number, sem?: number): Promise<Pr
   return result;
 }
 
-
 // Add project and link to course, create course if necessary
-async function addProjectAndCourse(courseId: string, 
-  courseYear: number, courseSem: number, courseName: string, 
-  projectName: string, projectKey?: string, isCoursePublic?: boolean, 
-  isProjectPublic?: boolean, projectDesc?: string): Promise<Project> {
-
+async function addProjectAndCourse(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  courseName: string,
+  projectName: string,
+  projectKey?: string,
+  isCoursePublic?: boolean,
+  isProjectPublic?: boolean,
+  projectDesc?: string,
+): Promise<Project> {
   const result = prisma.project.create({
     data: {
       pname: projectName,
@@ -171,9 +224,13 @@ async function addProjectAndCourse(courseId: string,
   return result;
 }
 
-
 // Add project to course
-async function addProject(courseId: string, courseYear: number, courseSem: number, projectId: number): Promise<Project> {
+async function addProject(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  projectId: number,
+): Promise<Project> {
   const result = await prisma.project.update({
     where: {
       id: projectId,
@@ -188,9 +245,13 @@ async function addProject(courseId: string, courseYear: number, courseSem: numbe
   return result;
 }
 
-
 // Remove project from course
-async function removeProject(courseId: string, courseYear: number, courseSem: number, projectId: number): Promise<Project> {
+async function removeProject(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  projectId: number,
+): Promise<Project> {
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
@@ -215,9 +276,8 @@ async function removeProject(courseId: string, courseYear: number, courseSem: nu
   return result;
 }
 
-
 export default {
-  create, 
+  create,
   getByPk,
   getAll,
   update,

@@ -23,7 +23,15 @@ type RequestBody = {
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
-    const result = await course.getAll();
+    const { option } = req.body;
+
+    // If option is provided, it must be one of the following
+    if (option && !['all', 'past', 'current'].includes(option)) {
+      throw new BadRequestError('Please provide a correct option.');
+    }
+
+    // Default to all
+    const result = await course.getAll(option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -52,7 +60,6 @@ async function create(req: express.Request, res: express.Response) {
 
     assertCourseYearIsNumber(year);
     assertCourseSemIsNumber(sem);
-    assertCourseIdIsValid(id);
     assertCourseNameIsValid(name);
 
     const result = await course.create(name, Number(year), Number(sem), id, isPublic, description);

@@ -55,7 +55,7 @@ model Project {
   course_id     String?
   course_year   Int?
   course_sem    Int?
-  course        Course?           @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: Cascade)
+  course        Course?           @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: SetNull)
 
   users         UsersOnProjects[]
   public        Boolean           @default(false)

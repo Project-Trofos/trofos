@@ -1,7 +1,7 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
 import project from '../services/project.service';
-
 
 type RequestBody = {
   name?: string;
@@ -10,32 +10,36 @@ type RequestBody = {
   description?: string;
 };
 
-
-async function getAll(req : express.Request, res: express.Response) {
+async function getAll(req: express.Request, res: express.Response) {
   try {
-    const result = await project.getAll();
+    const { option } = req.body;
+
+    if (option && !['all', 'past', 'current'].includes(option)) {
+      throw new BadRequestError('Please provide a correct option.');
+    }
+
+    // default to all
+    const result = await project.getAll(option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function get(req : express.Request, res: express.Response) {
+async function get(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
     const result = await project.getById(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function create(req : express.Request, res: express.Response) {
+async function create(req: express.Request, res: express.Response) {
   try {
     const { name, key, isPublic, description } = req.body as RequestBody;
 
@@ -45,13 +49,12 @@ async function create(req : express.Request, res: express.Response) {
 
     const result = await project.create(name, key, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function update(req : express.Request, res: express.Response) {
+async function update(req: express.Request, res: express.Response) {
   try {
     const { name, isPublic, description } = req.body as RequestBody;
     const { projectId } = req.params;
@@ -62,39 +65,36 @@ async function update(req : express.Request, res: express.Response) {
 
     const result = await project.update(Number(projectId), name, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function remove(req : express.Request, res: express.Response) {
+async function remove(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
     const result = await project.remove(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function getUsers(req : express.Request, res: express.Response) {
+async function getUsers(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
     const result = await project.getUsers(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function addUser(req : express.Request, res: express.Response) {
+async function addUser(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     const { userId }: { userId?: string } = req.body;
@@ -106,13 +106,12 @@ async function addUser(req : express.Request, res: express.Response) {
     const result = await project.addUser(Number(projectId), Number(userId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
-
-async function removeUser(req : express.Request, res: express.Response) {
+async function removeUser(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     const { userId }: { userId?: string } = req.body;
@@ -124,11 +123,10 @@ async function removeUser(req : express.Request, res: express.Response) {
     const result = await project.removeUser(Number(projectId), Number(userId));
 
     return res.status(StatusCodes.OK).json(result);
-  } catch (error: any) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
-
 
 export default {
   getAll,
