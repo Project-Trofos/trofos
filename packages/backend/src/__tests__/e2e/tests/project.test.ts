@@ -14,7 +14,7 @@ beforeEach(async () => {
   } else {
     driver = await new Builder().forBrowser(Browser.CHROME).build();
   }
-  driver.manage().setTimeouts({ implicit : 20000 });
+  driver.manage().setTimeouts({ implicit : 5000 });
 });
 
 afterEach(async () => {
