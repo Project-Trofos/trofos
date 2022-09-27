@@ -3,7 +3,7 @@ import { nusmodsApiSlice } from '.';
 export type Module = {
   moduleCode: string;
   title: string;
-  semesters: number[],
+  semesters: number[];
 };
 
 // Project management APIs
