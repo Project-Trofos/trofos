@@ -36,20 +36,26 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
   };
 
   const handleFinish = () => {
-    form.validateFields().then(() => {
-      const partialData = form.getFieldsValue();
-      const completeData = { ...data, ...partialData };
-      onSubmit(completeData);
-      handleOk();
-    }).catch(e => {});
+    form
+      .validateFields()
+      .then(() => {
+        const partialData = form.getFieldsValue();
+        const completeData = { ...data, ...partialData };
+        onSubmit(completeData);
+        handleOk();
+      })
+      .catch(console.error);
   };
 
   const onNext = () => {
-    form.validateFields().then(() => {
-      const partialData = form.getFieldsValue();
-      setData(d => ({ ...d, ...partialData }));
-      setStep(i => i + 1);
-    }).catch(e => {});
+    form
+      .validateFields()
+      .then(() => {
+        const partialData = form.getFieldsValue();
+        setData((d) => ({ ...d, ...partialData }));
+        setStep((i) => i + 1);
+      })
+      .catch((e) => {});
   };
 
   return (
@@ -63,22 +69,27 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
         onOk={handleOk}
         onCancel={handleCancel}
         getContainer={false}
-        footer={(step < formSteps.length - 1) ? [
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="next" type="primary" onClick={onNext}>
-            Next
-          </Button>,
-        ] : [
-          formSteps.length === 1 ? undefined :
-          <Button key="prev" onClick={() => setStep(step - 1)}>
-            Back
-          </Button>,
-          <Button type="primary" form="multi-step-modal-form" key="submit" onClick={handleFinish}>
-            Finish
-          </Button>,
-        ]}
+        footer={
+          step < formSteps.length - 1
+            ? [
+                <Button key="cancel" onClick={handleCancel}>
+                  Cancel
+                </Button>,
+                <Button key="next" type="primary" onClick={onNext}>
+                  Next
+                </Button>,
+              ]
+            : [
+                formSteps.length === 1 ? undefined : (
+                  <Button key="prev" onClick={() => setStep(step - 1)}>
+                    Back
+                  </Button>
+                ),
+                <Button type="primary" form="multi-step-modal-form" key="submit" onClick={handleFinish}>
+                  Finish
+                </Button>,
+              ]
+        }
       >
         <Form
           name="multi-step-modal-form"
