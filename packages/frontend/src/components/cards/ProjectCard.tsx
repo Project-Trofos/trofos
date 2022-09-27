@@ -7,7 +7,6 @@ import { Project, useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 
-
 const { Meta } = Card;
 
 type ProjectCardProps = {
