@@ -32,19 +32,19 @@ describe('role.service tests', () => {
       const expectedResult = true;
       prismaMock.actionsOnRoles.findMany.mockResolvedValueOnce(prismaResponseObject);
       await expect(roleService.isActionAllowed(1, Action.create_course)).resolves.toEqual(expectedResult);
-    })
+    });
 
     it('should return false if the role is not allowed to perform the action', async () => {
       const prismaResponseObject : ActionsOnRoles[] = [];
       const expectedResult = false;
       prismaMock.actionsOnRoles.findMany.mockResolvedValueOnce(prismaResponseObject);
       await expect(roleService.isActionAllowed(1, Action.delete_course)).resolves.toEqual(expectedResult);
-    })
+    });
 
     it('should return true if an action is not supplied', async () => {
       const expectedResult = true;
       await expect(roleService.isActionAllowed(1, null)).resolves.toEqual(expectedResult);
-    })
+    });
 
     // For now its impossible to have a role without actions
   });

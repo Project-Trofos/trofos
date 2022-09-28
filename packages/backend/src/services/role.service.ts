@@ -20,7 +20,7 @@ async function isActionAllowed(roleId: number, action : Action | null) : Promise
   const roleActions = await prisma.actionsOnRoles.findMany({
     where : {
       role_id : roleId,
-      action: action
+      action,
     },
   });
     
