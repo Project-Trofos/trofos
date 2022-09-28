@@ -2,8 +2,8 @@ import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { Project, useGetProjectsQuery, useRemoveProjectMutation } from '../api/project';
-import { useGetCoursesQuery, useRemoveProjectFromCourseMutation } from '../api/course';
+import { Project, useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
+import { useGetAllCoursesQuery, useRemoveProjectFromCourseMutation } from '../api/course';
 import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
 import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
@@ -20,8 +20,8 @@ export default function ProjectPage(): JSX.Element {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data: projects } = useGetProjectsQuery();
-  const { data: courses } = useGetCoursesQuery();
+  const { data: projects } = useGetAllProjectsQuery();
+  const { data: courses } = useGetAllCoursesQuery();
 
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();

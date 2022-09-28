@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Form, Input, Segmented, Select, Typography, message, DatePicker } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useAddProjectMutation } from '../../api/project';
-import { Course, useAddProjectAndCourseMutation, useGetCoursesQuery } from '../../api/course';
+import { Course, useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { useGetAllModulesQuery } from '../../api/nusmods';
 import { getErrorMessage } from '../../helpers/error';
@@ -17,7 +17,7 @@ const { Option } = Select;
 export default function ProjectCreationModal({ course }: { course?: Course }): JSX.Element {
   const [addProject] = useAddProjectMutation();
   const [addProjectAndCourse] = useAddProjectAndCourseMutation();
-  const { data: courses } = useGetCoursesQuery();
+  const { data: courses } = useGetAllCoursesQuery();
   const { data: modules } = useGetAllModulesQuery();
 
   const [form] = Form.useForm();
@@ -37,7 +37,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
       try {
         const { courseCode, courseYear, courseSem, courseName, projectKey, projectName } = data;
         if (!projectName) {
-          throw new Error('Invalid data!');
+          throw new Error('Please provide a correct project name!');
         }
 
         if (courseCode && courseYear && courseSem) {
@@ -117,7 +117,7 @@ function FormStep1(): JSX.Element {
 
 function FormStep2(): JSX.Element {
   const segmentOptions = ['Independent', 'Choose from existing', 'Create new'];
-  const { data: courses } = useGetCoursesQuery();
+  const { data: courses } = useGetAllCoursesQuery();
   const { data: modules } = useGetAllModulesQuery();
   const [type, setType] = useState<string>('Independent');
 
@@ -160,7 +160,7 @@ function FormStep2(): JSX.Element {
               {courseOptions}
             </Select>
           </Form.Item>
-          <CourseYearSem />
+          <CourseYearSemFormItems />
         </>
       )}
 
@@ -189,7 +189,7 @@ function FormStep2(): JSX.Element {
           >
             <Input />
           </Form.Item>
-          <CourseYearSem />
+          <CourseYearSemFormItems />
         </>
       )}
     </>
@@ -197,7 +197,7 @@ function FormStep2(): JSX.Element {
 }
 
 // Renders form elements to input year and semester
-function CourseYearSem(): JSX.Element {
+function CourseYearSemFormItems(): JSX.Element {
   return (
     <>
       <Form.Item

@@ -17,7 +17,7 @@ export type Course = {
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCourses: builder.query<Course[], void>({
+    getAllCourses: builder.query<Course[], void>({
       query: () => 'course/',
       providesTags: (result, error, arg) => [
         'Course',
@@ -39,10 +39,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'course/',
         method: 'POST',
         body: {
-          id: course.id,
-          year: course.year,
-          sem: course.sem,
-          name: course.cname,
+          courseId: course.id,
+          courseYear: course.year,
+          courseSem: course.sem,
+          courseName: course.cname,
           isPublic: course.public,
           description: course.description,
         },
@@ -132,7 +132,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 
 export const {
   useAddCourseMutation,
-  useGetCoursesQuery,
+  useGetAllCoursesQuery,
   useGetCourseQuery,
   useRemoveCourseMutation,
   useAddProjectAndCourseMutation,
@@ -142,7 +142,7 @@ export const {
 
 // Filter courses by current and past
 export const useCurrentAndPastCourses = () => {
-  const coursesData = useGetCoursesQuery();
+  const coursesData = useGetAllCoursesQuery();
 
   const filteredCourses = useMemo(() => {
     if (coursesData.isError || coursesData.isLoading) {

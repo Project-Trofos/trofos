@@ -124,10 +124,10 @@ describe('course controller tests', () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         body: {
-          id: coursesData[0].id,
-          year: coursesData[0].year.toString(),
-          sem: coursesData[0].sem.toString(),
-          name: coursesData[0].cname,
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
+          courseName: coursesData[0].cname,
           description: coursesData[0].description,
         },
       });

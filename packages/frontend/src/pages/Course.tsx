@@ -2,11 +2,11 @@ import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Space, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useGetCoursesQuery, useRemoveCourseMutation } from '../api/course';
+import { useGetAllCoursesQuery, useRemoveCourseMutation } from '../api/course';
 import ProjectTable from '../components/tables/ProjectTable';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
-import { useGetProjectsQuery } from '../api/project';
+import { useGetAllProjectsQuery } from '../api/project';
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
   return (
@@ -20,8 +20,8 @@ export default function CoursePage(): JSX.Element {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data: courses } = useGetCoursesQuery();
-  const { data: projects, isLoading } = useGetProjectsQuery();
+  const { data: courses } = useGetAllCoursesQuery();
+  const { data: projects, isLoading } = useGetAllProjectsQuery();
   const [removeCourse] = useRemoveCourseMutation();
 
   const course = useMemo(() => {

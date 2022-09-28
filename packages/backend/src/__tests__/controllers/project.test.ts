@@ -120,7 +120,7 @@ describe('project controller tests', () => {
       spies.create.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         body: {
-          name: projectsData[0].pname,
+          projectName: projectsData[0].pname,
           description: projectsData[0].description,
         },
       });

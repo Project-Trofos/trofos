@@ -17,7 +17,7 @@ export type Project = {
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProjects: builder.query<Project[], void>({
+    getAllProjects: builder.query<Project[], void>({
       query: () => 'project/',
       providesTags: (result, error, arg) => [
         'Project',
@@ -39,8 +39,8 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'project/',
         method: 'POST',
         body: {
-          name: project.pname,
-          key: project.pkey,
+          projectName: project.pname,
+          projectKey: project.pkey,
           isPublic: project.public,
           description: project.description,
         },
@@ -60,11 +60,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAddProjectMutation, useGetProjectsQuery, useGetProjectQuery, useRemoveProjectMutation } = extendedApi;
+export const { useAddProjectMutation, useGetAllProjectsQuery, useGetProjectQuery, useRemoveProjectMutation } =
+  extendedApi;
 
 // Filter courses by current and past
 export const useCurrentAndPastProjects = () => {
-  const projectsData = useGetProjectsQuery();
+  const projectsData = useGetAllProjectsQuery();
 
   const filteredProjects = useMemo(() => {
     if (projectsData.isError || projectsData.isLoading) {

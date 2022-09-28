@@ -16,13 +16,23 @@ export default function CourseCreationModal() {
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
-    async (values: { courseCode: string; courseYear: string; courseSem: string; courseName: string }) => {
+    async (values: {
+      courseCode?: string;
+      // Antd datepicker actually returns a moment object
+      // Only year is used for now
+      // Maybe we should consider adding moment to our dependencies?
+      courseYear: { year: () => string };
+      courseSem: string;
+      courseName: string;
+    }) => {
       try {
+        const {courseCode, courseName, courseSem, courseYear} = values;
+
         await addCourse({
-          id: values.courseCode.trim(),
-          year: Number(values.courseYear),
-          sem: Number(values.courseSem),
-          cname: values.courseName.trim(),
+          id: courseCode?.trim(),
+          year: Number(courseYear.year()),
+          sem: Number(courseSem),
+          cname: courseName.trim(),
         });
         message.success(`Course ${values.courseName} has been created!`);
       } catch (err) {

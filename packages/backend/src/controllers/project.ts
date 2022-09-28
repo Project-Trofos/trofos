@@ -1,11 +1,12 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import { assertProjectNameIsValid } from '../helpers/error/assertions';
 import project from '../services/project.service';
 
 type RequestBody = {
-  name?: string;
-  key?: string;
+  projectName?: string;
+  projectKey?: string;
   isPublic?: boolean;
   description?: string;
 };
@@ -15,7 +16,7 @@ async function getAll(req: express.Request, res: express.Response) {
     const { option } = req.body;
 
     if (option && !['all', 'past', 'current'].includes(option)) {
-      throw new BadRequestError('Please provide a correct option.');
+      throw new BadRequestError('Please provide a correct option. option can only be all, past, or current.');
     }
 
     // default to all
@@ -41,13 +42,11 @@ async function get(req: express.Request, res: express.Response) {
 
 async function create(req: express.Request, res: express.Response) {
   try {
-    const { name, key, isPublic, description } = req.body as RequestBody;
+    const { projectName, projectKey, isPublic, description } = req.body as RequestBody;
 
-    if (!name) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide project name!' });
-    }
+    assertProjectNameIsValid(projectName);
 
-    const result = await project.create(name, key, isPublic, description);
+    const result = await project.create(projectName, projectKey, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -56,14 +55,14 @@ async function create(req: express.Request, res: express.Response) {
 
 async function update(req: express.Request, res: express.Response) {
   try {
-    const { name, isPublic, description } = req.body as RequestBody;
+    const { projectName, isPublic, description } = req.body as RequestBody;
     const { projectId } = req.params;
 
-    if (!name && !isPublic && !description) {
+    if (!projectName && !isPublic && !description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
 
-    const result = await project.update(Number(projectId), name, isPublic, description);
+    const result = await project.update(Number(projectId), projectName, isPublic, description);
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -99,9 +98,8 @@ async function addUser(req: express.Request, res: express.Response) {
     const { projectId } = req.params;
     const { userId }: { userId?: string } = req.body;
 
-    if (!projectId || !userId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertProjectIdIsValid(projectId);
+    assertUserIdIsValid(userId);
 
     const result = await project.addUser(Number(projectId), Number(userId));
 
@@ -116,9 +114,8 @@ async function removeUser(req: express.Request, res: express.Response) {
     const { projectId } = req.params;
     const { userId }: { userId?: string } = req.body;
 
-    if (!projectId || !userId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertProjectIdIsValid(projectId);
+    assertUserIdIsValid(userId);
 
     const result = await project.removeUser(Number(projectId), Number(userId));
 

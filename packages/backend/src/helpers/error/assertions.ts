@@ -6,34 +6,48 @@ export function assertStringIsNumberOrThrow(str: string | undefined, errorMessag
   }
 }
 
-export function assertCourseYearIsNumber(year: string | undefined) {
-  assertStringIsNumberOrThrow(year, `Please provide a valid year! Provided ${year}`);
+function getFieldUndefinedErrorMessage(fieldName: string) {
+  return `Please provide a valid ${fieldName}! ${fieldName} cannot be undefined.`;
 }
 
-export function assertCourseSemIsNumber(sem: string | undefined) {
-  assertStringIsNumberOrThrow(sem, `Please provide a valid semester! Provided ${sem}`);
+function getFieldNotNumberErrorMessage(fieldName: string) {
+  return `Please provide a valid ${fieldName}! ${fieldName} must be a number.`;
 }
 
-export function assertCourseIdIsValid(courseId: string | undefined) {
+export function assertCourseYearIsNumber(year: string | undefined): asserts year is string {
+  assertStringIsNumberOrThrow(year, getFieldNotNumberErrorMessage('year'));
+}
+
+export function assertCourseSemIsNumber(sem: string | undefined): asserts sem is string {
+  assertStringIsNumberOrThrow(sem, getFieldNotNumberErrorMessage('semester'));
+}
+
+export function assertCourseIdIsValid(courseId: string | undefined): asserts courseId is string {
   if (!courseId) {
-    throw new BadRequestError('Please provide correct course id!');
+    throw new BadRequestError(getFieldUndefinedErrorMessage('courseId'));
   }
 }
 
 export function assertCourseNameIsValid(courseName: string | undefined): asserts courseName is string {
   if (!courseName) {
-    throw new BadRequestError('Please provide correct course name!');
+    throw new BadRequestError(getFieldUndefinedErrorMessage('courseName'));
   }
 }
 
-export function assertUserIdIsValid(username: string | undefined): asserts username is string {
-  if (!username) {
-    throw new BadRequestError('Please provide correct username!');
+export function assertUserIdIsValid(userId: string | undefined): asserts userId is string {
+  if (!userId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('userId'));
   }
 }
 
 export function assertProjectIdIsValid(projectId: string | undefined): asserts projectId is string {
   if (!projectId) {
-    throw new BadRequestError('Please provide correct project id!');
+    throw new BadRequestError(getFieldUndefinedErrorMessage('projectId'));
+  }
+}
+
+export function assertProjectNameIsValid(projectName: string | undefined): asserts projectName is string {
+  if (!projectName) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('projectName'));
   }
 }

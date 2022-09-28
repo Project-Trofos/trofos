@@ -259,7 +259,7 @@ async function removeProject(
   });
 
   if (project.course_id !== courseId || project.course_year !== courseYear || project.course_sem !== courseSem) {
-    throw Error('Project ID does not match!');
+    throw Error('This project does not belong to the course specified!');
   }
 
   const result = await prisma.project.update({

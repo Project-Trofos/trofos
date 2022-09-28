@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Form, message, Select } from 'antd';
 import { Project } from '../../api/project';
-import { useAddProjectToCourseMutation, useGetCoursesQuery } from '../../api/course';
+import { useAddProjectToCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
 
@@ -12,7 +12,7 @@ const { Option } = Select;
  */
 export default function ProjectAttachModal({ project }: { project: Project }) {
   const [addProjectToCourse] = useAddProjectToCourseMutation();
-  const { data: courses } = useGetCoursesQuery();
+  const { data: courses } = useGetAllCoursesQuery();
 
   const [form] = Form.useForm();
 
@@ -53,7 +53,7 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
 }
 
 function FormStep2(): JSX.Element {
-  const { data: courses } = useGetCoursesQuery();
+  const { data: courses } = useGetAllCoursesQuery();
 
   const courseOptions = useMemo(() => {
     const results: JSX.Element[] = [];

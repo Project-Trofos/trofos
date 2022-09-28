@@ -11,12 +11,13 @@ import {
   BadRequestError,
   getDefaultErrorRes,
 } from '../helpers/error';
+import { assertProjectNameIsValid } from '../helpers/error/assertions';
 
 type RequestBody = {
-  id?: string;
-  name?: string;
-  year?: string;
-  sem?: string;
+  courseId?: string;
+  courseName?: string;
+  courseYear?: string;
+  courseSem?: string;
   isPublic?: boolean;
   description?: string;
 };
@@ -27,7 +28,7 @@ async function getAll(req: express.Request, res: express.Response) {
 
     // If option is provided, it must be one of the following
     if (option && !['all', 'past', 'current'].includes(option)) {
-      throw new BadRequestError('Please provide a correct option.');
+      throw new BadRequestError('Please provide a correct option. option can only be all, past, or current.');
     }
 
     // Default to all
@@ -56,13 +57,20 @@ async function get(req: express.Request, res: express.Response) {
 
 async function create(req: express.Request, res: express.Response) {
   try {
-    const { id, year, sem, name, isPublic, description } = req.body as RequestBody;
+    const { courseId, courseYear, courseSem, courseName, isPublic, description } = req.body as RequestBody;
 
-    assertCourseYearIsNumber(year);
-    assertCourseSemIsNumber(sem);
-    assertCourseNameIsValid(name);
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+    assertCourseNameIsValid(courseName);
 
-    const result = await course.create(name, Number(year), Number(sem), id, isPublic, description);
+    const result = await course.create(
+      courseName,
+      Number(courseYear),
+      Number(courseSem),
+      courseId,
+      isPublic,
+      description,
+    );
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -71,18 +79,25 @@ async function create(req: express.Request, res: express.Response) {
 
 async function update(req: express.Request, res: express.Response) {
   try {
-    const { name, isPublic, description } = req.body as RequestBody;
+    const { courseName, isPublic, description } = req.body as RequestBody;
     const { courseId, courseYear, courseSem } = req.params;
 
     assertCourseIdIsValid(courseId);
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    if (!name && !isPublic && !description) {
+    if (!courseName && !isPublic && !description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
 
-    const result = await course.update(courseId, Number(courseYear), Number(courseSem), name, isPublic, description);
+    const result = await course.update(
+      courseId,
+      Number(courseYear),
+      Number(courseSem),
+      courseName,
+      isPublic,
+      description,
+    );
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -211,11 +226,11 @@ async function removeProject(req: express.Request, res: express.Response) {
 
 async function addProjectAndCourse(req: express.Request, res: express.Response) {
   type RequestBodyLocal = {
-    courseId: string;
-    courseYear: string;
-    courseSem: string;
-    courseName: string;
-    projectName: string;
+    courseId?: string;
+    courseYear?: string;
+    courseSem?: string;
+    courseName?: string;
+    projectName?: string;
     projectKey?: string;
     isProjectPublic?: boolean;
     isCoursePublic?: boolean;
@@ -238,13 +253,8 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
     assertCourseIdIsValid(courseId);
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
-    if (!projectName) {
-      throw new BadRequestError('Please provide a project name!');
-    }
-
-    if (!projectName) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid input!' });
-    }
+    assertProjectNameIsValid(projectName);
+    assertCourseNameIsValid(courseName);
 
     const result = await course.addProjectAndCourse(
       courseId,
