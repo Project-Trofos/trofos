@@ -16,9 +16,9 @@ const isAuthorizedRequest = (routeAction : Action | null) => async (req : expres
 
   try {
     const sessionInformation = await sessionService.getUserSession(sessionId);
-    const validRoleActions = await roleService.getRoleActions(sessionInformation.user_role_id);
+    const isValidAction = await roleService.isActionAllowed(sessionInformation.user_role_id, routeAction);
 
-    if (routeAction && !validRoleActions.includes(routeAction)) {
+    if (!isValidAction) {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
   } catch (e) {

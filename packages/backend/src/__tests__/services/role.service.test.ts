@@ -23,20 +23,28 @@ describe('role.service tests', () => {
     });
   });
 
-  describe('when the actions of a role are queried', () => {
-    it('should return all the actions associated with the role', async () => {
+  describe('when a role is queried with an action', () => {
+    it('should return true if the role is allowed to perform the action', async () => {
       const prismaResponseObject : ActionsOnRoles[] = [{
         role_id : 1,
         action : Action.create_course,
-      }, {
-        role_id : 1,
-        action : Action.delete_course,
       }];
-      const expectedResult : Action[] = [Action.create_course, Action.delete_course];
+      const expectedResult = true;
       prismaMock.actionsOnRoles.findMany.mockResolvedValueOnce(prismaResponseObject);
-      await expect(roleService.getRoleActions(1)).resolves.toEqual(expectedResult);
-            
-    });
+      await expect(roleService.isActionAllowed(1, Action.create_course)).resolves.toEqual(expectedResult);
+    })
+
+    it('should return false if the role is not allowed to perform the action', async () => {
+      const prismaResponseObject : ActionsOnRoles[] = [];
+      const expectedResult = false;
+      prismaMock.actionsOnRoles.findMany.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.isActionAllowed(1, Action.delete_course)).resolves.toEqual(expectedResult);
+    })
+
+    it('should return true if an action is not supplied', async () => {
+      const expectedResult = true;
+      await expect(roleService.isActionAllowed(1, null)).resolves.toEqual(expectedResult);
+    })
 
     // For now its impossible to have a role without actions
   });

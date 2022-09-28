@@ -9,11 +9,11 @@ import sessionService from '../../services/session.service';
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
-const roleServiceGeRoleActions = jest.spyOn(roleService, 'getRoleActions');
+const roleServiceIsActionAllowed = jest.spyOn(roleService, 'isActionAllowed');
 
 beforeEach(() => {
   sessionServiceGetUserSessionSpy.mockReset();
-  roleServiceGeRoleActions.mockReset();
+  roleServiceIsActionAllowed.mockReset();
 });
 
 
@@ -32,7 +32,7 @@ describe('auth.middleware tests', () => {
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(Action.read_course)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toBeCalledTimes(0);
-      expect(roleServiceGeRoleActions).toBeCalledTimes(0);
+      expect(roleServiceIsActionAllowed).toBeCalledTimes(0);
       expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
@@ -52,7 +52,7 @@ describe('auth.middleware tests', () => {
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(Action.read_course)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGeRoleActions).toBeCalledTimes(0);
+      expect(roleServiceIsActionAllowed).toBeCalledTimes(0);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     }); 
 
@@ -63,9 +63,9 @@ describe('auth.middleware tests', () => {
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
       };
-      const roleServiceResponseObject = [Action.create_course];
+      const roleServiceResponseObject = false;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
-      roleServiceGeRoleActions.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(roleServiceResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = {
         cookies : {
@@ -80,7 +80,7 @@ describe('auth.middleware tests', () => {
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(Action.read_course)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGeRoleActions).toHaveBeenCalledWith(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, Action.read_course);
       expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
@@ -91,9 +91,9 @@ describe('auth.middleware tests', () => {
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
       };
-      const roleServiceResponseObject : Action[] = [];
+      const roleServiceResponseObject = true;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
-      roleServiceGeRoleActions.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(roleServiceResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = {
         cookies : {
@@ -108,7 +108,7 @@ describe('auth.middleware tests', () => {
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(null)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGeRoleActions).toHaveBeenCalledWith(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, null);
       expect(mockNext).toHaveBeenCalled();
     });
 
@@ -119,9 +119,9 @@ describe('auth.middleware tests', () => {
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
       };
-      const roleServiceResponseObject = [Action.read_course];
+      const roleServiceResponseObject = true;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
-      roleServiceGeRoleActions.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(roleServiceResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = {
         cookies : {
@@ -136,7 +136,7 @@ describe('auth.middleware tests', () => {
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(Action.read_course)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGeRoleActions).toHaveBeenCalledWith(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, Action.read_course);
       expect(mockNext).toHaveBeenCalled();
     });
   });

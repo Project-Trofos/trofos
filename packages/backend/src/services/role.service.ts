@@ -12,17 +12,22 @@ async function getUserRoleId(userEmail: string) : Promise<number> {
   return userRoleId.role_id;
 }
 
-async function getRoleActions(roleId: number) : Promise<Action[]> {
+async function isActionAllowed(roleId: number, action : Action | null) : Promise<boolean> {
+  if (action === null) {
+    return true;
+  }
+
   const roleActions = await prisma.actionsOnRoles.findMany({
     where : {
       role_id : roleId,
+      action: action
     },
   });
     
-  return roleActions.map(role => role.action);
+  return roleActions.length !== 0;
 }
 
 export default {
   getUserRoleId,
-  getRoleActions,
+  isActionAllowed,
 };
