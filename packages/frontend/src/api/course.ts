@@ -18,7 +18,10 @@ export type Course = {
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllCourses: builder.query<Course[], void>({
-      query: () => 'course/',
+      query: () => ({
+        url :'course/',
+        credentials: 'include',
+      }),
       providesTags: (result, error, arg) => [
         'Course',
         ...(result ?? []).map(({ id, year, sem }): { type: 'Course'; id: string } => ({
@@ -46,6 +49,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           isPublic: course.public,
           description: course.description,
         },
+        credentials: 'include',
       }),
       invalidatesTags: ['Course'],
     }),
@@ -55,6 +59,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       query: (param) => ({
         url: `course/${param.year}/${param.sem}/${param.id}`,
         method: 'DELETE',
+        credentials: 'include',
       }),
       invalidatesTags: (result, error, { id, year, sem }) => [
         { type: 'Course', id: `${year}-${sem}-${id}` },
@@ -76,6 +81,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           projectId: param.projectId,
         },
         method: 'POST',
+        credentials: 'include',
       }),
       invalidatesTags: (result, error, { courseId, courseYear, courseSem, projectId }) => [
         { type: 'Course', id: `${courseYear}-${courseSem}-${courseId}` },
@@ -97,6 +103,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           projectId: param.projectId,
         },
         method: 'DELETE',
+        credentials: 'include',
       }),
       invalidatesTags: (result, error, { courseId, courseYear, courseSem, projectId }) => [
         { type: 'Course', id: `${courseYear}-${courseSem}-${courseId}` },
@@ -123,6 +130,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'course/project',
         method: 'POST',
         body,
+        credentials: 'include',
       }),
       invalidatesTags: ['Course', 'Project'],
     }),

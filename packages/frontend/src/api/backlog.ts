@@ -19,6 +19,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     getBacklogs: builder.query<Backlog[], number>({
       query: (projectId) => ({
         url: `backlog/listBacklogs/${projectId}`,
+        credentials: 'include',
       }),
       providesTags: ['Backlog'],
     }),
@@ -27,6 +28,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'backlog/newBacklog/',
         method: 'POST',
         body: backlog,
+        credentials: 'include',
       }),
       invalidatesTags: ['Backlog'],
     }),

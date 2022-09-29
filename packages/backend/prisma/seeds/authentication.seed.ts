@@ -1,20 +1,24 @@
+/* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 async function createUserSeed(prisma: PrismaClient) {
-  const userId = 1;
-  const userEmail = 'testUser@test.com';
-  const userPassword = 'testPassword';
-  const saltRounds = 10; // Default salt rounds in bcrypt documentation
-  const userPasswordHash = bcrypt.hashSync(userPassword, saltRounds);
-  const user = await prisma.user.create({
-    data : {
-      user_id: userId,
-      user_email: userEmail,
-      user_password_hash: userPasswordHash,
-    },
+  const users = await prisma.user.createMany({
+    data : [
+      {
+        user_id : 1,
+        user_email : 'testUser@test.com',
+        user_password_hash : bcrypt.hashSync('testPassword', 10),
+      },
+      {
+        user_id : 2,
+        user_email : 'testFaculty@test.com',
+        user_password_hash : bcrypt.hashSync('testPassword', 10),
+      },
+    ],
   });
-  console.log('created user %s', user);
+  
+  console.log('created user %s', users);
 }
 
 export { createUserSeed };

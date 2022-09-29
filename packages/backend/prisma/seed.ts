@@ -3,6 +3,7 @@ import { createUserSeed } from './seeds/authentication.seed';
 import { setupBacklogSeed } from './seeds/backlog.seed';
 import { createCourseSeed } from './seeds/course.seed';
 import { createProjectSeed } from './seeds/project.seed';
+import { createRoleSeed } from './seeds/roles.seed';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,7 @@ async function main() {
   await createCourseSeed(prisma);
   await createProjectSeed(prisma);
   setupBacklogSeed(prisma);
+  createRoleSeed(prisma);
 }
 
 main()

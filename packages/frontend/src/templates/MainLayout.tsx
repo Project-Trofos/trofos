@@ -9,7 +9,7 @@ import {
   QuestionCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
 import { useCurrentAndPastProjects } from '../api/project';
@@ -41,6 +41,7 @@ export default function MainLayout() {
   const { currentCourses: courses } = useCurrentAndPastCourses();
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Temporary until we implement a proper user auth/info flow
 
@@ -54,6 +55,7 @@ export default function MainLayout() {
       onClick={() => {
         logoutUser();
         dispatch(trofosApiSlice.util.resetApiState());
+        navigate('/');
       }}
     >
       Log Out
@@ -67,7 +69,8 @@ export default function MainLayout() {
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
-      getItem(
+        userInfo?.userRole === 1 
+        ? getItem(
         <Link onClick={(e) => e.stopPropagation()} to="/courses">
           Courses
         </Link>,
@@ -78,8 +81,9 @@ export default function MainLayout() {
           : courses.map((course) =>
               getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
             ),
-      ),
-      getItem(
+      ) : null,
+      userInfo
+      ? getItem(
         <Link onClick={(e) => e.stopPropagation()} to="/projects">
           Project
         </Link>,
@@ -90,9 +94,9 @@ export default function MainLayout() {
           : projects.map((project) =>
               getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
             ),
-      ),
+      ) : null ,
     ],
-    [projects, courses],
+    [projects, courses, userInfo],
   );
 
   const renderHeader = () => (
