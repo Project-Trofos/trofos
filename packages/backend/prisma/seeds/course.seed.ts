@@ -1,23 +1,29 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
+import { CURRENT_YEAR, CURRENT_SEM } from '../../src/helpers/currentTime';
 
 async function createCourseSeed(prisma: PrismaClient) {
-
   const courses = await prisma.course.createMany({
     data: [
       {
         id: 'course1_id',
         cname: 'course1',
+        year: CURRENT_YEAR,
+        sem: CURRENT_SEM,
         description: 'course1_description',
       },
       {
         id: 'course2_id',
         cname: 'course2',
+        year: CURRENT_YEAR,
+        sem: CURRENT_SEM,
         description: 'course2_description',
       },
       {
         id: 'course3_id',
         cname: 'course3',
+        year: CURRENT_YEAR - 1,
+        sem: CURRENT_SEM,
         description: 'course3_description',
       },
     ],
@@ -26,6 +32,4 @@ async function createCourseSeed(prisma: PrismaClient) {
   console.log('created courses %s', courses);
 }
 
-export {
-  createCourseSeed,
-};
+export { createCourseSeed };

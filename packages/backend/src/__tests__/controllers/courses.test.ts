@@ -1,14 +1,16 @@
 import StatusCodes from 'http-status-codes';
-import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { User, UsersOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
 import courseController from '../../controllers/course';
-
+import coursesData from '../mocks/courseData';
+import projectsData from '../mocks/projectData';
+import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
   create: jest.spyOn(course, 'create'),
-  getById: jest.spyOn(course, 'getById'),
+  getByPk: jest.spyOn(course, 'getByPk'),
   update: jest.spyOn(course, 'update'),
   remove: jest.spyOn(course, 'remove'),
   getUsers: jest.spyOn(course, 'getUsers'),
@@ -21,37 +23,20 @@ const spies = {
 };
 
 describe('course controller tests', () => {
-
-  afterEach(() => {    
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   // Mock data for users
-  const usersData: User[] = [
-    { user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' },
-  ];
-
-  // Mock data for projects
-  const projectsData: Project[] = [
-    { id: 1, pname: 'c1', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd1', public: false },
-    { id: 2, pname: 'c2', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd2', public: false },
-    { id: 3, pname: 'c3', created_at: new Date(Date.now()), course_id: null, pkey: null, description: 'd3', public: false },
-  ];
+  const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
   // Mock data for users on courses
   const usersCourseData: UsersOnCourses[] = [
-    { course_id: '1', user_id: 1, created_at: new Date(Date.now()) },
-  ];
-
-  // Mock data for courses
-  const coursesData: Course[] = [
-    { id: '1', cname: 'c1', created_at: new Date(Date.now()), description: 'd1', public: false },
-    { id: '2', cname: 'c2', created_at: new Date(Date.now()), description: 'd2', public: false },
-    { id: '3', cname: 'c3', created_at: new Date(Date.now()), description: 'd3', public: false },
+    { course_id: '1', course_year: 2022, course_sem: 1, user_id: 1, created_at: new Date(Date.now()) },
   ];
 
   describe('getAll', () => {
-    test('should return all courses', async () => {
+    it('should return all courses', async () => {
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
@@ -62,34 +47,89 @@ describe('course controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData));
     });
+
+    it('should return all past courses', async () => {
+      const pastCourses = coursesData.filter(
+        (c) => c.year < CURRENT_YEAR || (c.year === CURRENT_YEAR && c.sem < CURRENT_SEM),
+      );
+      spies.getAll.mockResolvedValueOnce(pastCourses);
+      const mockReq = createRequest({
+        body: {
+          option: 'past',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(pastCourses));
+    });
+
+    it('should return all current courses', async () => {
+      const currentCourses = coursesData.filter((c) => c.year === CURRENT_YEAR && c.sem === CURRENT_SEM);
+      spies.getAll.mockResolvedValueOnce(currentCourses);
+      const mockReq = createRequest({
+        body: {
+          option: 'current',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(currentCourses));
+    });
+
+    it('should throw if option is incorrect', async () => {
+      const mockReq = createRequest({
+        body: {
+          option: 'some option',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('get', () => {
-    test('should return course', async () => {
-      spies.getById.mockResolvedValueOnce(coursesData[0]);
+    it('should return course', async () => {
+      spies.getByPk.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
 
       await courseController.get(mockReq, mockRes);
 
-      expect(spies.getById).toHaveBeenCalled();
+      expect(spies.getByPk).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
   });
 
   describe('create', () => {
-    test('should return course created', async () => {
+    it('should return course created', async () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
-      const mockReq = createRequest({ 
-        body: { 
-          name: coursesData[0].cname,
+      const mockReq = createRequest({
+        body: {
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
+          courseName: coursesData[0].cname,
           description: coursesData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -100,12 +140,12 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    test('should return bad request if name is not provided', async () => {
+    it('should return bad request if name is not provided', async () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
-      const mockReq = createRequest({ 
-        body: { 
+      const mockReq = createRequest({
+        body: {
           description: coursesData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -117,16 +157,18 @@ describe('course controller tests', () => {
   });
 
   describe('update', () => {
-    test('should return course updated', async () => {
+    it('should return course updated', async () => {
       spies.update.mockResolvedValueOnce(coursesData[0]);
-      const mockReq = createRequest({ 
+      const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: { 
+        body: {
           name: coursesData[0].cname,
           description: coursesData[0].description,
-        }, 
+        },
       });
       const mockRes = createResponse();
 
@@ -137,13 +179,14 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    test('should return bad request if update fields are not provided', async () => {
-      const mockReq = createRequest({ 
+    it('should return bad request if update fields are not provided', async () => {
+      const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: { 
-        }, 
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -155,11 +198,13 @@ describe('course controller tests', () => {
   });
 
   describe('get', () => {
-    test('should return course', async () => {
+    it('should return course', async () => {
       spies.remove.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -173,11 +218,13 @@ describe('course controller tests', () => {
   });
 
   describe('getUsers', () => {
-    test('should return all users', async () => {
+    it('should return all users', async () => {
       spies.getUsers.mockResolvedValueOnce(usersData);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -191,11 +238,13 @@ describe('course controller tests', () => {
   });
 
   describe('addUser', () => {
-    test('should return added user relation', async () => {
+    it('should return added user relation', async () => {
       spies.addUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           userId: usersData[0].user_id.toString(),
@@ -210,14 +259,15 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(usersCourseData[0]));
     });
 
-    test('should return error if no userId given', async () => {
+    it('should return error if no userId given', async () => {
       spies.addUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -229,11 +279,13 @@ describe('course controller tests', () => {
   });
 
   describe('removeUser', () => {
-    test('should return removed user relation', async () => {
+    it('should return removed user relation', async () => {
       spies.removeUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           userId: usersData[0].user_id.toString(),
@@ -248,14 +300,15 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(usersCourseData[0]));
     });
 
-    test('should return error if no userId given', async () => {
+    it('should return error if no userId given', async () => {
       spies.removeUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -267,11 +320,13 @@ describe('course controller tests', () => {
   });
 
   describe('getProjects', () => {
-    test('should return all projects', async () => {
+    it('should return all projects', async () => {
       spies.getProjects.mockResolvedValueOnce(projectsData);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -285,11 +340,13 @@ describe('course controller tests', () => {
   });
 
   describe('addProject', () => {
-    test('should return added project', async () => {
+    it('should return added project', async () => {
       spies.addProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           projectId: projectsData[0].id.toString(),
@@ -304,13 +361,14 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no projectId given', async () => {
+    it('should return error if no projectId given', async () => {
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -322,11 +380,13 @@ describe('course controller tests', () => {
   });
 
   describe('removeProject', () => {
-    test('should return removed project', async () => {
+    it('should return removed project', async () => {
       spies.removeProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           projectId: projectsData[0].id.toString(),
@@ -341,14 +401,15 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no projectId given', async () => {
+    it('should return error if no projectId given', async () => {
       spies.removeProject.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
         params: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
         },
-        body: {
-        },
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -359,15 +420,15 @@ describe('course controller tests', () => {
     });
   });
 
-
   describe('addProjectAndCourse', () => {
-    test('should return added course', async () => {
+    it('should return added course', async () => {
       spies.addProjectAndCourse.mockResolvedValueOnce(projectsData[0]);
       const mockReq = createRequest({
-        params: {
-        },
+        params: {},
         body: {
-          courseId: coursesData[0].id.toString(),
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year.toString(),
+          courseSem: coursesData[0].sem.toString(),
           courseName: coursesData[0].cname.toString(),
           projectName: projectsData[0].pname.toString(),
         },
@@ -381,12 +442,10 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
     });
 
-    test('should return error if no courseId given', async () => {
+    it('should return error if no courseId given', async () => {
       const mockReq = createRequest({
-        params: {
-        },
-        body: {
-        },
+        params: {},
+        body: {},
       });
       const mockRes = createResponse();
 
@@ -396,5 +455,4 @@ describe('course controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });
-
 });

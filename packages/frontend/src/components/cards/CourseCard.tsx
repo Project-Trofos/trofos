@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
-import { Card, Dropdown, Menu, message } from 'antd';
+import { Card, Dropdown, Menu, message, Space, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 import { Course, useRemoveCourseMutation } from '../../api/course';
 import { confirmDeleteCourse } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
-
 
 const { Meta } = Card;
 
@@ -21,12 +20,12 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
   const handleOnClick = useCallback(() => {
     try {
       confirmDeleteCourse(async () => {
-        await removeCourse({ id: course.id }).unwrap();
+        await removeCourse({ ...course }).unwrap();
       });
     } catch (err) {
       message.error(getErrorMessage(err));
     }
-  }, [course.id, removeCourse]);
+  }, [course, removeCourse]);
 
   const menu = (
     <Menu
@@ -52,7 +51,12 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
     >
       <Meta
         title={<Link to={`/course/${course.id}`}>{course.cname}</Link>}
-        description={course.id ?? 'No id'}
+        description={
+          <>
+            <Tag color="green">{course.id}</Tag>
+            <Tag>{`${course.year} Semester ${course.sem}`}</Tag>
+          </>
+        }
       />
     </Card>
   );

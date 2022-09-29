@@ -1,29 +1,72 @@
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 
-
-async function getAll(): Promise<Course[]> {
-  const result = await prisma.course.findMany();
-
+async function getAll(option?: 'current' | 'past' | 'all'): Promise<Course[]> {
+  let result;
+  if (option === 'current') {
+    result = await prisma.course.findMany({
+      where: {
+        year: CURRENT_YEAR,
+        sem: CURRENT_SEM,
+      },
+    });
+  } else if (option === 'past') {
+    // year < current_year OR year == current_year and sem < current_sem
+    result = await prisma.course.findMany({
+      where: {
+        OR: [
+          {
+            AND: {
+              year: {
+                lt: CURRENT_YEAR,
+              },
+            },
+          },
+          {
+            AND: {
+              year: CURRENT_YEAR,
+              sem: {
+                lt: CURRENT_SEM,
+              },
+            },
+          },
+        ],
+      },
+    });
+  } else {
+    result = await prisma.course.findMany();
+  }
   return result;
 }
 
-
-async function getById(id: string): Promise<Course> {
+async function getByPk(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.findUniqueOrThrow({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
   });
 
   return result;
 }
 
-
-async function create(name: string, isPublic?: boolean, description?: string, id?: string): Promise<Course> {
+async function create(
+  name: string,
+  year: number,
+  sem: number,
+  id?: string,
+  isPublic?: boolean,
+  description?: string,
+): Promise<Course> {
   const result = await prisma.course.create({
     data: {
       id,
+      year,
+      sem,
       cname: name,
       public: isPublic,
       description,
@@ -33,11 +76,21 @@ async function create(name: string, isPublic?: boolean, description?: string, id
   return result;
 }
 
-
-async function update(id: string, name?: string, isPublic?: boolean, description?: string): Promise<Course> {
+async function update(
+  id: string,
+  year: number,
+  sem: number,
+  name?: string,
+  isPublic?: boolean,
+  description?: string,
+): Promise<Course> {
   const result = await prisma.course.update({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
     data: {
       cname: name,
@@ -49,22 +102,26 @@ async function update(id: string, name?: string, isPublic?: boolean, description
   return result;
 }
 
-
-async function remove(id: string): Promise<Course> {
+async function remove(id: string, year: number, sem: number): Promise<Course> {
   const result = await prisma.course.delete({
     where: {
-      id,
+      id_year_sem: {
+        id,
+        year,
+        sem,
+      },
     },
   });
 
   return result;
 }
 
-
-async function getUsers(id: string): Promise<User[]> {
+async function getUsers(id: string, year: number, sem: number): Promise<User[]> {
   const result = await prisma.usersOnCourses.findMany({
     where: {
       course_id: id,
+      course_year: year,
+      course_sem: sem,
     },
     select: {
       user: true,
@@ -74,11 +131,17 @@ async function getUsers(id: string): Promise<User[]> {
   return result.map((x) => x.user);
 }
 
-
-async function addUser(courseId: string, userId: number): Promise<UsersOnCourses> {
+async function addUser(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  userId: number,
+): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
+      course_year: courseYear,
+      course_sem: courseSem,
       user_id: userId,
     },
   });
@@ -86,12 +149,18 @@ async function addUser(courseId: string, userId: number): Promise<UsersOnCourses
   return result;
 }
 
-
-async function removeUser(courseId: string, userId: number): Promise<UsersOnCourses> {
+async function removeUser(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  userId: number,
+): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.delete({
     where: {
-      course_id_user_id: {
+      course_id_course_year_course_sem_user_id: {
         course_id: courseId,
+        course_year: courseYear,
+        course_sem: courseSem,
         user_id: userId,
       },
     },
@@ -100,22 +169,32 @@ async function removeUser(courseId: string, userId: number): Promise<UsersOnCour
   return result;
 }
 
-
-async function getProjects(id: string): Promise<Project[]> {
+// Get project by any combination of id, year or sem
+async function getProjects(id?: string, year?: number, sem?: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
       course_id: id,
+      course_year: year,
+      course_sem: sem,
     },
   });
 
   return result;
 }
 
-
 // Add project and link to course, create course if necessary
-async function addProjectAndCourse(courseId: string, courseName: string, 
-  projectName: string, projectKey?: string, isCoursePublic?: boolean, isProjectPublic?: boolean, projectDesc?: string): Promise<Project> {
-
+async function addProjectAndCourse(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  courseName: string,
+  projectName: string,
+  projectKey?: string,
+  isCoursePublic?: boolean,
+  isProjectPublic?: boolean,
+  projectDesc?: string,
+  courseDesc?: string,
+): Promise<Project> {
   const result = prisma.project.create({
     data: {
       pname: projectName,
@@ -125,12 +204,19 @@ async function addProjectAndCourse(courseId: string, courseName: string,
       course: {
         connectOrCreate: {
           where: {
-            id: courseId,
+            id_year_sem: {
+              id: courseId,
+              year: courseYear,
+              sem: courseSem,
+            },
           },
           create: {
             id: courseId,
+            year: courseYear,
+            sem: courseSem,
             cname: courseName,
             public: isProjectPublic,
+            description: courseDesc,
           },
         },
       },
@@ -140,32 +226,42 @@ async function addProjectAndCourse(courseId: string, courseName: string,
   return result;
 }
 
-
 // Add project to course
-async function addProject(courseId: string, projectId: number): Promise<Project> {
+async function addProject(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  projectId: number,
+): Promise<Project> {
   const result = await prisma.project.update({
     where: {
       id: projectId,
     },
     data: {
       course_id: courseId,
+      course_year: courseYear,
+      course_sem: courseSem,
     },
   });
 
   return result;
 }
 
-
 // Remove project from course
-async function removeProject(courseId: string, projectId: number): Promise<Project> {
+async function removeProject(
+  courseId: string,
+  courseYear: number,
+  courseSem: number,
+  projectId: number,
+): Promise<Project> {
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
     },
   });
 
-  if (project.course_id !== courseId) {
-    throw Error('Project ID does not match!');
+  if (project.course_id !== courseId || project.course_year !== courseYear || project.course_sem !== courseSem) {
+    throw Error('This project does not belong to the course specified!');
   }
 
   const result = await prisma.project.update({
@@ -174,16 +270,17 @@ async function removeProject(courseId: string, projectId: number): Promise<Proje
     },
     data: {
       course_id: null,
+      course_year: null,
+      course_sem: null,
     },
   });
 
   return result;
 }
 
-
 export default {
-  create, 
-  getById,
+  create,
+  getByPk,
   getAll,
   update,
   remove,

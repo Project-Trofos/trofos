@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test project creation modal should render modal with correct fields 1`] = `
+exports[`test course creation modal should render modal with correct fields 1`] = `
 <body>
   <div>
     <button
@@ -182,6 +182,82 @@ exports[`test project creation modal should render modal with correct fields 1`]
                             type="text"
                             value=""
                           />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="multi-step-modal-form_courseYear"
+                        title="Academic Year"
+                      >
+                        Academic Year
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-20 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <input
+                            id="multi-step-modal-form_courseYear"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="multi-step-modal-form_courseSem"
+                        title="Semester"
+                      >
+                        Semester
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-20 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <select
+                            id="multi-step-modal-form_courseSem"
+                          >
+                            <option>
+                              1
+                            </option>
+                            <option>
+                              2
+                            </option>
+                          </select>
                         </div>
                       </div>
                     </div>
