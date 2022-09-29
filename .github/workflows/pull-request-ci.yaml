@@ -36,14 +36,15 @@ jobs:
           npm run prisma-migrate-ci
       - name: Run test
         run: npm run test
-      - name: Start backend and frontend
-        run: npm start &
-      - name: Wait for backend and frontend to start
-        run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
-      - name: Run e2e test
-        run: |-
-          cd packages/backend
-          npm run test-e2e
+      # e2e test currently removed from CI as it is unstable
+      # - name: Start backend and frontend
+      #   run: npm start &
+      # - name: Wait for backend and frontend to start
+      #   run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
+      # - name: Run e2e test
+      #   run: |-
+      #     cd packages/backend
+      #     npm run test-e2e
       - name: Clean up container
         if: always()
         run: npm run cleanup:ci

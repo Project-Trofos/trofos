@@ -1,13 +1,13 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import '../../mocks/antd';
 
 import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
 
-describe('test project creation modal', () => {
-
+describe('test course creation modal', () => {
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
 
@@ -18,9 +18,13 @@ describe('test project creation modal', () => {
 
   // Clean up after the tests are finished.
   afterAll(() => server.close());
-  
+
   const setup = () => {
-    const { baseElement, debug } = render(<Provider store={store}><CourseCreationModal /></Provider>);
+    const { baseElement, debug } = render(
+      <Provider store={store}>
+        <CourseCreationModal />
+      </Provider>,
+    );
     return { baseElement, debug };
   };
 
@@ -39,7 +43,6 @@ describe('test project creation modal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-
   it('should be required course name', async () => {
     setup();
 
@@ -49,9 +52,8 @@ describe('test project creation modal', () => {
     const finishButton = await screen.findByText(/finish/i);
     fireEvent.click(finishButton);
 
-    await screen.findByText('Please input your course\'s name!');
+    await screen.findByText("Please input your course's name!");
   });
-
 
   it('should submit correctly if fields are typed in', async () => {
     setup();
@@ -62,10 +64,15 @@ describe('test project creation modal', () => {
     const input = screen.getByLabelText('Name');
     fireEvent.change(input, { target: { value: 'name' } });
 
+    const yearInput = screen.getByLabelText('Academic Year');
+    fireEvent.change(yearInput, { target: { value: '2022' } });
+
+    const semesterInput = screen.getByLabelText('Semester');
+    fireEvent.change(semesterInput, { target: { value: '1' } });
+
     fireEvent.click(finishButton);
 
     // Modal is closed
     await waitFor(() => expect(screen.queryByText('Please input the details for your course.')).toBeNull());
   });
-
 });

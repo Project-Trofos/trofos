@@ -1,32 +1,34 @@
 import express from 'express';
+import { Action } from '@prisma/client';
 import project from '../controllers/project';
+import { isAuthorizedRequest } from '../middleware/auth.middleware';
 
 
 const router = express.Router();
 
 // Get all projects
-router.get('/', project.getAll);
+router.get('/', isAuthorizedRequest(Action.read_project), project.getAll);
 
 // Create project
-router.post('/', project.create);
+router.post('/', isAuthorizedRequest(Action.create_project), project.create);
 
 // Get project by projectId
-router.get('/:projectId', project.get);
+router.get('/:projectId', isAuthorizedRequest(Action.read_project), project.get);
 
 // Update project by projectId
-router.put('/:projectId', project.update);
+router.put('/:projectId', isAuthorizedRequest(Action.update_project), project.update);
 
 // Delete project by projectId
-router.delete('/:projectId', project.remove);
+router.delete('/:projectId', isAuthorizedRequest(Action.delete_project), project.remove);
 
 // Get all users of a project
-router.get('/:projectId/user', project.getUsers);
+router.get('/:projectId/user', isAuthorizedRequest(Action.read_project), project.getUsers);
 
 // Add a user to a project
-router.post('/:projectId/user', project.addUser);
+router.post('/:projectId/user', isAuthorizedRequest(Action.update_project), project.addUser);
 
 // Remove a user from a project
-router.delete('/:projectId/user', project.removeUser);
+router.delete('/:projectId/user', isAuthorizedRequest(Action.update_project), project.removeUser);
 
 
 export default router;

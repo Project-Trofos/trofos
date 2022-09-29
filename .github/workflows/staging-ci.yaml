@@ -28,14 +28,15 @@ jobs:
         run: docker compose -f docker-compose-ci.yml build backend
       - name: Build and test frontend
         run: docker compose -f docker-compose-ci.yml build frontend
-      - name: Run backend and frontend containers
-        run: |- 
-          docker run --rm --network host --name backend -d trofos_backend
-          docker run --rm --network host --name frontend -d trofos_frontend
-      - name: Wait for backend and frontend containers to start
-        run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
-      - name: Run e2e test
-        run: docker exec backend npm run test-e2e
+      # e2e test currently removed from CI as it is unstable
+      # - name: Run backend and frontend containers
+      #   run: |- 
+      #     docker run --rm --network host --name backend -d trofos_backend
+      #     docker run --rm --network host --name frontend -d trofos_frontend
+      # - name: Wait for backend and frontend containers to start
+      #   run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
+      # - name: Run e2e test
+      #   run: docker exec backend npm run test-e2e
       - name: Clean up containers
         if: always()
         run: npm run cleanup:ci

@@ -1,30 +1,31 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
-import { BrowserRouter, Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import ProjectTable from './ProjectTable';
 import store from '../../app/store';
 import server from '../../mocks/server';
 
 describe('test ProjectTable', () => {
-
   beforeAll(() => server.listen());
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
   const mockProjects = [
-    { 
-      'id':1, 
-      'pname':'project1', 
-      'pkey':null,
-      'description':'project1_description', 
-      'course_id':'CS3203',
-      'public':false,
-      'created_at':'2022-09-15T01:58:01.735Z',
+    {
+      id: 1,
+      pname: 'project1',
+      pkey: null,
+      description: 'project1_description',
+      course_id: 'CS3203',
+      course_year: 2022,
+      course_sem: 1,
+      public: false,
+      created_at: '2022-09-15T01:58:01.735Z',
     },
   ];
-  
+
   const setup = () => {
     const { baseElement, debug } = render(
       <BrowserRouter>
@@ -49,5 +50,4 @@ describe('test ProjectTable', () => {
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
   });
-
 });

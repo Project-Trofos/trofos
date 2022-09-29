@@ -1,25 +1,22 @@
 import React from 'react';
-import { Typography, Row, Col } from 'antd';
+import { Typography, Row, Col, Space, Tabs } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
-import { useGetAllCoursesQuery } from '../api/course';
+import { useCurrentAndPastCourses } from '../api/course';
 import CourseCard from '../components/cards/CourseCard';
 
+import './Courses.css';
 
 const { Title, Paragraph } = Typography;
 
 export default function CoursesPage(): JSX.Element {
-  const { data: courses, isLoading } = useGetAllCoursesQuery();
+  const { data: courses, currentCourses, pastCourses, isLoading } = useCurrentAndPastCourses();
 
   if (isLoading) {
-    return (
-      <main style={{ margin: '48px' }}>
-        Loading...
-      </main>
-    );
+    return <main style={{ margin: '48px' }}>Loading...</main>;
   }
-  
-  if (courses === undefined || courses.length === 0) {
+
+  if (!currentCourses || !pastCourses || !courses || courses.length === 0) {
     return (
       <main style={{ margin: '48px' }}>
         <Title>Courses</Title>
@@ -30,19 +27,39 @@ export default function CoursesPage(): JSX.Element {
   }
 
   return (
-    <main style={{ margin: '48px' }}>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', alignItems: 'center' }}>
-        <Title>Courses</Title>
+    <main style={{ padding: '48px' }}>
+      <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
+        <Title style={{ margin: 0 }}>Courses</Title>
         <CourseCreationModal />
-      </div>
-
-      <Row gutter={[16, 16]} wrap>
-        {courses.map((course) => (
-          <Col key={course.id}>
-            <CourseCard course={course} />
-          </Col>
-        ))}
-      </Row>
+      </Space>
+      <Tabs>
+        <Tabs.TabPane tab="Current Courses" key="current-courses">
+          {currentCourses.length === 0 ? (
+            'There are no current courses'
+          ) : (
+            <Row gutter={[16, 16]} wrap>
+              {currentCourses.map((course) => (
+                <Col key={`${course.year}-${course.sem}-${course.id}`}>
+                  <CourseCard course={course} />
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Past Courses" key="past-courses">
+          {pastCourses.length === 0 ? (
+            'There are no past courses'
+          ) : (
+            <Row gutter={[16, 16]} wrap>
+              {pastCourses.map((course) => (
+                <Col key={`${course.year}-${course.sem}-${course.id}`}>
+                  <CourseCard course={course} />
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Tabs.TabPane>
+      </Tabs>
     </main>
   );
 }

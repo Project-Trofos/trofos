@@ -1,51 +1,13 @@
 import React from 'react';
-import { fireEvent, getByText, queryByText, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import '../../mocks/antd';
 
-import { Select as AntdSelect } from 'antd';
 import ProjectCreationModal from './ProjectCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
 
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd');
-
-  function Select(props: React.ComponentProps<typeof AntdSelect>) {
-
-    const { mode, value, defaultValue, className, onChange, disabled, children } = props;
-
-    const multiple = ['tags', 'multiple'].includes(mode ?? '');
-
-    return (
-      <select
-        value={value as React.SelectHTMLAttributes<HTMLSelectElement>['value']}
-        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLSelectElement>['defaultValue']}
-        multiple={multiple}
-        disabled={disabled}
-        className={className}
-        onChange={e => {
-          if (onChange) {
-            onChange(multiple ? Array.from(e.target.selectedOptions).map((option) => option.value) : e.target.value, {});
-          }
-        }}
-      >
-        {children}
-      </select>
-    );
-  }
-
-  Select.Option = function ({ children, ...otherProps }: { children: React.ReactNode }) {
-    return <option {...otherProps}>{children}</option>;
-  };
-  Select.OptGroup = function ({ children, ...otherProps }: { children: React.ReactNode }) {
-    return <optgroup {...otherProps}>{children}</optgroup>;
-  };
-
-  return { ...antd, Select };
-});
-
 describe('test ProjectCreationModal', () => {
-
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
 
@@ -58,7 +20,11 @@ describe('test ProjectCreationModal', () => {
   afterAll(() => server.close());
 
   const setup = async () => {
-    const { baseElement, debug } = render(<Provider store={store}><ProjectCreationModal /></Provider>);
+    const { baseElement, debug } = render(
+      <Provider store={store}>
+        <ProjectCreationModal />
+      </Provider>,
+    );
 
     return { baseElement, debug };
   };
@@ -94,8 +60,7 @@ describe('test ProjectCreationModal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-
-  it('should be require project name', async () => {
+  it('should require project name', async () => {
     await setup();
 
     const button = screen.getByText('Create Project');
@@ -104,7 +69,7 @@ describe('test ProjectCreationModal', () => {
     const nextButton = await screen.findByText('Next');
     fireEvent.click(nextButton);
 
-    await screen.findByText('Please input your project\'s name!');
+    await screen.findByText("Please input your project's name!");
   });
 
   it('should be able to go to second step', async () => {
@@ -122,16 +87,19 @@ describe('test ProjectCreationModal', () => {
     await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
   });
 
-  // Can't get this test to work
   it('should allow choosing a course from existing courses', async () => {
     await goToSecondStep();
     const segment = screen.getByText(/existing/i);
     fireEvent.click(segment);
 
-    const input = await screen.findByRole('combobox');
-    fireEvent.click(input);
+    const courseInput = await screen.findByLabelText('Course');
+    fireEvent.change(courseInput, { target: { value: 'CS3203' } });
 
-    fireEvent.change(input, { target: { value: 'CS3203' } });
+    const yearInput = await screen.findByLabelText('Academic Year');
+    fireEvent.change(yearInput, { target: { value: '2022' } });
+
+    const semInput = await screen.findByLabelText('Semester');
+    fireEvent.change(semInput, { target: { value: '1' } });
 
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
@@ -151,11 +119,16 @@ describe('test ProjectCreationModal', () => {
     const nameInput = screen.getByLabelText('Course Name');
     fireEvent.change(nameInput, { target: { value: 'name' } });
 
+    const yearInput = screen.getByLabelText('Academic Year');
+    fireEvent.change(yearInput, { target: { value: '2022' } });
+
+    const semesterInput = screen.getByLabelText('Semester');
+    fireEvent.change(semesterInput, { target: { value: '1' } });
+
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
-    
-    // Modal is closed
-    await waitFor(() => expect(screen.queryByText('You can attach this project to a course.')).toBeNull());
-  });
 
+    // Modal is closed
+    await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
+  });
 });
