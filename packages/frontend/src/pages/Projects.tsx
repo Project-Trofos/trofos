@@ -1,25 +1,20 @@
 import React from 'react';
-import { Typography, Row, Col } from 'antd';
+import { Typography, Row, Col, Tabs, Space } from 'antd';
 
 import ProjectCard from '../components/cards/ProjectCard';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
-import { useGetAllProjectsQuery } from '../api/project';
-
+import { useCurrentAndPastProjects } from '../api/project';
 
 const { Title, Paragraph } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
-  const { data: projects, isLoading } = useGetAllProjectsQuery();
+  const { data: projects, currentProjects, pastProjects, isLoading } = useCurrentAndPastProjects();
 
   if (isLoading) {
-    return (
-      <main style={{ margin: '48px' }}>
-        Loading...
-      </main>
-    );
+    return <main style={{ margin: '48px' }}>Loading...</main>;
   }
-  
-  if (projects === undefined || projects.length === 0) {
+
+  if (!currentProjects || !pastProjects || projects === undefined || projects.length === 0) {
     return (
       <main style={{ margin: '48px' }}>
         <Title>Projects</Title>
@@ -31,18 +26,39 @@ export default function ProjectsPage(): JSX.Element {
 
   return (
     <main style={{ margin: '48px' }}>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', alignItems: 'center' }}>
+      <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
         <Title>Projects</Title>
         <ProjectCreationModal />
-      </div>
+      </Space>
 
-      <Row gutter={[16, 16]} wrap>
-        {projects.map((project) => (
-          <Col key={project.id}>
-            <ProjectCard project={project} />
-          </Col>
-        ))}
-      </Row>
+      <Tabs>
+        <Tabs.TabPane tab="Current Projects" key="current-courses">
+          {currentProjects.length === 0 ? (
+            'There are no current projects'
+          ) : (
+            <Row gutter={[16, 16]} wrap>
+              {currentProjects.map((project) => (
+                <Col key={project.id}>
+                  <ProjectCard project={project} />
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Past Projects" key="past-courses">
+          {pastProjects.length === 0 ? (
+            'There are no past projects'
+          ) : (
+            <Row gutter={[16, 16]} wrap>
+              {pastProjects.map((project) => (
+                <Col key={project.id}>
+                  <ProjectCard project={project} />
+                </Col>
+              ))}
+            </Row>
+          )}
+        </Tabs.TabPane>
+      </Tabs>
     </main>
   );
 }

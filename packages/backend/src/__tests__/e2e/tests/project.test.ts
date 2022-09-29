@@ -2,7 +2,7 @@ import { Browser, Builder, WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import HomePage from '../pages/HomePage';
 
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 
 let driver: WebDriver;
 
@@ -14,7 +14,7 @@ beforeEach(async () => {
   } else {
     driver = await new Builder().forBrowser(Browser.CHROME).build();
   }
-  driver.manage().setTimeouts({ implicit : 10000 });
+  driver.manage().setTimeouts({ implicit : 5000 });
 });
 
 afterEach(async () => {

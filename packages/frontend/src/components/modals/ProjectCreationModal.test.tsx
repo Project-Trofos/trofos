@@ -1,13 +1,13 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import '../../mocks/antd';
 
 import ProjectCreationModal from './ProjectCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
 
 describe('test ProjectCreationModal', () => {
-
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
 
@@ -20,13 +20,17 @@ describe('test ProjectCreationModal', () => {
   afterAll(() => server.close());
 
   const setup = async () => {
-    const { baseElement, debug } = render(<Provider store={store}><ProjectCreationModal /></Provider>);
+    const { baseElement, debug } = render(
+      <Provider store={store}>
+        <ProjectCreationModal />
+      </Provider>,
+    );
 
     return { baseElement, debug };
   };
 
   const goToSecondStep = async () => {
-    await setup();
+    const setupData = await setup();
     const button = screen.getByText('Create Project');
     fireEvent.click(button);
 
@@ -37,6 +41,8 @@ describe('test ProjectCreationModal', () => {
     fireEvent.click(nextButton);
 
     await screen.findByText('You can attach this project to a course.');
+
+    return setupData;
   };
 
   it('should render modal with correct fields', async () => {
@@ -54,8 +60,7 @@ describe('test ProjectCreationModal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-
-  it('should be require project name', async () => {
+  it('should require project name', async () => {
     await setup();
 
     const button = screen.getByText('Create Project');
@@ -64,7 +69,7 @@ describe('test ProjectCreationModal', () => {
     const nextButton = await screen.findByText('Next');
     fireEvent.click(nextButton);
 
-    await screen.findByText('Please input your project\'s name!');
+    await screen.findByText("Please input your project's name!");
   });
 
   it('should be able to go to second step', async () => {
@@ -82,16 +87,19 @@ describe('test ProjectCreationModal', () => {
     await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
   });
 
-  // Can't get this test to work
-  it.skip('should allow choosing a course from existing courses', async () => {
+  it('should allow choosing a course from existing courses', async () => {
     await goToSecondStep();
     const segment = screen.getByText(/existing/i);
     fireEvent.click(segment);
 
-    const select = screen.getByLabelText('Course');
+    const courseInput = await screen.findByLabelText('Course');
+    fireEvent.change(courseInput, { target: { value: 'CS3203' } });
 
-    // ? I can't change the course
-    fireEvent.change(select, { value: 'CS3203' });
+    const yearInput = await screen.findByLabelText('Academic Year');
+    fireEvent.change(yearInput, { target: { value: '2022' } });
+
+    const semInput = await screen.findByLabelText('Semester');
+    fireEvent.change(semInput, { target: { value: '1' } });
 
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
@@ -111,11 +119,16 @@ describe('test ProjectCreationModal', () => {
     const nameInput = screen.getByLabelText('Course Name');
     fireEvent.change(nameInput, { target: { value: 'name' } });
 
+    const yearInput = screen.getByLabelText('Academic Year');
+    fireEvent.change(yearInput, { target: { value: '2022' } });
+
+    const semesterInput = screen.getByLabelText('Semester');
+    fireEvent.change(semesterInput, { target: { value: '1' } });
+
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
-    
-    // Modal is closed
-    await waitFor(() => expect(screen.queryByText('You can attach this project to a course.')).toBeNull());
-  });
 
+    // Modal is closed
+    await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
+  });
 });

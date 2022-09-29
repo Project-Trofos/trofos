@@ -6,7 +6,13 @@
   },
   "extends": ["eslint:recommended", "airbnb", "prettier"],
   "rules": {
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "react/jsx-props-no-spreading": [
+      1,
+      {
+        "html": "ignore"
+      }
+    ]
   },
   "overrides": [
     {
@@ -16,7 +22,7 @@
         "project": "./tsconfig.json"
       },
       "plugins": ["@typescript-eslint"],
-      "extends": ["plugin:@typescript-eslint/recommended", "airbnb-typescript"]
+      "extends": ["plugin:@typescript-eslint/recommended", "airbnb-typescript", "prettier"]
     }
   ]
 }

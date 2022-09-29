@@ -38,6 +38,4 @@ async function createProjectSeed(prisma: PrismaClient) {
   console.log('created usersOnProject %s', usersOnProject);
 }
 
-export {
-  createProjectSeed,
-};
+export { createProjectSeed };

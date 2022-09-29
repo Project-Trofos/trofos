@@ -1,10 +1,11 @@
 import React from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
+import { getErrorMessage } from '../../helpers/error';
 
 /**
  * Prompt for confirmation.
- * 
+ *
  * @param content confirmation prompt
  * @param onOk callback function after user clicks ok
  * @param onCancel callback function after user clicks cancel
@@ -15,7 +16,13 @@ export default function confirm(content: string, onOk: () => Promise<void>, onCa
     title: 'Confirm',
     icon: <ExclamationCircleOutlined />,
     content,
-    onOk,
+    onOk: async () => {
+      try {
+        await onOk();
+      } catch (e) {
+        message.error(getErrorMessage(e));
+      }
+    },
     onCancel,
   });
 }
@@ -24,7 +31,10 @@ export default function confirm(content: string, onOk: () => Promise<void>, onCa
  * Shows a modal with prompt for deleting a course.
  */
 export function confirmDeleteCourse(onOk: () => Promise<void>) {
-  return confirm('Are you sure you want to delete this course? The projects under this course will become independent projects.', onOk);
+  return confirm(
+    'Are you sure you want to delete this course? The projects under this course will become independent projects.',
+    onOk,
+  );
 }
 
 /**

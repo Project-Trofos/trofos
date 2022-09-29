@@ -1,14 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Space, Tabs, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Space, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useGetAllCoursesQuery, useRemoveCourseMutation } from '../api/course';
 import ProjectTable from '../components/tables/ProjectTable';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useGetAllProjectsQuery } from '../api/project';
-import { getErrorMessage } from '../helpers/error';
-
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
   return (
@@ -30,28 +28,27 @@ export default function CoursePage(): JSX.Element {
     if (!courses || courses.length === 0 || !params.courseId) {
       return undefined;
     }
-    return courses.filter(p => p.id.toString() === params.courseId)[0];
+    return courses.filter((p) => p.id.toString() === params.courseId)[0];
   }, [courses, params.courseId]);
 
   const filteredProjects = useMemo(() => {
     if (!course || !projects) {
       return [];
     }
-    return projects.filter(p => p.course_id === course.id);
+    return projects.filter((p) => p.course_id === course.id);
   }, [course, projects]);
 
-  const handleMenuClick = useCallback((key: string) => {
-    try {
+  const handleMenuClick = useCallback(
+    async (key: string) => {
       if (key === '1' && course) {
         confirmDeleteCourse(async () => {
-          removeCourse({ id: course.id }).unwrap();
+          await removeCourse({ ...course }).unwrap();
           navigate('/courses');
         });
       }
-    } catch (err) {
-      message.error(getErrorMessage(err));
-    }
-  }, [course, navigate, removeCourse]);
+    },
+    [course, navigate, removeCourse],
+  );
 
   if (!params.courseId || !course) {
     return (
@@ -60,7 +57,7 @@ export default function CoursePage(): JSX.Element {
       </Space>
     );
   }
-  
+
   const courseMenu = (
     <Menu
       onClick={(e) => handleMenuClick(e.key)}
@@ -75,7 +72,9 @@ export default function CoursePage(): JSX.Element {
 
   const breadCrumbs = (
     <Breadcrumb>
-      <Breadcrumb.Item><Link to='/courses'>Courses</Link></Breadcrumb.Item>
+      <Breadcrumb.Item>
+        <Link to="/courses">Courses</Link>
+      </Breadcrumb.Item>
       <Breadcrumb.Item>{course.cname}</Breadcrumb.Item>
     </Breadcrumb>
   );
@@ -84,16 +83,14 @@ export default function CoursePage(): JSX.Element {
     <>
       <PageHeader
         title={course.cname}
-        subTitle={course.id}
+        subTitle={<Tag>{course.id}</Tag>}
         extra={[
-          <ProjectCreationModal key="create-project" courseId={course.id} />,
+          <ProjectCreationModal key="create-project" course={course} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
         ]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
-        footer={
-          <Tabs defaultActiveKey="1" />
-        }
+        footer={<Tabs defaultActiveKey="1" />}
       />
       {/* TODO: make this responsive */}
       <section style={{ margin: '2em' }}>

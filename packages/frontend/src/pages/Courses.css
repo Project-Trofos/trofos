@@ -1,0 +1,3 @@
+.ant-tabs-top > .ant-tabs-nav::before {
+  border-color: #ccc !important;
+}
