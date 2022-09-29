@@ -47,3 +47,11 @@ jobs:
       - name: Clean up container
         if: always()
         run: npm run cleanup:ci
+      - name: Send notification on failure
+        if: failure()
+        run: |
+          message="[CI Failed]
+          Commit: ${{ github.sha }}
+          View full log here: https://github.com/Project-Trofos/trofos/actions/runs/${{ github.run_id }}
+          "
+          curl --data-urlencode "text=${message}" ${{ secrets.NOTIFICATION_API }}
