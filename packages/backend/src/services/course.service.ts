@@ -193,6 +193,7 @@ async function addProjectAndCourse(
   isCoursePublic?: boolean,
   isProjectPublic?: boolean,
   projectDesc?: string,
+  courseDesc?: string,
 ): Promise<Project> {
   const result = prisma.project.create({
     data: {
@@ -215,6 +216,7 @@ async function addProjectAndCourse(
             sem: courseSem,
             cname: courseName,
             public: isProjectPublic,
+            description: courseDesc,
           },
         },
       },
