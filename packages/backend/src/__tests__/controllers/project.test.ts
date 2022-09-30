@@ -9,7 +9,7 @@ import { canManageProject } from '../../policies/project.policy';
 
 jest.mock('../../policies/project.policy')
 
-let canManageProjectMock = jest.mocked(canManageProject)
+const canManageProjectMock = jest.mocked(canManageProject)
 
 
 const spies = {

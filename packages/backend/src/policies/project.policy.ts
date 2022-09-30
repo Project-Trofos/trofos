@@ -1,8 +1,8 @@
-import { Project, UserSession } from '@prisma/client';
+import { Project } from '@prisma/client';
 import { PureAbility, AbilityBuilder } from '@casl/ability';
-import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma';
+import { createPrismaAbility, PrismaQuery, Subjects , accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
-import { accessibleBy } from '@casl/prisma'
+
 
 type AppAbility = PureAbility<[string, Subjects<{
     Project : Project
@@ -10,7 +10,7 @@ type AppAbility = PureAbility<[string, Subjects<{
 
 
 export default function projectPolicy(userId : number) {
-    const { can, cannot, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
+    const { can, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
 
     /*
         A user can only manage (CRUD) a project if:
@@ -40,7 +40,7 @@ export default function projectPolicy(userId : number) {
     return build();
 }
 
-export async function canManageProject(userId : number, projectId : number) : Promise<Boolean> {
+export async function canManageProject(userId : number, projectId : number) : Promise<boolean> {
     // Returns at most one project
     const projects = await prisma.project.findMany({
         where : {

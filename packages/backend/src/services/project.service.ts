@@ -1,8 +1,8 @@
-import { Project, User, UsersOnProjects, UserSession } from '@prisma/client';
+import { Project, User, UsersOnProjects } from '@prisma/client';
+import { accessibleBy } from '@casl/prisma'
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import projectPolicy from '../policies/project.policy'
-import { accessibleBy } from '@casl/prisma'
 
 async function getAll(userId : number, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
   let result;

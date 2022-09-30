@@ -11,10 +11,10 @@ import { canManageCourse } from '../../policies/course.policy';
 import { canManageProject } from '../../policies/project.policy';
 
 jest.mock('../../policies/course.policy')
-let canManageCourseMock = jest.mocked(canManageCourse)
+const canManageCourseMock = jest.mocked(canManageCourse)
 
 jest.mock('../../policies/project.policy')
-let canManageProjectMock = jest.mocked(canManageProject)
+const canManageProjectMock = jest.mocked(canManageProject)
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),

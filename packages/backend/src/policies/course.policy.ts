@@ -1,8 +1,8 @@
-import { Course, UserSession } from '@prisma/client';
+import { Course } from '@prisma/client';
 import { PureAbility, AbilityBuilder } from '@casl/ability';
-import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma';
+import { createPrismaAbility, PrismaQuery, Subjects , accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
-import { accessibleBy } from '@casl/prisma'
+
 
 type AppAbility = PureAbility<[string, Subjects<{
     Course : Course
@@ -10,7 +10,7 @@ type AppAbility = PureAbility<[string, Subjects<{
 
 
 export default function coursePolicy(userId : number) {
-    const { can, cannot, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
+    const { can, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
 
     /*
         A user can only manage (CRUD) a course if:
@@ -29,7 +29,7 @@ export default function coursePolicy(userId : number) {
     return build();
 }
 
-export async function canManageCourse(userId : number, course_id: string, course_year: number, course_sem: number) : Promise<Boolean> {
+export async function canManageCourse(userId : number, course_id: string, course_year: number, course_sem: number) : Promise<boolean> {
     // Returns at most one course
     const courses = await prisma.course.findMany({
         where : {

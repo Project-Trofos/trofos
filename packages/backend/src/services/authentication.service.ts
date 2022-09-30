@@ -22,7 +22,7 @@ async function validateUser(userEmail: string, userPassword: string) : Promise<U
   const isValidUser = await bcrypt.compare(userPassword, storedPassword);
 
   userAuth = {
-    isValidUser : isValidUser,
+    isValidUser,
     userLoginInformation : {
       user_email : userLoginInformation.user_email,
       user_id : userLoginInformation.user_id

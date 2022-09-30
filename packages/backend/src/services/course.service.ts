@@ -1,9 +1,9 @@
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { accessibleBy } from '@casl/prisma'
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import coursePolicy from '../policies/course.policy'
 import projectPolicy from '../policies/project.policy'
-import { accessibleBy } from '@casl/prisma'
 
 
 async function getAll(userId: number, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
