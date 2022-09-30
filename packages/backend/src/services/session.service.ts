@@ -4,7 +4,7 @@ import prisma from '../models/prismaClient';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
-async function createUserSession(userEmail: string, userRoleId: number) : Promise<string> {
+async function createUserSession(userEmail: string, userRoleId: number, userId: number) : Promise<string> {
 
   let isSessionCreated = false;
   let sessionId = crypto.randomBytes(16).toString('base64');
@@ -17,6 +17,7 @@ async function createUserSession(userEmail: string, userRoleId: number) : Promis
           session_id : sessionId,
           user_email : userEmail,
           user_role_id : userRoleId,
+          user_id : userId
         },
       });
       isSessionCreated = true;

@@ -27,7 +27,7 @@ describe('course.service tests', () => {
     it('should return all courses', async () => {
       prismaMock.course.findMany.mockResolvedValueOnce(coursesData);
 
-      const result = await course.getAll();
+      const result = await course.getAll(1);
       expect(result).toEqual<Course[]>(coursesData);
     });
 
@@ -37,7 +37,7 @@ describe('course.service tests', () => {
       );
       prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
 
-      const result = await course.getAll('past');
+      const result = await course.getAll(1, 'past');
       expect(result).toEqual<Course[]>(pastCourses);
     });
 
@@ -45,7 +45,7 @@ describe('course.service tests', () => {
       const currentCourses = coursesData.filter((c) => c.sem === CURRENT_SEM && c.year === CURRENT_YEAR);
       prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
 
-      const result = await course.getAll('current');
+      const result = await course.getAll(1, 'current');
       expect(result).toEqual<Course[]>(currentCourses);
     });
   });
@@ -123,7 +123,7 @@ describe('course.service tests', () => {
       // @ts-ignore
       prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
 
-      const result = await course.getUsers(targetCourse.id, targetCourse.year, targetCourse.sem);
+      const result = await course.getUsers(1, targetCourse.id, targetCourse.year, targetCourse.sem);
       expect(result).toEqual<User[]>(userData);
     });
   });
@@ -170,7 +170,7 @@ describe('course.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectData);
 
-      const result = await course.getProjects(projectData[0].course_id ?? '1');
+      const result = await course.getProjects(1, projectData[0].course_id ?? '1');
       expect(result).toEqual<Project[]>(projectData);
     });
   });

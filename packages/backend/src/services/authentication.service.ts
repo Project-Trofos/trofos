@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
+import { UserAuth } from './types/authentication.service.types';
 
-
-async function validateUser(userEmail: string, userPassword: string) : Promise<boolean> {
+async function validateUser(userEmail: string, userPassword: string) : Promise<UserAuth> {
+  let userAuth;
   const userLoginInformation = await prisma.user.findUnique({
     where: {
       user_email : userEmail,
@@ -10,13 +11,25 @@ async function validateUser(userEmail: string, userPassword: string) : Promise<b
   });
     
   if (!userLoginInformation?.user_password_hash) {
-    return false;
+    userAuth = {
+      isValidUser : false,
+    } as UserAuth
+
+    return userAuth;
   }
 
   const storedPassword = userLoginInformation.user_password_hash as string;
   const isValidUser = await bcrypt.compare(userPassword, storedPassword);
 
-  return isValidUser;
+  userAuth = {
+    isValidUser : isValidUser,
+    userLoginInformation : {
+      user_email : userLoginInformation.user_email,
+      user_id : userLoginInformation.user_id
+    }
+  } as UserAuth
+
+  return userAuth;
 }
 
 

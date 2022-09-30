@@ -7,6 +7,15 @@ import coursesData from '../mocks/courseData';
 import projectsData from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 
+import { canManageCourse } from '../../policies/course.policy';
+import { canManageProject } from '../../policies/project.policy';
+
+jest.mock('../../policies/course.policy')
+let canManageCourseMock = jest.mocked(canManageCourse)
+
+jest.mock('../../policies/project.policy')
+let canManageProjectMock = jest.mocked(canManageProject)
+
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
   create: jest.spyOn(course, 'create'),
@@ -27,6 +36,9 @@ describe('course controller tests', () => {
     jest.clearAllMocks();
   });
 
+  canManageCourseMock.mockResolvedValue(true);
+  canManageProjectMock.mockResolvedValue(true);
+
   // Mock data for users
   const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
@@ -40,6 +52,8 @@ describe('course controller tests', () => {
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -59,6 +73,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -76,6 +92,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -91,6 +109,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -110,6 +130,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.get(mockReq, mockRes);
 
@@ -132,6 +154,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.create(mockReq, mockRes);
 
@@ -148,6 +172,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.create(mockReq, mockRes);
 
@@ -171,6 +197,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.update(mockReq, mockRes);
 
@@ -189,6 +217,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.update(mockReq, mockRes);
 
@@ -208,6 +238,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.remove(mockReq, mockRes);
 
@@ -228,6 +260,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getUsers(mockReq, mockRes);
 
@@ -251,6 +285,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addUser(mockReq, mockRes);
 
@@ -270,6 +306,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addUser(mockReq, mockRes);
 
@@ -292,6 +330,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.removeUser(mockReq, mockRes);
 
@@ -311,6 +351,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.removeUser(mockReq, mockRes);
 
@@ -330,6 +372,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.getProjects(mockReq, mockRes);
 
@@ -353,6 +397,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addProject(mockReq, mockRes);
 
@@ -371,6 +417,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addProject(mockReq, mockRes);
 
@@ -393,6 +441,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.removeProject(mockReq, mockRes);
 
@@ -412,6 +462,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.removeProject(mockReq, mockRes);
 
@@ -434,6 +486,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 
@@ -448,6 +502,8 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 

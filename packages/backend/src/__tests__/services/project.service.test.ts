@@ -12,7 +12,7 @@ describe('project.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll();
+      const result = await project.getAll(1);
       expect(result).toEqual<Project[]>(projectsData);
     });
 
@@ -20,7 +20,7 @@ describe('project.service tests', () => {
       const pastProjects = projectsData.filter((p) => !p.course_year || p.course_year < CURRENT_SEM);
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll('past');
+      const result = await project.getAll(1, 'past');
       expect(result).toEqual<Project[]>(pastProjects);
     });
 
@@ -30,7 +30,7 @@ describe('project.service tests', () => {
       );
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
-      const result = await project.getAll('current');
+      const result = await project.getAll(1, 'current');
       expect(result).toEqual<Project[]>(currentProjects);
     });
   });
@@ -104,7 +104,7 @@ describe('project.service tests', () => {
       // @ts-ignore
       prismaMock.usersOnProjects.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
 
-      const result = await project.getUsers(PROJECT_ID);
+      const result = await project.getUsers(1, PROJECT_ID);
       expect(result).toEqual<User[]>(userData);
     });
   });

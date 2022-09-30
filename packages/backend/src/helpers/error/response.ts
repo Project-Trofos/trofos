@@ -1,7 +1,7 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import getErrorMessage from './errorMessage';
-import { BadRequestError } from './errorTypes';
+import { BadRequestError, NotAuthorizedError } from './errorTypes';
 
 // eslint-disable-next-line import/prefer-default-export
 export function getDefaultErrorRes(error: unknown, res: express.Response) {

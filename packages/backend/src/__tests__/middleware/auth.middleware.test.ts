@@ -62,6 +62,7 @@ describe('auth.middleware tests', () => {
         user_email : 'testUser@test.com',
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_id : 1
       };
       const roleServiceResponseObject = false;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
@@ -90,6 +91,7 @@ describe('auth.middleware tests', () => {
         user_email : 'testUser@test.com',
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_id : 1
       };
       const roleServiceResponseObject = true;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
@@ -104,6 +106,7 @@ describe('auth.middleware tests', () => {
         send() {},
         json(j: any) { this.json = j; return this; },
         status(s : number) {this.statusCode = s; return this;},
+        locals : {}
       } as express.Response;
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(null)(mockRequest, mockResponse, mockNext);
@@ -118,6 +121,7 @@ describe('auth.middleware tests', () => {
         user_email : 'testUser@test.com',
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_id : 1
       };
       const roleServiceResponseObject = true;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
@@ -132,6 +136,7 @@ describe('auth.middleware tests', () => {
         send() {},
         json(j: any) { this.json = j; return this; },
         status(s : number) {this.statusCode = s; return this;},
+        locals : {}
       } as express.Response;
       const mockNext = (jest.fn()) as express.NextFunction;
       await isAuthorizedRequest(Action.read_course)(mockRequest, mockResponse, mockNext);

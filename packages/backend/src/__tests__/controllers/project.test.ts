@@ -5,6 +5,12 @@ import project from '../../services/project.service';
 import projectController from '../../controllers/project';
 import projectsData from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
+import { canManageProject } from '../../policies/project.policy';
+
+jest.mock('../../policies/project.policy')
+
+let canManageProjectMock = jest.mocked(canManageProject)
+
 
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
@@ -17,10 +23,13 @@ const spies = {
   removeUser: jest.spyOn(project, 'removeUser'),
 };
 
+
 describe('project controller tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
+  canManageProjectMock.mockResolvedValue(true);
 
   // Mock data for users
   const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
@@ -31,8 +40,11 @@ describe('project controller tests', () => {
   describe('getAll', () => {
     it('should return all projects', async () => {
       spies.getAll.mockResolvedValueOnce(projectsData);
+    
       const mockReq = createRequest();
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.getAll(mockReq, mockRes);
 
@@ -55,6 +67,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.getAll(mockReq, mockRes);
 
@@ -74,6 +88,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.getAll(mockReq, mockRes);
 
@@ -89,6 +105,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.getAll(mockReq, mockRes);
 
@@ -106,6 +124,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.get(mockReq, mockRes);
 
@@ -125,6 +145,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.create(mockReq, mockRes);
 
@@ -141,6 +163,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.create(mockReq, mockRes);
 
@@ -162,6 +186,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.update(mockReq, mockRes);
 
@@ -178,6 +204,7 @@ describe('project controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
 
       await projectController.update(mockReq, mockRes);
 
@@ -195,6 +222,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.remove(mockReq, mockRes);
 
@@ -213,6 +242,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.getUsers(mockReq, mockRes);
 
@@ -234,6 +265,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.addUser(mockReq, mockRes);
 
@@ -251,6 +284,8 @@ describe('project controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.addUser(mockReq, mockRes);
 
@@ -271,6 +306,8 @@ describe('project controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.removeUser(mockReq, mockRes);
 
@@ -288,6 +325,8 @@ describe('project controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.sessionInformation = {}
+      mockRes.locals.sessionInformation.user_id = 1
 
       await projectController.removeUser(mockReq, mockRes);
 
