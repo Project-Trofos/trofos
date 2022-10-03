@@ -30,7 +30,10 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
 
   return (
     <>
-      <div>{projectKey ? `${projectKey}-` : ''}{backlog.backlog_id}</div>
+      <div>
+        {projectKey ? `${projectKey}-` : ''}
+        {backlog.backlog_id}
+      </div>
       <div className="backlog-card-summary">{backlog.summary}</div>
       <div>{backlog.type}</div>
       {backlog.priority && renderPriority(backlog.priority)}

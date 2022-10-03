@@ -1,0 +1,12 @@
+.backlog-inputnumber {
+    border: none;
+    border-radius: 8px;
+    transition: none;
+    outline: none;
+    box-shadow: none !important;
+    border-radius: 8px 0 0 8px;
+}
+
+.backlog-inputnumber:hover {
+    background-color: #efefef;
+}

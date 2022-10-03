@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { BacklogFormFields } from '../components/modals/types/BacklogModal.types';
+import { BacklogFormFields } from '../helpers/BacklogModal.types';
 
 export type Backlog = {
   backlog_id: number;

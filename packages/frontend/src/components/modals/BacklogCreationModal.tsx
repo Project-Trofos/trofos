@@ -1,23 +1,24 @@
-import { Avatar, Button, Col, Form, Input, InputNumber, Modal, Row, Select } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import './BacklogCreationModal.css';
+import { Button, Col, Form, Modal, Row } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useAddBacklogMutation } from '../../api/backlog';
-import type { BacklogSelect, BacklogFormFields } from './types/BacklogModal.types';
+import BacklogSummaryInput from '../fields/BacklogSummaryInput';
+import BacklogSelect from '../fields/BacklogSelect';
+import BacklogUserSelect from '../fields/BacklogUserSelect';
+import BacklogInputNumber from '../fields/BacklogInputNumber';
+import BacklogTextArea from '../fields/BacklogTextArea';
+import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/BacklogModal.types';
+import './BacklogCreationModal.css';
 
-const { Option } = Select;
-const { TextArea } = Input;
-
-function BacklogCreationModal(): JSX.Element {  
+function BacklogCreationModal(): JSX.Element {
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
-  const TYPES: BacklogSelect[] = [
+  const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
     { id: 'task', name: 'Task' },
     { id: 'bug', name: 'Bug' },
   ];
-  const PRIORITIES: BacklogSelect[] = [
+  const PRIORITIES: BacklogSelectTypes[] = [
     { id: 'very_high', name: 'Very High' },
     { id: 'high', name: 'High' },
     { id: 'medium', name: 'Medium' },
@@ -53,7 +54,6 @@ function BacklogCreationModal(): JSX.Element {
   const handleFormSubmit = async (data: FormData): Promise<void> => {
     setIsLoading(true);
 
-    // for development
     const payload: BacklogFormFields = {
       ...data,
       projectId: Number(params.projectId),
@@ -79,70 +79,50 @@ function BacklogCreationModal(): JSX.Element {
 
   const renderTypeSelect = (): JSX.Element => (
     <Form.Item name="type" label="Type" rules={[{ required: true }]}>
-      <Select className="type-select" placeholder="Type of backlog">
-        {TYPES.map((type) => (
-          <Option key={type.id} value={type.id}>
-            {type.name}
-          </Option>
-        ))}
-      </Select>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <BacklogSelect options={TYPES} placeholder="Type of backlog" />
     </Form.Item>
   );
 
   const renderSprintSelect = (): JSX.Element => (
     <Form.Item name="sprintId" label="Sprint">
-      <Select className="sprint-select" placeholder="Select Sprint" allowClear>
-        {SPRINTS.map((sprint) => (
-          <Option key={sprint.id} value={sprint.id}>
-            {sprint.name}
-          </Option>
-        ))}
-      </Select>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <BacklogSelect options={SPRINTS} placeholder="Select Sprint" allowClear />
     </Form.Item>
   );
 
   const renderPrioritySelect = (): JSX.Element => (
     <Form.Item name="priority" label="Priority">
-      <Select className="priority-select" placeholder="Select Priority" allowClear>
-        {PRIORITIES.map((priority) => (
-          <Option key={priority.id} value={priority.id}>
-            {priority.name}
-          </Option>
-        ))}
-      </Select>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <BacklogSelect options={PRIORITIES} placeholder="Select Priority" allowClear />
     </Form.Item>
   );
 
   const renderReporterSelect = (): JSX.Element => (
     <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
-      <Select className="reporter-select">
-        {USERS.map((user) => (
-          <Option key={user.id} value={user.id}>
-            <Avatar className="reporter-avatar" style={{ backgroundColor: '#85041C' }} icon={<UserOutlined />} />
-            <span className="select-username-text">{user.name}</span>
-          </Option>
-        ))}
-      </Select>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <BacklogUserSelect options={USERS} placeholder="Select User" />
     </Form.Item>
   );
 
   const renderAssigneeSelect = (): JSX.Element => (
     <Form.Item name="assigneeId" label="Assignee">
-      <Select className="assignee-select" allowClear>
-        {USERS.map((user) => (
-          <Option key={user.id} value={user.id}>
-            <Avatar className="assignee-avatar" style={{ backgroundColor: '#ccc' }} icon={<UserOutlined />} />
-            <span className="select-username-text">{user.name}</span>
-          </Option>
-        ))}
-      </Select>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <BacklogUserSelect options={USERS} placeholder="Assign to" allowClear />
     </Form.Item>
   );
 
   const renderContent = (): JSX.Element => (
     <Form id="newBacklog" form={form} onFinish={handleFormSubmit}>
-      <Form.Item name="summary" rules={[{ required: true }]}>
-        <Input className="summary-input" placeholder="* Type summary here..." />
+      <Form.Item name="summary" rules={[{ required: true }]} initialValue="">
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <BacklogSummaryInput placeholder="* Type summary here..." />
       </Form.Item>
       {renderTypeSelect()}
       {renderSprintSelect()}
@@ -152,10 +132,14 @@ function BacklogCreationModal(): JSX.Element {
         <Col span={12}>{renderAssigneeSelect()}</Col>
       </Row>
       <Form.Item name="points" label="Points">
-        <InputNumber className="points-input" min={1} />
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <BacklogInputNumber />
       </Form.Item>
       <Form.Item name="description">
-        <TextArea className="description-textarea" placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
+        <BacklogTextArea placeholder="Description..." />
       </Form.Item>
     </Form>
   );

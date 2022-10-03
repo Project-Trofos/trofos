@@ -18,12 +18,12 @@ describe('BacklogModal tests', () => {
 
     // Ensure fields are present
     expect(screen.getByPlaceholderText('* Type summary here...')).toBeInTheDocument();
-    expect(screen.getByLabelText('Type')).toBeInTheDocument();
-    expect(screen.getByLabelText('Sprint')).toBeInTheDocument();
-    expect(screen.getByLabelText('Priority')).toBeInTheDocument();
-    expect(screen.getByLabelText('Reporter')).toBeInTheDocument();
-    expect(screen.getByLabelText('Assignee')).toBeInTheDocument();
-    expect(screen.getByLabelText('Points')).toBeInTheDocument();
+    expect(screen.getByText('Type of backlog')).toBeInTheDocument();
+    expect(screen.getByText('Select Sprint')).toBeInTheDocument();
+    expect(screen.getByText('Select Priority')).toBeInTheDocument();
+    expect(screen.getByText('Select User')).toBeInTheDocument();
+    expect(screen.getByText('Assign to')).toBeInTheDocument();
+    expect(screen.getByText('Points')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Description...')).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same

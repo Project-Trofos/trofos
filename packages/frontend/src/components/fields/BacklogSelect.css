@@ -1,0 +1,15 @@
+.ant-select.ant-select-in-form-item.backlog-select .ant-select-selector {
+    border: none;
+    border-radius: 8px;
+    transition: none;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.ant-select.ant-select-in-form-item.backlog-select {
+    width: 140px;
+}
+
+.ant-select.ant-select-in-form-item.backlog-select .ant-select-selector:hover {
+    background-color: #efefef;
+}

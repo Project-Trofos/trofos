@@ -14,7 +14,7 @@ function ProjectBacklog(): JSX.Element {
 
   const projectId = Number(params.projectId);
   const { data: backlogs } = useGetBacklogsQuery(projectId);
-  const { data: projectData } = useGetProjectQuery({id: projectId});
+  const { data: projectData } = useGetProjectQuery({ id: projectId });
 
   const renderBacklogListingCards = (backlog: Backlog) => (
     <List.Item className="backlog-card-container">
