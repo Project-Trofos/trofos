@@ -1,7 +1,7 @@
 import { Avatar, Button, Col, Form, Input, InputNumber, Modal, Row, Select } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import './BacklogModal.css';
+import './BacklogCreationModal.css';
 import { useParams } from 'react-router-dom';
 import { useAddBacklogMutation } from '../../api/backlog';
 import type { BacklogSelect, BacklogFormFields } from './types/BacklogModal.types';
@@ -9,7 +9,7 @@ import type { BacklogSelect, BacklogFormFields } from './types/BacklogModal.type
 const { Option } = Select;
 const { TextArea } = Input;
 
-function BacklogModal(): JSX.Element {
+function BacklogCreationModal(): JSX.Element {  
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
   const TYPES: BacklogSelect[] = [
@@ -179,4 +179,4 @@ function BacklogModal(): JSX.Element {
   );
 }
 
-export default BacklogModal;
+export default BacklogCreationModal;

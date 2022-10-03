@@ -26,7 +26,24 @@ const listBacklogs = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const getBacklog = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, backlogId } = req.params;
+    if (!projectId || !backlogId) {
+      throw new Error('projectId or backlogId cannot be empty');
+    }
+    const backlog: Backlog | null = await backlogService.getBacklog(Number(projectId), Number(backlogId));
+    if (backlog === null) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Backlog not found' });
+    }
+    return res.status(StatusCodes.OK).json(backlog);
+  } catch (error: any) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
 export default {
   newBacklog,
   listBacklogs,
+  getBacklog,
 };

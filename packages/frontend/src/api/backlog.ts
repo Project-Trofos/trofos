@@ -23,6 +23,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['Backlog'],
     }),
+    getBacklog: builder.query<Backlog, {projectId: number, backlogId: number}>({
+      query: ({projectId, backlogId}) => ({
+        url: `backlog/getBacklog/${projectId}/${backlogId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Backlog'],
+    }),
     addBacklog: builder.mutation<Backlog, BacklogFormFields>({
       query: (backlog) => ({
         url: 'backlog/newBacklog/',
@@ -36,4 +43,4 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetBacklogsQuery, useAddBacklogMutation } = extendedApi;
+export const { useGetBacklogsQuery, useGetBacklogQuery, useAddBacklogMutation } = extendedApi;

@@ -1,14 +1,14 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import BacklogModal from './BacklogModal';
+import BacklogCreationModal from './BacklogCreationModal';
 import store from '../../app/store';
 
 describe('BacklogModal tests', () => {
   it('renders new backlog modal with correct fields', () => {
     const { baseElement } = render(
       <Provider store={store}>
-        <BacklogModal />
+        <BacklogCreationModal />
       </Provider>,
     );
 

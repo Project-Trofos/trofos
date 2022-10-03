@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import BacklogCard from './BacklogCard';
+import BacklogListingCard from './BacklogListingCard';
 import type { Backlog } from '../../api/backlog';
 
 describe('BacklogCard test', () => {
@@ -16,7 +16,7 @@ describe('BacklogCard test', () => {
     description: 'A test description here',
     project_id: 123,
   };
-  const { baseElement } = render(<BacklogCard backlog={mockBacklog} />);
+  const { baseElement } = render(<BacklogListingCard backlog={mockBacklog} />);
 
   it('renders backlog card with correct details', () => {
     expect(screen.getByText('111')).toBeInTheDocument();
