@@ -3,7 +3,7 @@ import { Input } from 'antd';
 import './BacklogTextArea.css';
 
 type BacklogTextAreaPropsTypes = {
-  value: number;
+  value: string;
   onChange(e: any): void;
   placeholder?: string;
   className?: string;
@@ -29,7 +29,7 @@ function BacklogTextArea(props: BacklogTextAreaPropsTypes): JSX.Element {
 BacklogTextArea.defaultProps = {
   placeholder: '',
   className: '',
-  autoSize: { minRows: 5, maxRows: 8 },
+  autoSize: { minRows: 1, maxRows: 8 },
 };
 
 export default BacklogTextArea;

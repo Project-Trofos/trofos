@@ -139,7 +139,7 @@ function BacklogCreationModal(): JSX.Element {
       <Form.Item name="description">
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
-        <BacklogTextArea placeholder="Description..." />
+        <BacklogTextArea placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />
       </Form.Item>
     </Form>
   );
