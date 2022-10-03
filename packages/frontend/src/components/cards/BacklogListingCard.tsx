@@ -5,7 +5,7 @@ import type { Backlog } from '../../api/backlog';
 import './BacklogListingCard.css';
 
 function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
-  const { backlog } = props;
+  const { backlog, projectKey } = props;
 
   const renderAssignee = (assigneeId: number): JSX.Element => (
     <div>
@@ -30,7 +30,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
 
   return (
     <>
-      <div>{backlog.id}</div>
+      <div>{projectKey ? `${projectKey}-` : ''}{backlog.backlog_id}</div>
       <div className="backlog-card-summary">{backlog.summary}</div>
       <div>{backlog.type}</div>
       {backlog.priority && renderPriority(backlog.priority)}
@@ -42,6 +42,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
 
 type BacklogListingCardProps = {
   backlog: Backlog;
+  projectKey: string | null | undefined;
 };
 
 type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low';

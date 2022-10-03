@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { List, Typography } from 'antd';
 import { useGetBacklogsQuery } from '../api/backlog';
+import { useGetProjectQuery } from '../api/project';
 import type { Backlog } from '../api/backlog';
 import BacklogCreationModal from '../components/modals/BacklogCreationModal';
 import BacklogListingCard from '../components/cards/BacklogListingCard';
@@ -13,10 +14,11 @@ function ProjectBacklog(): JSX.Element {
 
   const projectId = Number(params.projectId);
   const { data: backlogs } = useGetBacklogsQuery(projectId);
+  const { data: projectData } = useGetProjectQuery({id: projectId});
 
   const renderBacklogListingCards = (backlog: Backlog) => (
     <List.Item className="backlog-card-container">
-      <BacklogListingCard backlog={backlog} />
+      <BacklogListingCard backlog={backlog} projectKey={projectData?.pkey} />
     </List.Item>
   );
 

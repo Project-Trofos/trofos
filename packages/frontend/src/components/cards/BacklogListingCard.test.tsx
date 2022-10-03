@@ -5,7 +5,7 @@ import type { Backlog } from '../../api/backlog';
 
 describe('BacklogCard test', () => {
   const mockBacklog: Backlog = {
-    id: 111,
+    backlog_id: 1,
     summary: 'A Test Summary',
     type: 'story',
     priority: 'very_high',
@@ -16,7 +16,7 @@ describe('BacklogCard test', () => {
     description: 'A test description here',
     project_id: 123,
   };
-  const { baseElement } = render(<BacklogListingCard backlog={mockBacklog} />);
+  const { baseElement } = render(<BacklogListingCard backlog={mockBacklog} projectKey="MOCK" />);
 
   it('renders backlog card with correct details', () => {
     expect(screen.getByText('111')).toBeInTheDocument();

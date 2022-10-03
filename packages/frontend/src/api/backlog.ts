@@ -2,7 +2,7 @@ import trofosApiSlice from '.';
 import { BacklogFormFields } from '../components/modals/types/BacklogModal.types';
 
 export type Backlog = {
-  id: number;
+  backlog_id: number;
   summary: string;
   type: 'story' | 'task' | 'bug';
   priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
