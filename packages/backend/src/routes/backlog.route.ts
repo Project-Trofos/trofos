@@ -8,5 +8,6 @@ const router = express.Router();
 router.post('/newBacklog', isAuthorizedRequest(Action.update_project), backlog.newBacklog);
 router.get('/listBacklogs/:projectId', isAuthorizedRequest(Action.read_project), backlog.listBacklogs);
 router.get('/getBacklog/:projectId/:backlogId', isAuthorizedRequest(Action.read_project), backlog.getBacklog);
+router.put('/updateBacklog', isAuthorizedRequest(Action.update_project), backlog.updateBacklog);
 
 export default router;

@@ -1,13 +1,13 @@
 import { Backlog } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import backlogService from '../../services/backlog.service';
-import { BacklogFields } from '../../services/types/backlog.service.types';
+import { BacklogFields } from '../../helpers/types/backlog.service.types';
 
 describe('backlog.service tests',  ()=> {
   describe('create backlog', () => {
     it('should create and return backlog when called with valid fields', async () => {
       const mockReturnedBacklog: Backlog = {
-        id: 1,
+        backlog_id: 1,
         summary: 'A Test Summary',
         type: 'story',
         priority: 'very_high',
@@ -31,12 +31,12 @@ describe('backlog.service tests',  ()=> {
         type: 'story',
       };
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.createBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
   
     it('should create and return backlog when optional fields are omitted', async () => {
       const mockReturnedBacklog: Backlog = {
-        id: 1,
+        backlog_id: 1,
         summary: 'A Test Summary',
         type: 'story',
         priority: null,
@@ -60,7 +60,7 @@ describe('backlog.service tests',  ()=> {
         type: 'story',
       };
       prismaMock.backlog.create.mockResolvedValueOnce(mockReturnedBacklog);
-      await expect(backlogService.createBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
   });
   
@@ -68,7 +68,7 @@ describe('backlog.service tests',  ()=> {
     it('should return backlogs when called with valid project id', async () => {
       const mockReturnedBacklogs: Backlog[] = [
         {
-          id: 1,
+          backlog_id: 1,
           summary: 'A Test Summary',
           type: 'story',
           priority: 'very_high',
@@ -80,7 +80,7 @@ describe('backlog.service tests',  ()=> {
           project_id: 123,
         },
         {
-          id: 2,
+          backlog_id: 2,
           summary: 'Another Test Summary',
           type: 'task',
           priority: 'high',
@@ -94,7 +94,7 @@ describe('backlog.service tests',  ()=> {
       ];
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
-      await expect(backlogService.getBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
     });
   });
 });

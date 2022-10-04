@@ -1,37 +1,26 @@
 import { Backlog } from '@prisma/client';
-import { assertProjectIdIsValid } from '../helpers/error';
 import prisma from '../models/prismaClient';
-import { BacklogFields } from './types/backlog.service.types';
+import { BacklogFields } from '../helpers/types/backlog.service.types';
 
-async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
-  const {
-    summary,
-    type,
-    sprintId,
-    priority,
-    reporterId,
-    assigneeId,
-    points,
-    description,
-    projectId,
-  } = backlogFields;
+async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
+  const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
 
   const backlogCounter = await prisma.project.findUniqueOrThrow({
     where: { id: projectId },
     select: { backlog_counter: true },
   });
-  
+
   // optimistic concurrency control (if backlog_id already exists then throw an error)
   const createBacklog = prisma.backlog.create({
     data: {
       backlog_id: backlogCounter.backlog_counter + 1,
       summary,
       type,
-      ...sprintId && {
+      ...(sprintId && {
         sprint: {
           connect: { id: sprintId },
         },
-      },
+      }),
       priority: priority || null,
       reporter: {
         connect: {
@@ -41,7 +30,7 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
           },
         },
       },
-      ...assigneeId && {
+      ...(assigneeId && {
         assignee: {
           connect: {
             project_id_user_id: {
@@ -50,7 +39,7 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
             },
           },
         },
-      },
+      }),
       points: points || null,
       description: description || null,
     },
@@ -61,7 +50,7 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
     data: {
       backlog_counter: {
         increment: 1,
-      }
+      },
     },
   });
 
@@ -70,7 +59,7 @@ async function createBacklog(backlogFields : BacklogFields) : Promise<Backlog> {
   return backlog;
 }
 
-async function getBacklogs(projectId : number) : Promise<Backlog[]> {
+async function listBacklogs(projectId: number): Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
@@ -80,21 +69,41 @@ async function getBacklogs(projectId : number) : Promise<Backlog[]> {
   return backlogs;
 }
 
-async function getBacklog(projectId : number, backlogId : number) : Promise<Backlog | null> {
+async function getBacklog(projectId: number, backlogId: number): Promise<Backlog | null> {
   const backlog = await prisma.backlog.findUnique({
     where: {
       project_id_backlog_id: {
         project_id: projectId,
         backlog_id: backlogId,
-      }
+      },
     },
   });
 
   return backlog;
 }
 
+async function updateBacklog(backlogToUpdate : {
+  projectId: number,
+  backlogId: number,
+  fieldToUpdate: Partial<BacklogFields>,
+}): Promise<Backlog> {
+  const { projectId, backlogId, fieldToUpdate } = backlogToUpdate;
+  const updatedBacklog = await prisma.backlog.update({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      }
+    },
+    data: fieldToUpdate,
+  });
+
+  return updatedBacklog;
+}
+
 export default {
-  createBacklog,
-  getBacklogs,
+  newBacklog,
+  listBacklogs,
   getBacklog,
+  updateBacklog,
 };

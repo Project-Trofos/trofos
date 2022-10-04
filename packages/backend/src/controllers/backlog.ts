@@ -5,7 +5,7 @@ import backlogService from '../services/backlog.service';
 
 const newBacklog = async (req: express.Request, res: express.Response) => {
   try {
-    const backlog: Backlog = await backlogService.createBacklog(req.body);
+    const backlog: Backlog = await backlogService.newBacklog(req.body);
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error: any) {
     console.log(error);
@@ -19,7 +19,7 @@ const listBacklogs = async (req: express.Request, res: express.Response) => {
     if (!projectId) {
       throw new Error('projectId cannot be empty');
     }
-    const backlogs: Backlog[] = await backlogService.getBacklogs(Number(projectId));
+    const backlogs: Backlog[] = await backlogService.listBacklogs(Number(projectId));
     return res.status(StatusCodes.OK).json(backlogs);
   } catch (error: any) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
@@ -42,8 +42,22 @@ const getBacklog = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const updateBacklog = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, backlogId } = req.body;
+    if (!projectId || !backlogId) {
+      throw new Error('projectId or backlogId cannot be empty');
+    }
+    const backlog: Backlog = await backlogService.updateBacklog(req.body);
+    return res.status(StatusCodes.OK).json(backlog);
+  } catch (error: any) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+}
+
 export default {
   newBacklog,
   listBacklogs,
   getBacklog,
+  updateBacklog,
 };
