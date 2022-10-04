@@ -38,6 +38,12 @@ async function createCourseSeed(prisma: PrismaClient) {
         course_year : CURRENT_YEAR, 
         course_sem : CURRENT_SEM,
         user_id : 2
+      },
+      {
+        course_id : 'course3_id',
+        course_year : CURRENT_YEAR - 1, 
+        course_sem : CURRENT_SEM,
+        user_id : 2
       }
     ]
   });
