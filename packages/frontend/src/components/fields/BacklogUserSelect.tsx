@@ -5,7 +5,7 @@ import type { BacklogSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogUserSelect.css';
 
 type BacklogUserSelectPropsTypes = {
-  value: string;
+  value: string | number | undefined;
   onChange(e: any): void;
   options: BacklogSelectTypes[];
   placeholder?: string;

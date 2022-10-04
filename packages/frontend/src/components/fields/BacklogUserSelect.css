@@ -1,4 +1,4 @@
-.ant-select.ant-select-in-form-item.backlog-user-select .ant-select-selector {
+div.ant-select.backlog-user-select .ant-select-selector {
     border: none;
     border-radius: 8px;
     height: 34px;
@@ -7,11 +7,11 @@
     box-shadow: none !important;
 }
 
-.ant-select.ant-select-in-form-item.backlog-user-select {
+div.ant-select.backlog-user-select {
     width: 140px;
 }
 
-.ant-select.ant-select-in-form-item.backlog-user-select .ant-select-selector:hover {
+div.ant-select.backlog-user-select .ant-select-selector:hover {
     background-color: #efefef;
 }
 
