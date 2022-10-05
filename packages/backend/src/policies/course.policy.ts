@@ -1,6 +1,6 @@
-import { PolicyOutcome } from './policyTypes';
 import express from "express";
 import { UserSession } from "@prisma/client";
+import { PolicyOutcome } from './policyTypes';
 import {
     assertCourseSemIsNumber,
     assertCourseYearIsNumber,

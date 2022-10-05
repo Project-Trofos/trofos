@@ -22,7 +22,7 @@ async function applyProjectPolicy(req : express.Request, userSession : UserSessi
 
         }
     } else {
-        //TODO: Ask Luoyi where there is no assertProjectIdIsNumber() function
+        // TODO: Ask Luoyi where there is no assertProjectIdIsNumber() function
 
         policyOutcome = {
             isPolicyValid : await projectConstraint.canManageProject(userSession.user_id, Number(projectId), isUserAdmin),

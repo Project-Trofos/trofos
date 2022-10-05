@@ -8,10 +8,10 @@ export type AppAbility = PureAbility<[string, Subjects<{
 }>], PrismaQuery>;
 
 
-//TODO: Can we return the policyConstraint already wrapped in accessibleBy(...).<Subject> ? 
+// TODO: Can we return the policyConstraint already wrapped in accessibleBy(...).<Subject> ? 
 export type PolicyOutcome = {
     isPolicyValid : boolean,
     policyConstraint : AppAbility
 }
 
-//TODO: Define a type for policy functions so we can ensure that they all adhere to an interface
+// TODO: Define a type for policy functions so we can ensure that they all adhere to an interface

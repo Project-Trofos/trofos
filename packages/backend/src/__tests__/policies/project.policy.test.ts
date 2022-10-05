@@ -1,4 +1,4 @@
-import { UserSession } from '.prisma/client';
+import { UserSession } from '@prisma/client';
 import { createRequest } from 'node-mocks-http';
 import projectPolicy from '../../policies/project.policy';
 import projectConstraint from '../../policies/constraints/project.constraint';

@@ -1,4 +1,4 @@
-import { Project } from '.prisma/client';
+import { Project } from '@prisma/client';
 import { prismaMock } from '../../../models/mock/mockPrismaClient';
 import projectConstraint from '../../../policies/constraints/project.constraint';
 

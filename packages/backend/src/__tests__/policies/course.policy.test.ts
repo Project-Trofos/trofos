@@ -1,8 +1,7 @@
-import { UserSession } from '.prisma/client';
+import { UserSession } from '@prisma/client';
 import { createRequest } from 'node-mocks-http';
 import coursePolicy from '../../policies/course.policy'
 import courseConstraint from '../../policies/constraints/course.constraint';
-import { prismaMock } from '../../models/mock/mockPrismaClient';
 
 const spies = {
     canManageCourse : jest.spyOn(courseConstraint, 'canManageCourse'),

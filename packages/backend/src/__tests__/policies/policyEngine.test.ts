@@ -1,6 +1,6 @@
-import policyEngine from "../../policies/policyEngine"
 import { createRequest } from 'node-mocks-http';
-import { UserSession } from ".prisma/client";
+import { UserSession } from "@prisma/client";
+import policyEngine from "../../policies/policyEngine"
 
 describe("policyEngine tests", () => {
     describe("execute", () => {

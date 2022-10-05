@@ -1,4 +1,4 @@
-import { UserSession } from ".prisma/client";
+import { UserSession } from "@prisma/client";
 import express from "express";
 import { PolicyOutcome } from "./policyTypes";
 import coursePolicy from './course.policy'

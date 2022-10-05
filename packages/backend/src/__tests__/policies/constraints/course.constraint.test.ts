@@ -1,5 +1,4 @@
-
-import { Course } from '.prisma/client';
+import { Course } from '@prisma/client';
 import { prismaMock } from '../../../models/mock/mockPrismaClient';
 import courseConstraint from '../../../policies/constraints/course.constraint';
 
