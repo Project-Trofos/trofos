@@ -21,7 +21,11 @@ export default function ProjectSettings(): JSX.Element {
         throw Error('Project is undefined!');
       }
       setIsUpdating(true);
-      await updateProject({ id: project.id, description: values.projectDescription, pname: values.projectName });
+      await updateProject({
+        id: project.id,
+        description: values.projectDescription,
+        pname: values.projectName,
+      }).unwrap();
       message.success('Project updated!');
     } catch (error) {
       message.error(getErrorMessage(error));

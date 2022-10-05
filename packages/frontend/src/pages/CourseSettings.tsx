@@ -27,7 +27,7 @@ export default function CourseSettings(): JSX.Element {
         year: course.year,
         description: values.courseDescription,
         cname: values.courseName,
-      });
+      }).unwrap();
       message.success('Course updated!');
     } catch (error) {
       message.error(getErrorMessage(error));

@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Form, Input, Segmented, Select, Typography, message } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Form, Segmented, Select, Typography, message } from 'antd';
 import { useAddProjectMutation } from '../../api/project';
 import { Course, useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';

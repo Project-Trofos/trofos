@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCourse } from '../api/hooks';
 import ProjectTable from '../components/tables/ProjectTable';
 
-export default function CourseSettings(): JSX.Element {
+export default function CourseOverview(): JSX.Element {
   const params = useParams();
   const { filteredProjects, isLoading } = useCourse(params.courseId);
 
