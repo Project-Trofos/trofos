@@ -8,7 +8,7 @@ import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 
-export default function Overview(): JSX.Element {
+export default function ProjectSettings(): JSX.Element {
   const params = useParams();
   const { project } = useProject(params.projectId);
 

@@ -78,7 +78,10 @@ export default function MainLayout() {
             courses === undefined || courses.length === 0
               ? undefined
               : courses.map((course) =>
-                  getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
+                  getItem(
+                    <Link to={`/course/${course.id}/overview`}>{course.cname}</Link>,
+                    `/course/${course.id}/overview`,
+                  ),
                 ),
           )
         : null,
@@ -92,7 +95,10 @@ export default function MainLayout() {
             projects === undefined || projects.length === 0
               ? undefined
               : projects.map((project) =>
-                  getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
+                  getItem(
+                    <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>,
+                    `/project/${project.id}/overview`,
+                  ),
                 ),
           )
         : null,

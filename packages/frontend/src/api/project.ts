@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
 import trofosApiSlice from '.';
-import { isCurrent } from './currentTime';
 
 export type Project = {
   id: number;

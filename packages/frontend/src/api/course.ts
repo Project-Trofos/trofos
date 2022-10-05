@@ -1,7 +1,5 @@
-import { useMemo } from 'react';
 import trofosApiSlice from '.';
 import { PickRename } from '../helpers/types';
-import { isCurrent } from './currentTime';
 import { Project } from './project';
 
 export type Course = {
@@ -52,6 +50,24 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
       invalidatesTags: ['Course'],
+    }),
+
+    // Updating a course will invalidate that course
+    updateCourse: builder.mutation<
+      Course,
+      Pick<Course, 'id' | 'year' | 'sem'> & Partial<Pick<Course, 'description' | 'cname' | 'public'>>
+    >({
+      query: (param) => ({
+        url: `course/${param.year}/${param.sem}/${param.id}`,
+        method: 'PUT',
+        body: {
+          courseName: param.cname,
+          description: param.description,
+          isPublic: param.public,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
     }),
 
     // Removing a course will invalidate that course and all projects
@@ -142,6 +158,7 @@ export const {
   useAddCourseMutation,
   useGetAllCoursesQuery,
   useGetCourseQuery,
+  useUpdateCourseMutation,
   useRemoveCourseMutation,
   useAddProjectAndCourseMutation,
   useRemoveProjectFromCourseMutation,

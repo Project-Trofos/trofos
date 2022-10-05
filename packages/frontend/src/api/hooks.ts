@@ -58,3 +58,25 @@ export const useProject = (projectId?: string) => {
 
   return { project, course, isLoading: isProjectsLoading };
 };
+
+// Get course information by id
+export const useCourse = (courseId?: string) => {
+  const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery();
+  const { data: projects } = useGetAllProjectsQuery();
+
+  const course = useMemo(() => {
+    if (!courses || courses.length === 0 || !courseId) {
+      return undefined;
+    }
+    return courses.filter((p) => p.id.toString() === courseId)[0];
+  }, [courses, courseId]);
+
+  const filteredProjects = useMemo(() => {
+    if (!course || !projects) {
+      return [];
+    }
+    return projects.filter((p) => p.course_id === course.id);
+  }, [course, projects]);
+
+  return { course, filteredProjects, isLoading: isCoursesLoading };
+};

@@ -52,7 +52,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
       ]}
     >
       <Meta
-        title={<Link to={`/project/${project.id}`}>{project.pname}</Link>}
+        title={<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>}
         description={project.description ?? 'No description'}
       />
     </Card>

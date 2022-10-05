@@ -14,6 +14,8 @@ import ProjectKanban from '../pages/ProjectKanban';
 
 import './App.css';
 import ProjectSettings from '../pages/ProjectSettings';
+import CourseOverview from '../pages/CourseOverview';
+import CourseSettings from '../pages/CourseSettings';
 
 function App() {
   return (
@@ -30,7 +32,11 @@ function App() {
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />
-          <Route path="course/:courseId" element={<Course />} />
+          <Route path="course/:courseId" element={<Course />}>
+            <Route path="" element={<Navigate to="overview" />} />
+            <Route path="overview" element={<CourseOverview />} />
+            <Route path="settings" element={<CourseSettings />} />
+          </Route>
         </Route>
         <Route path="/login" element={<Login />} />
         <Route
