@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
+import { CURRENT_SEM, CURRENT_YEAR } from '../../src/helpers/currentTime';
 
 async function createProjectSeed(prisma: PrismaClient) {
   const projects = await prisma.project.createMany({
@@ -7,11 +8,15 @@ async function createProjectSeed(prisma: PrismaClient) {
       {
         pname: 'project1',
         course_id: 'course1_id',
+        course_year: CURRENT_YEAR,
+        course_sem: CURRENT_SEM,
         description: 'project1_description',
       },
       {
         pname: 'project2',
         course_id: 'course2_id',
+        course_year: CURRENT_YEAR,
+        course_sem: CURRENT_SEM,
         description: 'project2_description',
       },
     ],

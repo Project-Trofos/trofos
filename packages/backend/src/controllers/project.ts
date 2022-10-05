@@ -49,7 +49,7 @@ async function create(req: express.Request, res: express.Response) {
 
 async function update(req: express.Request, res: express.Response) {
   try {
-    const body = req.body as ProjectRequestBody;
+    const body = req.body as Partial<Pick<ProjectRequestBody, 'description' | 'projectName' | 'isPublic'>>;
     const { projectId } = req.params;
 
     if (!body.projectName && !body.isPublic && !body.description) {
