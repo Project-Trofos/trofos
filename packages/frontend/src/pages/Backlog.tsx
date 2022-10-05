@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Form } from 'antd';
+import React from 'react';
+import { Form, message } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useGetBacklogQuery } from '../api/backlog';
+import { useGetBacklogQuery, useUpdateBacklogMutation } from '../api/backlog';
 import BacklogInputNumber from '../components/fields/BacklogInputNumber';
 import BacklogSelect from '../components/fields/BacklogSelect';
 import BacklogSummaryInput from '../components/fields/BacklogSummaryInput';
 import BacklogTextArea from '../components/fields/BacklogTextArea';
 import BacklogUserSelect from '../components/fields/BacklogUserSelect';
 import { BacklogSelectTypes } from '../helpers/BacklogModal.types';
+import type { Backlog as BacklogType } from '../api/backlog';
 import './Backlog.css';
 
 function Backlog(): JSX.Element {
   const params = useParams();
   const [form] = Form.useForm();
+  const [updateBacklog] = useUpdateBacklogMutation();
 
   // These constants will most likely be passed down as props or
   // fetched from an API. Currently hardcoded for developement.
@@ -38,64 +40,54 @@ function Backlog(): JSX.Element {
   const backlogId = Number(params.backlogId);
   const { data: backlog } = useGetBacklogQuery({ projectId, backlogId });
 
-  // const [summary, setSummary] = useState(backlog?.summary);
-  // const [description, setDescription] = useState(backlog?.description);
-  // const [type, setType] = useState(backlog?.type);
-  // const [assignee, setAssignee] = useState(backlog?.assignee_id);
-  // const [reporter, setReporter] = useState(backlog?.reporter_id);
-  // const [priority, setPriority] = useState(backlog?.priority);
-  // const [sprint, setSprint] = useState(backlog?.sprint_id);
-  // const [points, setPoints] = useState(backlog?.points);
+  const removeUnchangedFields = (payload: { [key: string]: string | number | null }) => {
+    const updatedPayload: { [key: string]: string | number | null } = {};
+    for (const [key, value] of Object.entries(payload)) {
+      if (backlog?.[key as keyof BacklogType] !== payload[key]) {
+        updatedPayload[key] = value;
+      }
+    }
+    return updatedPayload;
+  };
 
-  // useEffect(() => {
-  //   setSummary(backlog?.summary)
-  //   setDescription(backlog?.description);
-  //   setAssignee(backlog?.assignee_id);
-  //   setType(backlog?.type);
-  //   setReporter(backlog?.reporter_id);
-  //   setPriority(backlog?.priority);
-  //   setSprint(backlog?.sprint_id);
-  //   setPoints(backlog?.points);
-  // }, [backlog]);
+  const shouldUpdateBacklog = (updatedPayload: { [key: string]: string | number | null }) =>
+    Object.keys(updatedPayload).length !== 0;
 
-  // const handleSummaryChange = (e: any) => {
-  //   setSummary(e.target.value);
-  // };
-
-  // const handleDescriptionChange = (e: any) => {
-  //   setDescription(e.target.value);
-  // };
-
-  // const handleAssigneeChange = (assigneeId: number | undefined) => {
-  //   setAssignee(assigneeId);
-  // };
-
-  // const handleReporterChange = (reporterId: number) => {
-  //   setAssignee(reporterId);
-  // };
-
-  // const handleTypeChange = (typeId: 'story' | 'task' | 'bug') => {
-  //   setType(typeId);
-  // };
-
-  // const handlePriorityChange = (priorityId: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | undefined) => {
-  //   setPriority(priorityId);
-  // };
-
-  // const handleSprintChange = (sprintId: number | undefined) => {
-  //   setSprint(sprintId);
-  // }
-
-  // const handlePointsChange = (p: number) => {
-  //   setPoints(p);
-  // }
-
-  const handleSelectFieldsUpdate = (updatedField: { name: string, value: string | number | undefined }) => {
-    if ('summary' in updatedField || 'description' in updatedField || 'points' in updatedField) {
+  const handleUpdateBacklog = async (payload: { [key: string]: string | number | null }) => {
+    // only update if fields have changed
+    const updatedPayload = removeUnchangedFields(payload);
+    if (!shouldUpdateBacklog(updatedPayload)) {
       return;
     }
 
-    console.log(updatedField);
+    const backlogToUpdate = {
+      projectId,
+      backlogId,
+      fieldToUpdate: updatedPayload,
+    };
+
+    message.loading({ content: 'Updating...', key: 'backlogUpdateMessage' });
+
+    try {
+      await updateBacklog(backlogToUpdate).unwrap();
+      message.success({ content: 'Backlog updated', key: 'backlogUpdateMessage' });
+    } catch (e) {
+      message.error({ content: 'Failed to update backlog', key: 'backlogUpdateMessage' });
+      console.error(e);
+    }
+  };
+
+  const handleSelectFieldsUpdate = (updatedField: { name: string; value: string | number | undefined }) => {
+    if ('summary' in updatedField || 'description' in updatedField || 'points' in updatedField) {
+      return;
+    }
+    const payload: { [key: string]: string | number | null } = {};
+
+    for (const [key, value] of Object.entries(updatedField)) {
+      payload[key] = value || null;
+    }
+
+    handleUpdateBacklog(payload);
   };
 
   const handleSummaryFieldUpdate = () => {
@@ -105,24 +97,24 @@ function Backlog(): JSX.Element {
     }
     const payload = {
       summary: updatedSummary,
-    }
-    console.log(payload);
+    };
+    handleUpdateBacklog(payload);
   };
 
   const handleDescriptionFieldUpdate = () => {
-    const updatedDesciption = form.getFieldValue('description');
+    const updatedDesciption: string = form.getFieldValue('description');
     const payload = {
-      description: updatedDesciption || undefined,
-    }
-    console.log(payload);
+      description: updatedDesciption || null,
+    };
+    handleUpdateBacklog(payload);
   };
 
   const handlePointsFieldUpdate = () => {
     const updatedPoints = form.getFieldValue('points');
     const payload = {
-      points: updatedPoints || undefined,
-    }
-    console.log(payload);
+      points: updatedPoints || null,
+    };
+    handleUpdateBacklog(payload);
   };
 
   if (!backlog) {

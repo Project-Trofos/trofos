@@ -17,6 +17,7 @@ describe('course.service tests', () => {
       course_year: 2022,
       course_sem: 1,
       created_at: new Date(Date.now()),
+      backlog_counter: 0,
     },
   ];
 

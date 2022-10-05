@@ -82,10 +82,10 @@ async function getBacklog(projectId: number, backlogId: number): Promise<Backlog
   return backlog;
 }
 
-async function updateBacklog(backlogToUpdate : {
-  projectId: number,
-  backlogId: number,
-  fieldToUpdate: Partial<BacklogFields>,
+async function updateBacklog(backlogToUpdate: {
+  projectId: number;
+  backlogId: number;
+  fieldToUpdate: Partial<BacklogFields>;
 }): Promise<Backlog> {
   const { projectId, backlogId, fieldToUpdate } = backlogToUpdate;
   const updatedBacklog = await prisma.backlog.update({
@@ -93,7 +93,7 @@ async function updateBacklog(backlogToUpdate : {
       project_id_backlog_id: {
         project_id: projectId,
         backlog_id: backlogId,
-      }
+      },
     },
     data: fieldToUpdate,
   });

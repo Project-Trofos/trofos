@@ -27,6 +27,11 @@ main {
     border-radius: 8px;
 }
 
+.backlog-data-container textarea.ant-input.backlog-textarea {
+    border: none;
+    border-radius: 8px;
+}
+
 .backlog-data-container input.ant-input.summary-input:hover,
 .backlog-data-container textarea.ant-input.backlog-textarea:hover {
     background-color: #efefef;
@@ -39,11 +44,6 @@ main {
 .backlog-data-container .backlog-description-container > p {
     font-weight: 600;
     padding-left: 11px;
-}
-
-.backlog-data-container textarea.ant-input.backlog-textarea {
-    border: none;
-    border-radius: 8px;
 }
 
 .backlog-data-container .backlog-panel-container {
