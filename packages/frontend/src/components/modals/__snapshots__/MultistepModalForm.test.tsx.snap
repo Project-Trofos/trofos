@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test button form modal modal should appear when button is pressed 1`] = `
-<body>
+<body
+  class="ant-scrolling-effect"
+  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
+>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
@@ -12,6 +15,8 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
         button-name
       </span>
     </button>
+  </div>
+  <div>
     <div
       class="ant-modal-root"
     >
@@ -20,7 +25,6 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
       />
       <div
         class="ant-modal-wrap"
-        style=""
         tabindex="-1"
       >
         <div
@@ -161,15 +165,6 @@ exports[`test button form modal render modal correctly 1`] = `
         button-name
       </span>
     </button>
-    <div
-      class="ant-modal-root"
-    >
-      <div
-        class="ant-modal-wrap"
-        style="display: none;"
-        tabindex="-1"
-      />
-    </div>
   </div>
 </body>
 `;

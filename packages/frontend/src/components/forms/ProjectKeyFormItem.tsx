@@ -14,7 +14,7 @@ export default function ProjectKeyFormInput({ disabled = false }: { disabled?: b
       ]}
       tooltip={{ title: 'This key will be used as a prefix to the issues.', icon: <InfoCircleOutlined /> }}
     >
-      <Input disabled />
+      <Input disabled={disabled} />
     </Form.Item>
   );
 }

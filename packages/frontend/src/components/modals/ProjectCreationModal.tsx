@@ -11,6 +11,7 @@ import SelectCourseCodeFormItem from '../forms/SelectCourseCodeFormItem';
 import CourseCodeFormItem from '../forms/CourseCodeFormItem';
 import CourseNameFormItem from '../forms/CourseNameFormItem';
 import ProjectNameFormInput from '../forms/ProjectNameFormItem';
+import ProjectKeyFormInput from '../forms/ProjectKeyFormItem';
 
 const { Option } = Select;
 
@@ -97,18 +98,7 @@ function FormStep1(): JSX.Element {
     <>
       <p>You can change these details anytime in your project settings.</p>
       <ProjectNameFormInput />
-
-      <Form.Item
-        label="Key"
-        name="projectKey"
-        rules={[
-          { pattern: /^[a-zA-Z0-9-]*$/, message: 'The key must be alphanumeric.' },
-          { max: 64, message: 'The key must be at most 64 characters long.' },
-        ]}
-        tooltip={{ title: 'This key will be used as a prefix to the issues.', icon: <InfoCircleOutlined /> }}
-      >
-        <Input />
-      </Form.Item>
+      <ProjectKeyFormInput />
     </>
   );
 }
@@ -150,7 +140,7 @@ function FormStep2(): JSX.Element {
 
       {type === 'Create new' && (
         <>
-          <CourseCodeFormItem />
+          <CourseCodeFormItem required />
           <CourseNameFormItem />
           <CourseYearSemFormItems />
         </>
