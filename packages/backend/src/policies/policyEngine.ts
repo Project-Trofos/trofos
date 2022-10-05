@@ -1,12 +1,12 @@
 import { UserSession } from ".prisma/client";
 import express from "express";
 import { PolicyOutcome } from "./policyTypes";
-import policyCourse from './policyCourse'
-import policyProject from "./policyProject";
+import coursePolicy from './course.policy'
+import projectPolicy from "./project.policy";
 
 const commandMap : { [policyName : string]: any} = {};
-commandMap[policyCourse.POLICY_NAME] = policyCourse.applyCoursePolicy
-commandMap[policyProject.POLICY_NAME] = policyProject.applyProjectPolicy
+commandMap[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicy
+commandMap[projectPolicy.POLICY_NAME] = projectPolicy.applyProjectPolicy
 
 async function execute(req : express.Request, userSession : UserSession, policyName : string | null) : Promise<PolicyOutcome> {
     if (policyName === null) {

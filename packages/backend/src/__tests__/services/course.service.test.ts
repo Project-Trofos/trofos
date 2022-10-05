@@ -3,6 +3,8 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
+import coursePolicy from '../../policies/constraints/course.constraint'
+import projectPolicy from '../../policies/constraints/project.constraint'
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -23,11 +25,14 @@ describe('course.service tests', () => {
   // Mock data for users
   const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
+  const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
+  const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
+
   describe('getAll', () => {
     it('should return all courses', async () => {
       prismaMock.course.findMany.mockResolvedValueOnce(coursesData);
 
-      const result = await course.getAll(1);
+      const result = await course.getAll(coursePolicyConstraint);
       expect(result).toEqual<Course[]>(coursesData);
     });
 
@@ -37,7 +42,7 @@ describe('course.service tests', () => {
       );
       prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
 
-      const result = await course.getAll(1, 'past');
+      const result = await course.getAll(coursePolicyConstraint, 'past');
       expect(result).toEqual<Course[]>(pastCourses);
     });
 
@@ -45,7 +50,7 @@ describe('course.service tests', () => {
       const currentCourses = coursesData.filter((c) => c.sem === CURRENT_SEM && c.year === CURRENT_YEAR);
       prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
 
-      const result = await course.getAll(1, 'current');
+      const result = await course.getAll(coursePolicyConstraint, 'current');
       expect(result).toEqual<Course[]>(currentCourses);
     });
   });
@@ -123,7 +128,7 @@ describe('course.service tests', () => {
       // @ts-ignore
       prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
 
-      const result = await course.getUsers(1, targetCourse.id, targetCourse.year, targetCourse.sem);
+      const result = await course.getUsers(coursePolicyConstraint, targetCourse.id, targetCourse.year, targetCourse.sem);
       expect(result).toEqual<User[]>(userData);
     });
   });
@@ -170,7 +175,7 @@ describe('course.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectData);
 
-      const result = await course.getProjects(1, projectData[0].course_id ?? '1');
+      const result = await course.getProjects(projectPolicyConstraint, projectData[0].course_id ?? '1');
       expect(result).toEqual<Project[]>(projectData);
     });
   });
