@@ -19,8 +19,6 @@ import {
   ProjectIdRequestBody,
   UserRequestBody,
 } from './requestTypes';
-import { canManageCourse } from '../policies/course.policy'
-import { NotAuthorizedError } from '../helpers/error/errorTypes'
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
@@ -32,7 +30,7 @@ async function getAll(req: express.Request, res: express.Response) {
     }
 
     // Default to all
-    const result = await course.getAll(res.locals.sessionInformation.user_id, body.option ?? 'all');
+    const result = await course.getAll(res.locals.policyConstraint, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -46,8 +44,6 @@ async function get(req: express.Request, res: express.Response) {
 
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
-
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
 
     const result = await course.getByPk(courseId, Number(courseYear), Number(courseSem));
 
@@ -88,8 +84,6 @@ async function update(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
-
     if (!body.courseName && !body.isPublic && !body.description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
@@ -116,8 +110,6 @@ async function remove(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
-
     const result = await course.remove(courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
@@ -134,9 +126,7 @@ async function getUsers(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
-
-    const result = await course.getUsers(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getUsers(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -153,8 +143,6 @@ async function addUser(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
     assertUserIdIsValid(body.userId);
-
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
 
     const result = await course.addUser(courseId, Number(courseYear), Number(courseSem), Number(body.userId));
 
@@ -174,8 +162,6 @@ async function removeUser(req: express.Request, res: express.Response) {
     assertCourseSemIsNumber(courseSem);
     assertUserIdIsValid(body.userId);
 
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
-
     const result = await course.removeUser(courseId, Number(courseYear), Number(courseSem), Number(body.userId));
 
     return res.status(StatusCodes.OK).json(result);
@@ -192,7 +178,7 @@ async function getProjects(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getProjects(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getProjects(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -209,8 +195,6 @@ async function addProject(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
     assertProjectIdIsValid(body.projectId);
-
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
 
     const result = await course.addProject(courseId, Number(courseYear), Number(courseSem), Number(body.projectId));
 
@@ -229,8 +213,6 @@ async function removeProject(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
     assertProjectIdIsValid(body.projectId);
-
-    if (!canManageCourse(res.locals.sessionInformation.user_id, courseId, Number(courseYear), Number(courseSem))) throw new NotAuthorizedError()
 
     const result = await course.removeProject(courseId, Number(courseYear), Number(courseSem), Number(body.projectId));
 

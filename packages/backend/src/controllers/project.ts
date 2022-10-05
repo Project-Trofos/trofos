@@ -4,8 +4,6 @@ import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaul
 import { assertProjectNameIsValid } from '../helpers/error/assertions';
 import project from '../services/project.service';
 import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
-import { canManageProject } from '../policies/project.policy'
-import { NotAuthorizedError } from '../helpers/error/errorTypes'
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
   try {
@@ -16,7 +14,7 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
     }
 
     // default to all
-    const result = await project.getAll(res.locals.sessionInformation.user_id, body.option ?? 'all');
+    const result = await project.getAll(res.locals.policyConstraint, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -27,8 +25,6 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
 async function get(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-
-    if (!canManageProject(res.locals.sessionInformation.user_id, Number(projectId))) throw new NotAuthorizedError()
 
     const result = await project.getById(Number(projectId));
 
@@ -56,8 +52,6 @@ async function update(req: express.Request, res: express.Response) {
     const body = req.body as ProjectRequestBody;
     const { projectId } = req.params;
 
-    if (!canManageProject(res.locals.sessionInformation.user_id, Number(projectId))) throw new NotAuthorizedError()
-
     if (!body.projectName && !body.isPublic && !body.description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
@@ -73,8 +67,6 @@ async function remove(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
-    if (!canManageProject(res.locals.sessionInformation.user_id, Number(projectId))) throw new NotAuthorizedError()
-
     const result = await project.remove(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
@@ -87,7 +79,7 @@ async function getUsers(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
-    const result = await project.getUsers(res.locals.sessionInformation.user_id, Number(projectId));
+    const result = await project.getUsers(res.locals.policyConstraint, Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -102,8 +94,6 @@ async function addUser(req: express.Request, res: express.Response) {
 
     assertProjectIdIsValid(projectId);
     assertUserIdIsValid(body.userId);
-
-    if (!canManageProject(res.locals.sessionInformation.user_id, Number(projectId))) throw new NotAuthorizedError()
 
     const result = await project.addUser(Number(projectId), Number(body.userId));
 
@@ -121,7 +111,6 @@ async function removeUser(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
     assertUserIdIsValid(body.userId);
 
-    if (!canManageProject(res.locals.sessionInformation.user_id, Number(projectId))) throw new NotAuthorizedError()
 
     const result = await project.removeUser(Number(projectId), Number(body.userId));
 

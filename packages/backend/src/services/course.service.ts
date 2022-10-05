@@ -2,17 +2,16 @@ import { Course, Project, User, UsersOnCourses } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma'
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
-import coursePolicy from '../policies/course.policy'
-import projectPolicy from '../policies/project.policy'
+import { AppAbility } from '../policies/policyTypes';
 
 
-async function getAll(userId: number, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
+async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
   let result;
   if (option === 'current') {
     result = await prisma.course.findMany({
       where: {
         AND : [
-          accessibleBy(coursePolicy(2)).Course,
+          accessibleBy(policyConstraint).Course,
           {
             year: CURRENT_YEAR,
             sem: CURRENT_SEM,
@@ -25,7 +24,7 @@ async function getAll(userId: number, option?: 'current' | 'past' | 'all'): Prom
     result = await prisma.course.findMany({
       where: {
         AND : [
-          accessibleBy(coursePolicy(2)).Course,
+          accessibleBy(policyConstraint).Course,
           {
             OR: [
               {
@@ -50,7 +49,7 @@ async function getAll(userId: number, option?: 'current' | 'past' | 'all'): Prom
     });
   } else {
     result = await prisma.course.findMany({
-      where : accessibleBy(coursePolicy(2)).Course
+      where : accessibleBy(policyConstraint).Course
     });
   }
   return result;
@@ -136,12 +135,12 @@ async function remove(id: string, year: number, sem: number): Promise<Course> {
   return result;
 }
 
-async function getUsers(userId: number, id: string, year: number, sem: number): Promise<User[]> {
+async function getUsers(policyConstraint: AppAbility, id: string, year: number, sem: number): Promise<User[]> {
 
   const result = await prisma.usersOnCourses.findMany({
     where: {
       AND : [
-        accessibleBy(coursePolicy(userId)).Course,
+        accessibleBy(policyConstraint).Course,
         {
           course_id: id,
           course_year: year,
@@ -198,11 +197,11 @@ async function removeUser(
 }
 
 // Get project by any combination of id, year or sem
-async function getProjects(userId: number, id?: string, year?: number, sem?: number): Promise<Project[]> {
+async function getProjects(policyConstraint: AppAbility, id?: string, year?: number, sem?: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
       AND : [
-        accessibleBy(projectPolicy(userId)).Project, 
+        accessibleBy(policyConstraint).Project, 
         {
           course_id: id,
           course_year: year,

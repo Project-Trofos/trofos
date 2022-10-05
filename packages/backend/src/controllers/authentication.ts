@@ -3,7 +3,6 @@ import express from 'express';
 import authenticationService  from '../services/authentication.service';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
-import { UserAuth } from '../services/types/authentication.service.types'; 
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 

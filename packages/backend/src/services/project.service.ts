@@ -2,9 +2,9 @@ import { Project, User, UsersOnProjects } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma'
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
-import projectPolicy from '../policies/project.policy'
+import { AppAbility } from '../policies/policyTypes';
 
-async function getAll(userId : number, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
+async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
   let result;
 
   if (option === 'current') {
@@ -12,7 +12,7 @@ async function getAll(userId : number, option?: 'all' | 'current' | 'past'): Pro
     result = await prisma.project.findMany({
       where: {
         AND : [
-          accessibleBy(projectPolicy(userId)).Project,
+          accessibleBy(policyConstraint).Project,
           {
             OR: [
               {
@@ -38,7 +38,7 @@ async function getAll(userId : number, option?: 'all' | 'current' | 'past'): Pro
     result = await prisma.project.findMany({
       where: {
         AND : [
-          accessibleBy(projectPolicy(userId)).Project,
+          accessibleBy(policyConstraint).Project,
           {
                     OR: [
           {
@@ -64,7 +64,7 @@ async function getAll(userId : number, option?: 'all' | 'current' | 'past'): Pro
     });
   } else {
     result = await prisma.project.findMany({
-      where : accessibleBy(projectPolicy(userId)).Project,
+      where : accessibleBy(policyConstraint).Project,
     });
   }
 
@@ -123,11 +123,11 @@ async function remove(id: number): Promise<Project> {
   return result;
 }
 
-async function getUsers(userId : number, id: number): Promise<User[]> {
+async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
   const result = await prisma.usersOnProjects.findMany({
     where: {
       AND : [
-        accessibleBy(projectPolicy(userId)).Project,
+        accessibleBy(policyConstraint).Project,
         {
           project_id: id
         },
