@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import MainLayout from '../templates/MainLayout';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
@@ -13,6 +13,7 @@ import ProjectBacklog from '../pages/ProjectBacklog';
 import ProjectKanban from '../pages/ProjectKanban';
 
 import './App.css';
+import ProjectSettings from '../pages/ProjectSettings';
 
 function App() {
   return (
@@ -22,9 +23,11 @@ function App() {
           <Route path="" element={<Home />} />
           <Route path="projects" element={<Projects />} />
           <Route path="project/:projectId" element={<Project />}>
-            <Route path="" element={<ProjectOverview />} />
+            <Route path="" element={<Navigate to="overview" />} />
+            <Route path="overview" element={<ProjectOverview />} />
             <Route path="backlog" element={<ProjectBacklog />} />
             <Route path="kanban" element={<ProjectKanban />} />
+            <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />
           <Route path="course/:courseId" element={<Course />} />

@@ -6,6 +6,11 @@ import { Course, useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '.
 import MultistepFormModal from './MultistepModalForm';
 import { useGetAllModulesQuery } from '../../api/nusmods';
 import { getErrorMessage } from '../../helpers/error';
+import CourseYearSemFormItems from '../forms/CourseYearSemFormItems';
+import SelectCourseCodeFormItem from '../forms/SelectCourseCodeFormItem';
+import CourseCodeFormItem from '../forms/CourseCodeFormItem';
+import CourseNameFormItem from '../forms/CourseNameFormItem';
+import ProjectNameFormInput from '../forms/ProjectNameFormItem';
 
 const { Option } = Select;
 
@@ -91,14 +96,7 @@ function FormStep1(): JSX.Element {
   return (
     <>
       <p>You can change these details anytime in your project settings.</p>
-      <Form.Item
-        label="Name"
-        name="projectName"
-        required
-        rules={[{ required: true, message: "Please input your project's name!" }]}
-      >
-        <Input />
-      </Form.Item>
+      <ProjectNameFormInput />
 
       <Form.Item
         label="Key"
@@ -145,83 +143,18 @@ function FormStep2(): JSX.Element {
 
       {type === 'Choose from existing' && (
         <>
-          <Form.Item label="Course" name="courseCode" rules={[{ required: true, message: 'Please select course!' }]}>
-            <Select
-              showSearch
-              placeholder="Search to Select"
-              optionFilterProp="children"
-              filterOption={(input, option) => {
-                if (!option) {
-                  return false;
-                }
-                return (option.key as string).toLowerCase().includes(input.toLowerCase());
-              }}
-            >
-              {courseOptions}
-            </Select>
-          </Form.Item>
+          <SelectCourseCodeFormItem courseOptions={courseOptions} />
           <CourseYearSemFormItems />
         </>
       )}
 
       {type === 'Create new' && (
         <>
-          <Form.Item
-            label="Course Code"
-            name="courseCode"
-            rules={[{ required: true, message: "Please input your course's code!" }]}
-            tooltip={{
-              title: 'Course code will be used to uniquely identify this course.',
-              icon: <InfoCircleOutlined />,
-            }}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Course Name"
-            name="courseName"
-            rules={[
-              { required: true, message: "Please input your course's name!" },
-              { pattern: /^[a-zA-Z0-9-]*$/, message: 'The course name must be alphanumeric.' },
-              { max: 64, message: 'The key must be at most 64 characters long.' },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+          <CourseCodeFormItem />
+          <CourseNameFormItem />
           <CourseYearSemFormItems />
         </>
       )}
-    </>
-  );
-}
-
-// Renders form elements to input year and semester
-function CourseYearSemFormItems(): JSX.Element {
-  return (
-    <>
-      <Form.Item
-        label="Academic Year"
-        name="courseYear"
-        rules={[{ required: true, message: "Please input your course's year!" }]}
-      >
-        <DatePicker picker="year" />
-      </Form.Item>
-
-      <Form.Item
-        label="Semester"
-        name="courseSem"
-        rules={[{ required: true, message: "Please input your course's semester!" }]}
-      >
-        <Select placeholder="Select a semester">
-          <Select.Option key="1" value="1">
-            1
-          </Select.Option>
-          <Select.Option key="2" value="2">
-            2
-          </Select.Option>
-        </Select>
-      </Form.Item>
     </>
   );
 }

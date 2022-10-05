@@ -12,8 +12,7 @@ import {
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
-import { useCurrentAndPastProjects } from '../api/project';
-import { useCurrentAndPastCourses } from '../api/course';
+import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
 
@@ -69,32 +68,34 @@ export default function MainLayout() {
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
-        userInfo?.userRole === 1 
+      userInfo?.userRole === 1
         ? getItem(
-        <Link onClick={(e) => e.stopPropagation()} to="/courses">
-          Courses
-        </Link>,
-        '/courses',
-        <BookOutlined />,
-        courses === undefined || courses.length === 0
-          ? undefined
-          : courses.map((course) =>
-              getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
-            ),
-      ) : null,
+            <Link onClick={(e) => e.stopPropagation()} to="/courses">
+              Courses
+            </Link>,
+            '/courses',
+            <BookOutlined />,
+            courses === undefined || courses.length === 0
+              ? undefined
+              : courses.map((course) =>
+                  getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
+                ),
+          )
+        : null,
       userInfo
-      ? getItem(
-        <Link onClick={(e) => e.stopPropagation()} to="/projects">
-          Project
-        </Link>,
-        '/projects',
-        <ProjectOutlined />,
-        projects === undefined || projects.length === 0
-          ? undefined
-          : projects.map((project) =>
-              getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
-            ),
-      ) : null ,
+        ? getItem(
+            <Link onClick={(e) => e.stopPropagation()} to="/projects">
+              Project
+            </Link>,
+            '/projects',
+            <ProjectOutlined />,
+            projects === undefined || projects.length === 0
+              ? undefined
+              : projects.map((project) =>
+                  getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
+                ),
+          )
+        : null,
     ],
     [projects, courses, userInfo],
   );

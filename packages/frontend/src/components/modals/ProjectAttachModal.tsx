@@ -46,13 +46,14 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
       title="Attach to course"
       buttonName="Attach to course"
       form={form}
-      formSteps={[<FormStep2 />]}
+      formSteps={[<FormStep />]}
       onSubmit={onFinish}
+      buttonType="span"
     />
   );
 }
 
-function FormStep2(): JSX.Element {
+function FormStep(): JSX.Element {
   const { data: courses } = useGetAllCoursesQuery();
 
   const courseOptions = useMemo(() => {
