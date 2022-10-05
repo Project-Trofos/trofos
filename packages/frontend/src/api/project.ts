@@ -19,7 +19,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllProjects: builder.query<Project[], void>({
       query: () => ({
-        url : 'project/',
+        url: 'project/',
         credentials: 'include',
       }),
       providesTags: (result, error, arg) => [
@@ -52,6 +52,24 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: ['Project'],
     }),
 
+    // Updating a project will invalidate that project
+    updateProject: builder.mutation<
+      Project,
+      Partial<Pick<Project, 'description' | 'pname' | 'public'>> & Pick<Project, 'id'>
+    >({
+      query: (project) => ({
+        url: `project/${project.id}`,
+        method: 'PUT',
+        body: {
+          projectName: project.pname,
+          isPublic: project.public,
+          description: project.description,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
+    }),
+
     // Removing a project will invalidate that project
     removeProject: builder.mutation<Project, Pick<Project, 'id'>>({
       query: (project) => ({
@@ -65,22 +83,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAddProjectMutation, useGetAllProjectsQuery, useGetProjectQuery, useRemoveProjectMutation } =
-  extendedApi;
-
-// Filter courses by current and past
-export const useCurrentAndPastProjects = () => {
-  const projectsData = useGetAllProjectsQuery();
-
-  const filteredProjects = useMemo(() => {
-    if (projectsData.isError || projectsData.isLoading) {
-      return undefined;
-    }
-    return {
-      pastProjects: (projectsData.data as Project[]).filter((p) => !isCurrent(p.course_year, p.course_sem)),
-      currentProjects: (projectsData.data as Project[]).filter((p) => isCurrent(p.course_year, p.course_sem)),
-    };
-  }, [projectsData]);
-
-  return { ...projectsData, ...filteredProjects };
-};
+export const {
+  useAddProjectMutation,
+  useGetAllProjectsQuery,
+  useGetProjectQuery,
+  useUpdateProjectMutation,
+  useRemoveProjectMutation,
+} = extendedApi;

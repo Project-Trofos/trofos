@@ -19,7 +19,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllCourses: builder.query<Course[], void>({
       query: () => ({
-        url :'course/',
+        url: 'course/',
         credentials: 'include',
       }),
       providesTags: (result, error, arg) => [
@@ -147,20 +147,3 @@ export const {
   useRemoveProjectFromCourseMutation,
   useAddProjectToCourseMutation,
 } = extendedApi;
-
-// Filter courses by current and past
-export const useCurrentAndPastCourses = () => {
-  const coursesData = useGetAllCoursesQuery();
-
-  const filteredCourses = useMemo(() => {
-    if (coursesData.isError || coursesData.isLoading) {
-      return undefined;
-    }
-    return {
-      pastCourses: (coursesData.data as Course[]).filter((c) => !isCurrent(c.year, c.sem)),
-      currentCourses: (coursesData.data as Course[]).filter((c) => isCurrent(c.year, c.sem)),
-    };
-  }, [coursesData]);
-
-  return { ...coursesData, ...filteredCourses };
-};
