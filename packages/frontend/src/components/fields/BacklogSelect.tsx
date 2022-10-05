@@ -5,7 +5,7 @@ import './BacklogSelect.css';
 
 type BacklogSelectPropsTypes = {
   value: string | number | undefined;
-  onChange(e: any): void;
+  onChange(e: number | string | undefined): void;
   options: BacklogSelectTypes[];
   placeholder?: string;
   className?: string;

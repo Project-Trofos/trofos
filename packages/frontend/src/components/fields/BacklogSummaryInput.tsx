@@ -4,8 +4,8 @@ import './BacklogSummaryInput.css';
 
 type BacklogSummaryInputPropsTypes = {
   value: string;
-  onChange(e: any): void;
-  onBlur?(e: any): void;
+  onChange(e: React.ChangeEvent<HTMLInputElement>): void;
+  onBlur?(e: React.FocusEvent<HTMLInputElement, Element>): void;
   placeholder?: string;
   className?: string;
 };
@@ -13,7 +13,15 @@ type BacklogSummaryInputPropsTypes = {
 function BacklogSummaryInput(props: BacklogSummaryInputPropsTypes): JSX.Element {
   const { value, onBlur, onChange, placeholder, className } = props;
 
-  return <Input className={`summary-input ${className}`} placeholder={placeholder} value={value} onBlur={onBlur} onChange={onChange} />;
+  return (
+    <Input
+      className={`summary-input ${className}`}
+      placeholder={placeholder}
+      value={value}
+      onBlur={onBlur}
+      onChange={onChange}
+    />
+  );
 }
 
 BacklogSummaryInput.defaultProps = {

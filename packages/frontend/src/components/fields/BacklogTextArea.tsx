@@ -4,8 +4,8 @@ import './BacklogTextArea.css';
 
 type BacklogTextAreaPropsTypes = {
   value: string;
-  onChange(e: any): void;
-  onBlur?(e: any): void;
+  onChange(e: React.ChangeEvent<HTMLTextAreaElement> | undefined): void;
+  onBlur?(e: React.FocusEvent<HTMLTextAreaElement, Element> | undefined): void;
   placeholder?: string;
   className?: string;
   autoSize?: { minRows: number; maxRows: number };
