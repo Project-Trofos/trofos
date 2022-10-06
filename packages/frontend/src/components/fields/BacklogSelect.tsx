@@ -4,8 +4,8 @@ import type { BacklogSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogSelect.css';
 
 type BacklogSelectPropsTypes = {
-  value: string | number | undefined;
-  onChange(e: number | string | undefined): void;
+  value?: string | number;
+  onChange?(e: number | string | undefined): void;
   options: BacklogSelectTypes[];
   placeholder?: string;
   className?: string;
@@ -37,6 +37,8 @@ function BacklogSelect(props: BacklogSelectPropsTypes): JSX.Element {
 BacklogSelect.defaultProps = {
   className: '',
   allowClear: false,
+  value: undefined,
+  onChange: undefined,
   placeholder: '',
 };
 

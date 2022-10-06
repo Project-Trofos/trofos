@@ -79,40 +79,30 @@ function BacklogCreationModal(): JSX.Element {
 
   const renderTypeSelect = (): JSX.Element => (
     <Form.Item name="type" label="Type" rules={[{ required: true }]}>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <BacklogSelect options={TYPES} placeholder="Type of backlog" />
     </Form.Item>
   );
 
   const renderSprintSelect = (): JSX.Element => (
     <Form.Item name="sprintId" label="Sprint">
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <BacklogSelect options={SPRINTS} placeholder="Select Sprint" allowClear />
     </Form.Item>
   );
 
   const renderPrioritySelect = (): JSX.Element => (
     <Form.Item name="priority" label="Priority">
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <BacklogSelect options={PRIORITIES} placeholder="Select Priority" allowClear />
     </Form.Item>
   );
 
   const renderReporterSelect = (): JSX.Element => (
     <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <BacklogUserSelect options={USERS} placeholder="Select User" />
     </Form.Item>
   );
 
   const renderAssigneeSelect = (): JSX.Element => (
     <Form.Item name="assigneeId" label="Assignee">
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <BacklogUserSelect options={USERS} placeholder="Assign to" allowClear />
     </Form.Item>
   );
@@ -120,8 +110,6 @@ function BacklogCreationModal(): JSX.Element {
   const renderContent = (): JSX.Element => (
     <Form id="newBacklog" form={form} onFinish={handleFormSubmit}>
       <Form.Item name="summary" rules={[{ required: true }]} initialValue="">
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
         <BacklogSummaryInput placeholder="* Type summary here..." />
       </Form.Item>
       {renderTypeSelect()}
@@ -132,13 +120,9 @@ function BacklogCreationModal(): JSX.Element {
         <Col span={12}>{renderAssigneeSelect()}</Col>
       </Row>
       <Form.Item name="points" label="Points">
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
         <BacklogInputNumber />
       </Form.Item>
       <Form.Item name="description">
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/* @ts-ignore */}
         <BacklogTextArea placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />
       </Form.Item>
     </Form>

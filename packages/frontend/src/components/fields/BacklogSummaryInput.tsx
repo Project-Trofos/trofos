@@ -3,8 +3,8 @@ import { Input } from 'antd';
 import './BacklogSummaryInput.css';
 
 type BacklogSummaryInputPropsTypes = {
-  value: string;
-  onChange(e: React.ChangeEvent<HTMLInputElement>): void;
+  value?: string;
+  onChange?(e: React.ChangeEvent<HTMLInputElement>): void;
   onBlur?(e: React.FocusEvent<HTMLInputElement, Element>): void;
   placeholder?: string;
   className?: string;
@@ -27,6 +27,8 @@ function BacklogSummaryInput(props: BacklogSummaryInputPropsTypes): JSX.Element 
 BacklogSummaryInput.defaultProps = {
   placeholder: '',
   className: '',
+  value: undefined,
+  onChange: undefined,
   onBlur: undefined,
 };
 
