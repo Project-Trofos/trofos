@@ -5,8 +5,8 @@ import type { BacklogSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogUserSelect.css';
 
 type BacklogUserSelectPropsTypes = {
-  value: string | number | undefined;
-  onChange(e: string | number | undefined): void;
+  value?: string | number;
+  onChange?(e: string | number | undefined): void;
   options: BacklogSelectTypes[];
   placeholder?: string;
   className?: string;
@@ -40,6 +40,8 @@ BacklogUserSelect.defaultProps = {
   className: '',
   allowClear: false,
   placeholder: '',
+  value: undefined,
+  onChange: undefined,
 };
 
 export default BacklogUserSelect;

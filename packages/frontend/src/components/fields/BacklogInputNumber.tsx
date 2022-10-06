@@ -3,8 +3,8 @@ import { InputNumber } from 'antd';
 import './BacklogInputNumber.css';
 
 type BacklogInputNumberPropsTypes = {
-  value: number | undefined;
-  onChange(e: number | undefined): void;
+  value?: number;
+  onChange?(e: number | undefined): void;
   onBlur?(e: React.FocusEvent<HTMLInputElement, Element> | undefined): void;
   placeholder?: string;
   className?: string;
@@ -28,6 +28,8 @@ function BacklogInputNumber(props: BacklogInputNumberPropsTypes): JSX.Element {
 BacklogInputNumber.defaultProps = {
   placeholder: '',
   className: '',
+  value: undefined,
+  onChange: undefined,
   onBlur: undefined,
 };
 

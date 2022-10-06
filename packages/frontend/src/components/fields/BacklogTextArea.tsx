@@ -3,8 +3,8 @@ import { Input } from 'antd';
 import './BacklogTextArea.css';
 
 type BacklogTextAreaPropsTypes = {
-  value: string;
-  onChange(e: React.ChangeEvent<HTMLTextAreaElement> | undefined): void;
+  value?: string;
+  onChange?(e: React.ChangeEvent<HTMLTextAreaElement> | undefined): void;
   onBlur?(e: React.FocusEvent<HTMLTextAreaElement, Element> | undefined): void;
   placeholder?: string;
   className?: string;
@@ -32,6 +32,8 @@ BacklogTextArea.defaultProps = {
   placeholder: '',
   className: '',
   autoSize: { minRows: 1, maxRows: 8 },
+  value: undefined,
+  onChange: undefined,
   onBlur: undefined,
 };
 
