@@ -47,7 +47,7 @@ export default function ProjectSettings(): JSX.Element {
         onFinish={handleFinish}
       >
         <ProjectNameFormInput />
-        <ProjectKeyFormInput />
+        <ProjectKeyFormInput isDisabled />
 
         <Form.Item label="Description" name="projectDescription">
           <Input.TextArea rows={4} />

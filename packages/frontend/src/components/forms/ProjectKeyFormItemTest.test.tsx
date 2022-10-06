@@ -4,10 +4,10 @@ import FormWrapper from './__testutils__/FormRenderHelper.test';
 import ProjectKeyFormInput from './ProjectKeyFormItem';
 
 describe('ProjectKeyFormItem test', () => {
-  function renderForm(disabled?: boolean) {
+  function renderForm(isDisabled?: boolean) {
     return render(
       <FormWrapper>
-        <ProjectKeyFormInput disabled={disabled} />
+        <ProjectKeyFormInput isDisabled={isDisabled} />
       </FormWrapper>,
     );
   }

@@ -49,7 +49,7 @@ export default function CourseSettings(): JSX.Element {
         onFinish={handleFinish}
       >
         <CourseNameFormItem />
-        <CourseCodeFormItem disabled />
+        <CourseCodeFormItem isDisabled />
 
         <Form.Item label="Description" name="courseDescription">
           <Input.TextArea rows={4} />

@@ -7,7 +7,7 @@ describe('CourseCodeFormItem test', () => {
   function renderForm(required?: boolean) {
     return render(
       <FormWrapper>
-        <CourseCodeFormItem required={required} />
+        <CourseCodeFormItem isRequired={required} />
       </FormWrapper>,
     );
   }

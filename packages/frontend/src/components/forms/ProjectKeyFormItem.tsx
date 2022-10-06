@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 // Renders form elements to input project key
-export default function ProjectKeyFormInput({ disabled = false }: { disabled?: boolean }): JSX.Element {
+export default function ProjectKeyFormInput({ isDisabled = false }: { isDisabled?: boolean }): JSX.Element {
   return (
     <Form.Item
       label="Key"
@@ -14,11 +14,11 @@ export default function ProjectKeyFormInput({ disabled = false }: { disabled?: b
       ]}
       tooltip={{ title: 'This key will be used as a prefix to the issues.', icon: <InfoCircleOutlined /> }}
     >
-      <Input disabled={disabled} />
+      <Input disabled={isDisabled} />
     </Form.Item>
   );
 }
 
 ProjectKeyFormInput.defaultProps = {
-  disabled: false,
+  isDisabled: false,
 };

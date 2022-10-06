@@ -139,7 +139,7 @@ function FormStep2(): JSX.Element {
 
       {type === 'Create new' && (
         <>
-          <CourseCodeFormItem required />
+          <CourseCodeFormItem isRequired />
           <CourseNameFormItem />
           <CourseYearSemFormItems />
         </>
