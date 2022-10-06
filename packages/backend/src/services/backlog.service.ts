@@ -101,9 +101,23 @@ async function updateBacklog(backlogToUpdate: {
   return updatedBacklog;
 }
 
+async function deleteBacklog(projectId: number, backlogId: number): Promise<Backlog> {
+  const backlog = await prisma.backlog.delete({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      },
+    },
+  });
+
+  return backlog;
+}
+
 export default {
   newBacklog,
   listBacklogs,
   getBacklog,
   updateBacklog,
+  deleteBacklog,
 };

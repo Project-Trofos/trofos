@@ -1,1 +1,3 @@
-/* CSS for project page */
+.project-section-container {
+    flex-grow: 1;
+}

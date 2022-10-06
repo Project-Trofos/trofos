@@ -10,6 +10,7 @@ import BacklogUserSelect from '../components/fields/BacklogUserSelect';
 import { BacklogSelectTypes } from '../helpers/BacklogModal.types';
 import type { Backlog as BacklogType } from '../api/backlog';
 import './Backlog.css';
+import BacklogMenu from '../components/dropdowns/BacklogMenu';
 
 function Backlog(): JSX.Element {
   const params = useParams();
@@ -122,7 +123,12 @@ function Backlog(): JSX.Element {
   }
 
   return (
-    <Form form={form} initialValues={backlog} onValuesChange={handleSelectFieldsUpdate}>
+    <Form
+      form={form}
+      initialValues={backlog}
+      onValuesChange={handleSelectFieldsUpdate}
+      className="backlog-page-container"
+    >
       <div className="backlog-data-container">
         <div className="backlog-input-container">
           <Form.Item name="summary" rules={[{ required: true }]}>
@@ -139,54 +145,59 @@ function Backlog(): JSX.Element {
             </Form.Item>
           </div>
         </div>
-        <div className="backlog-panel-container">
-          <div>
-            <span>Assignee</span>
-            <Form.Item name="assignee_id">
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogUserSelect options={USERS} allowClear />
-            </Form.Item>
+        <div className="backlog-sidebar-container">
+          <div className="backlog-panel-container">
+            <div>
+              <span>Assignee</span>
+              <Form.Item name="assignee_id">
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogUserSelect options={USERS} allowClear />
+              </Form.Item>
+            </div>
+            <div>
+              <span>Type</span>
+              <Form.Item name="type" rules={[{ required: true }]}>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogSelect options={TYPES} />
+              </Form.Item>
+            </div>
+            <div>
+              <span>Priority</span>
+              <Form.Item name="priority">
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogSelect options={PRIORITIES} allowClear />
+              </Form.Item>
+            </div>
+            <div>
+              <span>Sprint</span>
+              <Form.Item name="sprint_id">
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogSelect options={SPRINTS} allowClear />
+              </Form.Item>
+            </div>
+            <div>
+              <span>Point(s)</span>
+              <Form.Item name="points">
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
+              </Form.Item>
+            </div>
+            <div>
+              <span>Reporter</span>
+              <Form.Item name="reporter_id" rules={[{ required: true }]}>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
+                <BacklogUserSelect options={USERS} />
+              </Form.Item>
+            </div>
           </div>
-          <div>
-            <span>Type</span>
-            <Form.Item name="type" rules={[{ required: true }]}>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogSelect options={TYPES} />
-            </Form.Item>
-          </div>
-          <div>
-            <span>Priority</span>
-            <Form.Item name="priority">
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogSelect options={PRIORITIES} allowClear />
-            </Form.Item>
-          </div>
-          <div>
-            <span>Sprint</span>
-            <Form.Item name="sprint_id">
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogSelect options={SPRINTS} allowClear />
-            </Form.Item>
-          </div>
-          <div>
-            <span>Point(s)</span>
-            <Form.Item name="points">
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
-            </Form.Item>
-          </div>
-          <div>
-            <span>Reporter</span>
-            <Form.Item name="reporter_id" rules={[{ required: true }]}>
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <BacklogUserSelect options={USERS} />
-            </Form.Item>
+          <div className="backlog-menu-container">
+            <BacklogMenu projectId={projectId} backlogId={backlogId} />
           </div>
         </div>
       </div>

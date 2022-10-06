@@ -11,6 +11,7 @@ const backlogServiceSpies = {
   listBacklogs: jest.spyOn(backlogService, 'listBacklogs'),
   getBacklog: jest.spyOn(backlogService, 'getBacklog'),
   updateBacklog: jest.spyOn(backlogService, 'updateBacklog'),
+  deleteBacklog: jest.spyOn(backlogService, 'deleteBacklog'),
 };
 
 describe('backlogController tests', () => {
@@ -280,6 +281,78 @@ describe('backlogController tests', () => {
 
       await backlogController.updateBacklog(mockRequest, mockResponse);
       expect(backlogServiceSpies.updateBacklog).toHaveBeenCalledWith(mockBacklogToUpdate);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+  });
+
+  describe('delete backlog', () => {
+    const mockBacklogToDelete = {
+      projectId: 123,
+      backlogId: 1,
+    };
+
+    const mockRequest = createRequest({
+      params: mockBacklogToDelete,
+    });
+
+    const mockResponse = createResponse();
+
+    it('should return backlog and status 200 when called with valid fields', async () => {
+      const expectedBacklog: Backlog = {
+        backlog_id: 1,
+        summary: 'A Test Summary',
+        type: 'story',
+        priority: 'very_high',
+        sprint_id: 123,
+        reporter_id: 1,
+        assignee_id: 1,
+        points: 1,
+        description: 'A test description here',
+        project_id: 123,
+      };
+      backlogServiceSpies.deleteBacklog.mockResolvedValueOnce(expectedBacklog);
+
+      await backlogController.deleteBacklog(mockRequest, mockResponse);
+      expect(backlogServiceSpies.deleteBacklog).toHaveBeenCalledWith(
+        mockBacklogToDelete.projectId,
+        mockBacklogToDelete.backlogId,
+      );
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
+    });
+
+    it('should throw an error and return status 500 when projectId is missing', async () => {
+      const mockMissingProjectIdRequest = createRequest({
+        params: {
+          ...mockBacklogToDelete,
+          projectId: undefined,
+        },
+      });
+      await backlogController.deleteBacklog(mockMissingProjectIdRequest, mockResponse);
+      expect(backlogServiceSpies.deleteBacklog).not.toHaveBeenCalled();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error and return status 500 when backlogId is missing', async () => {
+      const mockMissingBacklogIdRequest = createRequest({
+        body: {
+          ...mockBacklogToDelete,
+          backlogId: undefined,
+        },
+      });
+      await backlogController.deleteBacklog(mockMissingBacklogIdRequest, mockResponse);
+      expect(backlogServiceSpies.deleteBacklog).not.toHaveBeenCalled();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should throw an error and return status 500 when backlog failed to be deleted', async () => {
+      backlogServiceSpies.deleteBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+
+      await backlogController.deleteBacklog(mockRequest, mockResponse);
+      expect(backlogServiceSpies.deleteBacklog).toHaveBeenCalledWith(
+        mockBacklogToDelete.projectId,
+        mockBacklogToDelete.backlogId,
+      );
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });

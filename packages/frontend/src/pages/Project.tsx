@@ -7,6 +7,7 @@ import { useGetAllCoursesQuery, useRemoveProjectFromCourseMutation } from '../ap
 import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
 import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
+import './Project.css';
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
   return (
@@ -161,7 +162,7 @@ export default function ProjectPage(): JSX.Element {
           </Tabs>
         }
       />
-      <section>
+      <section className="project-section-container">
         <Outlet />
       </section>
     </>
