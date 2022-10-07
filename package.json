@@ -11,7 +11,7 @@
     "cleanup:ci": "docker compose -f docker-compose-ci.yml down && docker stop frontend || true && docker stop backend || true",
     "commit": "cz",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix && stylelint **/*.css --fix",
-    "postinstall": "lerna run generate-package-lock --stream"
+    "postinstall": "npm run generate-package-lock --workspaces"
   },
   "repository": {
     "type": "git",
