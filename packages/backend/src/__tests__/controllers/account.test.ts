@@ -1,6 +1,6 @@
 import express from 'express';
 import StatusCodes from 'http-status-codes';
-import authentication from '../../controllers/authentication';
+import authentication from '../../controllers/account';
 import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
 import roleService from '../../services/role.service';
