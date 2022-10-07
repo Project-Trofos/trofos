@@ -2,6 +2,7 @@
 import {
   PrismaClient,
   User,
+  UsersOnRoles,
   Project,
   UsersOnProjects,
   Backlog,
@@ -63,6 +64,28 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
         data: userToCreate,
       });
       console.log('created user %s', user);
+    }),
+  );
+}
+
+async function createUsersOnRolesForBacklogSeed(prisma: PrismaClient) {
+  const userRolesToCreate: UsersOnRoles[] = [
+    {
+      user_email: 'testBacklogUser1@test.com',
+      role_id: 2,
+    },
+    {
+      user_email: 'testBacklogUser2@test.com',
+      role_id: 2,
+    },
+  ];
+
+  await Promise.all(
+    userRolesToCreate.map(async (userRoleToCreate) => {
+      const addedRole: UsersOnRoles = await prisma.usersOnRoles.create({
+        data: userRoleToCreate,
+      });
+      console.log('created usersOnRoles %s', addedRole);
     }),
   );
 }
@@ -266,6 +289,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
 
 async function setupBacklogSeed(prisma: PrismaClient) {
   await createUsersForBacklogSeed(prisma);
+  await createUsersOnRolesForBacklogSeed(prisma);
   await createProjectForBacklogSeed(prisma);
   await createUsersOnProjectForBacklogSeed(prisma);
   await createSprintForBacklogSeed(prisma);

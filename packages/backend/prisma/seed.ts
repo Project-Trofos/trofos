@@ -11,8 +11,8 @@ async function main() {
   createUserSeed(prisma);
   await createCourseSeed(prisma);
   await createProjectSeed(prisma);
+  await createRoleSeed(prisma);
   setupBacklogSeed(prisma);
-  createRoleSeed(prisma);
 }
 
 main()
