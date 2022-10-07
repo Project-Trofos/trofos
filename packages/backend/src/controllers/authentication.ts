@@ -10,14 +10,15 @@ const loginUser = async (req : express.Request, res: express.Response) => {
   const { userEmail, userPassword } = req.body;
 
   try {
-    const isValidUser = await authenticationService.validateUser(userEmail, userPassword);
+    const userAuth = await authenticationService.validateUser(userEmail, userPassword);
 
-    if (!isValidUser) {
+    if (!userAuth.isValidUser) {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
   
     const userRoleId = await roleService.getUserRoleId(userEmail);
-    const sessionId = await sessionService.createUserSession(userEmail, userRoleId);
+    const userId = userAuth.userLoginInformation?.user_id as number
+    const sessionId = await sessionService.createUserSession(userEmail, userRoleId, userId);
 
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
     return res.status(StatusCodes.OK).send();

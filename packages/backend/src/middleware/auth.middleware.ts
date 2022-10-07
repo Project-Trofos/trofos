@@ -4,10 +4,11 @@ import express from 'express';
 import { Action } from '@prisma/client';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
+import policyEngine from '../policies/policyEngine';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
-const isAuthorizedRequest = (routeAction : Action | null) => async (req : express.Request, res : express.Response, next : express.NextFunction) => {
+const isAuthorizedRequest = (routeAction : Action | null, policyName : string | null) => async (req : express.Request, res : express.Response, next : express.NextFunction) => {
 
   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
   if (sessionId === undefined) {
@@ -21,6 +22,16 @@ const isAuthorizedRequest = (routeAction : Action | null) => async (req : expres
     if (!isValidAction) {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
+
+    const policyOutcome = await policyEngine.execute(req, sessionInformation, policyName);
+
+    if (!policyOutcome.isPolicyValid) {
+      return res.status(StatusCodes.UNAUTHORIZED).send();
+    }
+
+    // https://stackoverflow.com/questions/18875292/passing-variables-to-the-next-middleware-using-next-in-express-js
+    res.locals.policyConstraint = policyOutcome.policyConstraint
+    
   } catch (e) {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();

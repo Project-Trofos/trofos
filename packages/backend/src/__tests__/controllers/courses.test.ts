@@ -6,6 +6,8 @@ import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
 import projectsData from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
+import coursePolicy from '../../policies/constraints/course.constraint';
+import projectPolicy from '../../policies/constraints/project.constraint'
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
@@ -35,11 +37,16 @@ describe('course controller tests', () => {
     { course_id: '1', course_year: 2022, course_sem: 1, user_id: 1, created_at: new Date(Date.now()) },
   ];
 
+  const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
+  const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
+  
+
   describe('getAll', () => {
     it('should return all courses', async () => {
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
+      mockRes.locals.policyConstraint = coursePolicyConstraint
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -59,6 +66,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.policyConstraint = coursePolicyConstraint
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -76,7 +84,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
-
+      mockRes.locals.policyConstraint = coursePolicyConstraint
+      
       await courseController.getAll(mockReq, mockRes);
 
       expect(spies.getAll).toHaveBeenCalled();
@@ -228,6 +237,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.policyConstraint = coursePolicyConstraint
 
       await courseController.getUsers(mockReq, mockRes);
 
@@ -330,6 +340,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.policyConstraint = projectPolicyConstraint
 
       await courseController.getProjects(mockReq, mockRes);
 
