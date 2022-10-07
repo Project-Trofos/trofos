@@ -3,6 +3,7 @@ import server from '../index';
 import sessionService from '../services/session.service';
 import authenticationService from '../services/authentication.service';
 import roleService from '../services/role.service';
+import { UserAuth } from '../services/types/authentication.service.types';
 
 const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, 'validateUser');
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
@@ -21,7 +22,13 @@ describe('index.ts', () => {
 
   test('/auth/login route should return session cookie', async () => {
     const sessionId = 'testSession';
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
+    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
+      isValidUser : true,
+      userLoginInformation : {
+        user_email : "testUser@test.com",
+        user_id : 1
+      }
+    } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
     roleServiceGetUserRoleIdSpy.mockResolvedValue(1);
     const postData = {

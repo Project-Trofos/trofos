@@ -9,3 +9,12 @@ export class BadRequestError extends Error {
     this.statusCode = StatusCodes.BAD_REQUEST;
   }
 }
+
+export class NotAuthorizedError extends Error {
+  statusCode: number;
+
+  public constructor(msg = "Not Authorized") {
+    super(msg);
+    this.statusCode = StatusCodes.UNAUTHORIZED
+  }
+}

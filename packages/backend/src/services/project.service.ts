@@ -1,35 +1,46 @@
 import { Project, User, UsersOnProjects } from '@prisma/client';
+import { accessibleBy } from '@casl/prisma'
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
+import { AppAbility } from '../policies/policyTypes';
 
-async function getAll(option?: 'all' | 'current' | 'past'): Promise<Project[]> {
+async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
   let result;
 
   if (option === 'current') {
     // year == current_year OR year == null and sem == null
     result = await prisma.project.findMany({
       where: {
-        OR: [
+        AND : [
+          accessibleBy(policyConstraint).Project,
           {
-            AND: {
-              course_year: CURRENT_YEAR,
-              course_sem: CURRENT_SEM,
-            },
-          },
-          {
-            AND: {
-              course_year: null,
-              course_sem: null,
-            },
-          },
-        ],
+            OR: [
+              {
+                AND: {
+                  course_year: CURRENT_YEAR,
+                  course_sem: CURRENT_SEM,
+                },
+              },
+              {
+                AND: {
+                  course_year: null,
+                  course_sem: null,
+                },
+              },
+            ],
+          }
+        ]
+
       },
     });
   } else if (option === 'past') {
     // year < current_year OR year == current_year && sem < current_sem
     result = await prisma.project.findMany({
       where: {
-        OR: [
+        AND : [
+          accessibleBy(policyConstraint).Project,
+          {
+                    OR: [
           {
             AND: {
               course_year: {
@@ -46,16 +57,22 @@ async function getAll(option?: 'all' | 'current' | 'past'): Promise<Project[]> {
             },
           },
         ],
+          }
+        ]
+
       },
     });
   } else {
-    result = await prisma.project.findMany();
+    result = await prisma.project.findMany({
+      where : accessibleBy(policyConstraint).Project,
+    });
   }
 
   return result;
 }
 
 async function getById(id: number): Promise<Project> {
+
   const result = await prisma.project.findUniqueOrThrow({
     where: {
       id,
@@ -66,6 +83,7 @@ async function getById(id: number): Promise<Project> {
 }
 
 async function create(name: string, key?: string, isPublic?: boolean, description?: string): Promise<Project> {
+
   const result = await prisma.project.create({
     data: {
       pname: name,
@@ -79,9 +97,10 @@ async function create(name: string, key?: string, isPublic?: boolean, descriptio
 }
 
 async function update(id: number, name?: string, isPublic?: boolean, description?: string): Promise<Project> {
+
   const result = await prisma.project.update({
     where: {
-      id,
+      id
     },
     data: {
       pname: name,
@@ -94,6 +113,7 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 }
 
 async function remove(id: number): Promise<Project> {
+
   const result = await prisma.project.delete({
     where: {
       id,
@@ -103,10 +123,16 @@ async function remove(id: number): Promise<Project> {
   return result;
 }
 
-async function getUsers(id: number): Promise<User[]> {
+async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
   const result = await prisma.usersOnProjects.findMany({
     where: {
-      project_id: id,
+      AND : [
+        accessibleBy(policyConstraint).Project,
+        {
+          project_id: id
+        },
+      ]
+
     },
     select: {
       user: true,
@@ -117,6 +143,7 @@ async function getUsers(id: number): Promise<User[]> {
 }
 
 async function addUser(projectId: number, userId: number): Promise<UsersOnProjects> {
+
   const result = await prisma.usersOnProjects.create({
     data: {
       project_id: projectId,
@@ -128,6 +155,7 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
 }
 
 async function removeUser(projectId: number, userId: number): Promise<UsersOnProjects> {
+  
   const result = await prisma.usersOnProjects.delete({
     where: {
       project_id_user_id: {

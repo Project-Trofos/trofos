@@ -3,16 +3,19 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import projectsData from '../mocks/projectData';
+import projectPolicy from '../../policies/constraints/project.constraint'
 
 describe('project.service tests', () => {
   // Mock data for users
   const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
+  const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
+
   describe('getAll', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll();
+      const result = await project.getAll(projectPolicyConstraint);
       expect(result).toEqual<Project[]>(projectsData);
     });
 
@@ -20,7 +23,7 @@ describe('project.service tests', () => {
       const pastProjects = projectsData.filter((p) => !p.course_year || p.course_year < CURRENT_SEM);
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll('past');
+      const result = await project.getAll(projectPolicyConstraint, 'past');
       expect(result).toEqual<Project[]>(pastProjects);
     });
 
@@ -30,7 +33,7 @@ describe('project.service tests', () => {
       );
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
-      const result = await project.getAll('current');
+      const result = await project.getAll(projectPolicyConstraint, 'current');
       expect(result).toEqual<Project[]>(currentProjects);
     });
   });
@@ -104,7 +107,7 @@ describe('project.service tests', () => {
       // @ts-ignore
       prismaMock.usersOnProjects.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
 
-      const result = await project.getUsers(PROJECT_ID);
+      const result = await project.getUsers(projectPolicyConstraint, PROJECT_ID);
       expect(result).toEqual<User[]>(userData);
     });
   });

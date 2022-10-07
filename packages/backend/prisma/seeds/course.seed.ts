@@ -30,6 +30,26 @@ async function createCourseSeed(prisma: PrismaClient) {
   });
 
   console.log('created courses %s', courses);
+
+  const usersOnCourses = await prisma.usersOnCourses.createMany({
+    data : [
+      {
+        course_id : 'course1_id',
+        course_year : CURRENT_YEAR, 
+        course_sem : CURRENT_SEM,
+        user_id : 2
+      },
+      {
+        course_id : 'course3_id',
+        course_year : CURRENT_YEAR - 1, 
+        course_sem : CURRENT_SEM,
+        user_id : 2
+      }
+    ]
+  });
+
+  console.log('created usersOnCourses %s', usersOnCourses);
+
 }
 
 export { createCourseSeed };
