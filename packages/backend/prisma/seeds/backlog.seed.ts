@@ -12,19 +12,19 @@ import {
 import bcrypt from 'bcrypt';
 
 type BacklogDataType = {
-  backlog_id: number,
+  backlog_id: number;
   points: number | null;
   description: string | null;
   assignee?:
-  | {
-    connect: {
-      project_id_user_id: {
-        user_id: number;
-        project_id: number;
-      };
-    };
-  }
-  | undefined;
+    | {
+        connect: {
+          project_id_user_id: {
+            user_id: number;
+            project_id: number;
+          };
+        };
+      }
+    | undefined;
   priority: BacklogPriority | null;
   reporter: {
     connect: {
@@ -35,10 +35,10 @@ type BacklogDataType = {
     };
   };
   sprint?:
-  | {
-    connect: { id: number };
-  }
-  | undefined;
+    | {
+        connect: { id: number };
+      }
+    | undefined;
   summary: string;
   type: BacklogType;
 };
@@ -65,6 +65,19 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
       console.log('created user %s', user);
     }),
   );
+
+  await prisma.usersOnRoles.createMany({
+    data: [
+      {
+        user_email: 'testBacklogUser1@test.com',
+        role_id: 1,
+      },
+      {
+        user_email: 'testBacklogUser2@test.com',
+        role_id: 2,
+      },
+    ],
+  });
 }
 
 async function createProjectForBacklogSeed(prisma: PrismaClient) {
