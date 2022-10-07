@@ -20,6 +20,7 @@ model UserSession {
   session_id String @id
   user_email String
   user_role_id Int
+  user_id Int
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
