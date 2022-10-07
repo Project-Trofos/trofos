@@ -32,10 +32,6 @@ const loginUser = async (req : express.Request, res: express.Response) => {
 
 const logoutUser = async (req : express.Request, res: express.Response) => {
   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
-  
-  if (sessionId === undefined) {
-    return res.status(StatusCodes.UNAUTHORIZED).send();
-  }
 
   try {
     await sessionService.deleteUserSession(sessionId);

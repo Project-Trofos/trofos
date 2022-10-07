@@ -7,225 +7,182 @@ import roleService from '../../services/role.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import { createRequest, createResponse } from 'node-mocks-http';
 import accountService from '../../services/account.service';
+import cookieParser from 'cookie-parser';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
-const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, 'validateUser');
-const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
-const sessionServiceDeleteUserSessionSpy = jest.spyOn(sessionService, 'deleteUserSession');
-const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
-const roleServiceGetUserRoleId = jest.spyOn(roleService, 'getUserRoleId');
-const accountServiceChangePasswordSpy = jest.spyOn(accountService, 'changePassword')
+const spies = {
+  authenticationServiceValidateUser : jest.spyOn(authenticationService, 'validateUser'),
+  sessionServiceCreateUserSession : jest.spyOn(sessionService, 'createUserSession'),
+  sessionServiceDeleteUserSession : jest.spyOn(sessionService, 'deleteUserSession'),
+  sessionServiceGetUserSession : jest.spyOn(sessionService, 'getUserSession'),
+  roleServiceGetUserRoleId : jest.spyOn(roleService, 'getUserRoleId'),
+  accountServiceChangePassword : jest.spyOn(accountService, 'changePassword')
+}
 
-
-beforeEach(() => {
-  authenticationServiceValidateUserSpy.mockReset();
-  sessionServiceCreateUserSessionSpy.mockReset();
-  sessionServiceDeleteUserSessionSpy.mockReset();
-  sessionServiceGetUserSessionSpy.mockReset();
-  roleServiceGetUserRoleId.mockReset();
-  accountServiceChangePasswordSpy.mockReset();
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
-describe('authentication.loginUser tests', () => {
-  test('UserNotValid_HTTP401Returned', async () => {
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
-      isValidUser : false
-    });
-    const testUserEmail = 'testEmail@test.com';
-    const testUserPassword = 'testPassword';
-    const mockRequest = {
-      body : {
+describe("account.controller tests", () => {
+
+
+  describe("loginUser", () => {
+    it("should return status 401 UNAUTHORISED if the user is not valid", async () => {
+      spies.authenticationServiceValidateUser.mockResolvedValueOnce({
+        isValidUser : false
+      });
+      const testUserEmail = 'testEmail@test.com';
+      const testUserPassword = 'testPassword';
+      const mockReq = createRequest()
+      const mockRes = createResponse()
+      mockReq.body = {
         userEmail : testUserEmail,
         userPassword : testUserPassword,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.loginUser(mockRequest, mockResponse);
-    expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledTimes(0);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
-  });
-
-  test('UserNotValid_ValidateUserThrowsError_HTTP500Returned', async () => {
-    const validateUserError = new Error('test error');
-    authenticationServiceValidateUserSpy.mockRejectedValueOnce(validateUserError);
-    const testUserEmail = 'testEmail@test.com';
-    const testUserPassword = 'testPassword';
-    const mockRequest = {
-      body : {
-        userEmail : testUserEmail,
-        userPassword : testUserPassword,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.loginUser(mockRequest, mockResponse);
-    expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledTimes(0);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-  });
-
-  test('UserValid_CreateUserSessionThrowsError_HTTP500Returned', async () => {
-    const createUserSessionError = new Error('test error');
-    roleServiceGetUserRoleId.mockResolvedValueOnce(1);
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
-      isValidUser : true,
-      userLoginInformation : {
-        user_email : "testEmail@test.com",
-        user_id : 1
       }
-    } as UserAuth);
-    sessionServiceCreateUserSessionSpy.mockRejectedValueOnce(createUserSessionError);
-    const testUserEmail = 'testEmail@test.com';
-    const testUserPassword = 'testPassword';
-    const mockRequest = {
-      body : {
+      await authentication.loginUser(mockReq, mockRes);
+      expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledTimes(0);
+      expect(mockRes.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
+    })
+
+    it("should return status 500 INTERNAL SERVER ERROR if an error occurs during validation", async () => {
+      const validateUserError = new Error('test error');
+      spies.authenticationServiceValidateUser.mockRejectedValueOnce(validateUserError);
+      const testUserEmail = 'testEmail@test.com';
+      const testUserPassword = 'testPassword';
+      const mockReq = createRequest()
+      const mockRes = createResponse()
+      mockReq.body = {
         userEmail : testUserEmail,
         userPassword : testUserPassword,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.loginUser(mockRequest, mockResponse);
-    expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1, 1);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-  });
-
-  test('UserValid_SessionReturned', async () => {
-    const sessionId = 'testSession';
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
-      isValidUser : true,
-      userLoginInformation : {
-        user_email : "testEmail@test.com",
-        user_id : 1
       }
-    } as UserAuth);
-    sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
-    roleServiceGetUserRoleId.mockResolvedValueOnce(1);
-    const testUserEmail = 'testEmail@test.com';
-    const testUserPassword = 'testPassword';
-    const mockRequest = {
-      body : {
+      await authentication.loginUser(mockReq, mockRes);
+      expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledTimes(0);
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    })
+
+    it("should return status 500 INTERNAL SERVER ERROR if an error occurs during session creation", async () => {
+      const createUserSessionError = new Error('test error');
+      spies.roleServiceGetUserRoleId.mockResolvedValueOnce(1);
+      spies.authenticationServiceValidateUser.mockResolvedValueOnce({
+        isValidUser : true,
+        userLoginInformation : {
+          user_email : "testEmail@test.com",
+          user_id : 1
+        }
+      } as UserAuth);
+      spies.sessionServiceCreateUserSession.mockRejectedValueOnce(createUserSessionError);
+      const testUserEmail = 'testEmail@test.com';
+      const testUserPassword = 'testPassword';
+      const mockReq = createRequest()
+      const mockRes = createResponse()
+      mockReq.body = {
         userEmail : testUserEmail,
         userPassword : testUserPassword,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-      cookie(_name : string, _val : string, _opts : any) {},
-    } as express.Response;
-    await authentication.loginUser(mockRequest, mockResponse);
-    expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1, 1);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-  });
-});
+      }
+      await authentication.loginUser(mockReq, mockRes);
+      expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, 1, 1);
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    })
 
-describe('authentication.logoutUser tests', () => {
-  test('SessionServiceThrowsError_HTTP500Returned', async () => {
-    const deleteUserSessionError = new Error('No such session found');
-    sessionServiceDeleteUserSessionSpy.mockRejectedValueOnce(deleteUserSessionError);
-    const testCookie = 'testCookie';
-    const mockRequest = {
-      cookies : {
-        [TROFOS_SESSIONCOOKIE_NAME] : testCookie,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.logoutUser(mockRequest, mockResponse);
-    expect(sessionServiceDeleteUserSessionSpy).toHaveBeenCalledWith(testCookie);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-  });
+    it("should return status 200 OK if the user successfully logs in", async () => {
+      const sessionId = 'testSession';
+      spies.authenticationServiceValidateUser.mockResolvedValueOnce({
+        isValidUser : true,
+        userLoginInformation : {
+          user_email : "testEmail@test.com",
+          user_id : 1
+        }
+      } as UserAuth);
+      spies.sessionServiceCreateUserSession.mockResolvedValueOnce(sessionId);
+      spies.roleServiceGetUserRoleId.mockResolvedValueOnce(1);
+      const testUserEmail = 'testEmail@test.com';
+      const testUserPassword = 'testPassword';
+      const mockReq = createRequest()
+      const mockRes = createResponse()
+      mockReq.body = {
+        userEmail : testUserEmail,
+        userPassword : testUserPassword,
+      }
+      await authentication.loginUser(mockReq, mockRes);
+      expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, 1, 1);
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+    })
+  })
 
-  test('ValidSessionId_HTTP200Returned', async () => {
-    sessionServiceDeleteUserSessionSpy.mockResolvedValueOnce();
-    const testCookie = 'testCookie';
-    const mockRequest = {
-      cookies : {
-        [TROFOS_SESSIONCOOKIE_NAME] : testCookie,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.logoutUser(mockRequest, mockResponse);
-    expect(sessionServiceDeleteUserSessionSpy).toHaveBeenCalledWith(testCookie);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-  });
+  describe("logoutUser", () => {
+    it("should return status 500 INTERNAL SERVER ERROR if an error occurs while deleting the session", async () => {
+      const deleteUserSessionError = new Error('No such session found');
+      spies.sessionServiceDeleteUserSession.mockRejectedValueOnce(deleteUserSessionError);
+      const testCookie = 'testCookie';
+      const mockReq = createRequest({
+        cookies : {
+          [TROFOS_SESSIONCOOKIE_NAME] : testCookie
+        }
+      })
+      const mockRes = createResponse()
+      await authentication.logoutUser(mockReq, mockRes);
+      expect(spies.sessionServiceDeleteUserSession).toHaveBeenCalledWith(testCookie);
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    })
 
-  test('NoSessionInRequest_HTTP401Returned', async () => {
-    const mockRequest = {
-      cookies : {
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.logoutUser(mockRequest, mockResponse);
-    expect(sessionServiceDeleteUserSessionSpy).toBeCalledTimes(0);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
-  });
-});
+    it("should return status 200 OK if the user successfully logs out", async () => {
+      spies.sessionServiceDeleteUserSession.mockResolvedValueOnce();
+      const testCookie = 'testCookie';
+      const mockReq = createRequest({
+        cookies : {
+          [TROFOS_SESSIONCOOKIE_NAME] : testCookie
+        }
+      })
+      const mockRes = createResponse()
+      await authentication.logoutUser(mockReq, mockRes);
+      expect(spies.sessionServiceDeleteUserSession).toHaveBeenCalledWith(testCookie);
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+    })
+  })
 
-describe('authentication.getUserInfo tests', () => {
-  test('SessionServiceThrowsError_HTTP500Returned', async () => {
-    const getUserSessionError = new Error('No such session found');
-    sessionServiceGetUserSessionSpy.mockRejectedValueOnce(getUserSessionError);
-    const testCookie = 'testCookie';
-    const mockRequest = {
-      cookies : {
-        [TROFOS_SESSIONCOOKIE_NAME] : testCookie,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.getUserInfo(mockRequest, mockResponse);
-    expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-  });
+  describe("getUserInfo", () => {
+    it("should return status 500 INTERNAL SERVER ERROR if an error occurs while fetching the user session", async () => {
+      const getUserSessionError = new Error('No such session found');
+      spies.sessionServiceGetUserSession.mockRejectedValueOnce(getUserSessionError);
+      const testCookie = 'testCookie';
+      const mockReq = createRequest({
+        cookies : {
+          [TROFOS_SESSIONCOOKIE_NAME] : testCookie
+        }
+      })
+      const mockRes = createResponse()
+      await authentication.getUserInfo(mockReq, mockRes);
+      expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    })
 
-  test('ValidSessionId_HTTP200Returned', async () => {
-    const sessionServiceResponseObjecet = {
-      session_id : 'testSessionId',
-      user_email : 'testUser@test.com',
-      session_expiry : new Date('2022-08-31T15:19:39.104Z'),
-      user_role_id: 1,
-      user_id: 1
-    };
-    sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
-    const testCookie = 'testCookie';
-    const mockRequest = {
-      cookies : {
-        [TROFOS_SESSIONCOOKIE_NAME] : testCookie,
-      },
-    } as express.Request;
-    const mockResponse = {
-      send() {},
-      json(j: any) { this.json = j; return this; },
-      status(s : number) {this.statusCode = s; return this;},
-    } as express.Response;
-    await authentication.getUserInfo(mockRequest, mockResponse);
-    expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-    expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRole : 1});
-  });
+    it("should return status 200 OK if the user successfully fetches their userInfo", async () => {
+      const sessionServiceResponseObjecet = {
+        session_id : 'testSessionId',
+        user_email : 'testUser@test.com',
+        session_expiry : new Date('2022-08-31T15:19:39.104Z'),
+        user_role_id: 1,
+        user_id: 1
+      };
+      spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObjecet);
+      const testCookie = 'testCookie';
+      const mockReq = createRequest({
+        cookies : {
+          [TROFOS_SESSIONCOOKIE_NAME] : testCookie
+        }
+      })
+      const mockRes = createResponse()
+      await authentication.getUserInfo(mockReq, mockRes);
+      expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getJSONData()).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRole : 1});
+    })
+  })
 
   describe("changePassword", () => {
     it("should return status 200 OK if the user's password was successfully changes", async () => {
@@ -234,7 +191,7 @@ describe('authentication.getUserInfo tests', () => {
       user_id: 1,
       user_password_hash: "testPassword"
     }
-    accountServiceChangePasswordSpy.mockResolvedValueOnce(changePasswordResponseObject)
+    spies.accountServiceChangePassword.mockResolvedValueOnce(changePasswordResponseObject)
     const mockReq = createRequest()
     const mockRes = createResponse()
     mockReq.body = {
@@ -242,14 +199,14 @@ describe('authentication.getUserInfo tests', () => {
       newUserPassword : "testPassword"
     }
     await authentication.changePassword(mockReq, mockRes);
-    expect(accountServiceChangePasswordSpy).toHaveBeenCalledWith(1, "testPassword")
+    expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "testPassword")
     expect(mockRes.statusCode).toEqual(StatusCodes.OK)
     expect(mockRes._getData()).toEqual({ message : "Password successfully changed" });
     })
 
     it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's password", async () => {
       const changePasswordError = new Error('Unable to change password');
-      accountServiceChangePasswordSpy.mockRejectedValueOnce(changePasswordError)
+      spies.accountServiceChangePassword.mockRejectedValueOnce(changePasswordError)
       const mockReq = createRequest()
       const mockRes = createResponse()
       mockReq.body = {
@@ -257,9 +214,9 @@ describe('authentication.getUserInfo tests', () => {
         newUserPassword : "testPassword"
       }
       await authentication.changePassword(mockReq, mockRes);
-      expect(accountServiceChangePasswordSpy).toHaveBeenCalledWith(1, "testPassword")
+      expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "testPassword")
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
       expect(mockRes._getData()).toEqual({ error : "Error while changing password" });
     })
   })
-});
+})
