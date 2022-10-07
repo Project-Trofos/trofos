@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test course creation modal should render modal with correct fields 1`] = `
-<body>
+<body
+  class="ant-scrolling-effect"
+  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
+>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
@@ -12,6 +15,8 @@ exports[`test course creation modal should render modal with correct fields 1`] 
         Create Course
       </span>
     </button>
+  </div>
+  <div>
     <div
       class="ant-modal-root"
     >
@@ -20,7 +25,6 @@ exports[`test course creation modal should render modal with correct fields 1`] 
       />
       <div
         class="ant-modal-wrap"
-        style=""
         tabindex="-1"
       >
         <div
@@ -102,9 +106,9 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       <label
                         class="ant-form-item-required"
                         for="multi-step-modal-form_courseName"
-                        title="Name"
+                        title="Course Name"
                       >
-                        Name
+                        Course Name
                       </label>
                     </div>
                     <div
@@ -139,9 +143,9 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       <label
                         class=""
                         for="multi-step-modal-form_courseCode"
-                        title="Code"
+                        title="Course Code"
                       >
-                        Code
+                        Course Code
                         <span
                           aria-label="info-circle"
                           class="anticon anticon-info-circle ant-form-item-tooltip"
@@ -251,10 +255,14 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                           <select
                             id="multi-step-modal-form_courseSem"
                           >
-                            <option>
+                            <option
+                              value="1"
+                            >
                               1
                             </option>
-                            <option>
+                            <option
+                              value="2"
+                            >
                               2
                             </option>
                           </select>
