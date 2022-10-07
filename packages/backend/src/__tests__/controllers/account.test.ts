@@ -5,6 +5,8 @@ import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
 import roleService from '../../services/role.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
+import { createRequest, createResponse } from 'node-mocks-http';
+import accountService from '../../services/account.service';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -13,6 +15,7 @@ const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUse
 const sessionServiceDeleteUserSessionSpy = jest.spyOn(sessionService, 'deleteUserSession');
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
 const roleServiceGetUserRoleId = jest.spyOn(roleService, 'getUserRoleId');
+const accountServiceChangePasswordSpy = jest.spyOn(accountService, 'changePassword')
 
 
 beforeEach(() => {
@@ -21,6 +24,7 @@ beforeEach(() => {
   sessionServiceDeleteUserSessionSpy.mockReset();
   sessionServiceGetUserSessionSpy.mockReset();
   roleServiceGetUserRoleId.mockReset();
+  accountServiceChangePasswordSpy.mockReset();
 });
 
 describe('authentication.loginUser tests', () => {
@@ -220,6 +224,42 @@ describe('authentication.getUserInfo tests', () => {
     await authentication.getUserInfo(mockRequest, mockResponse);
     expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userRole : 1});
+    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRole : 1});
   });
+
+  describe("changePassword", () => {
+    it("should return status 200 OK if the user's password was successfully changes", async () => {
+    const changePasswordResponseObject = {
+      user_email: "testEmail@test.com",
+      user_id: 1,
+      user_password_hash: "testPassword"
+    }
+    accountServiceChangePasswordSpy.mockResolvedValueOnce(changePasswordResponseObject)
+    const mockReq = createRequest()
+    const mockRes = createResponse()
+    mockReq.body = {
+      userId : 1,
+      newUserPassword : "testPassword"
+    }
+    await authentication.changePassword(mockReq, mockRes);
+    expect(accountServiceChangePasswordSpy).toHaveBeenCalledWith(1, "testPassword")
+    expect(mockRes.statusCode).toEqual(StatusCodes.OK)
+    expect(mockRes._getData()).toEqual({ message : "Password successfully changed" });
+    })
+
+    it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's password", async () => {
+      const changePasswordError = new Error('Unable to change password');
+      accountServiceChangePasswordSpy.mockRejectedValueOnce(changePasswordError)
+      const mockReq = createRequest()
+      const mockRes = createResponse()
+      mockReq.body = {
+        userId : 1,
+        newUserPassword : "testPassword"
+      }
+      await authentication.changePassword(mockReq, mockRes);
+      expect(accountServiceChangePasswordSpy).toHaveBeenCalledWith(1, "testPassword")
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
+      expect(mockRes._getData()).toEqual({ error : "Error while changing password" });
+    })
+  })
 });
