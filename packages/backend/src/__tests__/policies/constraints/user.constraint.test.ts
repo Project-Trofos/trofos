@@ -5,7 +5,7 @@ import userConstraint from "../../../policies/constraints/user.constraint";
 
 describe("user.constraint tests", () => {
     describe("canManageUser", () => {
-        it("shoudl return true if the user is an admin", async () => {
+        it("should return true if the user is an admin", async () => {
             await expect(userConstraint.canManageUser(1, true)).resolves.toEqual(true);
         })
 

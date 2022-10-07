@@ -25,7 +25,7 @@ describe("user.policy tests", () => {
             expect(policyOutcome.policyConstraint).not.toBeNull();
         })
 
-        it("should return the policy outcome if ther user request has the required parameters", async () => {
+        it("should return the policy outcome if the user request has the required parameters", async () => {
             const mockReq = createRequest();
             mockReq.params = {
                 userId : "1",

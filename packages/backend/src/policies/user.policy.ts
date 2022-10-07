@@ -18,7 +18,6 @@ async function applyUserPolicy(req : express.Request, _userSession : UserSession
         policyOutcome = {
             isPolicyValid : true,
             policyConstraint : userConstraint.userPolicyConstraint(Number(userId), isUserAdmin)
-
         }
     } else {
         policyOutcome = {
