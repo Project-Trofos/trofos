@@ -14,7 +14,7 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
     }
 
     // default to all
-    const result = await project.getAll(body.option ?? 'all');
+    const result = await project.getAll(res.locals.policyConstraint, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -79,7 +79,7 @@ async function getUsers(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
-    const result = await project.getUsers(Number(projectId));
+    const result = await project.getUsers(res.locals.policyConstraint, Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -110,6 +110,7 @@ async function removeUser(req: express.Request, res: express.Response) {
 
     assertProjectIdIsValid(projectId);
     assertUserIdIsValid(body.userId);
+
 
     const result = await project.removeUser(Number(projectId), Number(body.userId));
 

@@ -8,7 +8,7 @@ router.post('/login', authentication.loginUser);
 
 router.post('/logout', authentication.logoutUser);
 
-router.get('/userInfo', isAuthorizedRequest(null), authentication.getUserInfo);
+router.get('/userInfo', isAuthorizedRequest(null, null), authentication.getUserInfo);
 
 
 export default router;
