@@ -4,6 +4,7 @@ import authentication from '../../controllers/authentication';
 import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
 import roleService from '../../services/role.service';
+import { UserAuth } from '../../services/types/authentication.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -24,7 +25,9 @@ beforeEach(() => {
 
 describe('authentication.loginUser tests', () => {
   test('UserNotValid_HTTP401Returned', async () => {
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce(false);
+    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
+      isValidUser : false
+    });
     const testUserEmail = 'testEmail@test.com';
     const testUserPassword = 'testPassword';
     const mockRequest = {
@@ -67,7 +70,13 @@ describe('authentication.loginUser tests', () => {
   test('UserValid_CreateUserSessionThrowsError_HTTP500Returned', async () => {
     const createUserSessionError = new Error('test error');
     roleServiceGetUserRoleId.mockResolvedValueOnce(1);
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
+    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
+      isValidUser : true,
+      userLoginInformation : {
+        user_email : "testEmail@test.com",
+        user_id : 1
+      }
+    } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockRejectedValueOnce(createUserSessionError);
     const testUserEmail = 'testEmail@test.com';
     const testUserPassword = 'testPassword';
@@ -83,13 +92,19 @@ describe('authentication.loginUser tests', () => {
     } as express.Response;
     await authentication.loginUser(mockRequest, mockResponse);
     expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1);
+    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1, 1);
     expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 
   test('UserValid_SessionReturned', async () => {
     const sessionId = 'testSession';
-    authenticationServiceValidateUserSpy.mockResolvedValueOnce(true);
+    authenticationServiceValidateUserSpy.mockResolvedValueOnce({
+      isValidUser : true,
+      userLoginInformation : {
+        user_email : "testEmail@test.com",
+        user_id : 1
+      }
+    } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
     roleServiceGetUserRoleId.mockResolvedValueOnce(1);
     const testUserEmail = 'testEmail@test.com';
@@ -107,7 +122,7 @@ describe('authentication.loginUser tests', () => {
     } as express.Response;
     await authentication.loginUser(mockRequest, mockResponse);
     expect(authenticationServiceValidateUserSpy).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1);
+    expect(sessionServiceCreateUserSessionSpy).toHaveBeenCalledWith(testUserEmail, 1, 1);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
   });
 });
@@ -188,6 +203,7 @@ describe('authentication.getUserInfo tests', () => {
       user_email : 'testUser@test.com',
       session_expiry : new Date('2022-08-31T15:19:39.104Z'),
       user_role_id: 1,
+      user_id: 1
     };
     sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
     const testCookie = 'testCookie';
@@ -204,6 +220,6 @@ describe('authentication.getUserInfo tests', () => {
     await authentication.getUserInfo(mockRequest, mockResponse);
     expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
     expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
-    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userRole : 1 });
+    expect(mockResponse.json).toEqual({ userEmail : 'testUser@test.com', userRole : 1});
   });
 });

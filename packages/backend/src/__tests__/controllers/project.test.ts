@@ -17,6 +17,7 @@ const spies = {
   removeUser: jest.spyOn(project, 'removeUser'),
 };
 
+
 describe('project controller tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -31,6 +32,7 @@ describe('project controller tests', () => {
   describe('getAll', () => {
     it('should return all projects', async () => {
       spies.getAll.mockResolvedValueOnce(projectsData);
+    
       const mockReq = createRequest();
       const mockRes = createResponse();
 
