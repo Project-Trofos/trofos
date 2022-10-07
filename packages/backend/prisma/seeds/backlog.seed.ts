@@ -69,7 +69,7 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
 }
 
 async function createUsersOnRolesForBacklogSeed(prisma: PrismaClient) {
-  await prisma.usersOnRoles.createMany({
+  const userRoles = await prisma.usersOnRoles.createMany({
     data: [
       {
         user_email: 'testBacklogUser1@test.com',
@@ -81,6 +81,8 @@ async function createUsersOnRolesForBacklogSeed(prisma: PrismaClient) {
       },
     ],
   });
+
+  console.log('created usersOnRoles %s', userRoles);
 }
 
 async function createProjectForBacklogSeed(prisma: PrismaClient) {
