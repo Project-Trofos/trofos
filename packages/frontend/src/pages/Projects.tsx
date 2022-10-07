@@ -3,7 +3,7 @@ import { Typography, Row, Col, Tabs, Space } from 'antd';
 
 import ProjectCard from '../components/cards/ProjectCard';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
-import { useCurrentAndPastProjects } from '../api/project';
+import { useCurrentAndPastProjects } from '../api/hooks';
 
 const { Title, Paragraph } = Typography;
 

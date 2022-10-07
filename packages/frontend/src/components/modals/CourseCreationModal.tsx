@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
-import { Form, Input, Typography, message, DatePicker, Select } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Form, Typography, message } from 'antd';
 import { useAddCourseMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
+import CourseNameFormItem from '../forms/CourseNameFormItem';
+import CourseCodeFormItem from '../forms/CourseCodeFormItem';
+import CourseYearSemFormItems from '../forms/CourseYearSemFormItems';
 
 const { Paragraph } = Typography;
 
@@ -26,7 +28,7 @@ export default function CourseCreationModal() {
       courseName: string;
     }) => {
       try {
-        const {courseCode, courseName, courseSem, courseYear} = values;
+        const { courseCode, courseName, courseSem, courseYear } = values;
 
         await addCourse({
           id: courseCode?.trim(),
@@ -51,45 +53,12 @@ export default function CourseCreationModal() {
       formSteps={[
         <>
           <Paragraph>Please input the details for your course.</Paragraph>
-          <Form.Item
-            label="Name"
-            name="courseName"
-            required
-            rules={[{ required: true, message: "Please input your course's name!" }]}
-          >
-            <Input />
-          </Form.Item>
 
-          <Form.Item
-            label="Code"
-            name="courseCode"
-            rules={[
-              { pattern: /^[a-zA-Z0-9-]*$/, message: 'The code must be alphanumeric.' },
-              { max: 64, message: 'The code must be at most 64 characters long.' },
-            ]}
-            tooltip={{ title: 'This code will be used to index the course.', icon: <InfoCircleOutlined /> }}
-          >
-            <Input />
-          </Form.Item>
+          <CourseNameFormItem />
 
-          <Form.Item
-            label="Academic Year"
-            name="courseYear"
-            rules={[{ required: true, message: "Please input your course's year!" }]}
-          >
-            <DatePicker picker="year" format="YYYY" />
-          </Form.Item>
+          <CourseCodeFormItem />
 
-          <Form.Item
-            label="Semester"
-            name="courseSem"
-            rules={[{ required: true, message: "Please input your course's semester!" }]}
-          >
-            <Select placeholder="Select a semester">
-              <Select.Option key="1">1</Select.Option>
-              <Select.Option key="2">2</Select.Option>
-            </Select>
-          </Form.Item>
+          <CourseYearSemFormItems />
         </>,
       ]}
     />

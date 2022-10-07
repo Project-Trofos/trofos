@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Card, Dropdown, Menu, message, Space, Tag } from 'antd';
+import { Card, Dropdown, Menu, message, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
@@ -43,14 +43,16 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
     <Card
       style={{ width: 300 }}
       actions={[
-        <SettingOutlined key="setting" />,
+        <Link to={`/course/${course.id}/settings`}>
+          <SettingOutlined key="setting" />
+        </Link>,
         <Dropdown overlay={menu} trigger={['click']}>
           <EllipsisOutlined key="more" />
         </Dropdown>,
       ]}
     >
       <Meta
-        title={<Link to={`/course/${course.id}`}>{course.cname}</Link>}
+        title={<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>}
         description={
           <>
             <Tag color="green">{course.id}</Tag>

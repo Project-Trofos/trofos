@@ -1,13 +1,28 @@
 import React, { useCallback, useMemo } from 'react';
-import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, PageHeader, Tabs, Tag, Typography } from 'antd';
+import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Breadcrumb,
+  Button,
+  Dropdown,
+  DropdownProps,
+  Menu,
+  message,
+  PageHeader,
+  Spin,
+  Tabs,
+  Tag,
+  Typography,
+} from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { Project, useGetAllProjectsQuery, useRemoveProjectMutation } from '../api/project';
-import { useGetAllCoursesQuery, useRemoveProjectFromCourseMutation } from '../api/course';
+import { useRemoveProjectMutation } from '../api/project';
+import { useRemoveProjectFromCourseMutation } from '../api/course';
 import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
 import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
+import { useProject } from '../api/hooks';
 import './Project.css';
+
+const { Paragraph } = Typography;
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
   return (
@@ -19,69 +34,57 @@ function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }
 
 export default function ProjectPage(): JSX.Element {
   const params = useParams();
-  const navigate = useNavigate();
 
-  const { data: projects } = useGetAllProjectsQuery();
-  const { data: courses } = useGetAllCoursesQuery();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
-  const project = useMemo(() => {
-    if (!projects || projects.length === 0 || !params.projectId) {
-      return undefined;
-    }
-    return projects.filter((p) => p.id.toString() === params.projectId)[0];
-  }, [projects, params.projectId]);
+  const { project, course, isLoading } = useProject(params.projectId);
 
-  const course = useMemo(() => {
-    if (!project || !project.course_id || !courses) {
-      return undefined;
-    }
-    return courses.filter((c) => c.id === project.course_id)[0];
-  }, [project, courses]);
+  const selectedTab = useMemo(() => {
+    const split = location.pathname.split('/');
+    return split[3];
+  }, [location.pathname]);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
-      if (key === '1' && project) {
-        confirmDeleteProject(async () => {
-          await removeProject({ id: project.id }).unwrap();
-          navigate('/projects');
-        });
-      } else if (key === '2' && project && project.course_id && project.course_year !== null && project.course_sem) {
-        confirmDetachProject(async () => {
-          await removeProjectFromCourse({
-            courseId: project.course_id as string,
-            courseYear: project.course_year as number,
-            courseSem: project.course_sem as number,
-            projectId: project.id,
-          }).unwrap();
-        });
+      try {
+        if (key === 'delete' && project) {
+          confirmDeleteProject(async () => {
+            await removeProject({ id: project.id }).unwrap();
+            navigate('/projects');
+          });
+        } else if (
+          key === 'detach' &&
+          project &&
+          project.course_id !== null &&
+          project.course_year !== null &&
+          project.course_sem !== null
+        ) {
+          confirmDetachProject(async () => {
+            if (!project.course_id || !project.course_year || !project.course_sem) {
+              throw new Error('Invalid data!');
+            }
+            removeProjectFromCourse({
+              courseId: project.course_id,
+              courseYear: project.course_year,
+              courseSem: project.course_sem,
+              projectId: project.id,
+            }).unwrap();
+          });
+        }
+      } catch (err) {
+        message.error(getErrorMessage(err));
       }
     },
     [project, navigate, removeProject, removeProjectFromCourse],
   );
 
-  // Handle detach of project from course
-  const handleDetach = useCallback(
-    (p: Project) =>
-      confirmDetachProject(async () => {
-        try {
-          if (!p.course_id || !p.course_year || !p.course_sem) {
-            throw new Error('Invalid data!');
-          }
-          removeProjectFromCourse({
-            courseId: p.course_id,
-            courseYear: p.course_year,
-            courseSem: p.course_sem,
-            projectId: p.id,
-          }).unwrap();
-        } catch (err) {
-          message.error(getErrorMessage(err));
-        }
-      }),
-    [removeProjectFromCourse],
-  );
+  if (isLoading) {
+    return <Spin size="large" />;
+  }
 
   if (!params.projectId || !project) {
     return <Typography.Title>This project does not exist!</Typography.Title>;
@@ -92,9 +95,19 @@ export default function ProjectPage(): JSX.Element {
       onClick={(e) => handleMenuClick(e.key)}
       items={[
         {
-          key: '1',
+          key: 'delete',
           label: 'Delete project',
+          danger: true,
         },
+        course
+          ? {
+              key: 'detach',
+              label: 'Detach from course',
+            }
+          : {
+              key: 'attach',
+              label: <ProjectAttachModal project={project} key="attach" />,
+            },
       ]}
     />
   );
@@ -107,6 +120,7 @@ export default function ProjectPage(): JSX.Element {
       <Breadcrumb.Item>{project.pname}</Breadcrumb.Item>
     </Breadcrumb>
   );
+
   return (
     <>
       <PageHeader
@@ -121,27 +135,18 @@ export default function ProjectPage(): JSX.Element {
             <Tag>Independent Project</Tag>
           )
         }
-        extra={[
-          project.course_id ? (
-            <Button key="detach" onClick={() => handleDetach(project)}>
-              Detach from course
-            </Button>
-          ) : (
-            <ProjectAttachModal project={project} key="attach" />
-          ),
-          <DropdownMenu projectMenu={projectMenu} key="more" />,
-        ]}
+        extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}`}>
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
                   Overview
                 </Link>
               }
-              key="1"
+              key="overview"
             />
             <Tabs.TabPane
               tab={
@@ -149,7 +154,7 @@ export default function ProjectPage(): JSX.Element {
                   Backlog
                 </Link>
               }
-              key="2"
+              key="backlog"
             />
             <Tabs.TabPane
               tab={
@@ -157,11 +162,21 @@ export default function ProjectPage(): JSX.Element {
                   Kanban
                 </Link>
               }
-              key="3"
+              key="kanban"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
+                  Settings
+                </Link>
+              }
+              key="settings"
             />
           </Tabs>
         }
-      />
+      >
+        <Paragraph>{project.description}</Paragraph>
+      </PageHeader>
       <section className="project-section-container">
         <Outlet />
       </section>

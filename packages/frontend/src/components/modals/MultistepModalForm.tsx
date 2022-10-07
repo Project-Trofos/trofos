@@ -7,13 +7,14 @@ export type MultistepFromModalProps<T> = {
   formSteps: React.ReactNode[];
   onSubmit: (data: T) => void;
   buttonName: string;
+  buttonType?: 'button' | 'span';
 };
 
 /**
  * A multi-step form built around Antd's Form and Modal
  */
 export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>) {
-  const { form, formSteps, onSubmit, buttonName, title } = props;
+  const { form, formSteps, onSubmit, buttonName, title, buttonType = 'button' } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState<Partial<T>>({});
@@ -60,15 +61,20 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
 
   return (
     <>
-      <Button onClick={showModal} type="primary">
-        {buttonName}
-      </Button>
+      {buttonType === 'button' && (
+        <Button onClick={showModal} type="primary">
+          {buttonName}
+        </Button>
+      )}
+      {buttonType === 'span' && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <span onClick={showModal}>{buttonName}</span>
+      )}
       <Modal
         title={title}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        getContainer={false}
         footer={
           step < formSteps.length - 1
             ? [
@@ -105,3 +111,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
     </>
   );
 }
+
+MultistepFormModal.defaultProps = {
+  buttonType: 'button',
+};
