@@ -43,14 +43,16 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
     <Card
       style={{ width: 300 }}
       actions={[
-        <SettingOutlined key="setting" />,
+        <Link to={`/project/${project.id}/settings`}>
+          <SettingOutlined key="setting" />
+        </Link>,
         <Dropdown overlay={menu} trigger={['click']}>
           <EllipsisOutlined key="more" />
         </Dropdown>,
       ]}
     >
       <Meta
-        title={<Link to={`/project/${project.id}`}>{project.pname}</Link>}
+        title={<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>}
         description={project.description ?? 'No description'}
       />
     </Card>

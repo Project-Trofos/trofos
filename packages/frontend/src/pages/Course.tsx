@@ -1,12 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Space, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useGetAllCoursesQuery, useRemoveCourseMutation } from '../api/course';
-import ProjectTable from '../components/tables/ProjectTable';
+import { useRemoveCourseMutation } from '../api/course';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
-import { useGetAllProjectsQuery } from '../api/project';
+import { useCourse } from '../api/hooks';
+
+const { Paragraph } = Typography;
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
   return (
@@ -19,24 +20,16 @@ function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) 
 export default function CoursePage(): JSX.Element {
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { data: courses } = useGetAllCoursesQuery();
-  const { data: projects, isLoading } = useGetAllProjectsQuery();
   const [removeCourse] = useRemoveCourseMutation();
 
-  const course = useMemo(() => {
-    if (!courses || courses.length === 0 || !params.courseId) {
-      return undefined;
-    }
-    return courses.filter((p) => p.id.toString() === params.courseId)[0];
-  }, [courses, params.courseId]);
+  const selectedTab = useMemo(() => {
+    const split = location.pathname.split('/');
+    return split[3];
+  }, [location.pathname]);
 
-  const filteredProjects = useMemo(() => {
-    if (!course || !projects) {
-      return [];
-    }
-    return projects.filter((p) => p.course_id === course.id);
-  }, [course, projects]);
+  const { course } = useCourse(params.courseId);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -90,12 +83,31 @@ export default function CoursePage(): JSX.Element {
         ]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
-        footer={<Tabs defaultActiveKey="1" />}
-      />
+        footer={
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>
+                  Overview
+                </Link>
+              }
+              key="overview"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
+                  Settings
+                </Link>
+              }
+              key="settings"
+            />
+          </Tabs>
+        }
+      >
+        <Paragraph>{course.description}</Paragraph>
+      </PageHeader>
       {/* TODO: make this responsive */}
-      <section style={{ margin: '2em' }}>
-        <ProjectTable projects={filteredProjects} isLoading={isLoading} />
-      </section>
+      <Outlet />
     </>
   );
 }
