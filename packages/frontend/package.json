@@ -29,9 +29,10 @@
     "start-dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
+    "test": "react-scripts test --watchAll=false --colors",
     "updatetest": "react-scripts test -u --watchAll=false",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-package-lock": "npm i --package-lock-only --ignore-scripts"
   },
   "eslintConfig": {
     "extends": [

@@ -1,0 +1,24 @@
+div.ant-select.backlog-user-select .ant-select-selector {
+    border: none;
+    border-radius: 8px;
+    height: 34px;
+    transition: none;
+    outline: none;
+    box-shadow: none !important;
+}
+
+div.ant-select.backlog-user-select {
+    width: 140px;
+}
+
+div.ant-select.backlog-user-select .ant-select-selector:hover {
+    background-color: #efefef;
+}
+
+.ant-avatar.user-select-avatar {
+    margin-right: 8px;
+}
+
+.user-select-username-text {
+    margin-top: 1px;
+}

@@ -21,10 +21,10 @@
     text-decoration: none;
 }
 
-.main-layout-sider .ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child:after {
+.main-layout-sider .ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child::after {
     border-right: 3px solid var(--sider-bg-color);
 }
 
-.main-layout-sider .ant-menu-item.ant-menu-item-selected:after {
+.main-layout-sider .ant-menu-item.ant-menu-item-selected::after {
     border-right: 3px solid var(--sider-bg-color);
 }
