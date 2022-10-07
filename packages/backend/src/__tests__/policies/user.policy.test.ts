@@ -1,6 +1,4 @@
-import { User, UserSession } from ".prisma/client";
-import { create } from "domain";
-import mock from "jest-mock-extended/lib/Mock";
+import { UserSession } from "@prisma/client";
 import { createRequest } from "node-mocks-http";
 import userConstraint from "../../policies/constraints/user.constraint";
 import userPolicy from "../../policies/user.policy";

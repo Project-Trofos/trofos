@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
-import { prismaMock } from "../../models/mock/mockPrismaClient"
 import bcrypt from "bcrypt"
+import { prismaMock } from "../../models/mock/mockPrismaClient"
 import accountService from "../../services/account.service"
 
 const PRISMA_RECORD_NOT_FOUND = 'P2025';

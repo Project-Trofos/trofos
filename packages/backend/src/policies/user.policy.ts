@@ -10,7 +10,7 @@ async function applyUserPolicy(req : express.Request, _userSession : UserSession
     const { userId } = req.params;
     const isParamsMissing = userId === undefined;
     
-    //TOOD: Admin flag not implemented yet. For a future feature
+    // TOOD: Admin flag not implemented yet. For a future feature
     const isUserAdmin = false
     if (isParamsMissing) {
         // Certain operations may not require parameters.

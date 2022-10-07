@@ -1,13 +1,11 @@
-import express from 'express';
 import StatusCodes from 'http-status-codes';
+import { createRequest, createResponse } from 'node-mocks-http';
 import authentication from '../../controllers/account';
 import sessionService from '../../services/session.service';
 import authenticationService from '../../services/authentication.service';
 import roleService from '../../services/role.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
-import { createRequest, createResponse } from 'node-mocks-http';
 import accountService from '../../services/account.service';
-import cookieParser from 'cookie-parser';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
