@@ -1,17 +1,23 @@
 import trofosApiSlice from '.';
-import { BacklogFormFields } from '../components/modals/types/BacklogModal.types';
+import { BacklogFormFields } from '../helpers/BacklogModal.types';
 
 export type Backlog = {
-  id: number;
+  backlog_id: number;
   summary: string;
   type: 'story' | 'task' | 'bug';
-  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
   reporter_id: number;
-  assignee_id: number;
-  sprint_id: number;
-  points: number;
-  description: string;
+  assignee_id: number | null;
+  sprint_id: number | null;
+  points: number | null;
+  description: string | null;
   project_id: number;
+};
+
+type BacklogUpdatePayload = {
+  projectId: number;
+  backlogId: number;
+  fieldToUpdate: Partial<Backlog>;
 };
 
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -19,6 +25,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     getBacklogs: builder.query<Backlog[], number>({
       query: (projectId) => ({
         url: `backlog/listBacklogs/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Backlog'],
+    }),
+    getBacklog: builder.query<Backlog, { projectId: number; backlogId: number }>({
+      query: ({ projectId, backlogId }) => ({
+        url: `backlog/getBacklog/${projectId}/${backlogId}`,
         credentials: 'include',
       }),
       providesTags: ['Backlog'],
@@ -32,8 +45,17 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Backlog'],
     }),
+    updateBacklog: builder.mutation<Backlog, BacklogUpdatePayload>({
+      query: (backlogToUpdate) => ({
+        url: 'backlog/updateBacklog/',
+        method: 'PUT',
+        body: backlogToUpdate,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Backlog'],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetBacklogsQuery, useAddBacklogMutation } = extendedApi;
+export const { useGetBacklogsQuery, useGetBacklogQuery, useAddBacklogMutation, useUpdateBacklogMutation } = extendedApi;

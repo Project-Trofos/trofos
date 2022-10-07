@@ -1,0 +1,76 @@
+main {
+    background: #fff;
+}
+
+@media (min-width: 769px) {
+    .backlog-data-container {
+        display: flex;
+    }
+
+    .backlog-input-container {
+        width: 62%;
+    }
+
+    .backlog-panel-container {
+        width: 32%;
+        margin-left: 25px;
+    }
+}
+
+.backlog-data-container {
+    padding: 20px;
+}
+
+.backlog-data-container input.ant-input.summary-input {
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+}
+
+.backlog-data-container textarea.ant-input.backlog-textarea {
+    border: none;
+    border-radius: 8px;
+}
+
+.backlog-data-container input.ant-input.summary-input:hover,
+.backlog-data-container textarea.ant-input.backlog-textarea:hover {
+    background-color: #efefef;
+}
+
+.backlog-data-container .backlog-description-container {
+    margin-top: 20px;
+}
+
+.backlog-data-container .backlog-description-container > p {
+    font-weight: 600;
+    padding-left: 11px;
+}
+
+.backlog-data-container .backlog-panel-container {
+    border: 1px solid #cfcfcf;
+    padding: 10px;
+    background: #fff;
+}
+
+.backlog-data-container .backlog-panel-container .ant-form-item {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.backlog-data-container .backlog-panel-container > div {
+    margin: 20px;
+}
+
+.backlog-data-container .backlog-panel-container > div > span {
+    min-width: 78px;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.backlog-data-container .ant-select-arrow {
+    display: none !important;
+}
+
+.backlog-data-container div.ant-input-number.backlog-inputnumber {
+    border: none;
+}

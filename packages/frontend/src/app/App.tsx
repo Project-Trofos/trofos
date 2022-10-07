@@ -7,9 +7,10 @@ import Project from '../pages/Project';
 import Projects from '../pages/Projects';
 import Courses from '../pages/Courses';
 import Course from '../pages/Course';
+import Backlog from '../pages/Backlog';
 
 import ProjectOverview from '../pages/ProjectOverview';
-import ProjectBacklog from '../pages/ProjectBacklog';
+import ProjectBacklogs from '../pages/ProjectBacklogs';
 import ProjectKanban from '../pages/ProjectKanban';
 
 import './App.css';
@@ -23,7 +24,8 @@ function App() {
           <Route path="projects" element={<Projects />} />
           <Route path="project/:projectId" element={<Project />}>
             <Route path="" element={<ProjectOverview />} />
-            <Route path="backlog" element={<ProjectBacklog />} />
+            <Route path="backlog" element={<ProjectBacklogs />} />
+            <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="kanban" element={<ProjectKanban />} />
           </Route>
           <Route path="courses" element={<Courses />} />
