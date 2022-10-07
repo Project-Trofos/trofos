@@ -29,8 +29,11 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       ],
     }),
 
-    getProject: builder.query<Project[], Pick<Project, 'id'>>({
-      query: (id) => `project/${id}`,
+    getProject: builder.query<Project, Pick<Project, 'id'>>({
+      query: ({id}) => ({
+        url: `project/${id}`,
+        credentials: 'include',
+      }),
       providesTags: (result, error, arg) => [{ type: 'Project', arg }],
     }),
 

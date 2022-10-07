@@ -104,8 +104,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <input
-                            class="ant-input summary-input"
-                            id="summary"
+                            class="ant-input summary-input "
                             placeholder="* Type summary here..."
                             type="text"
                             value=""
@@ -142,7 +141,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item type-select ant-select-single ant-select-show-arrow"
+                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-show-arrow"
                           >
                             <div
                               class="ant-select-selector"
@@ -151,14 +150,14 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="type_list_0"
+                                  aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="type_list"
+                                  aria-controls="rc_select_TEST_OR_SSR_list"
                                   aria-haspopup="listbox"
-                                  aria-owns="type_list"
+                                  aria-owns="rc_select_TEST_OR_SSR_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
-                                  id="type"
+                                  id="rc_select_TEST_OR_SSR"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -232,7 +231,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
                           >
                             <div
                               class="ant-select-selector"
@@ -241,14 +240,14 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="sprintId_list_0"
+                                  aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="sprintId_list"
+                                  aria-controls="rc_select_TEST_OR_SSR_list"
                                   aria-haspopup="listbox"
-                                  aria-owns="sprintId_list"
+                                  aria-owns="rc_select_TEST_OR_SSR_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
-                                  id="sprintId"
+                                  id="rc_select_TEST_OR_SSR"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -322,7 +321,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item priority-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
                           >
                             <div
                               class="ant-select-selector"
@@ -331,14 +330,14 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="priority_list_0"
+                                  aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="priority_list"
+                                  aria-controls="rc_select_TEST_OR_SSR_list"
                                   aria-haspopup="listbox"
-                                  aria-owns="priority_list"
+                                  aria-owns="rc_select_TEST_OR_SSR_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
-                                  id="priority"
+                                  id="rc_select_TEST_OR_SSR"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -418,7 +417,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-select ant-select-in-form-item reporter-select ant-select-single ant-select-show-arrow"
+                                class="ant-select ant-select-in-form-item backlog-user-select  ant-select-single ant-select-show-arrow"
                               >
                                 <div
                                   class="ant-select-selector"
@@ -427,14 +426,14 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                     class="ant-select-selection-search"
                                   >
                                     <input
-                                      aria-activedescendant="reporterId_list_0"
+                                      aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="reporterId_list"
+                                      aria-controls="rc_select_TEST_OR_SSR_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="reporterId_list"
+                                      aria-owns="rc_select_TEST_OR_SSR_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="reporterId"
+                                      id="rc_select_TEST_OR_SSR"
                                       readonly=""
                                       role="combobox"
                                       style="opacity: 0;"
@@ -445,7 +444,9 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                   </span>
                                   <span
                                     class="ant-select-selection-placeholder"
-                                  />
+                                  >
+                                    Select User
+                                  </span>
                                 </div>
                                 <span
                                   aria-hidden="true"
@@ -510,7 +511,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-select ant-select-in-form-item assignee-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                                class="ant-select ant-select-in-form-item backlog-user-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
                               >
                                 <div
                                   class="ant-select-selector"
@@ -519,14 +520,14 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                     class="ant-select-selection-search"
                                   >
                                     <input
-                                      aria-activedescendant="assigneeId_list_0"
+                                      aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="assigneeId_list"
+                                      aria-controls="rc_select_TEST_OR_SSR_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="assigneeId_list"
+                                      aria-owns="rc_select_TEST_OR_SSR_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="assigneeId"
+                                      id="rc_select_TEST_OR_SSR"
                                       readonly=""
                                       role="combobox"
                                       style="opacity: 0;"
@@ -537,7 +538,9 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                   </span>
                                   <span
                                     class="ant-select-selection-placeholder"
-                                  />
+                                  >
+                                    Assign to
+                                  </span>
                                 </div>
                                 <span
                                   aria-hidden="true"
@@ -600,7 +603,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-input-number ant-input-number-in-form-item points-input"
+                            class="ant-input-number ant-input-number-in-form-item backlog-inputnumber "
                           >
                             <div
                               class="ant-input-number-handler-wrap"
@@ -667,7 +670,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                                 aria-valuemin="1"
                                 autocomplete="off"
                                 class="ant-input-number-input"
-                                id="points"
+                                placeholder=""
                                 role="spinbutton"
                                 step="1"
                                 value=""
@@ -695,8 +698,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           class="ant-form-item-control-input-content"
                         >
                           <textarea
-                            class="ant-input description-textarea"
-                            id="description"
+                            class="ant-input backlog-textarea "
                             placeholder="Description..."
                           />
                         </div>

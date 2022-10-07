@@ -30,7 +30,7 @@ async function getAll(req: express.Request, res: express.Response) {
     }
 
     // Default to all
-    const result = await course.getAll(body.option ?? 'all');
+    const result = await course.getAll(res.locals.policyConstraint, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -126,7 +126,7 @@ async function getUsers(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getUsers(courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getUsers(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -178,7 +178,7 @@ async function getProjects(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getProjects(courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getProjects(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

@@ -20,6 +20,7 @@ model UserSession {
   session_id String @id
   user_email String
   user_role_id Int
+  user_id Int
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
@@ -48,20 +49,22 @@ model UsersOnCourses {
 }
 
 model Project {
-  id            Int               @id @default(autoincrement())
-  pname         String            @db.VarChar(256)
-  pkey          String?           @db.VarChar(64)
-  description   String?
+  id              Int               @id @default(autoincrement())
+  pname           String            @db.VarChar(256)
+  pkey            String?           @db.VarChar(64)
+  description     String?
 
   // A project might not belong to a course (open project)
-  course_id     String?
-  course_year   Int?
-  course_sem    Int?
-  course        Course?           @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: SetNull)
+  course_id       String?
+  course_year     Int?
+  course_sem      Int?
+  course          Course?           @relation(fields: [course_id, course_year, course_sem], references: [id, year, sem], onDelete: SetNull)
 
-  users         UsersOnProjects[]
-  public        Boolean           @default(false)
-  created_at    DateTime          @default(now())
+  users           UsersOnProjects[]
+  public          Boolean           @default(false)
+  created_at      DateTime          @default(now())
+
+  backlog_counter Int               @default(0)
 }
 
 model UsersOnProjects {
@@ -76,7 +79,7 @@ model UsersOnProjects {
 }
 
 model Backlog {
-  id            Int               @id @default(autoincrement())
+  backlog_id    Int
   summary       String
   type          BacklogType?
   sprint        Sprint?           @relation(fields: [sprint_id], references: [id])
@@ -89,6 +92,7 @@ model Backlog {
   project_id    Int
   points        Int?
   description   String?
+  @@id([project_id, backlog_id])
 }
 
 model Sprint {
