@@ -1,11 +1,12 @@
 import React from 'react';
-import { fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import '../../mocks/antd';
 
 import ProjectCreationModal from './ProjectCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
+import momentMock from '../../mocks/moment';
 
 describe('test ProjectCreationModal', () => {
   // Establish API mocking before all tests.
@@ -45,6 +46,14 @@ describe('test ProjectCreationModal', () => {
     return setupData;
   };
 
+  // Antd modal is rendered outside of `root` div and does not get unmounted after closing
+  const expectModalInvisible = async (baseElement: HTMLElement) => {
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    const modalWrapper = baseElement.getElementsByClassName('ant-modal-wrap');
+    expect(modalWrapper.length).toBe(1);
+    await waitFor(() => expect(modalWrapper[0]).toHaveStyle('display: none'));
+  };
+
   it('should render modal with correct fields', async () => {
     const { baseElement } = await setup();
 
@@ -77,18 +86,18 @@ describe('test ProjectCreationModal', () => {
   });
 
   it('should allow skipping course step by selecting independent project', async () => {
-    await goToSecondStep();
+    const { baseElement } = await goToSecondStep();
     const segment = screen.getByText('Independent');
     fireEvent.click(segment);
 
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
+    expectModalInvisible(baseElement);
   });
 
   it('should allow choosing a course from existing courses', async () => {
-    await goToSecondStep();
+    const { baseElement } = await goToSecondStep();
     const segment = screen.getByText(/existing/i);
     fireEvent.click(segment);
 
@@ -96,7 +105,7 @@ describe('test ProjectCreationModal', () => {
     fireEvent.change(courseInput, { target: { value: 'CS3203' } });
 
     const yearInput = await screen.findByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: '2022' } });
+    fireEvent.change(yearInput, { target: { value: momentMock } });
 
     const semInput = await screen.findByLabelText('Semester');
     fireEvent.change(semInput, { target: { value: '1' } });
@@ -104,11 +113,11 @@ describe('test ProjectCreationModal', () => {
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
+    expectModalInvisible(baseElement);
   });
 
   it('should submit correctly if fields are typed in', async () => {
-    await goToSecondStep();
+    const { baseElement } = await goToSecondStep();
 
     const segment = screen.getByText(/create new/i);
     fireEvent.click(segment);
@@ -120,7 +129,7 @@ describe('test ProjectCreationModal', () => {
     fireEvent.change(nameInput, { target: { value: 'name' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: '2022' } });
+    fireEvent.change(yearInput, { target: { value: momentMock } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });
@@ -129,6 +138,6 @@ describe('test ProjectCreationModal', () => {
     fireEvent.click(finishButton);
 
     // Modal is closed
-    await waitForElementToBeRemoved(() => screen.queryByText(/Finish/i));
+    expectModalInvisible(baseElement);
   });
 });

@@ -12,18 +12,19 @@ import {
 import bcrypt from 'bcrypt';
 
 type BacklogDataType = {
+  backlog_id: number;
   points: number | null;
   description: string | null;
   assignee?:
-  | {
-    connect: {
-      project_id_user_id: {
-        user_id: number;
-        project_id: number;
-      };
-    };
-  }
-  | undefined;
+    | {
+        connect: {
+          project_id_user_id: {
+            user_id: number;
+            project_id: number;
+          };
+        };
+      }
+    | undefined;
   priority: BacklogPriority | null;
   reporter: {
     connect: {
@@ -34,10 +35,10 @@ type BacklogDataType = {
     };
   };
   sprint?:
-  | {
-    connect: { id: number };
-  }
-  | undefined;
+    | {
+        connect: { id: number };
+      }
+    | undefined;
   summary: string;
   type: BacklogType;
 };
@@ -64,6 +65,19 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
       console.log('created user %s', user);
     }),
   );
+
+  await prisma.usersOnRoles.createMany({
+    data: [
+      {
+        user_email: 'testBacklogUser1@test.com',
+        role_id: 1,
+      },
+      {
+        user_email: 'testBacklogUser2@test.com',
+        role_id: 2,
+      },
+    ],
+  });
 }
 
 async function createProjectForBacklogSeed(prisma: PrismaClient) {
@@ -109,6 +123,7 @@ async function createSprintForBacklogSeed(prisma: PrismaClient) {
 async function createBacklogsSeed(prisma: PrismaClient) {
   const backlogsToAdd: BacklogDataType[] = [
     {
+      backlog_id: 1,
       summary: 'Test Story Backlog 1',
       type: 'story',
       sprint: {
@@ -135,6 +150,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       description: 'Test desc',
     },
     {
+      backlog_id: 2,
       summary: 'Test Story Backlog 2',
       type: 'story',
       sprint: {
@@ -161,6 +177,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       description: 'Test desc 2',
     },
     {
+      backlog_id: 3,
       summary: 'Test Task Backlog 1',
       type: 'task',
       sprint: {
@@ -187,6 +204,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       description: 'Test desc 3',
     },
     {
+      backlog_id: 4,
       summary: 'Test Bug Backlog 1',
       type: 'bug',
       sprint: {
@@ -213,6 +231,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       description: 'Test desc 4',
     },
     {
+      backlog_id: 5,
       summary: 'Test Bug Backlog 2',
       type: 'bug',
       sprint: {
@@ -248,6 +267,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       console.log('created backlog %s', backlog);
     }),
   );
+
+  const project: Project = await prisma.project.update({
+    where: { id: 903 },
+    data: {
+      backlog_counter: 5,
+    },
+  });
+  console.log('updated project %s', project);
 }
 
 async function setupBacklogSeed(prisma: PrismaClient) {

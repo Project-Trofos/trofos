@@ -12,6 +12,7 @@ const projectsData: Project[] = [
     pkey: null,
     description: 'd1',
     public: false,
+    backlog_counter: 0,
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ const projectsData: Project[] = [
     pkey: null,
     description: 'd2',
     public: false,
+    backlog_counter: 0,
   },
   {
     id: 3,
@@ -34,6 +36,7 @@ const projectsData: Project[] = [
     pkey: null,
     description: 'd3',
     public: false,
+    backlog_counter: 0,
   },
 ];
 

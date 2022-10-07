@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Row, Col, Space, Tabs } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
-import { useCurrentAndPastCourses } from '../api/course';
+import { useCurrentAndPastCourses } from '../api/hooks';
 import CourseCard from '../components/cards/CourseCard';
 
 import './Courses.css';

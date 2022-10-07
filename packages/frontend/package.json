@@ -29,9 +29,11 @@
     "start-dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
-    "updatetest": "react-scripts test -u --watchAll=false",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --testPathIgnorePatterns=__testutils__ --maxWorkers=4 --watchAll=false --colors",
+    "test:watch": "react-scripts test -u --testPathIgnorePatterns=__testutils__ --maxWorkers=4 --watchAll=true",
+    "test:update": "react-scripts test -u --testPathIgnorePatterns=__testutils__ --maxWorkers=4 --watchAll=false",
+    "eject": "react-scripts eject",
+    "generate-package-lock": "npm i --package-lock-only --ignore-scripts"
   },
   "eslintConfig": {
     "extends": [

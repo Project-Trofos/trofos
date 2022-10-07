@@ -6,6 +6,7 @@ import '../../mocks/antd';
 import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
+import momentMock from '../../mocks/moment';
 
 describe('test course creation modal', () => {
   // Establish API mocking before all tests.
@@ -28,6 +29,14 @@ describe('test course creation modal', () => {
     return { baseElement, debug };
   };
 
+  // Antd modal is rendered outside of `root` div and does not get unmounted after closing
+  const expectModalInvisible = async (baseElement: HTMLElement) => {
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    const modalWrapper = baseElement.getElementsByClassName('ant-modal-wrap');
+    expect(modalWrapper.length).toBe(1);
+    await waitFor(() => expect(modalWrapper[0]).toHaveStyle('display: none'));
+  };
+
   it('should render modal with correct fields', () => {
     const { baseElement } = setup();
 
@@ -36,8 +45,8 @@ describe('test course creation modal', () => {
     fireEvent.click(button);
 
     // Ensure fields are present
-    expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('Code')).toBeInTheDocument();
+    expect(screen.getByLabelText(/course name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/course code/i)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
@@ -56,23 +65,25 @@ describe('test course creation modal', () => {
   });
 
   it('should submit correctly if fields are typed in', async () => {
-    setup();
+    const { baseElement } = setup();
     const button = screen.getByText(/create course/i);
     fireEvent.click(button);
     const finishButton = await screen.findByText(/finish/i);
 
-    const input = screen.getByLabelText('Name');
+    const input = screen.getByLabelText(/course name/i);
     fireEvent.change(input, { target: { value: 'name' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: '2022' } });
+    fireEvent.change(yearInput, { target: { value: momentMock } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });
 
     fireEvent.click(finishButton);
 
+    expect(momentMock.year()).toBe('2022');
+
     // Modal is closed
-    await waitFor(() => expect(screen.queryByText('Please input the details for your course.')).toBeNull());
+    expectModalInvisible(baseElement);
   });
 });

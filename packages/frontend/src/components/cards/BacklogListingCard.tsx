@@ -2,10 +2,10 @@ import { UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import React from 'react';
 import type { Backlog } from '../../api/backlog';
-import './BacklogCard.css';
+import './BacklogListingCard.css';
 
-function BacklogCard(props: BacklogCardProps): JSX.Element {
-  const { backlog } = props;
+function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
+  const { backlog, projectKey } = props;
 
   const renderAssignee = (assigneeId: number): JSX.Element => (
     <div>
@@ -30,7 +30,10 @@ function BacklogCard(props: BacklogCardProps): JSX.Element {
 
   return (
     <>
-      <div>{backlog.id}</div>
+      <div>
+        {projectKey ? `${projectKey}-` : ''}
+        {backlog.backlog_id}
+      </div>
       <div className="backlog-card-summary">{backlog.summary}</div>
       <div>{backlog.type}</div>
       {backlog.priority && renderPriority(backlog.priority)}
@@ -40,10 +43,11 @@ function BacklogCard(props: BacklogCardProps): JSX.Element {
   );
 }
 
-type BacklogCardProps = {
+type BacklogListingCardProps = {
   backlog: Backlog;
+  projectKey: string | null | undefined;
 };
 
 type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
 
-export default BacklogCard;
+export default BacklogListingCard;

@@ -5,8 +5,7 @@ import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCirc
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
-import { useCurrentAndPastProjects } from '../api/project';
-import { useCurrentAndPastCourses } from '../api/course';
+import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
 import GlobalSearch from '../components/search/GlobalSearch';
@@ -60,6 +59,24 @@ export default function MainLayout() {
 
   // End of temporary section
 
+  const selectedKeys = useMemo(() => [location.pathname.split('/', 3).join('/')], [location.pathname]);
+
+  const openKeys = useMemo(() => {
+    const precedingPath = location.pathname.split('/', 2).join('/');
+    if (precedingPath === '/course' || precedingPath === '/project') {
+      return [`${precedingPath}s`];
+    }
+    return [precedingPath];
+  }, [location.pathname]);
+
+  const onOpenChanged = (keys: string[]) => {
+    // The latest open key is one that isn't in the opened keys
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+    if (latestOpenKey) {
+      navigate(latestOpenKey);
+    }
+  };
+
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
@@ -73,7 +90,7 @@ export default function MainLayout() {
             courses === undefined || courses.length === 0
               ? undefined
               : courses.map((course) =>
-                  getItem(<Link to={`/course/${course.id}`}>{course.cname}</Link>, `/course/${course.id}`),
+                  getItem(<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>, `/course/${course.id}`),
                 ),
           )
         : null,
@@ -87,7 +104,10 @@ export default function MainLayout() {
             projects === undefined || projects.length === 0
               ? undefined
               : projects.map((project) =>
-                  getItem(<Link to={`/project/${project.id}`}>{project.pname}</Link>, `/project/${project.id}`),
+                  getItem(
+                    <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>,
+                    `/project/${project.id}`,
+                  ),
                 ),
           )
         : null,
@@ -119,7 +139,13 @@ export default function MainLayout() {
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint="lg" collapsedWidth="0" className="main-layout-sider">
         <div style={{ fontSize: '2rem', padding: '1rem', color: 'white' }}>Trofos</div>
-        <Menu mode="inline" selectedKeys={[location.pathname]} items={menuItems} />
+        <Menu
+          mode="inline"
+          selectedKeys={selectedKeys}
+          items={menuItems}
+          openKeys={openKeys}
+          onOpenChange={onOpenChanged}
+        />
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
