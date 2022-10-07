@@ -32,7 +32,7 @@
     "test": "react-scripts test --watchAll=false",
     "updatetest": "react-scripts test -u --watchAll=false",
     "eject": "react-scripts eject",
-    "generate-package-lock": "npm i --package-lock-only"
+    "generate-package-lock": "npm i --package-lock-only --ignore-scripts"
   },
   "eslintConfig": {
     "extends": [
