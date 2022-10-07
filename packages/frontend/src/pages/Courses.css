@@ -1,3 +1,13 @@
 .ant-tabs-top > .ant-tabs-nav::before {
   border-color: #ccc !important;
 }
+
+.course-content-container {
+  margin: 2em;
+}
+
+@media only screen and (max-width: 600px) {
+  .course-content-container {
+    margin: 0em;
+  }
+}

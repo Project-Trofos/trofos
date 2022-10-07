@@ -93,7 +93,7 @@ export default function CoursePage(): JSX.Element {
         footer={<Tabs defaultActiveKey="1" />}
       />
       {/* TODO: make this responsive */}
-      <section style={{ margin: '2em' }}>
+      <section className="course-content-container">
         <ProjectTable projects={filteredProjects} isLoading={isLoading} />
       </section>
     </>
