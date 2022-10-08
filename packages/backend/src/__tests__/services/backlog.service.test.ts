@@ -177,4 +177,25 @@ describe('backlog.service tests', () => {
       await expect(backlogService.updateBacklog(backlogToUpdate)).resolves.toEqual(mockReturnedBacklog);
     });
   });
+
+  describe('delete backlog', () => {
+    it('should return single backlog that got deleted', async () => {
+      const mockReturnedBacklog: Backlog = {
+        backlog_id: 1,
+        summary: 'A Test Summary Updated',
+        type: 'story',
+        priority: 'very_high',
+        sprint_id: 123,
+        reporter_id: 1,
+        assignee_id: 1,
+        points: 1,
+        description: 'A test description here',
+        project_id: 123,
+      };
+      const mockProjectId = 123;
+      const mockBacklogId = 1;
+      prismaMock.backlog.delete.mockResolvedValue(mockReturnedBacklog);
+      await expect(backlogService.deleteBacklog(mockProjectId, mockBacklogId)).resolves.toEqual(mockReturnedBacklog);
+    });
+  });
 });

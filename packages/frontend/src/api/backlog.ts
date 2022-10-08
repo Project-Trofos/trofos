@@ -54,8 +54,16 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Backlog'],
     }),
+    deleteBacklog: builder.mutation<Backlog, { projectId: number; backlogId: number }>({
+      query: ({ projectId, backlogId }) => ({
+        url: `backlog/deleteBacklog/${projectId}/${backlogId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Backlog'],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetBacklogsQuery, useGetBacklogQuery, useAddBacklogMutation, useUpdateBacklogMutation } = extendedApi;
+export const { useGetBacklogsQuery, useGetBacklogQuery, useAddBacklogMutation, useUpdateBacklogMutation, useDeleteBacklogMutation } = extendedApi;

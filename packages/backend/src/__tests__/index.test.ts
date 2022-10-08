@@ -20,7 +20,7 @@ describe('index.ts', () => {
     expect(res.text).toEqual('Hello World!');
   });
 
-  test('/auth/login route should return session cookie', async () => {
+  test('/account/login route should return session cookie', async () => {
     const sessionId = 'testSession';
     authenticationServiceValidateUserSpy.mockResolvedValueOnce({
       isValidUser : true,
@@ -37,7 +37,7 @@ describe('index.ts', () => {
         userPassword : 'testPassword',
       },
     };
-    const res = await request(server).post('/auth/login').send(postData);
+    const res = await request(server).post('/account/login').send(postData);
     expect(res.headers['set-cookie']).toContain('trofos_sessioncookie=testSession; Path=/');
   });
 });

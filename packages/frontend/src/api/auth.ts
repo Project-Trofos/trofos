@@ -15,7 +15,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     loginUser: builder.mutation<void, UserLoginInfo>({
       query: (userLoginInfo) => ({
-        url: '/auth/login',
+        url: '/account/login',
         method: 'POST',
         body : {
           userEmail: userLoginInfo.userEmail,
@@ -26,7 +26,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
     logoutUser: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/logout',
+        url: '/account/logout',
         method: 'POST',
         credentials: 'include',
       }),
@@ -34,7 +34,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
     getUserInfo: builder.query<UserInfo, void>({
       query: () => ({
-        url: '/auth/userInfo',
+        url: '/account/userInfo',
         credentials: 'include',
       }),
       providesTags: ['UserInfo'],

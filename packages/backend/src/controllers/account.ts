@@ -3,6 +3,8 @@ import express from 'express';
 import authenticationService  from '../services/authentication.service';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
+import accountService from '../services/account.service';
+import { assertInputIsNotEmpty, getDefaultErrorRes } from '../helpers/error';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -31,10 +33,6 @@ const loginUser = async (req : express.Request, res: express.Response) => {
 
 const logoutUser = async (req : express.Request, res: express.Response) => {
   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
-  
-  if (sessionId === undefined) {
-    return res.status(StatusCodes.UNAUTHORIZED).send();
-  }
 
   try {
     await sessionService.deleteUserSession(sessionId);
@@ -54,6 +52,7 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
     const userInformation = {
       userEmail : sessionInformation.user_email,
       userRole : sessionInformation.user_role_id,
+      userId : sessionInformation.user_id,
     };
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
@@ -62,8 +61,25 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const changePassword = async (req: express.Request, res: express.Response) => {
+  try {
+    const { userId, newUserPassword } = req.body;
+
+    assertInputIsNotEmpty(userId, "User Id");
+    assertInputIsNotEmpty(newUserPassword, "New Password");
+
+    await accountService.changePassword(userId, newUserPassword);
+    return res.status(StatusCodes.OK).send({ 
+      message : "Password successfully changed" 
+    });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   loginUser,
   logoutUser,
   getUserInfo,
+  changePassword
 };
