@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps, Button } from 'antd';
-import Menu from 'antd/lib/menu';
+import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import {
   BellOutlined,
   BookOutlined,
@@ -50,7 +49,7 @@ export default function MainLayout() {
   const [logoutUser] = useLogoutUserMutation();
 
   const LogoutComponent = (
-    <Button
+    <Typography.Link
       onClick={() => {
         logoutUser();
         dispatch(trofosApiSlice.util.resetApiState());
@@ -58,10 +57,8 @@ export default function MainLayout() {
       }}
     >
       Log Out
-    </Button>
+    </Typography.Link>
   );
-
-  const AuthComponent = !userInfo ? <Link to="/login">Log in</Link> : LogoutComponent;
 
   // End of temporary section
 
@@ -82,6 +79,25 @@ export default function MainLayout() {
       navigate(latestOpenKey);
     }
   };
+
+  const accountMenuItems = [
+    {
+      key: 'account',
+      label : (
+        <Typography.Link  onClick={() => {
+          navigate('/account');
+        }}>
+          Account
+        </Typography.Link>
+      )
+    },
+    {
+      key: 'logout',
+      label : (
+        LogoutComponent
+      )
+    }
+  ]
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -121,23 +137,38 @@ export default function MainLayout() {
     [projects, courses, userInfo],
   );
 
+  const LoggedOutHeader = (
+    <Col>
+      <Link to="/login">Log in</Link>
+    </Col>
+  )
+
+  const LoggedInHeader = (
+    <>
+    <Col>
+      <SearchOutlined />
+    </Col>
+    <Col>
+      <QuestionCircleOutlined />
+    </Col>
+    <Col>
+      <BellOutlined />
+    </Col>
+    <Col>
+      <Dropdown overlay={<Menu items={accountMenuItems}/>}>
+        <div className="avatar-group">
+          <Avatar>
+            {userInfo?.userEmail[0]}
+          </Avatar>
+        </div>
+      </Dropdown>
+    </Col>
+    </>
+  );
+
   const renderHeader = () => (
     <Row justify="end" align="middle" gutter={16}>
-      <Col>
-        <SearchOutlined />
-      </Col>
-      <Col>
-        <QuestionCircleOutlined />
-      </Col>
-      <Col>
-        <BellOutlined />
-      </Col>
-      <Col>
-        <div className="avatar-group">
-          <Avatar />
-          <span>{AuthComponent}</span>
-        </div>
-      </Col>
+      {!userInfo ? LoggedOutHeader : LoggedInHeader}
     </Row>
   );
 

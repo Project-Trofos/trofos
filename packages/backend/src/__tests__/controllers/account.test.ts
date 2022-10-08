@@ -194,10 +194,11 @@ describe("account.controller tests", () => {
     const mockRes = createResponse()
     mockReq.body = {
       userId : 1,
-      newUserPassword : "testPassword"
+      newUserPassword : "newTestPassword",
+      oldUserPassword : "oldTestPassword"
     }
     await authentication.changePassword(mockReq, mockRes);
-    expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "testPassword")
+    expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "oldTestPassword","newTestPassword")
     expect(mockRes.statusCode).toEqual(StatusCodes.OK)
     expect(mockRes._getData()).toEqual({ message : "Password successfully changed" });
     })
@@ -209,10 +210,11 @@ describe("account.controller tests", () => {
       const mockRes = createResponse()
       mockReq.body = {
         userId : 1,
-        newUserPassword : "testPassword"
+        newUserPassword : "newTestPassword",
+        oldUserPassword : "oldTestPassword"
       }
       await authentication.changePassword(mockReq, mockRes);
-      expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "testPassword")
+      expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "oldTestPassword","newTestPassword")
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
       expect(mockRes._getJSONData()).toEqual({ error : 'Unable to change password'});
     })
