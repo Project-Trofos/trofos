@@ -6,7 +6,6 @@ import {
   HomeOutlined,
   ProjectOutlined,
   QuestionCircleOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -14,6 +13,7 @@ import './MainLayout.css';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
+import GlobalSearch from '../components/search/GlobalSearch';
 
 const { Header, Sider, Content } = Layout;
 
@@ -146,7 +146,7 @@ export default function MainLayout() {
   const LoggedInHeader = (
     <>
     <Col>
-      <SearchOutlined />
+      <GlobalSearch />
     </Col>
     <Col>
       <QuestionCircleOutlined />
@@ -188,7 +188,7 @@ export default function MainLayout() {
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
           {renderHeader()}
         </Header>
-        <Content style={{ minHeight: 360 }}>
+        <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
           <Outlet />
         </Content>
       </Layout>

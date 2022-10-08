@@ -9,5 +9,10 @@ router.post('/newBacklog', isAuthorizedRequest(Action.update_project, null), bac
 router.get('/listBacklogs/:projectId', isAuthorizedRequest(Action.read_project, null), backlog.listBacklogs);
 router.get('/getBacklog/:projectId/:backlogId', isAuthorizedRequest(Action.read_project, null), backlog.getBacklog);
 router.put('/updateBacklog', isAuthorizedRequest(Action.update_project, null), backlog.updateBacklog);
+router.delete(
+  '/deleteBacklog/:projectId/:backlogId',
+  isAuthorizedRequest(Action.update_project, null),
+  backlog.deleteBacklog,
+);
 
 export default router;

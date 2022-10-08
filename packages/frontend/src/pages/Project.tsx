@@ -20,6 +20,7 @@ import { confirmDeleteProject, confirmDetachProject } from '../components/modals
 import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
+import './Project.css';
 
 const { Paragraph } = Typography;
 
@@ -176,7 +177,7 @@ export default function ProjectPage(): JSX.Element {
       >
         <Paragraph>{project.description}</Paragraph>
       </PageHeader>
-      <section>
+      <section className="project-section-container">
         <Outlet />
       </section>
     </>
