@@ -51,3 +51,9 @@ export function assertProjectNameIsValid(projectName: string | undefined): asser
     throw new BadRequestError(getFieldUndefinedErrorMessage('projectName'));
   }
 }
+
+export function assertInputIsNotEmpty(input: any, inputName : string) {
+  if (!input) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage(inputName));
+  }
+}

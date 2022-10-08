@@ -214,7 +214,7 @@ describe("account.controller tests", () => {
       await authentication.changePassword(mockReq, mockRes);
       expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, "testPassword")
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR)
-      expect(mockRes._getData()).toEqual({ error : "Error while changing password" });
+      expect(mockRes._getJSONData()).toEqual({ error : 'Unable to change password'});
     })
   })
 })

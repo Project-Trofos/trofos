@@ -4,6 +4,7 @@ import authenticationService  from '../services/authentication.service';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
 import accountService from '../services/account.service';
+import { assertInputIsNotEmpty, getDefaultErrorRes } from '../helpers/error';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -61,18 +62,18 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
 };
 
 const changePassword = async (req: express.Request, res: express.Response) => {
-  const { userId, newUserPassword } = req.body;
-
   try {
-    await accountService.changePassword(userId, newUserPassword)
+    const { userId, newUserPassword } = req.body;
+
+    assertInputIsNotEmpty(userId, "User Id");
+    assertInputIsNotEmpty(newUserPassword, "New Password");
+
+    await accountService.changePassword(userId, newUserPassword);
     return res.status(StatusCodes.OK).send({ 
       message : "Password successfully changed" 
     });
-  } catch (e) {
-    console.error(e);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ 
-      error : "Error while changing password" 
-    });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
