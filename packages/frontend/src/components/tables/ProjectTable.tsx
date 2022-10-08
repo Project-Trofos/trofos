@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Button, Card, message, Space, Table, Typography } from 'antd';
+import { Button, Card, Input, message, Space, Table, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { Project, useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject, confirmDetachProject } from '../modals/confirm';
@@ -57,11 +57,19 @@ export default function ProjectTable({ projects, isLoading }: { projects: Projec
           rowKey={(project) => project.id}
           loading={isLoading}
           bordered
+          size="small"
           pagination={{ pageSize: 5 }}
         >
-          <Table.Column title="ID" dataIndex="id" />
-          <Table.Column title="Name" dataIndex="pname" />
+          <Table.Column width={150} title="ID" dataIndex="id" sorter={(a: Project, b: Project) => a.id - b.id} />
           <Table.Column
+            title="Name"
+            dataIndex="pname"
+            filterDropdown={filterDropdown}
+            sorter={(a: Project, b: Project) => a.pname.localeCompare(b.pname)}
+            onFilter={(value, record: Project) => record.pname.toLowerCase().includes(value.toString().toLowerCase())}
+          />
+          <Table.Column
+            width={300}
             title="Action"
             dataIndex="action"
             render={(_, record: Project) => (
@@ -83,3 +91,21 @@ export default function ProjectTable({ projects, isLoading }: { projects: Projec
     </Card>
   );
 }
+
+const filterDropdown = ({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+}: {
+  setSelectedKeys: (keys: React.Key[]) => void;
+  selectedKeys: React.Key[];
+  confirm: () => void;
+}) => (
+  <Input
+    value={selectedKeys[0]}
+    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+    onPressEnter={() => confirm()}
+    onBlur={() => confirm()}
+    placeholder="type to filter"
+  />
+);

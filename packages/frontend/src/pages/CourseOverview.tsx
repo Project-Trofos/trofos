@@ -8,8 +8,8 @@ export default function CourseOverview(): JSX.Element {
   const { filteredProjects, isLoading } = useCourse(params.courseId);
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <section className="course-content-container">
       <ProjectTable projects={filteredProjects} isLoading={isLoading} />
-    </div>
+    </section>
   );
 }

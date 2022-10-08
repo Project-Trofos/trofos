@@ -1,20 +1,14 @@
 import React, { useMemo } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Button } from 'antd';
 import Menu from 'antd/lib/menu';
-import {
-  BellOutlined,
-  BookOutlined,
-  HomeOutlined,
-  ProjectOutlined,
-  QuestionCircleOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
+import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
+import GlobalSearch from '../components/search/GlobalSearch';
 
 const { Header, Sider, Content } = Layout;
 
@@ -124,7 +118,7 @@ export default function MainLayout() {
   const renderHeader = () => (
     <Row justify="end" align="middle" gutter={16}>
       <Col>
-        <SearchOutlined />
+        <GlobalSearch />
       </Col>
       <Col>
         <QuestionCircleOutlined />
