@@ -8,6 +8,7 @@ import {
   assertProjectIdIsValid,
   assertStringIsNumberOrThrow,
   assertUserIdIsValid,
+  assertInputIsNotEmpty
 } from './assertions';
 import { getDefaultErrorRes } from './response';
 
@@ -22,4 +23,5 @@ export {
   assertUserIdIsValid,
   assertCourseNameIsValid,
   assertStringIsNumberOrThrow,
+  assertInputIsNotEmpty
 };

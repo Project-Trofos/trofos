@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import authenticationRouter from './routes/authentication.route';
+import accountRouter from './routes/account.route';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
 import backlogRouter from './routes/backlog.route';
@@ -20,7 +20,7 @@ app.get('/', (req : express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
 
-app.use('/auth', authenticationRouter);
+app.use('/account', accountRouter);
 
 // Routes for course
 app.use('/course', courseRouter);
