@@ -9,9 +9,9 @@ const prisma = new PrismaClient();
 
 async function main() {
   createUserSeed(prisma);
+  await createRoleSeed(prisma);
   await createCourseSeed(prisma);
   await createProjectSeed(prisma);
-  await createRoleSeed(prisma);
   setupBacklogSeed(prisma);
 }
 
