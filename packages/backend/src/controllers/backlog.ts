@@ -55,9 +55,23 @@ const updateBacklog = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const deleteBacklog = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, backlogId } = req.params;
+    if (!projectId || !backlogId) {
+      throw new Error('projectId or backlogId cannot be empty');
+    }
+    const backlog: Backlog = await backlogService.deleteBacklog(Number(projectId), Number(backlogId));
+    return res.status(StatusCodes.OK).json(backlog);
+  } catch (error: any) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+  }
+};
+
 export default {
   newBacklog,
   listBacklogs,
   getBacklog,
   updateBacklog,
+  deleteBacklog,
 };

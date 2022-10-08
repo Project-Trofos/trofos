@@ -151,7 +151,7 @@ export default function MainLayout() {
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
           {renderHeader()}
         </Header>
-        <Content style={{ minHeight: 360 }}>
+        <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
           <Outlet />
         </Content>
       </Layout>

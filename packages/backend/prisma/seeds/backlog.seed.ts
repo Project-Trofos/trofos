@@ -2,6 +2,7 @@
 import {
   PrismaClient,
   User,
+  UsersOnRoles,
   Project,
   UsersOnProjects,
   Backlog,
@@ -65,8 +66,10 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
       console.log('created user %s', user);
     }),
   );
+}
 
-  await prisma.usersOnRoles.createMany({
+async function createUsersOnRolesForBacklogSeed(prisma: PrismaClient) {
+  const userRoles = await prisma.usersOnRoles.createMany({
     data: [
       {
         user_email: 'testBacklogUser1@test.com',
@@ -78,6 +81,8 @@ async function createUsersForBacklogSeed(prisma: PrismaClient) {
       },
     ],
   });
+
+  console.log('created usersOnRoles %s', userRoles);
 }
 
 async function createProjectForBacklogSeed(prisma: PrismaClient) {
@@ -279,6 +284,7 @@ async function createBacklogsSeed(prisma: PrismaClient) {
 
 async function setupBacklogSeed(prisma: PrismaClient) {
   await createUsersForBacklogSeed(prisma);
+  await createUsersOnRolesForBacklogSeed(prisma);
   await createProjectForBacklogSeed(prisma);
   await createUsersOnProjectForBacklogSeed(prisma);
   await createSprintForBacklogSeed(prisma);

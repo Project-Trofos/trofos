@@ -1,7 +1,3 @@
-main {
-    background: #fff;
-}
-
 @media (min-width: 769px) {
     .backlog-data-container {
         display: flex;
@@ -11,10 +7,15 @@ main {
         width: 62%;
     }
 
-    .backlog-panel-container {
+    .backlog-sidebar-container {
         width: 32%;
         margin-left: 25px;
     }
+}
+
+.backlog-page-container {
+    background: #fff;
+    height: 100%;
 }
 
 .backlog-data-container {
@@ -73,4 +74,9 @@ main {
 
 .backlog-data-container div.ant-input-number.backlog-inputnumber {
     border: none;
+}
+
+.backlog-menu-container {
+    text-align: right;
+    margin: 15px 10px;
 }
