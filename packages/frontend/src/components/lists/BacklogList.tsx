@@ -6,15 +6,15 @@ import { Backlog, useGetBacklogsQuery } from '../../api/backlog';
 import { useGetProjectQuery } from '../../api/project';
 import './BacklogList.css';
 
-function BacklogList(props: {backlogs : Backlog[] | undefined}): JSX.Element {
-	const { backlogs } = props;
-	const params = useParams();
+function BacklogList(props: { backlogs: Backlog[] | undefined }): JSX.Element {
+  const { backlogs } = props;
+  const params = useParams();
   const navigate = useNavigate();
-	const projectId = Number(params.projectId);
-	
-	const { data: projectData } = useGetProjectQuery({ id: projectId });
+  const projectId = Number(params.projectId);
 
-	const handleBacklogOnClick = (backlogId: number) => {
+  const { data: projectData } = useGetProjectQuery({ id: projectId });
+
+  const handleBacklogOnClick = (backlogId: number) => {
     navigate(`/project/${params.projectId}/backlog/${backlogId}`);
   };
 
@@ -24,9 +24,7 @@ function BacklogList(props: {backlogs : Backlog[] | undefined}): JSX.Element {
     </List.Item>
   );
 
-	return (
-		<List dataSource={backlogs} renderItem={renderBacklogListingCards} />
-	);
+  return <List dataSource={backlogs} renderItem={renderBacklogListingCards} />;
 }
 
 export default BacklogList;

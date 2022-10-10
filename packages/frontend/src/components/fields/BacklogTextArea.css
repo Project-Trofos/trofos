@@ -1,11 +1,11 @@
 .backlog-textarea {
-  border: none;
-  border-radius: 8px;
-  transition: none;
-  outline: none;
-  box-shadow: none !important;
+    border: none;
+    border-radius: 8px;
+    transition: none;
+    outline: none;
+    box-shadow: none !important;
 }
 
 .backlog-textarea:hover {
-  border: 2px solid #000;
+    border: 2px solid #000;
 }

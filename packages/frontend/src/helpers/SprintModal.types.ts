@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs";
+import type { Dayjs } from 'dayjs';
 
 export interface SprintFormFields extends FormData {
   projectId: number;
@@ -13,8 +13,8 @@ export interface SprintUpdatePayload extends Omit<SprintFormFields, 'projectId'>
   sprintId: number;
 }
 
-export type AutoSprintTypes = { 
+export type AutoSprintTypes = {
   name: string;
   dates: Dayjs[] | undefined;
-  duration: number
-}
+  duration: number;
+};

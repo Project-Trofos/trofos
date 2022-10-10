@@ -1,30 +1,30 @@
 :root {
-  --sider-bg-color: #32a2ac;
+    --sider-bg-color: #32a2ac;
 }
 
 .avatar-group {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 /* Menu */
 .main-layout-sider .ant-layout-sider-children {
-  background-color: var(--sider-bg-color);
+    background-color: var(--sider-bg-color);
 }
 
 /* Prevent link from changing text color */
 .main-layout-sider .ant-menu-title-content a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 .main-layout-sider .ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child::after {
-  border-right: 3px solid var(--sider-bg-color);
+    border-right: 3px solid var(--sider-bg-color);
 }
 
 .main-layout-sider .ant-menu-item.ant-menu-item-selected::after {
-  border-right: 3px solid var(--sider-bg-color);
+    border-right: 3px solid var(--sider-bg-color);
 }

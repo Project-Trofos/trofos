@@ -14,7 +14,7 @@ describe('SprintCard test', () => {
     end_date: '2022-10-16 07:03:56',
     project_id: 123,
     goals: 'Some test goals',
-		backlogs: [],
+    backlogs: [],
   };
 
   const mockSprintListingCardProps = {
@@ -23,13 +23,13 @@ describe('SprintCard test', () => {
   };
 
   const { baseElement } = render(
-		<Provider store={store}>
-			<SprintListingCard
-				sprint={mockSprint}
-				setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
-				setSprint={mockSprintListingCardProps.setSprint}
-			/>
-		</Provider>,
+    <Provider store={store}>
+      <SprintListingCard
+        sprint={mockSprint}
+        setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
+        setSprint={mockSprintListingCardProps.setSprint}
+      />
+    </Provider>,
   );
 
   it('renders sprint card with correct details', () => {

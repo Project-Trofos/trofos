@@ -30,13 +30,13 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
     },
     include: {
       backlogs: true,
-    }
+    },
   });
 
   return sprints;
 }
 
-async function updateSprint(sprintToUpdate: Omit<SprintFields, 'projectId'> & {sprintId: number}): Promise<Sprint> {
+async function updateSprint(sprintToUpdate: Omit<SprintFields, 'projectId'> & { sprintId: number }): Promise<Sprint> {
   const { sprintId, name, dates, duration, goals } = sprintToUpdate;
   const updatedSprint = await prisma.sprint.update({
     where: {

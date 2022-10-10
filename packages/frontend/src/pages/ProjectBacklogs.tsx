@@ -10,7 +10,7 @@ function ProjectBacklog(): JSX.Element {
   const { Title } = Typography;
 
   const params = useParams();
-	const projectId = Number(params.projectId);
+  const projectId = Number(params.projectId);
 
   const { data: backlogs } = useGetBacklogsQuery(projectId);
 
@@ -22,7 +22,7 @@ function ProjectBacklog(): JSX.Element {
         </Title>
         <BacklogCreationModal />
       </div>
-    <BacklogList backlogs={backlogs} />
+      <BacklogList backlogs={backlogs} />
     </div>
   );
 }

@@ -1,15 +1,15 @@
 div.ant-select.backlog-select .ant-select-selector {
-  border: none;
-  border-radius: 8px;
-  transition: none;
-  outline: none;
-  box-shadow: none !important;
+    border: none;
+    border-radius: 8px;
+    transition: none;
+    outline: none;
+    box-shadow: none !important;
 }
 
 div.ant-select.backlog-select {
-  width: 140px;
+    width: 140px;
 }
 
 div.ant-select.backlog-select .ant-select-selector:hover {
-  background-color: #efefef;
+    background-color: #efefef;
 }

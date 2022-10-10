@@ -28,14 +28,14 @@ describe('sprintController tests', () => {
     };
 
     const expectedSprint: Sprint = {
-			id: 1,
-			name: 'Sprint 1',
-			duration: 1,
-			start_date: new Date('2022-10-09 07:03:56'),
-			end_date: new Date('2022-10-16 07:03:56'),
-			project_id: 123,
-			goals: 'Some test goals',
-		};
+      id: 1,
+      name: 'Sprint 1',
+      duration: 1,
+      start_date: new Date('2022-10-09 07:03:56'),
+      end_date: new Date('2022-10-16 07:03:56'),
+      project_id: 123,
+      goals: 'Some test goals',
+    };
 
     const mockRequest = createRequest({
       body: mockSprint,
@@ -60,56 +60,56 @@ describe('sprintController tests', () => {
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when duration is negative', async () => {
-			const mockNegativeDurationSprint: SprintFields = {
-				name: 'Sprint 1',
-				duration: -1,
-				dates: ['2022-10-09 07:03:56', '2022-10-16 07:03:56'],
-				projectId: 123,
-				goals: 'Some test goals',
-			};
+    it('should throw an error and return status 500 when duration is negative', async () => {
+      const mockNegativeDurationSprint: SprintFields = {
+        name: 'Sprint 1',
+        duration: -1,
+        dates: ['2022-10-09 07:03:56', '2022-10-16 07:03:56'],
+        projectId: 123,
+        goals: 'Some test goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockNegativeDurationSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockNegativeDurationSprint,
+      });
 
-      await sprintController.newSprint(mockRequest, mockResponse);
+      await sprintController.newSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.newSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when duration is more than 4', async () => {
-			const mockInvalidDurationSprint: SprintFields = {
-				name: 'Sprint 1',
-				duration: 5,
-				dates: ['2022-10-09 07:03:56', '2022-10-16 07:03:56'],
-				projectId: 123,
-				goals: 'Some test goals',
-			};
+    it('should throw an error and return status 500 when duration is more than 4', async () => {
+      const mockInvalidDurationSprint: SprintFields = {
+        name: 'Sprint 1',
+        duration: 5,
+        dates: ['2022-10-09 07:03:56', '2022-10-16 07:03:56'],
+        projectId: 123,
+        goals: 'Some test goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockInvalidDurationSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockInvalidDurationSprint,
+      });
 
-      await sprintController.newSprint(mockRequest, mockResponse);
+      await sprintController.newSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.newSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when there is only one date', async () => {
-			const mockMissingStartDateSprint: SprintFields = {
-				name: 'Sprint 1',
-				duration: 1,
-				dates: ['2022-10-16 07:03:56'],
-				projectId: 123,
-				goals: 'Some test goals',
-			};
+    it('should throw an error and return status 500 when there is only one date', async () => {
+      const mockMissingStartDateSprint: SprintFields = {
+        name: 'Sprint 1',
+        duration: 1,
+        dates: ['2022-10-16 07:03:56'],
+        projectId: 123,
+        goals: 'Some test goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockMissingStartDateSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockMissingStartDateSprint,
+      });
 
-      await sprintController.newSprint(mockRequest, mockResponse);
+      await sprintController.newSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.newSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
@@ -129,23 +129,23 @@ describe('sprintController tests', () => {
     it('should return array of sprints and status 200 when called with valid projectId', async () => {
       const expectedSprints: Sprint[] = [
         {
-					id: 1,
-					name: 'Sprint 1',
-					duration: 1,
-					start_date: new Date('2022-10-09 07:03:56'),
-					end_date: new Date('2022-10-16 07:03:56'),
-					project_id: 123,
-					goals: 'Some test goals',
-				},
+          id: 1,
+          name: 'Sprint 1',
+          duration: 1,
+          start_date: new Date('2022-10-09 07:03:56'),
+          end_date: new Date('2022-10-16 07:03:56'),
+          project_id: 123,
+          goals: 'Some test goals',
+        },
         {
-					id: 2,
-					name: 'Sprint 2',
-					duration: 1,
-					start_date: new Date('2022-10-16 07:03:56'),
-					end_date: new Date('2022-10-23 07:03:56'),
-					project_id: 123,
-					goals: 'Some test goals',
-				},
+          id: 2,
+          name: 'Sprint 2',
+          duration: 1,
+          start_date: new Date('2022-10-16 07:03:56'),
+          end_date: new Date('2022-10-23 07:03:56'),
+          project_id: 123,
+          goals: 'Some test goals',
+        },
       ];
       sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints);
 
@@ -177,10 +177,10 @@ describe('sprintController tests', () => {
   describe('update sprint', () => {
     const mockSprintToUpdate = {
       sprintId: 1,
-			duration: 2,
-			name: 'Sprint 1',
-			dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
-			goals: 'Updated goals',
+      duration: 2,
+      name: 'Sprint 1',
+      dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
+      goals: 'Updated goals',
     };
 
     const mockRequest = createRequest({
@@ -191,14 +191,14 @@ describe('sprintController tests', () => {
 
     it('should return updated sprint and status 200 when called with valid fields', async () => {
       const expectedSprint: Sprint = {
-				id: 1,
-				name: 'Sprint 1',
-				duration: 2,
-				start_date: new Date('2022-10-09 07:03:56'),
-				end_date: new Date('2022-10-23 07:03:56'),
-				project_id: 123,
-				goals: 'Updated goals',
-			};
+        id: 1,
+        name: 'Sprint 1',
+        duration: 2,
+        start_date: new Date('2022-10-09 07:03:56'),
+        end_date: new Date('2022-10-23 07:03:56'),
+        project_id: 123,
+        goals: 'Updated goals',
+      };
 
       sprintServiceSpies.updateSprint.mockResolvedValueOnce(expectedSprint);
 
@@ -229,56 +229,56 @@ describe('sprintController tests', () => {
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when duration is negative', async () => {
-			const mockNegativeDurationSprint = {
-				sprintId: 1,
-				duration: -1,
-				name: 'Sprint 1',
-				dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
-				goals: 'Updated goals',
-			};
+    it('should throw an error and return status 500 when duration is negative', async () => {
+      const mockNegativeDurationSprint = {
+        sprintId: 1,
+        duration: -1,
+        name: 'Sprint 1',
+        dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
+        goals: 'Updated goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockNegativeDurationSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockNegativeDurationSprint,
+      });
 
-      await sprintController.updateSprint(mockRequest, mockResponse);
+      await sprintController.updateSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.updateSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when duration is more than 4', async () => {
-			const mockNegativeDurationSprint = {
-				sprintId: 1,
-				duration: 5,
-				name: 'Sprint 1',
-				dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
-				goals: 'Updated goals',
-			};
+    it('should throw an error and return status 500 when duration is more than 4', async () => {
+      const mockNegativeDurationSprint = {
+        sprintId: 1,
+        duration: 5,
+        name: 'Sprint 1',
+        dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
+        goals: 'Updated goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockNegativeDurationSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockNegativeDurationSprint,
+      });
 
-      await sprintController.updateSprint(mockRequest, mockResponse);
+      await sprintController.updateSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.updateSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-		it('should throw an error and return status 500 when there is only one date', async () => {
-			const mockNegativeDurationSprint = {
-				sprintId: 1,
-				duration: 1,
-				name: 'Sprint 1',
-				dates: ['2022-10-09 07:03:56'],
-				goals: 'Updated goals',
-			};
+    it('should throw an error and return status 500 when there is only one date', async () => {
+      const mockNegativeDurationSprint = {
+        sprintId: 1,
+        duration: 1,
+        name: 'Sprint 1',
+        dates: ['2022-10-09 07:03:56'],
+        goals: 'Updated goals',
+      };
 
-			const mockRequest = createRequest({
-				body: mockNegativeDurationSprint,
-			});
+      const mockInvalidRequest = createRequest({
+        body: mockNegativeDurationSprint,
+      });
 
-      await sprintController.updateSprint(mockRequest, mockResponse);
+      await sprintController.updateSprint(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.updateSprint).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
@@ -297,14 +297,14 @@ describe('sprintController tests', () => {
 
     it('should return sprint and status 200 when called with valid fields', async () => {
       const expectedSprint: Sprint = {
-				id: 1,
-				name: 'Sprint 1',
-				duration: 1,
-				start_date: new Date('2022-10-09 07:03:56'),
-				end_date: new Date('2022-10-16 07:03:56'),
-				project_id: 123,
-				goals: 'Some test goals',
-			};
+        id: 1,
+        name: 'Sprint 1',
+        duration: 1,
+        start_date: new Date('2022-10-09 07:03:56'),
+        end_date: new Date('2022-10-16 07:03:56'),
+        project_id: 123,
+        goals: 'Some test goals',
+      };
       sprintServiceSpies.deleteSprint.mockResolvedValueOnce(expectedSprint);
 
       await sprintController.deleteSprint(mockRequest, mockResponse);
