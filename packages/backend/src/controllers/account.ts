@@ -1,6 +1,6 @@
 import StatusCodes from 'http-status-codes';
 import express from 'express';
-import authenticationService  from '../services/authentication.service';
+import authenticationService from '../services/authentication.service';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
 import accountService from '../services/account.service';
@@ -8,7 +8,7 @@ import { assertInputIsNotEmpty, getDefaultErrorRes } from '../helpers/error';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
-const loginUser = async (req : express.Request, res: express.Response) => {
+const loginUser = async (req: express.Request, res: express.Response) => {
   const { userEmail, userPassword } = req.body;
 
   try {
@@ -17,9 +17,9 @@ const loginUser = async (req : express.Request, res: express.Response) => {
     if (!userAuth.isValidUser) {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
-  
+
     const userRoleId = await roleService.getUserRoleId(userEmail);
-    const userId = userAuth.userLoginInformation?.user_id as number
+    const userId = userAuth.userLoginInformation?.user_id as number;
     const sessionId = await sessionService.createUserSession(userEmail, userRoleId, userId);
 
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
@@ -28,10 +28,9 @@ const loginUser = async (req : express.Request, res: express.Response) => {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
-
 };
 
-const logoutUser = async (req : express.Request, res: express.Response) => {
+const logoutUser = async (req: express.Request, res: express.Response) => {
   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
 
   try {
@@ -41,7 +40,6 @@ const logoutUser = async (req : express.Request, res: express.Response) => {
     console.error(e);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
-
 };
 
 const getUserInfo = async (req: express.Request, res: express.Response) => {
@@ -50,9 +48,9 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
   try {
     const sessionInformation = await sessionService.getUserSession(sessionId);
     const userInformation = {
-      userEmail : sessionInformation.user_email,
-      userRole : sessionInformation.user_role_id,
-      userId : sessionInformation.user_id,
+      userEmail: sessionInformation.user_email,
+      userRole: sessionInformation.user_role_id,
+      userId: sessionInformation.user_id,
     };
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
@@ -65,21 +63,21 @@ const changePassword = async (req: express.Request, res: express.Response) => {
   try {
     const { userId, newUserPassword } = req.body;
 
-    assertInputIsNotEmpty(userId, "User Id");
-    assertInputIsNotEmpty(newUserPassword, "New Password");
+    assertInputIsNotEmpty(userId, 'User Id');
+    assertInputIsNotEmpty(newUserPassword, 'New Password');
 
     await accountService.changePassword(userId, newUserPassword);
-    return res.status(StatusCodes.OK).send({ 
-      message : "Password successfully changed" 
+    return res.status(StatusCodes.OK).send({
+      message: 'Password successfully changed',
     });
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
-}
+};
 
 export default {
   loginUser,
   logoutUser,
   getUserInfo,
-  changePassword
+  changePassword,
 };

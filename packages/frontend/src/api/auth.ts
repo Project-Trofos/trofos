@@ -1,13 +1,13 @@
 import trofosApiSlice from '.';
 
 export type UserLoginInfo = {
-  userEmail: string,
-  userPassword: string
+  userEmail: string;
+  userPassword: string;
 };
 
 export type UserInfo = {
-  userEmail: string,
-  userRole: number
+  userEmail: string;
+  userRole: number;
 };
 
 // Auth APIs
@@ -17,7 +17,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       query: (userLoginInfo) => ({
         url: '/account/login',
         method: 'POST',
-        body : {
+        body: {
           userEmail: userLoginInfo.userEmail,
           userPassword: userLoginInfo.userPassword,
         },
@@ -30,7 +30,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'POST',
         credentials: 'include',
       }),
-      invalidatesTags : ['UserInfo'],
+      invalidatesTags: ['UserInfo'],
     }),
     getUserInfo: builder.query<UserInfo, void>({
       query: () => ({
@@ -42,8 +42,4 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   }),
 });
 
-export const { 
-  useLoginUserMutation, 
-  useLogoutUserMutation,
-  useGetUserInfoQuery, 
-} = extendedApi;
+export const { useLoginUserMutation, useLogoutUserMutation, useGetUserInfoQuery } = extendedApi;

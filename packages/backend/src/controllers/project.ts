@@ -111,7 +111,6 @@ async function removeUser(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
     assertUserIdIsValid(body.userId);
 
-
     const result = await project.removeUser(Number(projectId), Number(body.userId));
 
     return res.status(StatusCodes.OK).json(result);

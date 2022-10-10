@@ -4,8 +4,7 @@ import prisma from '../models/prismaClient';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
-async function createUserSession(userEmail: string, userRoleId: number, userId: number) : Promise<string> {
-
+async function createUserSession(userEmail: string, userRoleId: number, userId: number): Promise<string> {
   let isSessionCreated = false;
   let sessionId = crypto.randomBytes(16).toString('base64');
 
@@ -13,11 +12,11 @@ async function createUserSession(userEmail: string, userRoleId: number, userId: 
     try {
       // eslint-disable-next-line no-await-in-loop
       await prisma.userSession.create({
-        data : {
-          session_id : sessionId,
-          user_email : userEmail,
-          user_role_id : userRoleId,
-          user_id : userId
+        data: {
+          session_id: sessionId,
+          user_email: userEmail,
+          user_role_id: userRoleId,
+          user_id: userId,
         },
       });
       isSessionCreated = true;
@@ -40,13 +39,13 @@ async function createUserSession(userEmail: string, userRoleId: number, userId: 
 
 async function deleteUserSession(sessionId: string) {
   await prisma.userSession.delete({
-    where : {
+    where: {
       session_id: sessionId,
     },
   });
 }
 
-async function getUserSession(sessionId: string) : Promise<UserSession> {
+async function getUserSession(sessionId: string): Promise<UserSession> {
   const sessionInfo = await prisma.userSession.findFirstOrThrow({
     where: {
       session_id: sessionId,
