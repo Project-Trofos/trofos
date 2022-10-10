@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Form, Segmented, Select, Typography, message } from 'antd';
 import { useAddProjectMutation } from '../../api/project';
-import { Course, useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
+import { useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { useGetAllModulesQuery } from '../../api/nusmods';
 import { getErrorMessage } from '../../helpers/error';
@@ -11,6 +11,7 @@ import CourseCodeFormItem from '../forms/CourseCodeFormItem';
 import CourseNameFormItem from '../forms/CourseNameFormItem';
 import ProjectNameFormInput from '../forms/ProjectNameFormItem';
 import ProjectKeyFormInput from '../forms/ProjectKeyFormItem';
+import { Course } from '../../api/types';
 
 const { Option } = Select;
 
@@ -71,7 +72,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
           }).unwrap();
         } else {
           // Independent project
-          await addProject({ pname: projectName.trim(), pkey: projectKey?.trim() }).unwrap();
+          await addProject({ pname: projectName.trim(), pkey: projectKey?.trim() }).unwrap().then(console.log);
         }
         message.success(`Project ${projectName} has been created!`);
       } catch (err) {

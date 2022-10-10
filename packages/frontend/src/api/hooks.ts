@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { useGetAllCoursesQuery, Course } from './course';
+import { useGetAllCoursesQuery } from './course';
 import { isCurrent } from './currentTime';
-import { useGetAllProjectsQuery, Project } from './project';
+import { useGetAllProjectsQuery } from './project';
+import { Project, Course } from './types';
 
 // Filter projects by current and past
 export const useCurrentAndPastProjects = () => {
@@ -40,7 +41,6 @@ export const useCurrentAndPastCourses = () => {
 // Get project information by id
 export const useProject = (projectId?: string) => {
   const { data: projects, isLoading: isProjectsLoading } = useGetAllProjectsQuery();
-  const { data: courses } = useGetAllCoursesQuery();
 
   const project = useMemo(() => {
     if (!projects || projects.length === 0 || !projectId) {
@@ -49,14 +49,7 @@ export const useProject = (projectId?: string) => {
     return projects.filter((p) => p.id.toString() === projectId)[0];
   }, [projects, projectId]);
 
-  const course = useMemo(() => {
-    if (!project || !project.course_id || !courses) {
-      return undefined;
-    }
-    return courses.filter((c) => c.id === project.course_id)[0];
-  }, [project, courses]);
-
-  return { project, course, isLoading: isProjectsLoading };
+  return { project, course: project?.course, isLoading: isProjectsLoading };
 };
 
 // Get course information by id

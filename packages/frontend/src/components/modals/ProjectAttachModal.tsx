@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Form, message, Select } from 'antd';
-import { Project } from '../../api/project';
+import { Project } from '../../api/types';
 import { useAddProjectToCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
