@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+// Page Object Model causes circular imports but its not necessarily bad : https://stackoverflow.com/questions/69651114/how-to-avoid-circular-dependency-when-using-page-objects#comment123113353_69651114
 import { WebDriver, By } from 'selenium-webdriver';
 import SingleProjectPage from './SingleProjectPage';
 

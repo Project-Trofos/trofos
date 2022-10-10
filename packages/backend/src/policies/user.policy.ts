@@ -5,7 +5,9 @@ import userConstraint from './constraints/user.constraint'
 
 const POLICY_NAME = 'USER_POLICY'
 
-async function applyUserPolicy(req : express.Request, _userSession : UserSession) : Promise<PolicyOutcome> {
+// Function has to adhere to the standard type and userSession information may be needed in future features
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function applyUserPolicy(req : express.Request, userSession : UserSession) : Promise<PolicyOutcome> {
     let policyOutcome : PolicyOutcome;
     const { userId } = req.body;
     const isParamsMissing = userId === undefined;

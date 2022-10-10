@@ -11,7 +11,9 @@
     "cleanup:ci": "docker compose -f docker-compose-ci.yml down && docker stop frontend || true && docker stop backend || true",
     "commit": "cz",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix && stylelint **/*.css --fix",
-    "postinstall": "npm run generate-package-lock --workspaces"
+    "postinstall": "npm run generate-package-lock --workspaces",
+    "prettier": "prettier --write .",
+    "format": "npm run lint && npm run prettier"
   },
   "repository": {
     "type": "git",
