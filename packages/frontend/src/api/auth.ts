@@ -7,8 +7,15 @@ export type UserLoginInfo = {
 
 export type UserInfo = {
   userEmail: string,
-  userRole: number
+  userRole: number,
+  userId: number
 };
+
+export type ChangePassword = {
+  userId : number | undefined,
+  oldUserPassword : string,
+  newUserPassword: string,
+}
 
 // Auth APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -39,11 +46,24 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['UserInfo'],
     }),
+    changePassword : builder.mutation<void, ChangePassword>({
+      query: (changePassword) => ({
+        url: '/account/changePassword',
+        method: 'POST',
+        body : {
+          userId : changePassword.userId,
+          oldUserPassword : changePassword.oldUserPassword,
+          newUserPassword : changePassword.newUserPassword
+        },
+        credentials: 'include'
+      })
+    })
   }),
 });
 
 export const { 
   useLoginUserMutation, 
   useLogoutUserMutation,
-  useGetUserInfoQuery, 
+  useGetUserInfoQuery,
+  useChangePasswordMutation
 } = extendedApi;

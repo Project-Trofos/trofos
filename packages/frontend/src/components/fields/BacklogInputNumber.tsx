@@ -4,7 +4,7 @@ import './BacklogInputNumber.css';
 
 type BacklogInputNumberPropsTypes = {
   value?: number;
-  onChange?(e: number | undefined): void;
+  onChange?(e: number | null): void;
   onBlur?(e: React.FocusEvent<HTMLInputElement, Element> | undefined): void;
   placeholder?: string;
   className?: string;

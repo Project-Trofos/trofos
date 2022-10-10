@@ -27,7 +27,7 @@ describe("user.policy tests", () => {
 
         it("should return the policy outcome if the user request has the required parameters", async () => {
             const mockReq = createRequest();
-            mockReq.params = {
+            mockReq.body = {
                 userId : "1",
             }
             const userSessionObject = {

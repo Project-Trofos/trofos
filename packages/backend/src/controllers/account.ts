@@ -63,12 +63,13 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
 
 const changePassword = async (req: express.Request, res: express.Response) => {
   try {
-    const { userId, newUserPassword } = req.body;
+    const { userId, oldUserPassword, newUserPassword } = req.body;
 
     assertInputIsNotEmpty(userId, "User Id");
+    assertInputIsNotEmpty(oldUserPassword, "Old Password");
     assertInputIsNotEmpty(newUserPassword, "New Password");
 
-    await accountService.changePassword(userId, newUserPassword);
+    await accountService.changePassword(userId, oldUserPassword, newUserPassword);
     return res.status(StatusCodes.OK).send({ 
       message : "Password successfully changed" 
     });
