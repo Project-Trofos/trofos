@@ -150,6 +150,14 @@ export default function ProjectPage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
+                  Sprint
+                </Link>
+              }
+              key="sprint"
+            />
+            <Tabs.TabPane
+              tab={
                 <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/backlog`}>
                   Backlog
                 </Link>

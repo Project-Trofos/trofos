@@ -1,0 +1,21 @@
+.project-sprint-container {
+    padding: 16px 8px;
+}
+
+.project-sprint-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.7em;
+}
+
+.project-sprint-title {
+    margin-bottom: 0.2em !important;
+}
+
+.sprint-card-container {
+    cursor: pointer;
+}
+
+li.sprint-card-container.ant-list-item:last-child {
+    border-bottom: 1px solid #eee;
+}

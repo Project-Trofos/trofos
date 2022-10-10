@@ -1,0 +1,22 @@
+li.sprint-card-container {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 0;
+}
+
+.sprint-card-inner-container {
+    display: flex;
+}
+
+.sprint-card-container > div {
+    width: 100%;
+}
+
+.sprint-card-name {
+    display: flex;
+    flex: 1 1 0%;
+}
+
+.sprint-card-setting-icon {
+    padding: 0 6px 0 10px;
+}

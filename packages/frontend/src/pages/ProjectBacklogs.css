@@ -11,11 +11,3 @@
 .project-backlog-title {
     margin-bottom: 0.2em !important;
 }
-
-.backlog-card-container {
-    cursor: pointer;
-}
-
-li.backlog-card-container.ant-list-item:last-child {
-    border-bottom: 1px solid #eee;
-}

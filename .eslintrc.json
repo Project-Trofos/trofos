@@ -12,6 +12,13 @@
       {
         "html": "ignore"
       }
+    ],
+    "import/no-extraneous-dependencies": ["error", { "peerDependencies": true }],
+    "@typescript-eslint/no-empty-interface": [
+      "error",
+      {
+        "allowSingleExtends": false
+      }
     ]
   },
   "overrides": [
