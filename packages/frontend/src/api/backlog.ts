@@ -66,4 +66,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetBacklogsQuery, useGetBacklogQuery, useAddBacklogMutation, useUpdateBacklogMutation, useDeleteBacklogMutation } = extendedApi;
+export const {
+  useGetBacklogsQuery,
+  useGetBacklogQuery,
+  useAddBacklogMutation,
+  useUpdateBacklogMutation,
+  useDeleteBacklogMutation,
+} = extendedApi;

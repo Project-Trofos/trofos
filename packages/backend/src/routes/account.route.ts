@@ -13,5 +13,4 @@ router.get('/userInfo', isAuthorizedRequest(null, null), account.getUserInfo);
 
 router.post('/changePassword', isAuthorizedRequest(null, userPolicy.POLICY_NAME), account.changePassword);
 
-
 export default router;

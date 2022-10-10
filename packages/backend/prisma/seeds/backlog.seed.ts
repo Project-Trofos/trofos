@@ -2,7 +2,6 @@
 import {
   PrismaClient,
   User,
-  UsersOnRoles,
   Project,
   UsersOnProjects,
   Backlog,

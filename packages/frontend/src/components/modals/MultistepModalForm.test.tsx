@@ -4,16 +4,16 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import MultistepFormModal, { MultistepFromModalProps } from './MultistepModalForm';
 
-
 function FormWrapper<T>(props: Omit<MultistepFromModalProps<T>, 'form'>) {
   const [form] = Form.useForm();
   const { title, buttonName, formSteps, onSubmit } = props;
 
-  return <MultistepFormModal title={title} form={form} buttonName={buttonName} formSteps={formSteps} onSubmit={onSubmit} />;
+  return (
+    <MultistepFormModal title={title} form={form} buttonName={buttonName} formSteps={formSteps} onSubmit={onSubmit} />
+  );
 }
 
 describe('test button form modal', () => {
-
   const setup = () => {
     const TITLE = 'title';
     const BUTTON_NAME = 'button-name';
@@ -22,14 +22,11 @@ describe('test button form modal', () => {
     const onSubmitFunction = jest.fn();
 
     const { baseElement } = render(
-      <FormWrapper 
+      <FormWrapper
         title={TITLE}
-        buttonName={BUTTON_NAME} 
+        buttonName={BUTTON_NAME}
         formSteps={[
-          <Form.Item
-            label={LABEL}
-            name={ATTR_NAME}
-          >
+          <Form.Item label={LABEL} name={ATTR_NAME}>
             <Input />
           </Form.Item>,
         ]}
@@ -56,8 +53,6 @@ describe('test button form modal', () => {
 
     // Modal should be initially invisible
     expect(screen.queryByText(LABEL)).toBeNull();
-
-
   });
 
   test('modal should appear when button is pressed', async () => {
@@ -87,6 +82,4 @@ describe('test button form modal', () => {
     // Call may not be immediate
     await waitFor(() => expect(onSubmitFunction).toBeCalledWith({ [ATTR_NAME]: INPUT_VALUE }));
   });
-
 });
-

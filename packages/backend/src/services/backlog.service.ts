@@ -54,6 +54,7 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [backlog, counter] = await prisma.$transaction([createBacklog, incrementBacklogCounter]);
 
   return backlog;

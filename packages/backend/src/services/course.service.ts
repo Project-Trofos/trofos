@@ -1,29 +1,28 @@
 import { Course, Project, User, UsersOnCourses } from '@prisma/client';
-import { accessibleBy } from '@casl/prisma'
+import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
   let result;
   if (option === 'current') {
     result = await prisma.course.findMany({
       where: {
-        AND : [
+        AND: [
           accessibleBy(policyConstraint).Course,
           {
             year: CURRENT_YEAR,
             sem: CURRENT_SEM,
-          }
-        ]
+          },
+        ],
       },
     });
   } else if (option === 'past') {
     // year < current_year OR year == current_year and sem < current_sem
     result = await prisma.course.findMany({
       where: {
-        AND : [
+        AND: [
           accessibleBy(policyConstraint).Course,
           {
             OR: [
@@ -43,20 +42,19 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                 },
               },
             ],
-          }
+          },
         ],
       },
     });
   } else {
     result = await prisma.course.findMany({
-      where : accessibleBy(policyConstraint).Course
+      where: accessibleBy(policyConstraint).Course,
     });
   }
   return result;
 }
 
 async function getByPk(id: string, year: number, sem: number): Promise<Course> {
-
   const result = await prisma.course.findUniqueOrThrow({
     where: {
       id_year_sem: {
@@ -66,7 +64,6 @@ async function getByPk(id: string, year: number, sem: number): Promise<Course> {
       },
     },
   });
-
 
   return result;
 }
@@ -101,7 +98,6 @@ async function update(
   isPublic?: boolean,
   description?: string,
 ): Promise<Course> {
-
   const result = await prisma.course.update({
     where: {
       id_year_sem: {
@@ -121,7 +117,6 @@ async function update(
 }
 
 async function remove(id: string, year: number, sem: number): Promise<Course> {
-
   const result = await prisma.course.delete({
     where: {
       id_year_sem: {
@@ -136,17 +131,16 @@ async function remove(id: string, year: number, sem: number): Promise<Course> {
 }
 
 async function getUsers(policyConstraint: AppAbility, id: string, year: number, sem: number): Promise<User[]> {
-
   const result = await prisma.usersOnCourses.findMany({
     where: {
-      AND : [
+      AND: [
         accessibleBy(policyConstraint).Course,
         {
           course_id: id,
           course_year: year,
           course_sem: sem,
-        }
-      ]
+        },
+      ],
     },
     select: {
       user: true,
@@ -162,7 +156,6 @@ async function addUser(
   courseSem: number,
   userId: number,
 ): Promise<UsersOnCourses> {
-
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
@@ -181,7 +174,6 @@ async function removeUser(
   courseSem: number,
   userId: number,
 ): Promise<UsersOnCourses> {
-
   const result = await prisma.usersOnCourses.delete({
     where: {
       course_id_course_year_course_sem_user_id: {
@@ -200,14 +192,14 @@ async function removeUser(
 async function getProjects(policyConstraint: AppAbility, id?: string, year?: number, sem?: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
-      AND : [
-        accessibleBy(policyConstraint).Project, 
+      AND: [
+        accessibleBy(policyConstraint).Project,
         {
           course_id: id,
           course_year: year,
           course_sem: sem,
-        }
-      ]
+        },
+      ],
     },
   });
 
@@ -227,7 +219,6 @@ async function addProjectAndCourse(
   projectDesc?: string,
   courseDesc?: string,
 ): Promise<Project> {
-
   const result = prisma.project.create({
     data: {
       pname: projectName,
@@ -266,7 +257,6 @@ async function addProject(
   courseSem: number,
   projectId: number,
 ): Promise<Project> {
-
   const result = await prisma.project.update({
     where: {
       id: projectId,
@@ -288,7 +278,6 @@ async function removeProject(
   courseSem: number,
   projectId: number,
 ): Promise<Project> {
-
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,

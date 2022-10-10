@@ -1,21 +1,21 @@
 import trofosApiSlice from '.';
 
 export type UserLoginInfo = {
-  userEmail: string,
-  userPassword: string
+  userEmail: string;
+  userPassword: string;
 };
 
 export type UserInfo = {
-  userEmail: string,
-  userRole: number,
-  userId: number
+  userEmail: string;
+  userRole: number;
+  userId: number;
 };
 
 export type ChangePassword = {
-  userId : number | undefined,
-  oldUserPassword : string,
-  newUserPassword: string,
-}
+  userId: number | undefined;
+  oldUserPassword: string;
+  newUserPassword: string;
+};
 
 // Auth APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -24,7 +24,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       query: (userLoginInfo) => ({
         url: '/account/login',
         method: 'POST',
-        body : {
+        body: {
           userEmail: userLoginInfo.userEmail,
           userPassword: userLoginInfo.userPassword,
         },
@@ -37,7 +37,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'POST',
         credentials: 'include',
       }),
-      invalidatesTags : ['UserInfo'],
+      invalidatesTags: ['UserInfo'],
     }),
     getUserInfo: builder.query<UserInfo, void>({
       query: () => ({
@@ -46,24 +46,20 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['UserInfo'],
     }),
-    changePassword : builder.mutation<void, ChangePassword>({
+    changePassword: builder.mutation<void, ChangePassword>({
       query: (changePassword) => ({
         url: '/account/changePassword',
         method: 'POST',
-        body : {
-          userId : changePassword.userId,
-          oldUserPassword : changePassword.oldUserPassword,
-          newUserPassword : changePassword.newUserPassword
+        body: {
+          userId: changePassword.userId,
+          oldUserPassword: changePassword.oldUserPassword,
+          newUserPassword: changePassword.newUserPassword,
         },
-        credentials: 'include'
-      })
-    })
+        credentials: 'include',
+      }),
+    }),
   }),
 });
 
-export const { 
-  useLoginUserMutation, 
-  useLogoutUserMutation,
-  useGetUserInfoQuery,
-  useChangePasswordMutation
-} = extendedApi;
+export const { useLoginUserMutation, useLogoutUserMutation, useGetUserInfoQuery, useChangePasswordMutation } =
+  extendedApi;
