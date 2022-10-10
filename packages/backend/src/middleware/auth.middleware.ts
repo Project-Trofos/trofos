@@ -37,7 +37,7 @@ const isAuthorizedRequest = (routeAction : Action | null, policyName : string | 
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
 
-  next();
+  return next();
 };
 
 export {

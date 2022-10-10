@@ -16,7 +16,8 @@ async function execute(req : express.Request, userSession : UserSession, policyN
         return { isPolicyValid : true } as PolicyOutcome
     }
     
-    return await commandMap[policyName](req, userSession);
+    const policyOutcome = await commandMap[policyName](req, userSession);
+    return policyOutcome
 }
 
 export default {
