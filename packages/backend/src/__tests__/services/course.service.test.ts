@@ -3,8 +3,8 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
-import coursePolicy from '../../policies/constraints/course.constraint'
-import projectPolicy from '../../policies/constraints/project.constraint'
+import coursePolicy from '../../policies/constraints/course.constraint';
+import projectPolicy from '../../policies/constraints/project.constraint';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -129,7 +129,12 @@ describe('course.service tests', () => {
       // @ts-ignore
       prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
 
-      const result = await course.getUsers(coursePolicyConstraint, targetCourse.id, targetCourse.year, targetCourse.sem);
+      const result = await course.getUsers(
+        coursePolicyConstraint,
+        targetCourse.id,
+        targetCourse.year,
+        targetCourse.sem,
+      );
       expect(result).toEqual<User[]>(userData);
     });
   });

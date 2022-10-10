@@ -6,7 +6,11 @@ import store from './store';
 import App from './App';
 
 test('renders main page', async () => {
-  render(<Provider store={store}><App /></Provider>);
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+  );
   const linkElement = await screen.findByText('Trofos', { exact: false });
   expect(linkElement).toBeInTheDocument();
 });

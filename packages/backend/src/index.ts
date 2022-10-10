@@ -12,12 +12,14 @@ const port = 3001;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: process.env.FRONTEND_BASE_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_BASE_URL || 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 
-app.get('/', (req : express.Request, res: express.Response) => {
+app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
 

@@ -52,7 +52,7 @@ export function assertProjectNameIsValid(projectName: string | undefined): asser
   }
 }
 
-export function assertInputIsNotEmpty(input: any, inputName : string) {
+export function assertInputIsNotEmpty(input: any, inputName: string) {
   if (!input) {
     throw new BadRequestError(getFieldUndefinedErrorMessage(inputName));
   }
