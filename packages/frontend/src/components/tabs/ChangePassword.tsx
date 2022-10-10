@@ -30,13 +30,13 @@ export default function ChangePasswordTab() : JSX.Element {
 
     return (
         <Row>
-            <Col offset={1}>
+            <Col offset={6} span={12}>
                 <Typography.Title level={2}>
                     Change Password
                 </Typography.Title>
                 <Form
                 form={form}
-                labelCol={{ span: 24 }}
+                layout="vertical"
                 onFinish={onFinish}
                 >
                     <OldPasswordFormItem />
