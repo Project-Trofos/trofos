@@ -9,7 +9,7 @@ const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, '
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
 const roleServiceGetUserRoleIdSpy = jest.spyOn(roleService, 'getUserRoleId');
 
-afterAll(done => {
+afterAll((done) => {
   server.close();
   done();
 });
@@ -23,18 +23,18 @@ describe('index.ts', () => {
   test('/account/login route should return session cookie', async () => {
     const sessionId = 'testSession';
     authenticationServiceValidateUserSpy.mockResolvedValueOnce({
-      isValidUser : true,
-      userLoginInformation : {
-        user_email : "testUser@test.com",
-        user_id : 1
-      }
+      isValidUser: true,
+      userLoginInformation: {
+        user_email: 'testUser@test.com',
+        user_id: 1,
+      },
     } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
     roleServiceGetUserRoleIdSpy.mockResolvedValue(1);
     const postData = {
-      body : {
-        userEmail : 'testUser@test.com',
-        userPassword : 'testPassword',
+      body: {
+        userEmail: 'testUser@test.com',
+        userPassword: 'testPassword',
       },
     };
     const res = await request(server).post('/account/login').send(postData);

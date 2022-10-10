@@ -30,7 +30,7 @@ jobs:
         run: docker compose -f docker-compose-ci.yml build frontend
       # e2e test currently removed from CI as it is unstable
       # - name: Run backend and frontend containers
-      #   run: |- 
+      #   run: |-
       #     docker run --rm --network host --name backend -d trofos_backend
       #     docker run --rm --network host --name frontend -d trofos_frontend
       # - name: Wait for backend and frontend containers to start
@@ -62,4 +62,3 @@ jobs:
           View full log here: https://github.com/Project-Trofos/trofos/actions/runs/${{ github.run_id }}
           "
           curl --data-urlencode "text=${message}" ${{ secrets.NOTIFICATION_API }}
-      
