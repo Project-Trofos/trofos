@@ -14,13 +14,10 @@ class BadRequestError extends Error {
 class NotAuthorizedError extends Error {
   statusCode: number;
 
-  public constructor(msg = "Not Authorized") {
+  public constructor(msg = 'Not Authorized') {
     super(msg);
-    this.statusCode = StatusCodes.UNAUTHORIZED
+    this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
 
-export {
-  BadRequestError,
-  NotAuthorizedError
-}
+export { BadRequestError, NotAuthorizedError };

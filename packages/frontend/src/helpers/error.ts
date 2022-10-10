@@ -1,7 +1,7 @@
 // https://kentcdodds.com/blog/get-a-catch-block-error-message-with-typescript
 
 export type ErrorWithMessage = {
-  message: string
+  message: string;
 };
 
 export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
@@ -27,4 +27,4 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
 
 export function getErrorMessage(error: unknown) {
   return toErrorWithMessage(error).message;
-} 
+}

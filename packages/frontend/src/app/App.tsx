@@ -40,7 +40,7 @@ function App() {
             <Route path="overview" element={<CourseOverview />} />
             <Route path="settings" element={<CourseSettings />} />
           </Route>
-          <Route path="account" element={<Account />}/>
+          <Route path="account" element={<Account />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route

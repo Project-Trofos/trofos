@@ -5,7 +5,6 @@ import './Login.css';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 
 export default function LoginPage(): JSX.Element {
-
   const [loginUser] = useLoginUserMutation();
 
   const navigate = useNavigate();
@@ -24,39 +23,34 @@ export default function LoginPage(): JSX.Element {
   };
 
   return (
-    <div className = "main">
+    <div className="main">
       <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 18 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-
-    >
-      <Form.Item
-        label="Email"
-        name="userEmail"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 18 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
       >
-        <Input />
-      </Form.Item>
+        <Form.Item label="Email" name="userEmail" rules={[{ required: true, message: 'Please input your username!' }]}>
+          <Input />
+        </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="userPassword"
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input.Password />
-      </Form.Item>
+        <Form.Item
+          label="Password"
+          name="userPassword"
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
-  </div>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }

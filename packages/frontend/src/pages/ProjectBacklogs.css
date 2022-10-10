@@ -1,21 +1,21 @@
 .project-backlog-container {
-    padding: 16px 8px;
+  padding: 16px 8px;
 }
 
 .project-backlog-title-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.7em;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.7em;
 }
 
 .project-backlog-title {
-    margin-bottom: 0.2em !important;
+  margin-bottom: 0.2em !important;
 }
 
 .backlog-card-container {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 li.backlog-card-container.ant-list-item:last-child {
-    border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
