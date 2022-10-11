@@ -6,6 +6,7 @@ import authenticationService from '../../services/authentication.service';
 import roleService from '../../services/role.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import accountService from '../../services/account.service';
+import { RoleInformation } from '../../services/types/role.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -14,7 +15,7 @@ const spies = {
   sessionServiceCreateUserSession : jest.spyOn(sessionService, 'createUserSession'),
   sessionServiceDeleteUserSession : jest.spyOn(sessionService, 'deleteUserSession'),
   sessionServiceGetUserSession : jest.spyOn(sessionService, 'getUserSession'),
-  roleServiceGetUserRoleId : jest.spyOn(roleService, 'getUserRoleId'),
+  roleServiceGetRoleInformation : jest.spyOn(roleService, 'getUserRoleInformation'),
   accountServiceChangePassword : jest.spyOn(accountService, 'changePassword')
 }
 
@@ -63,7 +64,12 @@ describe("account.controller tests", () => {
 
     it("should return status 500 INTERNAL SERVER ERROR if an error occurs during session creation", async () => {
       const createUserSessionError = new Error('test error');
-      spies.roleServiceGetUserRoleId.mockResolvedValueOnce(1);
+      const roleInformation : RoleInformation = {
+        roleId : 1,
+        roleActions : [],
+        isAdmin : false
+      }
+      spies.roleServiceGetRoleInformation.mockResolvedValueOnce(roleInformation);
       spies.authenticationServiceValidateUser.mockResolvedValueOnce({
         isValidUser : true,
         userLoginInformation : {
@@ -82,7 +88,7 @@ describe("account.controller tests", () => {
       }
       await authentication.loginUser(mockReq, mockRes);
       expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, 1, 1);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, roleInformation, 1);
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     })
 
@@ -95,8 +101,13 @@ describe("account.controller tests", () => {
           user_id : 1
         }
       } as UserAuth);
+      const roleInformation : RoleInformation = {
+        roleId : 1,
+        roleActions : [],
+        isAdmin : false
+      }
       spies.sessionServiceCreateUserSession.mockResolvedValueOnce(sessionId);
-      spies.roleServiceGetUserRoleId.mockResolvedValueOnce(1);
+      spies.roleServiceGetRoleInformation.mockResolvedValueOnce(roleInformation);
       const testUserEmail = 'testEmail@test.com';
       const testUserPassword = 'testPassword';
       const mockReq = createRequest()
@@ -107,7 +118,7 @@ describe("account.controller tests", () => {
       }
       await authentication.loginUser(mockReq, mockRes);
       expect(spies.authenticationServiceValidateUser).toHaveBeenCalledWith(testUserEmail, testUserPassword);
-      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, 1, 1);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(testUserEmail, roleInformation, 1);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     })
   })
@@ -160,14 +171,15 @@ describe("account.controller tests", () => {
     })
 
     it("should return status 200 OK if the user successfully fetches their userInfo", async () => {
-      const sessionServiceResponseObjecet = {
+      const sessionServiceResponseObject = {
         session_id : 'testSessionId',
         user_email : 'testUser@test.com',
         session_expiry : new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_is_admin: false,
         user_id: 1
       };
-      spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObjecet);
+      spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
       const testCookie = 'testCookie';
       const mockReq = createRequest({
         cookies : {

@@ -1,10 +1,11 @@
 import { Prisma, UserSession } from '@prisma/client';
 import crypto from 'crypto';
 import prisma from '../models/prismaClient';
+import { RoleInformation } from './types/role.service.types';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION_ERROR_CODE = 'P2002';
 
-async function createUserSession(userEmail: string, userRoleId: number, userId: number) : Promise<string> {
+async function createUserSession(userEmail: string, userRoleInfo: RoleInformation, userId: number) : Promise<string> {
 
   let isSessionCreated = false;
   let sessionId = crypto.randomBytes(16).toString('base64');
@@ -16,7 +17,8 @@ async function createUserSession(userEmail: string, userRoleId: number, userId: 
         data : {
           session_id : sessionId,
           user_email : userEmail,
-          user_role_id : userRoleId,
+          user_role_id : userRoleInfo.roleId,
+          user_is_admin : userRoleInfo.isAdmin,
           user_id : userId
         },
       });

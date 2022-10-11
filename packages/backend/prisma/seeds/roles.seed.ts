@@ -13,6 +13,10 @@ async function createRoleSeed(prisma: PrismaClient) {
         id : 2,
         role_name : 'STUDENT',
       },
+      {
+        id : 3,
+        role_name: 'ADMIN',
+      }
     ],
   });
 
@@ -71,14 +75,22 @@ async function createRoleSeed(prisma: PrismaClient) {
         role_id : 2,
         action : Action.delete_project,
       },
+      {
+        role_id : 3,
+        action : Action.admin
+      }
     ],
   });
 
   console.log('created actionsOnRoles %s', actionsOnRoles);
 
+
+  console.log(await prisma.user.findMany())
+
   // Create UsersOnRole
   // FACULTY = role_id 1;
   // STUDENT = role_id 2;
+  // ADMIN = role_id 3;
   const usersOnRoles = await prisma.usersOnRoles.createMany({
     data : [
       {
@@ -88,6 +100,10 @@ async function createRoleSeed(prisma: PrismaClient) {
       {
         user_email : 'testUser@test.com',
         role_id : 2,
+      },
+      {
+        user_email : 'testAdmin@test.com',
+        role_id : 3
       },
     ],
   });

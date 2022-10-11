@@ -15,6 +15,11 @@ async function createUserSeed(prisma: PrismaClient) {
         user_email : 'testFaculty@test.com',
         user_password_hash : bcrypt.hashSync('testPassword', 10),
       },
+      {
+        user_id : 3,
+        user_email : 'testAdmin@test.com',
+        user_password_hash : bcrypt.hashSync('testPassword', 10),
+      },
     ],
   });
   

@@ -1,6 +1,33 @@
 import { Action } from '@prisma/client';
 import prisma from '../models/prismaClient';
+import { RoleInformation } from './types/role.service.types';
 
+//TODO: Can this be extracted to a constants file and referenced?
+const ADMIN_ROLE_ID = 3
+
+async function getUserRoleInformation(userEmail: string) : Promise<RoleInformation> {
+
+  const queryResult = await prisma.usersOnRoles.findFirstOrThrow({
+      where : {
+        user_email : userEmail
+      },
+      include : {
+        role : {
+          include : {
+            actions : true
+          }
+        }
+      },
+    })
+
+  const userRoleInformation : RoleInformation = {
+    roleId : queryResult.role_id,
+    roleActions : queryResult.role.actions.map(actionsOnRoles => actionsOnRoles.action),
+    isAdmin : queryResult.role_id === ADMIN_ROLE_ID
+  }
+
+  return userRoleInformation;
+}
 
 async function getUserRoleId(userEmail: string) : Promise<number> {
   const userRoleId = await prisma.usersOnRoles.findUniqueOrThrow({
@@ -13,7 +40,7 @@ async function getUserRoleId(userEmail: string) : Promise<number> {
 }
 
 async function isActionAllowed(roleId: number, action : Action | null) : Promise<boolean> {
-  if (action === null) {
+  if (action === null || roleId === ADMIN_ROLE_ID) {
     return true;
   }
 
@@ -30,4 +57,5 @@ async function isActionAllowed(roleId: number, action : Action | null) : Promise
 export default {
   getUserRoleId,
   isActionAllowed,
+  getUserRoleInformation
 };

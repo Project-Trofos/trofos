@@ -7,7 +7,7 @@ import { UserAuth } from '../services/types/authentication.service.types';
 
 const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, 'validateUser');
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
-const roleServiceGetUserRoleIdSpy = jest.spyOn(roleService, 'getUserRoleId');
+const roleServiceGetUserRoleInformationSpy = jest.spyOn(roleService, 'getUserRoleInformation');
 
 afterAll(done => {
   server.close();
@@ -30,7 +30,11 @@ describe('index.ts', () => {
       }
     } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
-    roleServiceGetUserRoleIdSpy.mockResolvedValue(1);
+    roleServiceGetUserRoleInformationSpy.mockResolvedValue({
+      roleId : 1,
+      roleActions : [],
+      isAdmin : false
+    });
     const postData = {
       body : {
         userEmail : 'testUser@test.com',

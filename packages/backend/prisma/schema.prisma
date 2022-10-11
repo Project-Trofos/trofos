@@ -21,6 +21,7 @@ model UserSession {
   user_email String
   user_role_id Int
   user_id Int
+  user_is_admin Boolean
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
@@ -132,6 +133,8 @@ enum Action {
   read_project
   update_project
   delete_project
+  // Admin action
+  admin
 }
 
 enum BacklogType {

@@ -18,9 +18,9 @@ const loginUser = async (req : express.Request, res: express.Response) => {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
   
-    const userRoleId = await roleService.getUserRoleId(userEmail);
+    const userRoleInformation = await roleService.getUserRoleInformation(userEmail);
     const userId = userAuth.userLoginInformation?.user_id as number
-    const sessionId = await sessionService.createUserSession(userEmail, userRoleId, userId);
+    const sessionId = await sessionService.createUserSession(userEmail, userRoleInformation, userId);
 
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
     return res.status(StatusCodes.OK).send();
