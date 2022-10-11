@@ -125,13 +125,29 @@ describe('project controller tests', () => {
           description: projectsData[0].description,
         },
       });
-      const mockRes = createResponse();
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
 
       await projectController.create(mockReq, mockRes);
 
       expect(spies.create).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(projectsData[0]));
+    });
+
+    it('should bad request if user session is not defined', async () => {
+      spies.create.mockResolvedValueOnce(projectsData[0]);
+      const mockReq = createRequest({
+        body: {
+          projectName: projectsData[0].pname,
+          description: projectsData[0].description,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.create(mockReq, mockRes);
+
+      expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should return bad request if name is not provided', async () => {
@@ -141,7 +157,7 @@ describe('project controller tests', () => {
           description: projectsData[0].description,
         },
       });
-      const mockRes = createResponse();
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
 
       await projectController.create(mockReq, mockRes);
 

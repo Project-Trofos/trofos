@@ -32,6 +32,7 @@ const isAuthorizedRequest =
 
       // https://stackoverflow.com/questions/18875292/passing-variables-to-the-next-middleware-using-next-in-express-js
       res.locals.policyConstraint = policyOutcome.policyConstraint;
+      res.locals.userSession = sessionInformation;
     } catch (e) {
       console.error(e);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();

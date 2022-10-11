@@ -79,13 +79,24 @@ async function getById(id: number): Promise<Project> {
   return result;
 }
 
-async function create(name: string, key?: string, isPublic?: boolean, description?: string): Promise<Project> {
+async function create(
+  userId: number,
+  name: string,
+  key?: string,
+  isPublic?: boolean,
+  description?: string,
+): Promise<Project> {
   const result = await prisma.project.create({
     data: {
       pname: name,
       pkey: key,
       public: isPublic,
       description,
+      users: {
+        create: {
+          user_id: userId,
+        },
+      },
     },
   });
 
