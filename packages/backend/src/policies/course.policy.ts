@@ -14,9 +14,8 @@ async function applyCoursePolicy(req : express.Request, userSession : UserSessio
     let policyOutcome : PolicyOutcome;
     const { courseId, courseYear, courseSem } = req.params;
     const isParamsMissing = courseId === undefined || courseYear === undefined || courseSem === undefined
+    const isUserAdmin = userSession.user_is_admin 
 
-    // TODO: Admin flag not implemented yet. For a future feature
-    const isUserAdmin = false 
     if (isParamsMissing) {
         // Certain operations may not require parameters.
         // Policy alwways assumes it was called correctly.
