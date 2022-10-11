@@ -7,7 +7,7 @@ export type UserLoginInfo = {
 
 export type UserInfo = {
   userEmail: string,
-  userRole: number,
+  userRoleActions: string[],
   userId: number
 };
 

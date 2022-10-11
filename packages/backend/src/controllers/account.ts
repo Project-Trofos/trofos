@@ -49,9 +49,11 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
 
   try {
     const sessionInformation = await sessionService.getUserSession(sessionId);
+    const userRoleInformation = await roleService.getUserRoleInformation(sessionInformation.user_email);
+
     const userInformation = {
       userEmail : sessionInformation.user_email,
-      userRole : sessionInformation.user_role_id,
+      userRoleActions : userRoleInformation.roleActions,
       userId : sessionInformation.user_id,
     };
     return res.status(StatusCodes.OK).json(userInformation);
