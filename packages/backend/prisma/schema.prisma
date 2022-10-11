@@ -105,7 +105,7 @@ model Sprint {
   end_date      DateTime?
   project       Project           @relation(fields: [project_id], references: [id])
   project_id    Int
-  goals  String?
+  goals         String?
   backlogs      Backlog[]
 }
 
