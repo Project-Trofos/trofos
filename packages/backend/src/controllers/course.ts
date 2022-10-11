@@ -178,7 +178,12 @@ async function getProjects(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getProjects(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getProjects(
+      res.locals.policyConstraint,
+      courseId,
+      Number(courseYear),
+      Number(courseSem),
+    );
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

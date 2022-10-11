@@ -4,14 +4,14 @@ import { PrismaClient, Action } from '@prisma/client';
 async function createRoleSeed(prisma: PrismaClient) {
   // Create Roles
   const roles = await prisma.role.createMany({
-    data : [
+    data: [
       {
-        id : 1,
-        role_name : 'FACULTY',
-      }, 
+        id: 1,
+        role_name: 'FACULTY',
+      },
       {
-        id : 2,
-        role_name : 'STUDENT',
+        id: 2,
+        role_name: 'STUDENT',
       },
     ],
   });
@@ -22,54 +22,54 @@ async function createRoleSeed(prisma: PrismaClient) {
   // FACULTY = role_id 1;
   // STUDENT = role_id 2;
   const actionsOnRoles = await prisma.actionsOnRoles.createMany({
-    data : [
+    data: [
       {
-        role_id : 1,
-        action : Action.create_course,
+        role_id: 1,
+        action: Action.create_course,
       },
       {
-        role_id : 1,
-        action : Action.read_course,
+        role_id: 1,
+        action: Action.read_course,
       },
       {
-        role_id : 1,
-        action : Action.update_course,
+        role_id: 1,
+        action: Action.update_course,
       },
       {
-        role_id : 1,
-        action : Action.delete_course,
+        role_id: 1,
+        action: Action.delete_course,
       },
       {
-        role_id : 1,
-        action : Action.create_project,
+        role_id: 1,
+        action: Action.create_project,
       },
       {
-        role_id : 1,
-        action : Action.read_project,
+        role_id: 1,
+        action: Action.read_project,
       },
       {
-        role_id : 1,
-        action : Action.update_project,
+        role_id: 1,
+        action: Action.update_project,
       },
       {
-        role_id : 1,
-        action : Action.delete_project,
+        role_id: 1,
+        action: Action.delete_project,
       },
       {
-        role_id : 2,
-        action : Action.create_project,
+        role_id: 2,
+        action: Action.create_project,
       },
       {
-        role_id : 2,
-        action : Action.read_project,
+        role_id: 2,
+        action: Action.read_project,
       },
       {
-        role_id : 2,
-        action : Action.update_project,
+        role_id: 2,
+        action: Action.update_project,
       },
       {
-        role_id : 2,
-        action : Action.delete_project,
+        role_id: 2,
+        action: Action.delete_project,
       },
     ],
   });
@@ -80,14 +80,14 @@ async function createRoleSeed(prisma: PrismaClient) {
   // FACULTY = role_id 1;
   // STUDENT = role_id 2;
   const usersOnRoles = await prisma.usersOnRoles.createMany({
-    data : [
+    data: [
       {
-        user_email : 'testFaculty@test.com',
-        role_id : 1,
+        user_email: 'testFaculty@test.com',
+        role_id: 1,
       },
       {
-        user_email : 'testUser@test.com',
-        role_id : 2,
+        user_email: 'testUser@test.com',
+        role_id: 2,
       },
     ],
   });
@@ -95,7 +95,4 @@ async function createRoleSeed(prisma: PrismaClient) {
   console.log('created usersOnRoles %s', usersOnRoles);
 }
 
-export {
-  createRoleSeed,
-};
-
+export { createRoleSeed };

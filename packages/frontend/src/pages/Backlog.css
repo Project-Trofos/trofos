@@ -1,82 +1,82 @@
 @media (min-width: 769px) {
-    .backlog-data-container {
-        display: flex;
-    }
+  .backlog-data-container {
+    display: flex;
+  }
 
-    .backlog-input-container {
-        width: 62%;
-    }
+  .backlog-input-container {
+    width: 62%;
+  }
 
-    .backlog-sidebar-container {
-        width: 32%;
-        margin-left: 25px;
-    }
+  .backlog-sidebar-container {
+    width: 32%;
+    margin-left: 25px;
+  }
 }
 
 .backlog-page-container {
-    background: #fff;
-    height: 100%;
+  background: #fff;
+  height: 100%;
 }
 
 .backlog-data-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .backlog-data-container input.ant-input.summary-input {
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
 }
 
 .backlog-data-container textarea.ant-input.backlog-textarea {
-    border: none;
-    border-radius: 8px;
+  border: none;
+  border-radius: 8px;
 }
 
 .backlog-data-container input.ant-input.summary-input:hover,
 .backlog-data-container textarea.ant-input.backlog-textarea:hover {
-    background-color: #efefef;
+  background-color: #efefef;
 }
 
 .backlog-data-container .backlog-description-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .backlog-data-container .backlog-description-container > p {
-    font-weight: 600;
-    padding-left: 11px;
+  font-weight: 600;
+  padding-left: 11px;
 }
 
 .backlog-data-container .backlog-panel-container {
-    border: 1px solid #cfcfcf;
-    padding: 10px;
-    background: #fff;
+  border: 1px solid #cfcfcf;
+  padding: 10px;
+  background: #fff;
 }
 
 .backlog-data-container .backlog-panel-container .ant-form-item {
-    display: inline-block;
-    margin-bottom: 0;
+  display: inline-block;
+  margin-bottom: 0;
 }
 
 .backlog-data-container .backlog-panel-container > div {
-    margin: 20px;
+  margin: 20px;
 }
 
 .backlog-data-container .backlog-panel-container > div > span {
-    min-width: 78px;
-    display: inline-block;
-    font-weight: 600;
+  min-width: 78px;
+  display: inline-block;
+  font-weight: 600;
 }
 
 .backlog-data-container .ant-select-arrow {
-    display: none !important;
+  display: none !important;
 }
 
 .backlog-data-container div.ant-input-number.backlog-inputnumber {
-    border: none;
+  border: none;
 }
 
 .backlog-menu-container {
-    text-align: right;
-    margin: 15px 10px;
+  text-align: right;
+  margin: 15px 10px;
 }
