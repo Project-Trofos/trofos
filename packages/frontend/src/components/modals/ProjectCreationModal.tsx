@@ -72,7 +72,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
           }).unwrap();
         } else {
           // Independent project
-          await addProject({ pname: projectName.trim(), pkey: projectKey?.trim() }).unwrap().then(console.log);
+          await addProject({ pname: projectName.trim(), pkey: projectKey?.trim() }).unwrap();
         }
         message.success(`Project ${projectName} has been created!`);
       } catch (err) {
