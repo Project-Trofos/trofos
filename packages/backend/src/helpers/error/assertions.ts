@@ -59,8 +59,6 @@ export function assertInputIsNotEmpty(input: any, inputName: string) {
   }
 }
 
-export function assertUserSessionNotUndefined(
-  userSession: UserSession | undefined,
-): asserts userSession is UserSession {
+export function assertUserSessionIsValid(userSession: UserSession | undefined): asserts userSession is UserSession {
   assertInputIsNotEmpty(userSession, 'userSession');
 }

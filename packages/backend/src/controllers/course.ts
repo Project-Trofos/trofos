@@ -12,7 +12,7 @@ import {
   BadRequestError,
   getDefaultErrorRes,
 } from '../helpers/error';
-import { assertProjectNameIsValid, assertUserSessionNotUndefined } from '../helpers/error/assertions';
+import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
 import {
   AddProjectAndCourseRequestBody,
   CourseRequestBody,
@@ -59,7 +59,7 @@ async function create(req: express.Request, res: express.Response) {
     const body = req.body as CourseRequestBody;
     const userSession = res.locals.userSession as UserSession | undefined;
 
-    assertUserSessionNotUndefined(userSession);
+    assertUserSessionIsValid(userSession);
     assertCourseYearIsNumber(body.courseYear);
     assertCourseSemIsNumber(body.courseSem);
     assertCourseNameIsValid(body.courseName);
