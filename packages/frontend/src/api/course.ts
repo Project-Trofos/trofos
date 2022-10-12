@@ -1,16 +1,6 @@
 import trofosApiSlice from '.';
 import { PickRename } from '../helpers/types';
-import { Project } from './project';
-
-export type Course = {
-  id: string;
-  year: number;
-  sem: number;
-  cname: string;
-  description: string | null;
-  public: boolean;
-  created_at: string;
-};
+import { Course, Project } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
