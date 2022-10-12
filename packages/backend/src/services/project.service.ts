@@ -31,6 +31,9 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
           },
         ],
       },
+      include: {
+        course: true,
+      },
     });
   } else if (option === 'past') {
     // year < current_year OR year == current_year && sem < current_sem
@@ -59,10 +62,16 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
           },
         ],
       },
+      include: {
+        course: true,
+      },
     });
   } else {
     result = await prisma.project.findMany({
       where: accessibleBy(policyConstraint).Project,
+      include: {
+        course: true,
+      },
     });
   }
 
@@ -73,6 +82,9 @@ async function getById(id: number): Promise<Project> {
   const result = await prisma.project.findUniqueOrThrow({
     where: {
       id,
+    },
+    include: {
+      course: true,
     },
   });
 

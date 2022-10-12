@@ -3,9 +3,10 @@ import { Card, Dropdown, Menu, message, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
-import { Course, useRemoveCourseMutation } from '../../api/course';
+import { useRemoveCourseMutation } from '../../api/course';
 import { confirmDeleteCourse } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
+import { Course } from '../../api/types';
 
 const { Meta } = Card;
 
