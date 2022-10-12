@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -58,19 +58,27 @@ export default function MainLayout() {
 
   const selectedKeys = useMemo(() => [location.pathname.split('/', 3).join('/')], [location.pathname]);
 
+  // True if onOpenChanged is trying to close submenu
+  const [isClosingSubMenu, setIsClosingSubMenu] = useState(false);
   const openKeys = useMemo(() => {
     const precedingPath = location.pathname.split('/', 2).join('/');
+    if (isClosingSubMenu) {
+      return [];
+    }
     if (precedingPath === '/course' || precedingPath === '/project') {
       return [`${precedingPath}s`];
     }
     return [precedingPath];
-  }, [location.pathname]);
+  }, [location.pathname, isClosingSubMenu]);
 
   const onOpenChanged = (keys: string[]) => {
     // The latest open key is one that isn't in the opened keys
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     if (latestOpenKey) {
+      setIsClosingSubMenu(false);
       navigate(latestOpenKey);
+    } else {
+      setIsClosingSubMenu(true);
     }
   };
 
