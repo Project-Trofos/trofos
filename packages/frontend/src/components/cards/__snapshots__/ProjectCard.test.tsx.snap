@@ -4,8 +4,7 @@ exports[`CourseCard test renders course card with correct details 1`] = `
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered"
-      style="width: 300px;"
+      class="ant-card ant-card-bordered project-card"
     >
       <div
         class="ant-card-body"

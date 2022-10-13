@@ -4,7 +4,7 @@ exports[`test ProjectTable should render table with correct fields 1`] = `
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered"
+      class="ant-card ant-card-bordered table-card"
     >
       <div
         class="ant-card-body"
@@ -17,12 +17,20 @@ exports[`test ProjectTable should render table with correct fields 1`] = `
             class="ant-space-item"
             style="margin-bottom: 16px;"
           >
-            <article
-              class="ant-typography"
-              style="font-size: 2em;"
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+              style="display: flex; justify-content: space-between;"
             >
-              Projects
-            </article>
+              <div
+                class="ant-space-item"
+              >
+                <h4
+                  class="ant-typography"
+                >
+                  Projects
+                </h4>
+              </div>
+            </div>
           </div>
           <div
             class="ant-space-item"
@@ -249,7 +257,7 @@ exports[`test ProjectTable should render table with correct fields 1`] = `
                                     style="margin-right: 16px;"
                                   >
                                     <a
-                                      href="/project/1"
+                                      href="/project/1/overview"
                                     >
                                       Go to
                                     </a>
