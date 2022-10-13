@@ -43,7 +43,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: backlog,
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: ['Backlog', 'Sprint'],
     }),
     updateBacklog: builder.mutation<Backlog, BacklogUpdatePayload>({
       query: (backlogToUpdate) => ({
@@ -52,7 +52,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: backlogToUpdate,
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: ['Backlog', 'Sprint'],
     }),
     deleteBacklog: builder.mutation<Backlog, { projectId: number; backlogId: number }>({
       query: ({ projectId, backlogId }) => ({
@@ -60,7 +60,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: ['Backlog', 'Sprint'],
     }),
   }),
   overrideExisting: false,

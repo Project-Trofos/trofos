@@ -29,7 +29,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: sprint,
         credentials: 'include',
       }),
-      invalidatesTags: ['Sprint'],
+      invalidatesTags: ['Sprint', 'Project'],
     }),
     updateSprint: builder.mutation<Sprint, SprintUpdatePayload>({
       query: (sprintToUpdate) => ({
@@ -38,7 +38,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: sprintToUpdate,
         credentials: 'include',
       }),
-      invalidatesTags: ['Sprint'],
+      invalidatesTags: ['Sprint', 'Project', 'Backlog'],
     }),
     deleteSprint: builder.mutation<Sprint, number>({
       query: (sprintId) => ({
@@ -46,7 +46,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Sprint'],
+      invalidatesTags: ['Sprint', 'Project', 'Backlog'],
     }),
   }),
   overrideExisting: false,

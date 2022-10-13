@@ -20,3 +20,17 @@ export type Course = {
   public: boolean;
   created_at: string;
 };
+
+export type ProjectDataTypes = Project & {
+  course: Course | null;
+  users: {
+    user: {
+      user_id: number;
+      user_email: string;
+    };
+  }[];
+  sprints: {
+    id: number;
+    name: string;
+  }[];
+};
