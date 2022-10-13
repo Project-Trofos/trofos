@@ -42,18 +42,18 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
       <Space direction="vertical" style={{ width: '100%' }}>
         <Heading>Home</Heading>
         <WelcomeMessage username={userInfo.userEmail} />
+        <CourseTable
+          courses={isPastCourse ? pastCourses : currentCourses}
+          isLoading={isCourseLoading}
+          heading={isPastCourse ? 'Past Course' : 'Current Course'}
+          control={courseControl}
+        />
         <ProjectTable
           projects={isPastProject ? pastProjects : currentProjects}
           isLoading={isProjectLoading}
           heading={isPastProject ? 'Past Projects' : 'Current Projects'}
           control={projectControl}
           showCourseColumn
-        />
-        <CourseTable
-          courses={isPastCourse ? pastCourses : currentCourses}
-          isLoading={isCourseLoading}
-          heading={isPastCourse ? 'Past Course' : 'Current Course'}
-          control={courseControl}
         />
       </Space>
     </Container>
