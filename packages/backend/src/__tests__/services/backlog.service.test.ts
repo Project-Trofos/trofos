@@ -12,7 +12,7 @@ describe('backlog.service tests', () => {
     const mockReturnedUpdatedProject = {
       ...mockReturnedProject,
       backlog_counter: 1,
-    }
+    };
 
     it('should create and return backlog when called with valid fields', async () => {
       const mockReturnedBacklog: Backlog = mockBacklogData;

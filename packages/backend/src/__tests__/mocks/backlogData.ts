@@ -1,5 +1,5 @@
-import { Backlog } from "@prisma/client";
-import { BacklogFields } from "../../helpers/types/backlog.service.types";
+import { Backlog } from '@prisma/client';
+import { BacklogFields } from '../../helpers/types/backlog.service.types';
 
 export const mockBacklogData: Backlog = {
   backlog_id: 1,
@@ -15,13 +15,13 @@ export const mockBacklogData: Backlog = {
 };
 
 export const mockBacklogFields: BacklogFields = {
-	assigneeId: 1,
-	description: 'A test description here',
-	points: 1,
-	priority: 'very_high',
-	projectId: 123,
-	reporterId: 1,
-	summary: 'A Test Summary',
-	sprintId: 123,
-	type: 'story',
+  assigneeId: 1,
+  description: 'A test description here',
+  points: 1,
+  priority: 'very_high',
+  projectId: 123,
+  reporterId: 1,
+  summary: 'A Test Summary',
+  sprintId: 123,
+  type: 'story',
 };

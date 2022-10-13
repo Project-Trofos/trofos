@@ -8,5 +8,5 @@ export type BacklogSelectTypes = {
 };
 
 export type BacklogUserSelectTypes = {
-  [user: string]: {user_id: number; user_email: string;};
-}
+  [user: string]: { user_id: number; user_email: string };
+};
