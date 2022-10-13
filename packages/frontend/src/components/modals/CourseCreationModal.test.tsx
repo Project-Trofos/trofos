@@ -6,7 +6,7 @@ import '../../mocks/antd';
 import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import momentMock from '../../mocks/moment';
+import dayjsMock from '../../mocks/dayjs';
 
 describe('test course creation modal', () => {
   // Establish API mocking before all tests.
@@ -74,14 +74,14 @@ describe('test course creation modal', () => {
     fireEvent.change(input, { target: { value: 'name' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: momentMock } });
+    fireEvent.change(yearInput, { target: { value: dayjsMock } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });
 
     fireEvent.click(finishButton);
 
-    expect(momentMock.year()).toBe('2022');
+    expect(dayjsMock.year()).toBe('2022');
 
     // Modal is closed
     expectModalInvisible(baseElement);
