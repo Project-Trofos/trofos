@@ -7,10 +7,6 @@ div.ant-select.backlog-user-select .ant-select-selector {
   box-shadow: none !important;
 }
 
-/* div.ant-select.backlog-user-select {
-  width: 1;
-} */
-
 div.ant-select.backlog-user-select .ant-select-selector:hover {
   background-color: #efefef;
 }

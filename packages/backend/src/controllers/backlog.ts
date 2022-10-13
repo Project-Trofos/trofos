@@ -63,7 +63,7 @@ const deleteBacklog = async (req: express.Request, res: express.Response) => {
     }
     const backlog: Backlog = await backlogService.deleteBacklog(Number(projectId), Number(backlogId));
     return res.status(StatusCodes.OK).json(backlog);
-  } catch (error: any) {
+  } catch (error) {
     return getDefaultErrorRes(error, res);
   }
 };
