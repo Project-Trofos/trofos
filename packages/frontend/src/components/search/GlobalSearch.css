@@ -1,29 +1,29 @@
 .search-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .search-container .ant-input {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
 .search-container .ant-input:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .search-container .search-input {
-    width: 200px;
-    transition: all 0.1s ease-in-out;
+  width: 200px;
+  transition: all 0.1s ease-in-out;
 }
 
 .search-container .search-input-hidden {
-    width: 0;
-    transition: all 0.1s ease-in-out;
+  width: 0;
+  transition: all 0.1s ease-in-out;
 }
 
 .search-icon:hover {
-    color: var(--sider-bg-color);
-    transition: all 0.2s ease-in-out;
+  color: var(--sider-bg-color);
+  transition: all 0.2s ease-in-out;
 }

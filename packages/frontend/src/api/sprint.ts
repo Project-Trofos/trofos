@@ -52,9 +52,5 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const {
-  useGetSprintsQuery,
-  useAddSprintMutation,
-  useUpdateSprintMutation,
-  useDeleteSprintMutation,
-} = extendedApi;
+export const { useGetSprintsQuery, useAddSprintMutation, useUpdateSprintMutation, useDeleteSprintMutation } =
+  extendedApi;

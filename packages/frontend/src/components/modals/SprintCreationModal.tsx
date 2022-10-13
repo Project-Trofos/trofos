@@ -63,7 +63,7 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   const handleProcessDate = (data: SprintFormFields) => {
     const { duration, startDate } = data;
-    const updatedData = {...data};
+    const updatedData = { ...data };
 
     if (duration !== 0 && startDate) {
       updatedData.dates = [

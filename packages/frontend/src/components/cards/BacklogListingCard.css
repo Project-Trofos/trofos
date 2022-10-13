@@ -1,48 +1,48 @@
 li.backlog-card-container {
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 12px;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 12px;
 }
 
 .backlog-card-container div {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .backlog-card-summary {
-    display: flex;
-    flex: 1 1 0%;
+  display: flex;
+  flex: 1 1 0%;
 }
 
 span.assignee-avatar {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 .backlog-card-points {
-    background: #ededed;
-    border-radius: 8px;
-    min-width: 28px;
-    text-align: center;
+  background: #ededed;
+  border-radius: 8px;
+  min-width: 28px;
+  text-align: center;
 }
 
 .backlog-card-high-priority,
 .backlog-card-medium-priority,
 .backlog-card-low-priority {
-    padding: 0 6px;
-    text-align: center;
-    border-radius: 8px;
+  padding: 0 6px;
+  text-align: center;
+  border-radius: 8px;
 }
 
 .backlog-card-high-priority {
-    background: #ca2828;
-    color: #fff;
+  background: #ca2828;
+  color: #fff;
 }
 
 .backlog-card-medium-priority {
-    background: #ebd42f;
-    color: #000;
+  background: #ebd42f;
+  color: #000;
 }
 
 .backlog-card-low-priority {
-    background: #2f84eb;
-    color: #fff;
+  background: #2f84eb;
+  color: #fff;
 }

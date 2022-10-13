@@ -36,7 +36,7 @@ describe('sprint.service tests', () => {
         {
           ...mockSprintData,
           id: 2,
-          name: 'Sprint 2'
+          name: 'Sprint 2',
         },
       ];
       const projectId = 123;
