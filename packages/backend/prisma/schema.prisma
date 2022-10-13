@@ -65,6 +65,8 @@ model Project {
   created_at      DateTime          @default(now())
 
   backlog_counter Int               @default(0)
+
+  sprints         Sprint[]
 }
 
 model UsersOnProjects {
@@ -82,7 +84,7 @@ model Backlog {
   backlog_id    Int
   summary       String
   type          BacklogType?
-  sprint        Sprint?           @relation(fields: [sprint_id], references: [id])
+  sprint        Sprint?           @relation(fields: [sprint_id], references: [id], onDelete: SetNull)
   sprint_id     Int?
   priority      BacklogPriority?
   reporter      UsersOnProjects   @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id])
@@ -96,8 +98,15 @@ model Backlog {
 }
 
 model Sprint {
-  id          Int               @id
-  backlogs    Backlog[]
+  id            Int               @id @default(autoincrement())
+  name          String
+  duration      Int               // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
+  start_date    DateTime?
+  end_date      DateTime?
+  project       Project           @relation(fields: [project_id], references: [id])
+  project_id    Int
+  goals         String?
+  backlogs      Backlog[]
 }
 
 model Role {
