@@ -463,6 +463,9 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.userSession = {
+        user_id: 1,
+      };
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 
@@ -477,6 +480,9 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.userSession = {
+        user_id: 1,
+      };
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 

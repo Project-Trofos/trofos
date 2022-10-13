@@ -234,7 +234,9 @@ async function removeProject(req: express.Request, res: express.Response) {
 async function addProjectAndCourse(req: express.Request, res: express.Response) {
   try {
     const body = req.body as AddProjectAndCourseRequestBody;
+    const userSession = res.locals.userSession as UserSession | undefined;
 
+    assertUserSessionIsValid(userSession);
     assertCourseIdIsValid(body.courseId);
     assertCourseYearIsNumber(body.courseYear);
     assertCourseSemIsNumber(body.courseSem);
@@ -242,6 +244,7 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
     assertCourseNameIsValid(body.courseName);
 
     const result = await course.addProjectAndCourse(
+      userSession.user_id,
       body.courseId,
       Number(body.courseYear),
       Number(body.courseSem),
