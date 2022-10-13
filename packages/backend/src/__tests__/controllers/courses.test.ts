@@ -133,8 +133,28 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         body: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
+          courseYear: coursesData[0].year,
+          courseSem: coursesData[0].sem,
+          courseName: coursesData[0].cname,
+          description: coursesData[0].description,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.create(mockReq, mockRes);
+
+      expect(spies.create).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
+    });
+
+    it('should return bad request if user session is not defined', async () => {
+      spies.create.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: {
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year,
+          courseSem: coursesData[0].sem,
           courseName: coursesData[0].cname,
           description: coursesData[0].description,
         },
@@ -143,9 +163,8 @@ describe('course controller tests', () => {
 
       await courseController.create(mockReq, mockRes);
 
-      expect(spies.create).toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
+      expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should return bad request if name is not provided', async () => {
@@ -155,7 +174,7 @@ describe('course controller tests', () => {
           description: coursesData[0].description,
         },
       });
-      const mockRes = createResponse();
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
 
       await courseController.create(mockReq, mockRes);
 

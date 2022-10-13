@@ -1,3 +1,4 @@
+import { UserSession } from '@prisma/client';
 import { BadRequestError } from './errorTypes';
 
 export function assertStringIsNumberOrThrow(str: string | undefined, errorMessage: string) {
@@ -56,4 +57,8 @@ export function assertInputIsNotEmpty(input: any, inputName: string) {
   if (!input) {
     throw new BadRequestError(getFieldUndefinedErrorMessage(inputName));
   }
+}
+
+export function assertUserSessionIsValid(userSession: UserSession | undefined): asserts userSession is UserSession {
+  assertInputIsNotEmpty(userSession, 'userSession');
 }

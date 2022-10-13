@@ -69,6 +69,7 @@ async function getByPk(id: string, year: number, sem: number): Promise<Course> {
 }
 
 async function create(
+  userId: number,
   name: string,
   year: number,
   sem: number,
@@ -84,6 +85,11 @@ async function create(
       cname: name,
       public: isPublic,
       description,
+      users: {
+        create: {
+          user_id: userId,
+        },
+      },
     },
   });
 

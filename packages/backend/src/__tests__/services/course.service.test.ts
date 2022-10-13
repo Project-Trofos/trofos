@@ -81,6 +81,7 @@ describe('course.service tests', () => {
       prismaMock.course.create.mockResolvedValueOnce(newCourse);
 
       const result = await course.create(
+        1,
         newCourse.cname,
         newCourse.year,
         newCourse.sem,

@@ -1,7 +1,8 @@
+import { UserSession } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
-import { assertProjectNameIsValid } from '../helpers/error/assertions';
+import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
 import project from '../services/project.service';
 import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
 
@@ -37,10 +38,18 @@ async function get(req: express.Request, res: express.Response) {
 async function create(req: express.Request, res: express.Response) {
   try {
     const body = req.body as ProjectRequestBody;
+    const userSession = res.locals.userSession as UserSession | undefined;
 
+    assertUserSessionIsValid(userSession);
     assertProjectNameIsValid(body.projectName);
 
-    const result = await project.create(body.projectName, body.projectKey, body.isPublic, body.description);
+    const result = await project.create(
+      userSession.user_id,
+      body.projectName,
+      body.projectKey,
+      body.isPublic,
+      body.description,
+    );
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);

@@ -63,6 +63,7 @@ describe('project.service tests', () => {
       prismaMock.project.create.mockResolvedValueOnce(newProject);
 
       const result = await project.create(
+        1,
         newProject.pname,
         newProject.pkey ?? undefined,
         newProject.public,
