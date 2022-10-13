@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001/';
+const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
 
 const COURSE = {
@@ -35,22 +35,22 @@ const NUSMODS_MODULE = {
 
 const handlers = [
   // Handles GET on /project
-  rest.get(`${BASE_URL}project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([PROJECT])))),
+  rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([PROJECT])))),
 
   // Handles GET on /course
-  rest.get(`${BASE_URL}course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([COURSE])))),
+  rest.get(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([COURSE])))),
 
   // Handles GET to NUSMODS
   rest.get(NUSMODS_URL, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([NUSMODS_MODULE])))),
 
   // Handles POST on /project
-  rest.post(`${BASE_URL}project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
+  rest.post(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
 
   // Handles POST on /course
-  rest.post(`${BASE_URL}course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
+  rest.post(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
 
   // Handles POST on /course
-  rest.post(`${BASE_URL}course/project`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
+  rest.post(`${BASE_URL}/course/project`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({})))),
 ];
 
 export default handlers;

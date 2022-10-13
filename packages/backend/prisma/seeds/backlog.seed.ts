@@ -36,7 +36,9 @@ type BacklogDataType = {
   };
   sprint?:
     | {
-        connect: { id: number };
+        connect: {
+          id: number;
+        };
       }
     | undefined;
   summary: string;
@@ -118,7 +120,12 @@ async function createUsersOnProjectForBacklogSeed(prisma: PrismaClient) {
 async function createSprintForBacklogSeed(prisma: PrismaClient) {
   const sprint: Sprint = await prisma.sprint.create({
     data: {
-      id: 1,
+      id: 901,
+      name: 'Sprint 1',
+      duration: 1,
+      project_id: 903,
+      start_date: new Date('Sun Oct 09 2022 15:03:56 GMT+0800 (Singapore Standard Time)'),
+      end_date: new Date('Sun Oct 16 2022 15:03:56 GMT+0800 (Singapore Standard Time)'),
     },
   });
   console.log('created sprint %s', sprint);
@@ -131,7 +138,9 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       summary: 'Test Story Backlog 1',
       type: 'story',
       sprint: {
-        connect: { id: 1 },
+        connect: {
+          id: 901,
+        },
       },
       priority: 'very_high',
       reporter: {
@@ -158,7 +167,9 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       summary: 'Test Story Backlog 2',
       type: 'story',
       sprint: {
-        connect: { id: 1 },
+        connect: {
+          id: 901,
+        },
       },
       priority: 'high',
       reporter: {
@@ -185,7 +196,9 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       summary: 'Test Task Backlog 1',
       type: 'task',
       sprint: {
-        connect: { id: 1 },
+        connect: {
+          id: 901,
+        },
       },
       priority: 'medium',
       reporter: {
@@ -212,7 +225,9 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       summary: 'Test Bug Backlog 1',
       type: 'bug',
       sprint: {
-        connect: { id: 1 },
+        connect: {
+          id: 901,
+        },
       },
       priority: 'low',
       reporter: {
@@ -239,7 +254,9 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       summary: 'Test Bug Backlog 2',
       type: 'bug',
       sprint: {
-        connect: { id: 1 },
+        connect: {
+          id: 901,
+        },
       },
       priority: 'very_low',
       reporter: {

@@ -18,6 +18,7 @@ import './App.css';
 import ProjectSettings from '../pages/ProjectSettings';
 import CourseOverview from '../pages/CourseOverview';
 import CourseSettings from '../pages/CourseSettings';
+import ProjectSprints from '../pages/ProjectSprints';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="project/:projectId" element={<Project />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<ProjectOverview />} />
+            <Route path="sprint" element={<ProjectSprints />} />
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="kanban" element={<ProjectKanban />} />
