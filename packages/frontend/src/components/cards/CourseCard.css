@@ -1,0 +1,4 @@
+.course-card {
+  width: 300px;
+  box-shadow: var(--default-box-shadow);
+}

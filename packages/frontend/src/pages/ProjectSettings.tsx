@@ -5,6 +5,7 @@ import { useProject } from '../api/hooks';
 import { useUpdateProjectMutation } from '../api/project';
 import ProjectKeyFormInput from '../components/forms/ProjectKeyFormItem';
 import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
+import Container from '../components/layouts/Container';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 
@@ -34,31 +35,33 @@ export default function ProjectSettings(): JSX.Element {
   };
 
   return (
-    <Space direction="vertical" style={{ padding: 20, width: '100%' }}>
-      <Subheading>Project details</Subheading>
-      <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 12 }}
-        initialValues={{
-          projectName: project?.pname,
-          projectKey: project?.pkey,
-          projectDescription: project?.description,
-        }}
-        onFinish={handleFinish}
-      >
-        <ProjectNameFormInput />
-        <ProjectKeyFormInput isDisabled />
+    <Container>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>Project details</Subheading>
+        <Form
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 12 }}
+          initialValues={{
+            projectName: project?.pname,
+            projectKey: project?.pkey,
+            projectDescription: project?.description,
+          }}
+          onFinish={handleFinish}
+        >
+          <ProjectNameFormInput />
+          <ProjectKeyFormInput isDisabled />
 
-        <Form.Item label="Description" name="projectDescription">
-          <Input.TextArea rows={4} />
-        </Form.Item>
+          <Form.Item label="Description" name="projectDescription">
+            <Input.TextArea rows={4} />
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 6 }}>
-          <Button type="primary" htmlType="submit" loading={isUpdating}>
-            Update
-          </Button>
-        </Form.Item>
-      </Form>
-    </Space>
+          <Form.Item wrapperCol={{ offset: 6 }}>
+            <Button type="primary" htmlType="submit" loading={isUpdating}>
+              Update
+            </Button>
+          </Form.Item>
+        </Form>
+      </Space>
+    </Container>
   );
 }
