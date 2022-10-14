@@ -84,6 +84,6 @@ describe('test course creation modal', () => {
     expect(momentMock.year()).toBe('2022');
 
     // Modal is closed
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 });

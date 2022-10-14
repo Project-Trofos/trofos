@@ -1,0 +1,15 @@
+.main-content-container {
+  margin: 48px;
+}
+
+@media only screen and (max-width: 992px) {
+  .main-content-container {
+    margin: 24px;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .main-content-container {
+    margin: 8px;
+  }
+}

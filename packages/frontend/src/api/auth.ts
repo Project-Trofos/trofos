@@ -1,5 +1,10 @@
 import trofosApiSlice from '.';
 
+export enum UserRole {
+  FACULTY = 1,
+  STUDENT = 2,
+}
+
 export type UserLoginInfo = {
   userEmail: string;
   userPassword: string;

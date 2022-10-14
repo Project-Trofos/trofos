@@ -4,6 +4,7 @@ import { Typography, Row, Col, Tabs, Space } from 'antd';
 import ProjectCard from '../components/cards/ProjectCard';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCurrentAndPastProjects } from '../api/hooks';
+import Container from '../components/layouts/Container';
 
 const { Title, Paragraph } = Typography;
 
@@ -25,7 +26,7 @@ export default function ProjectsPage(): JSX.Element {
   }
 
   return (
-    <main style={{ margin: '48px' }}>
+    <Container>
       <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
         <Title>Projects</Title>
         <ProjectCreationModal />
@@ -59,6 +60,6 @@ export default function ProjectsPage(): JSX.Element {
           )}
         </Tabs.TabPane>
       </Tabs>
-    </main>
+    </Container>
   );
 }

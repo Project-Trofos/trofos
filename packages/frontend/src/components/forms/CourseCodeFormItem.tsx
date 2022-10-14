@@ -23,8 +23,3 @@ export default function CourseCodeFormItem({ isDisabled, isRequired }: CourseCod
     </Form.Item>
   );
 }
-
-CourseCodeFormItem.defaultProps = {
-  isDisabled: false,
-  isRequired: false,
-};

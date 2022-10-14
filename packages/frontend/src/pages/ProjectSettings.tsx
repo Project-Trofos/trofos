@@ -1,10 +1,12 @@
-import { Button, Form, Input, message, Space } from 'antd';
 import React, { useState } from 'react';
+import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../api/hooks';
 import { useUpdateProjectMutation } from '../api/project';
+import DefaultForm from '../components/forms/DefaultForm';
 import ProjectKeyFormInput from '../components/forms/ProjectKeyFormItem';
 import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
+import Container from '../components/layouts/Container';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 
@@ -34,31 +36,26 @@ export default function ProjectSettings(): JSX.Element {
   };
 
   return (
-    <Space direction="vertical" style={{ padding: 20, width: '100%' }}>
-      <Subheading>Project details</Subheading>
-      <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 12 }}
-        initialValues={{
-          projectName: project?.pname,
-          projectKey: project?.pkey,
-          projectDescription: project?.description,
-        }}
-        onFinish={handleFinish}
-      >
-        <ProjectNameFormInput />
-        <ProjectKeyFormInput isDisabled />
+    <Container>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>Project details</Subheading>
+        <DefaultForm
+          initialValues={{
+            projectName: project?.pname,
+            projectKey: project?.pkey,
+            projectDescription: project?.description,
+          }}
+          onFinish={handleFinish as (values: unknown) => void}
+          isUpdating={isUpdating}
+        >
+          <ProjectNameFormInput />
+          <ProjectKeyFormInput isDisabled />
 
-        <Form.Item label="Description" name="projectDescription">
-          <Input.TextArea rows={4} />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 6 }}>
-          <Button type="primary" htmlType="submit" loading={isUpdating}>
-            Update
-          </Button>
-        </Form.Item>
-      </Form>
-    </Space>
+          <Form.Item label="Description" name="projectDescription">
+            <Input.TextArea rows={4} />
+          </Form.Item>
+        </DefaultForm>
+      </Space>
+    </Container>
   );
 }

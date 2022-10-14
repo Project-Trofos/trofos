@@ -6,6 +6,7 @@ import { useCurrentAndPastCourses } from '../api/hooks';
 import CourseCard from '../components/cards/CourseCard';
 
 import './Courses.css';
+import Container from '../components/layouts/Container';
 
 const { Title, Paragraph } = Typography;
 
@@ -27,7 +28,7 @@ export default function CoursesPage(): JSX.Element {
   }
 
   return (
-    <main style={{ padding: '48px' }}>
+    <Container>
       <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
         <Title style={{ margin: 0 }}>Courses</Title>
         <CourseCreationModal />
@@ -60,6 +61,6 @@ export default function CoursesPage(): JSX.Element {
           )}
         </Tabs.TabPane>
       </Tabs>
-    </main>
+    </Container>
   );
 }

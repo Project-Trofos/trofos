@@ -111,7 +111,3 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
     </>
   );
 }
-
-MultistepFormModal.defaultProps = {
-  buttonType: 'button',
-};
