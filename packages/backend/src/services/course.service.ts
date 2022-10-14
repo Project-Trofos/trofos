@@ -214,6 +214,7 @@ async function getProjects(policyConstraint: AppAbility, id?: string, year?: num
 
 // Add project and link to course, create course if necessary
 async function addProjectAndCourse(
+  userId: number,
   courseId: string,
   courseYear: number,
   courseSem: number,
@@ -247,7 +248,17 @@ async function addProjectAndCourse(
             cname: courseName,
             public: isProjectPublic,
             description: courseDesc,
+            users: {
+              create: {
+                user_id: userId,
+              },
+            },
           },
+        },
+      },
+      users: {
+        create: {
+          user_id: userId,
         },
       },
     },
