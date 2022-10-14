@@ -3,7 +3,7 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import projectsData from '../mocks/projectData';
-import projectPolicy from '../../policies/constraints/project.constraint'
+import projectPolicy from '../../policies/constraints/project.constraint';
 
 describe('project.service tests', () => {
   // Mock data for users
@@ -63,6 +63,7 @@ describe('project.service tests', () => {
       prismaMock.project.create.mockResolvedValueOnce(newProject);
 
       const result = await project.create(
+        1,
         newProject.pname,
         newProject.pkey ?? undefined,
         newProject.public,

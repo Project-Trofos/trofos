@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 import { Button, Card, Input, message, Space, Table, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Project, useRemoveProjectMutation } from '../../api/project';
+import { useRemoveProjectMutation } from '../../api/project';
 import { confirmDeleteProject, confirmDetachProject } from '../modals/confirm';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';
 import { getErrorMessage } from '../../helpers/error';
+import { Project } from '../../api/types';
 
 /**
  * Table for listing projects

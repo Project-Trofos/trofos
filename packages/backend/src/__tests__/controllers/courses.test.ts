@@ -7,7 +7,7 @@ import coursesData from '../mocks/courseData';
 import projectsData from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import coursePolicy from '../../policies/constraints/course.constraint';
-import projectPolicy from '../../policies/constraints/project.constraint'
+import projectPolicy from '../../policies/constraints/project.constraint';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
@@ -39,14 +39,13 @@ describe('course controller tests', () => {
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
-  
 
   describe('getAll', () => {
     it('should return all courses', async () => {
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
-      mockRes.locals.policyConstraint = coursePolicyConstraint
+      mockRes.locals.policyConstraint = coursePolicyConstraint;
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -66,7 +65,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
-      mockRes.locals.policyConstraint = coursePolicyConstraint
+      mockRes.locals.policyConstraint = coursePolicyConstraint;
 
       await courseController.getAll(mockReq, mockRes);
 
@@ -84,8 +83,8 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
-      mockRes.locals.policyConstraint = coursePolicyConstraint
-      
+      mockRes.locals.policyConstraint = coursePolicyConstraint;
+
       await courseController.getAll(mockReq, mockRes);
 
       expect(spies.getAll).toHaveBeenCalled();
@@ -134,8 +133,28 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         body: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
+          courseYear: coursesData[0].year,
+          courseSem: coursesData[0].sem,
+          courseName: coursesData[0].cname,
+          description: coursesData[0].description,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.create(mockReq, mockRes);
+
+      expect(spies.create).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
+    });
+
+    it('should return bad request if user session is not defined', async () => {
+      spies.create.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: {
+          courseId: coursesData[0].id,
+          courseYear: coursesData[0].year,
+          courseSem: coursesData[0].sem,
           courseName: coursesData[0].cname,
           description: coursesData[0].description,
         },
@@ -144,9 +163,8 @@ describe('course controller tests', () => {
 
       await courseController.create(mockReq, mockRes);
 
-      expect(spies.create).toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
+      expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should return bad request if name is not provided', async () => {
@@ -156,7 +174,7 @@ describe('course controller tests', () => {
           description: coursesData[0].description,
         },
       });
-      const mockRes = createResponse();
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
 
       await courseController.create(mockReq, mockRes);
 
@@ -237,7 +255,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
-      mockRes.locals.policyConstraint = coursePolicyConstraint
+      mockRes.locals.policyConstraint = coursePolicyConstraint;
 
       await courseController.getUsers(mockReq, mockRes);
 
@@ -340,7 +358,7 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
-      mockRes.locals.policyConstraint = projectPolicyConstraint
+      mockRes.locals.policyConstraint = projectPolicyConstraint;
 
       await courseController.getProjects(mockReq, mockRes);
 

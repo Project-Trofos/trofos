@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 async function createUserSeed(prisma: PrismaClient) {
   const users = await prisma.user.createMany({
-    data : [
+    data: [
       {
         user_email : 'testUser@test.com',
         user_password_hash : bcrypt.hashSync('testPassword', 10),
@@ -19,7 +19,7 @@ async function createUserSeed(prisma: PrismaClient) {
       },
     ],
   });
-  
+
   console.log('created user %s', users);
 }
 

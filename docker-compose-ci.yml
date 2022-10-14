@@ -1,13 +1,13 @@
 version: '3.8'
 services:
   frontend:
-    build: 
+    build:
       context: ./packages/frontend
       dockerfile: Dockerfile.production
       target: test
     image: trofos_frontend
     ports:
-      - "3000:3000"
+      - '3000:3000'
     container_name: trofos-frontend-ci
     restart: always
     links:
@@ -23,7 +23,7 @@ services:
       network: host
     image: trofos_backend
     ports:
-      - "3001:3001"
+      - '3001:3001'
     container_name: trofos-backend-ci
     restart: always
     links:

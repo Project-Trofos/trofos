@@ -1,5 +1,6 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { UserSession } from '@prisma/client';
 import course from '../services/course.service';
 import {
   assertCourseIdIsValid,
@@ -11,7 +12,7 @@ import {
   BadRequestError,
   getDefaultErrorRes,
 } from '../helpers/error';
-import { assertProjectNameIsValid } from '../helpers/error/assertions';
+import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
 import {
   AddProjectAndCourseRequestBody,
   CourseRequestBody,
@@ -56,12 +57,15 @@ async function get(req: express.Request, res: express.Response) {
 async function create(req: express.Request, res: express.Response) {
   try {
     const body = req.body as CourseRequestBody;
+    const userSession = res.locals.userSession as UserSession | undefined;
 
+    assertUserSessionIsValid(userSession);
     assertCourseYearIsNumber(body.courseYear);
     assertCourseSemIsNumber(body.courseSem);
     assertCourseNameIsValid(body.courseName);
 
     const result = await course.create(
+      userSession.user_id,
       body.courseName,
       Number(body.courseYear),
       Number(body.courseSem),
@@ -178,7 +182,12 @@ async function getProjects(req: express.Request, res: express.Response) {
     assertCourseYearIsNumber(courseYear);
     assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getProjects(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getProjects(
+      res.locals.policyConstraint,
+      courseId,
+      Number(courseYear),
+      Number(courseSem),
+    );
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

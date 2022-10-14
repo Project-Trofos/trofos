@@ -8,13 +8,14 @@ let driver: WebDriver;
 
 beforeEach(async () => {
   if (process.env.CI) {
-    driver = await new Builder().forBrowser(Browser.CHROME)
-      .setChromeOptions(new chrome.Options()
-        .addArguments('--no-sandbox', '--headless')).build();
+    driver = await new Builder()
+      .forBrowser(Browser.CHROME)
+      .setChromeOptions(new chrome.Options().addArguments('--no-sandbox', '--headless'))
+      .build();
   } else {
     driver = await new Builder().forBrowser(Browser.CHROME).build();
   }
-  driver.manage().setTimeouts({ implicit : 5000 });
+  driver.manage().setTimeouts({ implicit: 5000 });
 });
 
 afterEach(async () => {
@@ -22,11 +23,8 @@ afterEach(async () => {
 });
 
 describe('Projects', () => {
-
   describe('when the user tries to create/delete a project', () => {
-
     it('should successfully create/delete the project', async () => {
-
       const homePage = new HomePage(driver);
       homePage.getPage();
 
@@ -48,13 +46,10 @@ describe('Projects', () => {
 
       await projectsPage.clickLogoutButton();
     });
-
   });
 
   describe('when the user tries to create a backlog', () => {
-
     it('should successfully create the backlog', async () => {
-
       const homePage = new HomePage(driver);
       homePage.getPage();
 
@@ -78,9 +73,8 @@ describe('Projects', () => {
       await singleProjectPage.clickCreateInBacklogForm();
 
       const numberOfBacklogItemsAtEnd = await singleProjectPage.getNumberOfBacklogItems();
-      
+
       expect(numberOfBacklogItemsAtStart === numberOfBacklogItemsAtEnd + 1);
     });
-
   });
 });

@@ -6,18 +6,21 @@ import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
 import backlogRouter from './routes/backlog.route';
 import userRouter from './routes/user.route';
+import sprintRouter from './routes/sprint.route';
 
 const app = express();
 const port = 3001;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: process.env.FRONTEND_BASE_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_BASE_URL || 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 
-app.get('/', (req : express.Request, res: express.Response) => {
+app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
 
@@ -34,6 +37,9 @@ app.use('/backlog', backlogRouter);
 
 // Routes for user
 app.use('/user', userRouter);
+
+// Routes for backlog
+app.use('/sprint', sprintRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

@@ -28,7 +28,10 @@ router.get('/:projectId/user', isAuthorizedRequest(Action.read_project, projectP
 router.post('/:projectId/user', isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME), project.addUser);
 
 // Remove a user from a project
-router.delete('/:projectId/user', isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME), project.removeUser);
-
+router.delete(
+  '/:projectId/user',
+  isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME),
+  project.removeUser,
+);
 
 export default router;

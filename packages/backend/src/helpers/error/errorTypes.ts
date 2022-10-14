@@ -1,7 +1,8 @@
-/* eslint-disable import/prefer-default-export */
+/* eslint-disable max-classes-per-file */
+// Have multiple classes in a file does not seem to be an issue: https://bobbyhadz.com/blog/javascript-export-multiple-classes#:~:text=Use%20named%20exports%20to%20export,as%20necessary%20in%20a%20file.
 import { StatusCodes } from 'http-status-codes';
 
-export class BadRequestError extends Error {
+class BadRequestError extends Error {
   statusCode: number;
 
   public constructor(msg: string) {
@@ -10,11 +11,13 @@ export class BadRequestError extends Error {
   }
 }
 
-export class NotAuthorizedError extends Error {
+class NotAuthorizedError extends Error {
   statusCode: number;
 
-  public constructor(msg = "Not Authorized") {
+  public constructor(msg = 'Not Authorized') {
     super(msg);
-    this.statusCode = StatusCodes.UNAUTHORIZED
+    this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
+
+export { BadRequestError, NotAuthorizedError };

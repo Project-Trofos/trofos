@@ -1,16 +1,5 @@
 import trofosApiSlice from '.';
-
-export type Project = {
-  id: number;
-  pname: string;
-  pkey: string | null;
-  description: string | null;
-  course_id: string | null;
-  course_year: number | null;
-  course_sem: number | null;
-  public: boolean;
-  created_at: string;
-};
+import { Project } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -30,7 +19,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     getProject: builder.query<Project, Pick<Project, 'id'>>({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `project/${id}`,
         credentials: 'include',
       }),

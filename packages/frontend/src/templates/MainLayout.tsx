@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import {
   BellOutlined,
@@ -67,40 +67,48 @@ export default function MainLayout() {
 
   const selectedKeys = useMemo(() => [location.pathname.split('/', 3).join('/')], [location.pathname]);
 
+  // True if onOpenChanged is trying to close submenu
+  const [isClosingSubMenu, setIsClosingSubMenu] = useState(false);
   const openKeys = useMemo(() => {
     const precedingPath = location.pathname.split('/', 2).join('/');
+    if (isClosingSubMenu) {
+      return [];
+    }
     if (precedingPath === '/course' || precedingPath === '/project') {
       return [`${precedingPath}s`];
     }
     return [precedingPath];
-  }, [location.pathname]);
+  }, [location.pathname, isClosingSubMenu]);
 
   const onOpenChanged = (keys: string[]) => {
     // The latest open key is one that isn't in the opened keys
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     if (latestOpenKey) {
+      setIsClosingSubMenu(false);
       navigate(latestOpenKey);
+    } else {
+      setIsClosingSubMenu(true);
     }
   };
 
   const accountMenuItems = [
     {
       key: 'account',
-      label : (
-        <Typography.Link  onClick={() => {
-          navigate('/account');
-        }}>
+      label: (
+        <Typography.Link
+          onClick={() => {
+            navigate('/account');
+          }}
+        >
           Account
         </Typography.Link>
-      )
+      ),
     },
     {
       key: 'logout',
-      label : (
-        LogoutComponent
-      )
-    }
-  ]
+      label: LogoutComponent,
+    },
+  ];
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -164,28 +172,26 @@ export default function MainLayout() {
     <Col>
       <Link to="/login">Log in</Link>
     </Col>
-  )
+  );
 
   const LoggedInHeader = (
     <>
-    <Col>
-      <GlobalSearch />
-    </Col>
-    <Col>
-      <QuestionCircleOutlined />
-    </Col>
-    <Col>
-      <BellOutlined />
-    </Col>
-    <Col>
-      <Dropdown overlay={<Menu items={accountMenuItems}/>}>
-        <div className="avatar-group">
-          <Avatar>
-            {userInfo?.userEmail[0]}
-          </Avatar>
-        </div>
-      </Dropdown>
-    </Col>
+      <Col>
+        <GlobalSearch />
+      </Col>
+      <Col>
+        <QuestionCircleOutlined />
+      </Col>
+      <Col>
+        <BellOutlined />
+      </Col>
+      <Col>
+        <Dropdown overlay={<Menu items={accountMenuItems} />}>
+          <div className="avatar-group">
+            <Avatar>{userInfo?.userEmail[0]}</Avatar>
+          </div>
+        </Dropdown>
+      </Col>
     </>
   );
 

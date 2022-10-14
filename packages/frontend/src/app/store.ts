@@ -7,10 +7,8 @@ const store = configureStore({
     [trofosApiSlice.reducerPath]: trofosApiSlice.reducer,
     [nusmodsApiSlice.reducerPath]: nusmodsApiSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware()
-      .concat(trofosApiSlice.middleware)
-      .concat(nusmodsApiSlice.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(trofosApiSlice.middleware).concat(nusmodsApiSlice.middleware),
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

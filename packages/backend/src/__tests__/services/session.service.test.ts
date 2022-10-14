@@ -88,7 +88,11 @@ describe('session.service.deleteUserSession tests', () => {
   });
 
   test('InvalidSessionId_ThrowsError', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError('Record to delete does not exist.', PRISMA_RECORD_NOT_FOUND, 'testVersion');
+    const prismaError = new Prisma.PrismaClientKnownRequestError(
+      'Record to delete does not exist.',
+      PRISMA_RECORD_NOT_FOUND,
+      'testVersion',
+    );
     prismaMock.userSession.delete.mockRejectedValueOnce(prismaError);
     await expect(sessionService.deleteUserSession('testSessionId')).rejects.toThrow(prismaError);
     expect(prismaMock.userSession.delete).toHaveBeenCalledTimes(1);
@@ -111,13 +115,13 @@ describe('session.service.getUserSession tests', () => {
   });
 
   test('InvalidSessionId_ThrowsError', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError('Record to fetch does not exist.', PRISMA_RECORD_NOT_FOUND, 'testVersion');
+    const prismaError = new Prisma.PrismaClientKnownRequestError(
+      'Record to fetch does not exist.',
+      PRISMA_RECORD_NOT_FOUND,
+      'testVersion',
+    );
     prismaMock.userSession.findFirstOrThrow.mockRejectedValueOnce(prismaError);
     await expect(sessionService.getUserSession('testSessionId')).rejects.toThrow(prismaError);
     expect(prismaMock.userSession.findFirstOrThrow).toHaveBeenCalledTimes(1);
   });
 });
-
-
-
-

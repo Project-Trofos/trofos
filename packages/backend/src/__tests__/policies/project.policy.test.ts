@@ -4,40 +4,38 @@ import projectPolicy from '../../policies/project.policy';
 import projectConstraint from '../../policies/constraints/project.constraint';
 
 const spies = {
-    canManageProject : jest.spyOn(projectConstraint, 'canManageProject'),
-}
+  canManageProject: jest.spyOn(projectConstraint, 'canManageProject'),
+};
 
-describe("project.policy tests", () => {
+describe('project.policy tests', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    afterEach(() => {
-        jest.clearAllMocks()
+  describe('applyProjectPolicy', () => {
+    it('should return a valid outcome if the user request has no parameters', async () => {
+      const mockReq = createRequest();
+      const userSessionObject = {
+        user_id: 1,
+      } as UserSession;
+      const policyOutcome = await projectPolicy.applyProjectPolicy(mockReq, userSessionObject);
+      expect(policyOutcome.isPolicyValid).toEqual(true);
+      expect(policyOutcome.policyConstraint).not.toBeNull();
     });
 
-    describe("applyProjectPolicy", () => {
-        it('should return a valid outcome if the user request has no parameters', async () => {
-            const mockReq = createRequest();
-            const userSessionObject = {
-                user_id : 1
-            } as UserSession
-            const policyOutcome = await projectPolicy.applyProjectPolicy(mockReq, userSessionObject);
-            expect(policyOutcome.isPolicyValid).toEqual(true);
-            expect(policyOutcome.policyConstraint).not.toBeNull();
-        })
-
-        it('should return the policy outcome if the user request has the required parameters', async () => {
-            const mockReq = createRequest();
-            mockReq.params = {
-                projectId : "1",
-            }
-            const userSessionObject = {
-                user_id : 1
-            } as UserSession
-            spies.canManageProject.mockResolvedValue(true)
-            const policyOutcome = await projectPolicy.applyProjectPolicy(mockReq, userSessionObject);
-            expect(policyOutcome.isPolicyValid).toEqual(true);
-            expect(policyOutcome.policyConstraint).not.toBeNull();
-            expect(spies.canManageProject).toBeCalled()
-        })
-
-    })
-})
+    it('should return the policy outcome if the user request has the required parameters', async () => {
+      const mockReq = createRequest();
+      mockReq.params = {
+        projectId: '1',
+      };
+      const userSessionObject = {
+        user_id: 1,
+      } as UserSession;
+      spies.canManageProject.mockResolvedValue(true);
+      const policyOutcome = await projectPolicy.applyProjectPolicy(mockReq, userSessionObject);
+      expect(policyOutcome.isPolicyValid).toEqual(true);
+      expect(policyOutcome.policyConstraint).not.toBeNull();
+      expect(spies.canManageProject).toBeCalled();
+    });
+  });
+});
