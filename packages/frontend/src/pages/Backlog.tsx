@@ -11,6 +11,7 @@ import { BacklogSelectTypes } from '../helpers/BacklogModal.types';
 import type { Backlog as BacklogType } from '../api/backlog';
 import './Backlog.css';
 import BacklogMenu from '../components/dropdowns/BacklogMenu';
+import { useGetProjectQuery } from '../api/project';
 
 function Backlog(): JSX.Element {
   const params = useParams();
@@ -31,14 +32,10 @@ function Backlog(): JSX.Element {
     { id: 'low', name: 'Low' },
     { id: 'very_low', name: 'Very Low' },
   ];
-  const SPRINTS = [{ id: 1, name: 'Sprint 1' }];
-  const USERS = [
-    { id: 901, name: 'User1' },
-    { id: 902, name: 'User2' },
-  ];
 
   const projectId = Number(params.projectId);
   const backlogId = Number(params.backlogId);
+  const { data: projectData } = useGetProjectQuery({ id: projectId });
   const { data: backlog } = useGetBacklogQuery({ projectId, backlogId });
 
   const removeUnchangedFields = (payload: { [key: string]: string | number | null }) => {
@@ -146,7 +143,7 @@ function Backlog(): JSX.Element {
             <div>
               <span>Assignee</span>
               <Form.Item name="assignee_id">
-                <BacklogUserSelect options={USERS} allowClear />
+                <BacklogUserSelect options={projectData?.users || []} allowClear />
               </Form.Item>
             </div>
             <div>
@@ -164,7 +161,7 @@ function Backlog(): JSX.Element {
             <div>
               <span>Sprint</span>
               <Form.Item name="sprint_id">
-                <BacklogSelect options={SPRINTS} allowClear />
+                <BacklogSelect options={projectData?.sprints || []} allowClear />
               </Form.Item>
             </div>
             <div>
@@ -176,7 +173,7 @@ function Backlog(): JSX.Element {
             <div>
               <span>Reporter</span>
               <Form.Item name="reporter_id" rules={[{ required: true }]}>
-                <BacklogUserSelect options={USERS} />
+                <BacklogUserSelect options={projectData?.users || []} />
               </Form.Item>
             </div>
           </div>

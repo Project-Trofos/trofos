@@ -3,7 +3,7 @@ import { User, UsersOnProjects } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import projectController from '../../controllers/project';
-import projectsData from '../mocks/projectData';
+import { projectsData } from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 
 const spies = {

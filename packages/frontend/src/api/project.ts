@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { Project } from './types';
+import { Project, ProjectDataTypes } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -18,7 +18,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       ],
     }),
 
-    getProject: builder.query<Project, Pick<Project, 'id'>>({
+    getProject: builder.query<ProjectDataTypes, Pick<Project, 'id'>>({
       query: ({ id }) => ({
         url: `project/${id}`,
         credentials: 'include',

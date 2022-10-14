@@ -85,6 +85,22 @@ async function getById(id: number): Promise<Project> {
     },
     include: {
       course: true,
+      users: {
+        select: {
+          user: {
+            select: {
+              user_id: true,
+              user_email: true,
+            },
+          },
+        },
+      },
+      sprints: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 

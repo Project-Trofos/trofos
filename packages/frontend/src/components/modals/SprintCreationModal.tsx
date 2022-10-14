@@ -107,10 +107,10 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
       return;
     }
 
-    handleProcessDate(data);
+    const processedPayload = handleProcessDate(data);
 
     const payload: SprintUpdatePayload = {
-      ...data,
+      ...processedPayload,
       sprintId: sprint.id,
     };
 

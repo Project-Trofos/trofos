@@ -1,13 +1,13 @@
 import React from 'react';
 import { Avatar, Select } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import type { BacklogSelectTypes } from '../../helpers/BacklogModal.types';
+import type { BacklogUserSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogUserSelect.css';
 
 type BacklogUserSelectPropsTypes = {
   value?: string | number;
   onChange?(e: string | number | undefined): void;
-  options: BacklogSelectTypes[];
+  options: BacklogUserSelectTypes[];
   placeholder?: string;
   className?: string;
   allowClear?: boolean;
@@ -25,11 +25,12 @@ function BacklogUserSelect(props: BacklogUserSelectPropsTypes): JSX.Element {
       className={`backlog-user-select ${className}`}
       placeholder={placeholder}
       allowClear={allowClear}
+      dropdownMatchSelectWidth={false}
     >
       {options.map((option) => (
-        <Option key={option.id} value={option.id}>
+        <Option key={option.user.user_id} value={option.user.user_id}>
           <Avatar className="user-select-avatar" style={{ backgroundColor: '#ccc' }} icon={<UserOutlined />} />
-          <span className="user-select-username-text">{option.name}</span>
+          <span className="user-select-username-text">{option.user.user_email}</span>
         </Option>
       ))}
     </Select>
