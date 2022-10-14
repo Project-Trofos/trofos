@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { prismaMock } from '../../models/mock/mockPrismaClient';
-import userService, { Users } from '../../services/user.service';
+import userService from '../../services/user.service';
 
 
 const PRISMA_RECORD_NOT_FOUND = 'P2025';

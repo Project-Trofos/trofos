@@ -75,7 +75,7 @@ async function addActionToRole(roleId: number, action: Action) : Promise<Actions
   const actionOnRole = await prisma.actionsOnRoles.create({
     data : {
       role_id : roleId,
-      action : action
+      action
     }
   });
   return actionOnRole;
@@ -86,7 +86,7 @@ async function removeActionFromRole(roleId: number, action: Action) : Promise<Ac
     where : {
       role_id_action : {
         role_id : roleId,
-        action : action
+        action
       }
     }
   });

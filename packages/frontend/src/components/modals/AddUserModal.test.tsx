@@ -57,7 +57,7 @@ describe('test AddUserModal', () => {
   it('should require user email', async () => {
     await setup();
 
-    const button = await screen.getByText('Create User');
+    const button = screen.getByText('Create User');
     fireEvent.click(button);
 
     const createButton = await screen.findByText('Create');
@@ -69,7 +69,7 @@ describe('test AddUserModal', () => {
   it('should require that both passwords are the same and at least 8 characters long', async () => {
       await setup();
 
-      const button = await screen.getByText('Create User');
+      const button = screen.getByText('Create User');
       fireEvent.click(button);
 
       const passwordField = await screen.findByLabelText(/^password/i);

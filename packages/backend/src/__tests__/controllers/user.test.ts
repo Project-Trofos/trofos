@@ -1,8 +1,8 @@
 import StatusCodes from "http-status-codes";
 import { createRequest, createResponse } from "node-mocks-http";
+import { User } from "@prisma/client";
 import userService, { Users } from "../../services/user.service";
 import user from "../../controllers/user";
-import { User } from ".prisma/client";
 
 const spies = {
     userServiceGetAllUsers : jest.spyOn(userService, 'getAll'),

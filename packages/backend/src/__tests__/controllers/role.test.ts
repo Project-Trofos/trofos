@@ -1,8 +1,8 @@
-import role from "../../controllers/role";
-import roleService from "../../services/role.service";
 import { createRequest, createResponse } from "node-mocks-http";
 import StatusCodes from "http-status-codes";
-import { Action, ActionsOnRoles } from ".prisma/client";
+import { Action, ActionsOnRoles } from "@prisma/client";
+import roleService from "../../services/role.service";
+import role from "../../controllers/role";
 
 const spies = {
     roleServiceGetAllActions : jest.spyOn(roleService, 'getAllActions'),

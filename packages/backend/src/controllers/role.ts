@@ -8,7 +8,7 @@ async function getAllActions(req: express.Request, res: express.Response) {
         const actions = roleService.getAllActions();
         return res.status(StatusCodes.OK).json(actions);
     } catch (error : any) {
-        getDefaultErrorRes(error, res);
+        return getDefaultErrorRes(error, res);
     }
 }
 
@@ -17,7 +17,7 @@ async function getRoleActions(req: express.Request, res: express.Response) {
         const roleActions = await roleService.getRoleActions();
         return res.status(StatusCodes.OK).json(roleActions);
     } catch (error : any) {
-        getDefaultErrorRes(error, res);
+        return getDefaultErrorRes(error, res);
     }
 }
 
@@ -29,7 +29,7 @@ async function addActionToRole(req: express.Request, res: express.Response) {
         const roleAction = await roleService.addActionToRole(roleId, action);
         return res.status(StatusCodes.OK).json({ message: "Successfully added", data : roleAction})
     } catch (error : any) {
-        getDefaultErrorRes(error, res);
+        return getDefaultErrorRes(error, res);
     }
 }
 
@@ -41,7 +41,7 @@ async function removeActionFromRole(req: express.Request, res: express.Response)
         const roleAction = await roleService.removeActionFromRole(roleId, action);
         return res.status(StatusCodes.OK).json({ message: "Successfully removed", data : roleAction})
     } catch (error : any) {
-        getDefaultErrorRes(error, res);
+        return getDefaultErrorRes(error, res);
     }
 }
 
