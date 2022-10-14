@@ -93,7 +93,7 @@ describe('test ProjectCreationModal', () => {
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 
   it('should allow choosing a course from existing courses', async () => {
@@ -113,7 +113,7 @@ describe('test ProjectCreationModal', () => {
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 
   it('should submit correctly if fields are typed in', async () => {
@@ -138,6 +138,6 @@ describe('test ProjectCreationModal', () => {
     fireEvent.click(finishButton);
 
     // Modal is closed
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 });
