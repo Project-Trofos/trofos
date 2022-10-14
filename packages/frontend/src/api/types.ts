@@ -34,3 +34,18 @@ export type CreateUserRequest = {
   userEmail: string,
   newPassword: string
 }
+
+export type Action = {
+  action : string
+}
+
+export type ActionOnRole = {
+  id : number,
+  action : string
+}
+
+export type ActionsOnRoles = {
+  id : number,
+  role_name : string,
+  actions : Action[]
+}

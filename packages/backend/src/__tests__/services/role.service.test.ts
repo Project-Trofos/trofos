@@ -93,4 +93,74 @@ describe('role.service tests', () => {
     });
   })
 
+  describe("getAllActions", () => {
+    it("should return all actions currently defined in the prisma schema", async () => {
+      expect(roleService.getAllActions()).toEqual(Object.values(Action));
+    })
+  })
+
+  describe("getRoleActions", () => {
+    it("should return an error if the prisma query was unsuccessful", async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Record does not exist',
+        PRISMA_RECORD_NOT_FOUND,
+        'testVersion',
+      );
+      prismaMock.role.findMany.mockRejectedValueOnce(prismaError);
+      await expect(roleService.getRoleActions()).rejects.toThrow(prismaError);
+    })
+
+    it("should return an array of roles with their actions if the query was successful", async () => {
+      const prismaResponseObject = [{
+        id : 1,
+        role_name : 'test_role',
+        actions : []
+      }]
+      prismaMock.role.findMany.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.getRoleActions()).resolves.toEqual(prismaResponseObject);
+    })
+  })
+
+  describe("addActionToRole", () => {
+    it("should return an error if the creation query was unsuccessful", async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Error during creation',
+        "testError",
+        'testVersion',
+      );
+      prismaMock.actionsOnRoles.create.mockRejectedValueOnce(prismaError);
+      await expect(roleService.addActionToRole(1, 'admin')).rejects.toThrow(prismaError);
+    })
+
+    it("should return the added actionsOnRoles object if it was successfully created", async () => {
+      const prismaResponseObject = {
+        role_id : 1,
+        action : Action.admin
+      }
+      prismaMock.actionsOnRoles.create.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.addActionToRole(1, 'admin')).resolves.toEqual(prismaResponseObject);
+    })
+  })
+
+  describe("removeActionFromRole", () => {
+    it("should return an error if the creation query was unsuccessful", async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Error during deletion',
+        "testError",
+        'testVersion',
+      );
+      prismaMock.actionsOnRoles.delete.mockRejectedValueOnce(prismaError);
+      await expect(roleService.removeActionFromRole(1, 'admin')).rejects.toThrow(prismaError);
+    })
+
+    it("should return the removed actionsOnRoles object if it was successfully created", async () => {
+      const prismaResponseObject = {
+        role_id : 1,
+        action : Action.admin
+      }
+      prismaMock.actionsOnRoles.delete.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.removeActionFromRole(1, 'admin')).resolves.toEqual(prismaResponseObject);
+    })
+  })
+
 });

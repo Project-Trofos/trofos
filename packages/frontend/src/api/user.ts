@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from ".";
-import { Project, Course, User, CreateUserRequest } from './types';
+import { User, CreateUserRequest } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
     endpoints: (builder) => ({
