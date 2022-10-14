@@ -20,3 +20,17 @@ export type Course = {
   public: boolean;
   created_at: string;
 };
+
+export type User = {
+  user_email : string,
+  user_id : number,
+  projects : Project[],
+  courses: Course[],
+  // TODO: Create a role type once we have a role API
+  roles: any[]
+}
+
+export type CreateUserRequest = {
+  userEmail: string,
+  newPassword: string
+}

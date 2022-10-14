@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import {Space, Table, Button, Modal } from 'antd';
-import { User } from '../../api/user'
+import { Table } from 'antd';
+import { User } from '../../api/types';
 import UserManagementModal from '../modals/UserManagementModal';
 
 

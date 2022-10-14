@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Modal, Form, Button, message } from 'antd'
 import UserEmailFormItem from '../forms/UserEmailFormItem';
 import NewPasswordFormItem from '../forms/NewPasswordFormItem';
-import { CreateUserRequest, useCreateUserMutation } from '../../api/user';
+import { useCreateUserMutation } from '../../api/user';
+import { CreateUserRequest } from '../../api/types';
 
 export default function AddUserModal() : JSX.Element {
 

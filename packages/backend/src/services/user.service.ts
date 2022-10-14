@@ -1,9 +1,7 @@
 import { User, UsersOnCourses, UsersOnProjects, UsersOnRoles } from "@prisma/client";
 import prisma from "../models/prismaClient";
 import bcrypt from "bcrypt";
-
-// TODO: Create a constants file for all the constants
-const STUDENT_ROLE_ID = 2
+import { STUDENT_ROLE_ID } from "../helpers/constants";
 
 export type Users = {
     user_email: string;

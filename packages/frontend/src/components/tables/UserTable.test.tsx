@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import UserTable from './UserTable';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import { User } from '../../api/user'
+import { User } from '../../api/types';
 
 describe('test UserTable', () => {
   beforeAll(() => server.listen());
