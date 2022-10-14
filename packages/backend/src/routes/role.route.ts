@@ -1,6 +1,7 @@
 import express from 'express';
 import { isAuthorizedRequest } from '../middleware/auth.middleware';
 import role from '../controllers/role';
+import { Action } from '@prisma/client'
 
 const router = express.Router();
 
@@ -11,9 +12,9 @@ router.get('/actions', isAuthorizedRequest(null, null), role.getAllActions);
 router.get('/actionsOnRoles', isAuthorizedRequest(null, null), role.getRoleActions);
 
 // Add action to role
-router.post('/actionsOnRoles', isAuthorizedRequest(null, null), role.addActionToRole);
+router.post('/actionsOnRoles', isAuthorizedRequest(Action.admin, null), role.addActionToRole);
 
 // Remove action from role
-router.delete('/actionsOnRoles', isAuthorizedRequest(null, null), role.removeActionFromRole);
+router.delete('/actionsOnRoles', isAuthorizedRequest(Action.admin, null), role.removeActionFromRole);
 
 export default router;
