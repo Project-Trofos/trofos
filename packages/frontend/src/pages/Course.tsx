@@ -95,6 +95,14 @@ export default function CoursePage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/users`}>
+                  People
+                </Link>
+              }
+              key="users"
+            />
+            <Tabs.TabPane
+              tab={
                 <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
                   Settings
                 </Link>

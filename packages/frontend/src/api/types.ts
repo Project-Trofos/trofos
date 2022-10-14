@@ -21,16 +21,22 @@ export type Course = {
   created_at: string;
 };
 
-export type ProjectDataTypes = Project & {
+export type ProjectData = Project & {
   course: Course | null;
-  users: {
-    user: {
-      user_id: number;
-      user_email: string;
-    };
-  }[];
+  users: UserData[];
   sprints: {
     id: number;
     name: string;
   }[];
+};
+
+export type UserData = {
+  user: {
+    user_id: number;
+    user_email: string;
+  };
+};
+
+export type CourseData = Course & {
+  users: UserData[];
 };

@@ -41,7 +41,7 @@ export default function ProjectPage(): JSX.Element {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
-  const { project, course, isLoading } = useProject(params.projectId);
+  const { project, course, isLoading } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
 
   const selectedTab = useMemo(() => {
     const split = location.pathname.split('/');
@@ -147,6 +147,14 @@ export default function ProjectPage(): JSX.Element {
                 </Link>
               }
               key="overview"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
+                  People
+                </Link>
+              }
+              key="users"
             />
             <Tabs.TabPane
               tab={
