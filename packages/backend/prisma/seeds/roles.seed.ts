@@ -87,9 +87,6 @@ async function createRoleSeed(prisma: PrismaClient) {
 
   console.log('created actionsOnRoles %s', actionsOnRoles);
 
-
-  console.log(await prisma.user.findMany())
-
   // Create UsersOnRole
   const usersOnRoles = await prisma.usersOnRoles.createMany({
     data: [

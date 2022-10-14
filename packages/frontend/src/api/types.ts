@@ -26,7 +26,7 @@ export type User = {
   user_id : number,
   projects : Project[],
   courses: Course[],
-  // TODO: Create a role type once we have a role API
+  // TODO: Create a role type once we established how they're used in the FE
   roles: any[]
 }
 
