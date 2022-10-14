@@ -133,6 +133,9 @@ enum Action {
   read_project
   update_project
   delete_project
+  // User related actions
+  read_users
+  create_users
   // Admin action
   admin
 }

@@ -6,6 +6,7 @@ import {
   HomeOutlined,
   ProjectOutlined,
   QuestionCircleOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -143,6 +144,17 @@ export default function MainLayout() {
             UserPermissionActions.ADMIN
           ],
           userInfo?.userRoleActions
+       ),
+       conditionalRender(
+         getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/admin">
+            Admin
+          </Link>,
+          '/admin',
+          <SettingOutlined />,
+         ),
+         [UserPermissionActions.ADMIN],
+         userInfo?.userRoleActions
        )
     ],
     [projects, courses, userInfo],

@@ -9,6 +9,7 @@ import Courses from '../pages/Courses';
 import Course from '../pages/Course';
 import Backlog from '../pages/Backlog';
 import Account from '../pages/Account';
+import Admin from '../pages/Admin';
 
 import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklogs from '../pages/ProjectBacklogs';
@@ -41,6 +42,7 @@ function App() {
             <Route path="settings" element={<CourseSettings />} />
           </Route>
           <Route path="account" element={<Account />}/>
+          <Route path="admin" element={<Admin />}/>
         </Route>
         <Route path="/login" element={<Login />} />
         <Route

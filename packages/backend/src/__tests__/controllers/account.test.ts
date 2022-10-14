@@ -179,7 +179,13 @@ describe("account.controller tests", () => {
         user_is_admin: false,
         user_id: 1
       };
+      const userRoleInformation = {
+        roleId: 1,
+        roleActions : [],
+        isAdmin : false
+      }
       spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
+      spies.roleServiceGetRoleInformation.mockResolvedValueOnce(userRoleInformation);
       const testCookie = 'testCookie';
       const mockReq = createRequest({
         cookies : {
@@ -190,7 +196,7 @@ describe("account.controller tests", () => {
       await authentication.getUserInfo(mockReq, mockRes);
       expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getJSONData()).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRole : 1});
+      expect(mockRes._getJSONData()).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRoleActions: []});
     })
   })
 

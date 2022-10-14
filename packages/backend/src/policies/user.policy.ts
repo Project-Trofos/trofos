@@ -16,7 +16,7 @@ async function applyUserPolicy(req : express.Request, userSession : UserSession)
         // Policy always assumes it was called correctly.
         policyOutcome = {
             isPolicyValid : true,
-            policyConstraint : userConstraint.userPolicyConstraint(Number(userId), isUserAdmin)
+            policyConstraint : userConstraint.userPolicyConstraint(userSession.user_id, isUserAdmin)
         }
     } else {
         policyOutcome = {

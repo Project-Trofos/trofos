@@ -60,6 +60,10 @@ async function createRoleSeed(prisma: PrismaClient) {
         action : Action.delete_project,
       },
       {
+        role_id : 1,
+        action : Action.read_users,
+      },
+      {
         role_id : 2,
         action : Action.create_project,
       },

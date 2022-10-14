@@ -5,6 +5,7 @@ import accountRouter from './routes/account.route';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
 import backlogRouter from './routes/backlog.route';
+import userRouter from './routes/user.route';
 
 const app = express();
 const port = 3001;
@@ -30,6 +31,9 @@ app.use('/project', projectRouter);
 
 // Routes for backlog
 app.use('/backlog', backlogRouter);
+
+// Routes for user
+app.use('/user', userRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

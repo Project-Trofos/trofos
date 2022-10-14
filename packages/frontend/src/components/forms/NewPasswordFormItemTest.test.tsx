@@ -7,7 +7,7 @@ describe("NewPasswordFormItem test", () => {
     function renderForm() {
         return render(
             <FormWrapper>
-                <NewPasswordFormItem />
+                <NewPasswordFormItem isNewPassword/>
             </FormWrapper>
         )
     }
