@@ -1,8 +1,9 @@
-import { Button, Form, Input, message, Space } from 'antd';
 import React, { useState } from 'react';
+import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../api/hooks';
 import { useUpdateProjectMutation } from '../api/project';
+import DefaultForm from '../components/forms/DefaultForm';
 import ProjectKeyFormInput from '../components/forms/ProjectKeyFormItem';
 import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
 import Container from '../components/layouts/Container';
@@ -38,15 +39,14 @@ export default function ProjectSettings(): JSX.Element {
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>Project details</Subheading>
-        <Form
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 12 }}
+        <DefaultForm
           initialValues={{
             projectName: project?.pname,
             projectKey: project?.pkey,
             projectDescription: project?.description,
           }}
-          onFinish={handleFinish}
+          onFinish={handleFinish as (values: unknown) => void}
+          isUpdating={isUpdating}
         >
           <ProjectNameFormInput />
           <ProjectKeyFormInput isDisabled />
@@ -54,13 +54,7 @@ export default function ProjectSettings(): JSX.Element {
           <Form.Item label="Description" name="projectDescription">
             <Input.TextArea rows={4} />
           </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 6 }}>
-            <Button type="primary" htmlType="submit" loading={isUpdating}>
-              Update
-            </Button>
-          </Form.Item>
-        </Form>
+        </DefaultForm>
       </Space>
     </Container>
   );

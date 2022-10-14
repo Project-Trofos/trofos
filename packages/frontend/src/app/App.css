@@ -3,3 +3,10 @@
 :root {
   --default-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
 }
+
+.centralize-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

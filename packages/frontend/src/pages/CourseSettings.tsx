@@ -1,10 +1,11 @@
-import { Button, Form, Input, message, Space } from 'antd';
 import React, { useState } from 'react';
+import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useUpdateCourseMutation } from '../api/course';
 import { useCourse } from '../api/hooks';
 import CourseCodeFormItem from '../components/forms/CourseCodeFormItem';
 import CourseNameFormItem from '../components/forms/CourseNameFormItem';
+import DefaultForm from '../components/forms/DefaultForm';
 import Container from '../components/layouts/Container';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
@@ -40,15 +41,14 @@ export default function CourseSettings(): JSX.Element {
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>Course details</Subheading>
-        <Form
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 12 }}
+        <DefaultForm
           initialValues={{
             courseName: course?.cname,
             courseCode: course?.id,
             courseDescription: course?.description,
           }}
-          onFinish={handleFinish}
+          onFinish={handleFinish as (values: unknown) => void}
+          isUpdating={isUpdating}
         >
           <CourseNameFormItem />
           <CourseCodeFormItem isDisabled />
@@ -56,13 +56,7 @@ export default function CourseSettings(): JSX.Element {
           <Form.Item label="Description" name="courseDescription">
             <Input.TextArea rows={4} />
           </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 6 }}>
-            <Button type="primary" htmlType="submit" loading={isUpdating}>
-              Update
-            </Button>
-          </Form.Item>
-        </Form>
+        </DefaultForm>
       </Space>
     </Container>
   );
