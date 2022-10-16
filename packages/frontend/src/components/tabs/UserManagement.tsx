@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Divider } from 'antd';
-import UserTable from "../tables/UserTable";
+import AdminUserTable from "../tables/AdminUserTable";
 import { useGetUsersQuery } from "../../api/user";
 import AddUserModal from "../modals/AddUserModal";
 
@@ -17,7 +17,7 @@ export default function UserManagement() : JSX.Element {
             <Col offset={6} span={12}>
                 <AddUserModal/>
                 <Divider />
-                <UserTable users={getUsers}/>
+                <AdminUserTable users={getUsers}/>
             </Col>
         </Row>
     )

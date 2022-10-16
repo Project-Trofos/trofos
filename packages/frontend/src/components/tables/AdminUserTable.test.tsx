@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
 import { BrowserRouter } from 'react-router-dom';
-import UserTable from './UserTable';
+import AdminUserTable from './AdminUserTable';
 import store from '../../app/store';
 import server from '../../mocks/server';
 import { User } from '../../api/types';
@@ -27,7 +27,7 @@ describe('test UserTable', () => {
     const { baseElement, debug } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <UserTable users={users}/>
+          <AdminUserTable users={users}/>
         </Provider>
       </BrowserRouter>,
     );
