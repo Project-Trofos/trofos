@@ -8,6 +8,8 @@ import { confirmDeleteProject } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { Project } from '../../api/types';
 
+import './ProjectCard.css';
+
 const { Meta } = Card;
 
 type ProjectCardProps = {
@@ -42,7 +44,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
 
   return (
     <Card
-      style={{ width: 300 }}
+      className="project-card"
       actions={[
         <Link to={`/project/${project.id}/settings`}>
           <SettingOutlined key="setting" />

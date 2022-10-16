@@ -9,10 +9,9 @@ import BacklogInputNumber from '../fields/BacklogInputNumber';
 import BacklogTextArea from '../fields/BacklogTextArea';
 import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/BacklogModal.types';
 import './BacklogCreationModal.css';
+import { useGetProjectQuery } from '../../api/project';
 
 function BacklogCreationModal(): JSX.Element {
-  // These constants will most likely be passed down as props or
-  // fetched from an API. Currently hardcoded for developement.
   const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
     { id: 'task', name: 'Task' },
@@ -25,16 +24,14 @@ function BacklogCreationModal(): JSX.Element {
     { id: 'low', name: 'Low' },
     { id: 'very_low', name: 'Very Low' },
   ];
-  const SPRINTS = [{ id: 1, name: 'Sprint 1' }];
-  const USERS = [
-    { id: 901, name: 'User1' },
-    { id: 902, name: 'User2' },
-  ];
 
   const params = useParams();
   const [form] = Form.useForm();
 
+  const projectId = Number(params.projectId);
+
   const [addBacklog] = useAddBacklogMutation();
+  const { data: projectData } = useGetProjectQuery({ id: projectId });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +82,7 @@ function BacklogCreationModal(): JSX.Element {
 
   const renderSprintSelect = (): JSX.Element => (
     <Form.Item name="sprintId" label="Sprint">
-      <BacklogSelect options={SPRINTS} placeholder="Select Sprint" allowClear />
+      <BacklogSelect options={projectData?.sprints || []} placeholder="Select Sprint" allowClear />
     </Form.Item>
   );
 
@@ -97,13 +94,13 @@ function BacklogCreationModal(): JSX.Element {
 
   const renderReporterSelect = (): JSX.Element => (
     <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
-      <BacklogUserSelect options={USERS} placeholder="Select User" />
+      <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
     </Form.Item>
   );
 
   const renderAssigneeSelect = (): JSX.Element => (
     <Form.Item name="assigneeId" label="Assignee">
-      <BacklogUserSelect options={USERS} placeholder="Assign to" allowClear />
+      <BacklogUserSelect options={projectData?.users || []} placeholder="Assign to" allowClear />
     </Form.Item>
   );
 

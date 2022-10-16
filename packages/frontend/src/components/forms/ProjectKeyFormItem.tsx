@@ -18,7 +18,3 @@ export default function ProjectKeyFormInput({ isDisabled = false }: { isDisabled
     </Form.Item>
   );
 }
-
-ProjectKeyFormInput.defaultProps = {
-  isDisabled: false,
-};

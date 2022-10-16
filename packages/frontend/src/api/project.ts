@@ -1,29 +1,24 @@
 import trofosApiSlice from '.';
-import { Project } from './types';
+import { Project, ProjectData } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllProjects: builder.query<Project[], void>({
+    getAllProjects: builder.query<ProjectData[], void>({
       query: () => ({
         url: 'project/',
         credentials: 'include',
       }),
-      providesTags: (result, error, arg) => [
-        'Project',
-        ...(result ?? []).map(({ id }): { type: 'Project'; id: number } => ({
-          type: 'Project',
-          id,
-        })),
-      ],
+      providesTags: (result, error, arg) =>
+        result ? [...result.map(({ id }) => ({ type: 'Project' as const, id })), 'Project'] : ['Project'],
     }),
 
-    getProject: builder.query<Project, Pick<Project, 'id'>>({
+    getProject: builder.query<ProjectData, Pick<Project, 'id'>>({
       query: ({ id }) => ({
         url: `project/${id}`,
         credentials: 'include',
       }),
-      providesTags: (result, error, arg) => [{ type: 'Project', arg }],
+      providesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
     }),
 
     // Adding a project will invalidate all projects
@@ -69,6 +64,32 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
     }),
+
+    // Adding a user in a project will invalidate that project
+    addProjectUser: builder.mutation<Project, Pick<Project, 'id'> & { userId: number }>({
+      query: (param) => ({
+        url: `project/${param.id}/user`,
+        method: 'POST',
+        body: {
+          userId: param.userId,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
+    }),
+
+    // Removing a user in a project will invalidate that project
+    removeProjectUser: builder.mutation<Project, Pick<Project, 'id'> & { userId: number }>({
+      query: (param) => ({
+        url: `project/${param.id}/user`,
+        method: 'DELETE',
+        body: {
+          userId: param.userId,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -79,4 +100,6 @@ export const {
   useGetProjectQuery,
   useUpdateProjectMutation,
   useRemoveProjectMutation,
+  useAddProjectUserMutation,
+  useRemoveProjectUserMutation,
 } = extendedApi;

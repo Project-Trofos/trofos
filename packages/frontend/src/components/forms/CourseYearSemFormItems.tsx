@@ -1,5 +1,6 @@
-import { Form, DatePicker, Select } from 'antd';
 import React from 'react';
+import { Form, Select } from 'antd';
+import { DatePicker } from '../datetime';
 
 // Renders form elements to input year and semester
 export default function CourseYearSemFormItems(): JSX.Element {

@@ -1,12 +1,32 @@
 import React from 'react';
 import { Select as AntdSelect, DatePicker as AntdDatePicker } from 'antd';
 
+// Mock dayjs datepicker
+jest.mock('../components/datetime/DatePicker', () => {
+  function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
+    const { defaultValue, placeholder, disabled, id, onChange } = props;
+    return (
+      <input
+        id={id}
+        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLInputElement>['defaultValue']}
+        placeholder={placeholder}
+        disabled={disabled}
+        onChange={(e) => {
+          if (onChange) {
+            onChange(jest.fn() as unknown as Parameters<typeof onChange>['0'], e.target.value);
+          }
+        }}
+      />
+    );
+  }
+  return DatePicker;
+});
+
 // Mock certain antd component to simplify testing in React Testing Library
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd');
 
   function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
-    // eslint-disable-next-line react/prop-types
     const { defaultValue, placeholder, disabled, id, onChange } = props;
     return (
       <input
@@ -24,7 +44,6 @@ jest.mock('antd', () => {
   }
 
   function Select(props: React.ComponentProps<typeof AntdSelect>) {
-    // eslint-disable-next-line react/prop-types
     const { mode, value, defaultValue, className, onChange, disabled, children, id } = props;
 
     const multiple = ['tags', 'multiple'].includes(mode ?? '');

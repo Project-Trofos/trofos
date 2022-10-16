@@ -6,7 +6,7 @@ import '../../mocks/antd';
 import ProjectCreationModal from './ProjectCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import momentMock from '../../mocks/moment';
+import dayjsMock from '../../mocks/dayjs';
 
 describe('test ProjectCreationModal', () => {
   // Establish API mocking before all tests.
@@ -93,7 +93,7 @@ describe('test ProjectCreationModal', () => {
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 
   it('should allow choosing a course from existing courses', async () => {
@@ -105,7 +105,7 @@ describe('test ProjectCreationModal', () => {
     fireEvent.change(courseInput, { target: { value: 'CS3203' } });
 
     const yearInput = await screen.findByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: momentMock } });
+    fireEvent.change(yearInput, { target: { value: dayjsMock } });
 
     const semInput = await screen.findByLabelText('Semester');
     fireEvent.change(semInput, { target: { value: '1' } });
@@ -113,7 +113,7 @@ describe('test ProjectCreationModal', () => {
     const finishButton = screen.getByText('Finish');
     fireEvent.click(finishButton);
 
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 
   it('should submit correctly if fields are typed in', async () => {
@@ -129,7 +129,7 @@ describe('test ProjectCreationModal', () => {
     fireEvent.change(nameInput, { target: { value: 'name' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: momentMock } });
+    fireEvent.change(yearInput, { target: { value: dayjsMock } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });
@@ -138,6 +138,6 @@ describe('test ProjectCreationModal', () => {
     fireEvent.click(finishButton);
 
     // Modal is closed
-    expectModalInvisible(baseElement);
+    await expectModalInvisible(baseElement);
   });
 });

@@ -27,6 +27,8 @@ async function get(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
+    assertProjectIdIsValid(projectId);
+
     const result = await project.getById(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
@@ -61,6 +63,8 @@ async function update(req: express.Request, res: express.Response) {
     const body = req.body as Partial<Pick<ProjectRequestBody, 'description' | 'projectName' | 'isPublic'>>;
     const { projectId } = req.params;
 
+    assertProjectIdIsValid(projectId);
+
     if (!body.projectName && !body.isPublic && !body.description) {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
     }
@@ -76,6 +80,8 @@ async function remove(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
+    assertProjectIdIsValid(projectId);
+
     const result = await project.remove(Number(projectId));
 
     return res.status(StatusCodes.OK).json(result);
@@ -87,6 +93,8 @@ async function remove(req: express.Request, res: express.Response) {
 async function getUsers(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
+
+    assertProjectIdIsValid(projectId);
 
     const result = await project.getUsers(res.locals.policyConstraint, Number(projectId));
 

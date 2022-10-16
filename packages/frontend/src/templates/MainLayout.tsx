@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import {
   BellOutlined,
@@ -50,6 +50,12 @@ export default function MainLayout() {
 
   const { data: userInfo } = useGetUserInfoQuery();
   const [logoutUser] = useLogoutUserMutation();
+
+  useEffect(() => {
+    if (!userInfo && location.pathname !== '/') {
+      navigate('/');
+    }
+  }, [userInfo, location, navigate]);
 
   const LogoutComponent = (
     <Typography.Link

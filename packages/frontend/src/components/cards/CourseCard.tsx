@@ -8,6 +8,8 @@ import { confirmDeleteCourse } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { Course } from '../../api/types';
 
+import './CourseCard.css';
+
 const { Meta } = Card;
 
 type CourseCardProps = {
@@ -42,7 +44,7 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
 
   return (
     <Card
-      style={{ width: 300 }}
+      className="course-card"
       actions={[
         <Link to={`/course/${course.id}/settings`}>
           <SettingOutlined key="setting" />

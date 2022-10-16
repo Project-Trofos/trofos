@@ -3,6 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
+import INCLUDE_USERS_ID_EMAIL from './helper';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
   let result;
@@ -17,6 +18,7 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
+      include: INCLUDE_USERS_ID_EMAIL,
     });
   } else if (option === 'past') {
     // year < current_year OR year == current_year and sem < current_sem
@@ -45,10 +47,12 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
+      include: INCLUDE_USERS_ID_EMAIL,
     });
   } else {
     result = await prisma.course.findMany({
       where: accessibleBy(policyConstraint).Course,
+      include: INCLUDE_USERS_ID_EMAIL,
     });
   }
   return result;
@@ -63,6 +67,7 @@ async function getByPk(id: string, year: number, sem: number): Promise<Course> {
         sem,
       },
     },
+    include: INCLUDE_USERS_ID_EMAIL,
   });
 
   return result;
@@ -214,6 +219,7 @@ async function getProjects(policyConstraint: AppAbility, id?: string, year?: num
 
 // Add project and link to course, create course if necessary
 async function addProjectAndCourse(
+  userId: number,
   courseId: string,
   courseYear: number,
   courseSem: number,
@@ -247,7 +253,17 @@ async function addProjectAndCourse(
             cname: courseName,
             public: isProjectPublic,
             description: courseDesc,
+            users: {
+              create: {
+                user_id: userId,
+              },
+            },
           },
+        },
+      },
+      users: {
+        create: {
+          user_id: userId,
         },
       },
     },

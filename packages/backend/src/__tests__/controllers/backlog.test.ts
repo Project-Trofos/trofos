@@ -5,6 +5,7 @@ import { PrismaClientValidationError } from '@prisma/client/runtime';
 import backlogController from '../../controllers/backlog';
 import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../helpers/types/backlog.service.types';
+import { mockBacklogData, mockBacklogFields } from '../mocks/backlogData';
 
 const backlogServiceSpies = {
   newBacklog: jest.spyOn(backlogService, 'newBacklog'),
@@ -20,30 +21,9 @@ describe('backlogController tests', () => {
   });
 
   describe('create backlog', () => {
-    const mockBacklog: BacklogFields = {
-      assigneeId: 1,
-      description: 'A test description here',
-      points: 1,
-      priority: 'very_high',
-      projectId: 123,
-      reporterId: 1,
-      summary: 'A Test Summary',
-      sprintId: 123,
-      type: 'story',
-    };
+    const mockBacklog: BacklogFields = mockBacklogFields;
 
-    const expectedBacklog: Backlog = {
-      backlog_id: 1,
-      summary: 'A Test Summary',
-      type: 'story',
-      priority: 'very_high',
-      sprint_id: 123,
-      reporter_id: 1,
-      assignee_id: 1,
-      points: 1,
-      description: 'A test description here',
-      project_id: 123,
-    };
+    const expectedBacklog: Backlog = mockBacklogData;
 
     const mockRequest = createRequest({
       body: mockBacklog,
@@ -82,18 +62,7 @@ describe('backlogController tests', () => {
 
     it('should return array of backlogs and status 200 when called with valid projectId', async () => {
       const expectedBacklogs: Backlog[] = [
-        {
-          backlog_id: 1,
-          summary: 'A Test Summary',
-          type: 'story',
-          priority: 'very_high',
-          sprint_id: 123,
-          reporter_id: 1,
-          assignee_id: 1,
-          points: 1,
-          description: 'A test description here',
-          project_id: 123,
-        },
+        mockBacklogData,
         {
           backlog_id: 2,
           summary: 'Another Test Summary',
@@ -115,13 +84,13 @@ describe('backlogController tests', () => {
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
     });
 
-    it('should throw an error and return status 500 when projectId is missing', async () => {
+    it('should throw an error and return status 400 when projectId is missing', async () => {
       const mockMissingProjectIdRequest = createRequest({
         body: {},
       });
       await backlogController.listBacklogs(mockMissingProjectIdRequest, mockResponse);
       expect(backlogServiceSpies.listBacklogs).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when backlogs failed to be retrieved', async () => {
@@ -146,18 +115,7 @@ describe('backlogController tests', () => {
     const mockResponse = createResponse();
 
     it('should return single backlog and status 200 when called with valid fields', async () => {
-      const expectedBacklog: Backlog = {
-        backlog_id: 1,
-        summary: 'A Test Summary',
-        type: 'story',
-        priority: 'very_high',
-        sprint_id: 123,
-        reporter_id: 1,
-        assignee_id: 1,
-        points: 1,
-        description: 'A test description here',
-        project_id: 123,
-      };
+      const expectedBacklog: Backlog = mockBacklogData;
       backlogServiceSpies.getBacklog.mockResolvedValueOnce(expectedBacklog);
 
       await backlogController.getBacklog(mockRequest, mockResponse);
@@ -169,7 +127,7 @@ describe('backlogController tests', () => {
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
 
-    it('should throw an error and return status 500 when projectId is missing', async () => {
+    it('should throw an error and return status 400 when projectId is missing', async () => {
       const mockMissingProjectIdRequest = createRequest({
         params: {
           ...mockBacklogToRetrieve,
@@ -178,10 +136,10 @@ describe('backlogController tests', () => {
       });
       await backlogController.getBacklog(mockMissingProjectIdRequest, mockResponse);
       expect(backlogServiceSpies.getBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should throw an error and return status 500 when backlogId is missing', async () => {
+    it('should throw an error and return status 400 when backlogId is missing', async () => {
       const mockMissingBacklogIdRequest = createRequest({
         body: {
           ...mockBacklogToRetrieve,
@@ -190,7 +148,7 @@ describe('backlogController tests', () => {
       });
       await backlogController.getBacklog(mockMissingBacklogIdRequest, mockResponse);
       expect(backlogServiceSpies.getBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when backlog failed to be retrieved', async () => {
@@ -233,16 +191,8 @@ describe('backlogController tests', () => {
 
     it('should return updated backlog and status 200 when called with valid fields', async () => {
       const expectedBacklog: Backlog = {
-        backlog_id: 1,
-        summary: 'A Test Summary',
-        type: 'story',
-        priority: 'very_high',
-        sprint_id: 123,
-        reporter_id: 1,
-        assignee_id: 1,
-        points: 1,
-        description: 'A test description here',
-        project_id: 123,
+        ...mockBacklogData,
+        summary: 'Updated Summary',
       };
       backlogServiceSpies.updateBacklog.mockResolvedValueOnce(expectedBacklog);
 
@@ -252,7 +202,7 @@ describe('backlogController tests', () => {
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
 
-    it('should throw an error and return status 500 when projectId is missing', async () => {
+    it('should throw an error and return status 400 when projectId is missing', async () => {
       const mockMissingProjectIdRequest = createRequest({
         body: {
           ...mockBacklogToUpdate,
@@ -261,10 +211,10 @@ describe('backlogController tests', () => {
       });
       await backlogController.updateBacklog(mockMissingProjectIdRequest, mockResponse);
       expect(backlogServiceSpies.updateBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should throw an error and return status 500 when backlogId is missing', async () => {
+    it('should throw an error and return status 400 when backlogId is missing', async () => {
       const mockMissingBacklogIdRequest = createRequest({
         body: {
           ...mockBacklogToUpdate,
@@ -273,7 +223,7 @@ describe('backlogController tests', () => {
       });
       await backlogController.updateBacklog(mockMissingBacklogIdRequest, mockResponse);
       expect(backlogServiceSpies.updateBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when backlog failed to update', async () => {
@@ -298,18 +248,7 @@ describe('backlogController tests', () => {
     const mockResponse = createResponse();
 
     it('should return backlog and status 200 when called with valid fields', async () => {
-      const expectedBacklog: Backlog = {
-        backlog_id: 1,
-        summary: 'A Test Summary',
-        type: 'story',
-        priority: 'very_high',
-        sprint_id: 123,
-        reporter_id: 1,
-        assignee_id: 1,
-        points: 1,
-        description: 'A test description here',
-        project_id: 123,
-      };
+      const expectedBacklog: Backlog = mockBacklogData;
       backlogServiceSpies.deleteBacklog.mockResolvedValueOnce(expectedBacklog);
 
       await backlogController.deleteBacklog(mockRequest, mockResponse);
@@ -321,7 +260,7 @@ describe('backlogController tests', () => {
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
 
-    it('should throw an error and return status 500 when projectId is missing', async () => {
+    it('should throw an error and return status 400 when projectId is missing', async () => {
       const mockMissingProjectIdRequest = createRequest({
         params: {
           ...mockBacklogToDelete,
@@ -330,10 +269,10 @@ describe('backlogController tests', () => {
       });
       await backlogController.deleteBacklog(mockMissingProjectIdRequest, mockResponse);
       expect(backlogServiceSpies.deleteBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should throw an error and return status 500 when backlogId is missing', async () => {
+    it('should throw an error and return status 400 when backlogId is missing', async () => {
       const mockMissingBacklogIdRequest = createRequest({
         body: {
           ...mockBacklogToDelete,
@@ -342,7 +281,7 @@ describe('backlogController tests', () => {
       });
       await backlogController.deleteBacklog(mockMissingBacklogIdRequest, mockResponse);
       expect(backlogServiceSpies.deleteBacklog).not.toHaveBeenCalled();
-      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when backlog failed to be deleted', async () => {

@@ -4,7 +4,7 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
 import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
-import projectsData from '../mocks/projectData';
+import { projectsData } from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
@@ -463,6 +463,9 @@ describe('course controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.userSession = {
+        user_id: 1,
+      };
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 
@@ -477,6 +480,9 @@ describe('course controller tests', () => {
         body: {},
       });
       const mockRes = createResponse();
+      mockRes.locals.userSession = {
+        user_id: 1,
+      };
 
       await courseController.addProjectAndCourse(mockReq, mockRes);
 

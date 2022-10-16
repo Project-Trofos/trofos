@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Form, Typography, message } from 'antd';
+import { Dayjs } from 'dayjs';
 import { useAddCourseMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
@@ -23,7 +24,7 @@ export default function CourseCreationModal() {
       // Antd datepicker actually returns a moment object
       // Only year is used for now
       // Maybe we should consider adding moment to our dependencies?
-      courseYear: { year: () => string };
+      courseYear: Dayjs;
       courseSem: string;
       courseName: string;
     }) => {

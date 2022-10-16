@@ -20,6 +20,8 @@ import ProjectSettings from '../pages/ProjectSettings';
 import CourseOverview from '../pages/CourseOverview';
 import CourseSettings from '../pages/CourseSettings';
 import ProjectSprints from '../pages/ProjectSprints';
+import CoursePeople from '../pages/CoursePeople';
+import ProjectPeople from '../pages/ProjectPeople';
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
           <Route path="project/:projectId" element={<Project />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<ProjectOverview />} />
+            <Route path="users" element={<ProjectPeople />} />
             <Route path="sprint" element={<ProjectSprints />} />
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
@@ -41,6 +44,7 @@ function App() {
           <Route path="course/:courseId" element={<Course />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
+            <Route path="users" element={<CoursePeople />} />
             <Route path="settings" element={<CourseSettings />} />
           </Route>
           <Route path="account" element={<Account />}/>
