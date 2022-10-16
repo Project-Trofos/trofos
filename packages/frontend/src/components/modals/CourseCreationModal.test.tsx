@@ -81,8 +81,6 @@ describe('test course creation modal', () => {
 
     fireEvent.click(finishButton);
 
-    expect(dayjsMock.year()).toBe('2022');
-
     // Modal is closed
     await expectModalInvisible(baseElement);
   });

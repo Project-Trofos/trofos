@@ -12,7 +12,7 @@ import { getErrorMessage } from '../helpers/error';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
-  const { project } = useProject(params.projectId);
+  const { project } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
 
   const [updateProject] = useUpdateProjectMutation();
   const [isUpdating, setIsUpdating] = useState(false);

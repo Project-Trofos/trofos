@@ -1,25 +1,22 @@
 import trofosApiSlice from '.';
 import { PickRename } from '../helpers/types';
-import { Course, Project } from './types';
+import { Course, CourseData, Project } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllCourses: builder.query<Course[], void>({
+    getAllCourses: builder.query<CourseData[], void>({
       query: () => ({
         url: 'course/',
         credentials: 'include',
       }),
-      providesTags: (result, error, arg) => [
-        'Course',
-        ...(result ?? []).map(({ id, year, sem }): { type: 'Course'; id: string } => ({
-          type: 'Course',
-          id: `${year}-${sem}-${id}`,
-        })),
-      ],
+      providesTags: (result, error, arg) =>
+        result
+          ? [...result.map(({ id, year, sem }) => ({ type: 'Course' as const, id: `${year}-${sem}-${id}` })), 'Course']
+          : ['Course'],
     }),
 
-    getCourse: builder.query<Course[], Pick<Course, 'id' | 'year' | 'sem'>>({
+    getCourse: builder.query<CourseData, Pick<Course, 'id' | 'year' | 'sem'>>({
       query: ({ year, sem, id }) => `course/${year}/${sem}/${id}`,
       providesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
     }),
@@ -71,6 +68,32 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         { type: 'Course', id: `${year}-${sem}-${id}` },
         'Project',
       ],
+    }),
+
+    // Invalidate course
+    addCourseUser: builder.mutation<Course, Pick<Course, 'id' | 'year' | 'sem'> & { userId: number }>({
+      query: (param) => ({
+        url: `course/${param.year}/${param.sem}/${param.id}/user`,
+        method: 'POST',
+        body: {
+          userId: param.userId,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
+    }),
+
+    // Invalidate course
+    removeCourseUser: builder.mutation<Course, Pick<Course, 'id' | 'year' | 'sem'> & { userId: number }>({
+      query: (param) => ({
+        url: `course/${param.year}/${param.sem}/${param.id}/user`,
+        method: 'DELETE',
+        body: {
+          userId: param.userId,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
     }),
 
     // Adding a project to a course will invalidate that course and all projects
@@ -150,6 +173,8 @@ export const {
   useGetCourseQuery,
   useUpdateCourseMutation,
   useRemoveCourseMutation,
+  useAddCourseUserMutation,
+  useRemoveCourseUserMutation,
   useAddProjectAndCourseMutation,
   useRemoveProjectFromCourseMutation,
   useAddProjectToCourseMutation,

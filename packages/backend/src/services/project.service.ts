@@ -3,6 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
+import INCLUDE_USERS_ID_EMAIL from './helper';
 
 async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
   let result;
@@ -33,6 +34,7 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
       },
       include: {
         course: true,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else if (option === 'past') {
@@ -64,6 +66,7 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
       },
       include: {
         course: true,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else {
@@ -71,6 +74,7 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
       where: accessibleBy(policyConstraint).Project,
       include: {
         course: true,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   }
@@ -85,22 +89,13 @@ async function getById(id: number): Promise<Project> {
     },
     include: {
       course: true,
-      users: {
-        select: {
-          user: {
-            select: {
-              user_id: true,
-              user_email: true,
-            },
-          },
-        },
-      },
       sprints: {
         select: {
           id: true,
           name: true,
         },
       },
+      ...INCLUDE_USERS_ID_EMAIL,
     },
   });
 

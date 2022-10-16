@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test InputWithButton when rendering should render correct fields 1`] = `
+<body>
+  <div>
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center"
+      style="display: flex;"
+    >
+      <div
+        class="ant-space-item"
+        style="margin-right: 8px;"
+      >
+        <input
+          class="ant-input"
+          placeholder="placeholder"
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="ant-space-item"
+      >
+        <button
+          class="ant-btn ant-btn-default"
+          type="submit"
+        >
+          <span>
+            ok
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+`;
