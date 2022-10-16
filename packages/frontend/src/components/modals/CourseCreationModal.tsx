@@ -31,8 +31,6 @@ export default function CourseCreationModal() {
       try {
         const { courseCode, courseName, courseSem, courseYear } = values;
 
-        console.log(values);
-
         await addCourse({
           id: courseCode?.trim(),
           year: Number(courseYear.year()),
