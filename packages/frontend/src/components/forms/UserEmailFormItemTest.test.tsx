@@ -1,24 +1,25 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import NewPasswordFormItem from './NewPasswordFormItem';
+import UserEmailFormItem from './UserEmailFormItem';
 import FormWrapper from './__testutils__/FormRenderHelper.test';
 
-describe('NewPasswordFormItem test', () => {
+describe('UserEmailFormItem test', () => {
   function renderForm() {
     return render(
       <FormWrapper>
-        <NewPasswordFormItem isNewPassword />
+        <UserEmailFormItem />
       </FormWrapper>,
     );
   }
 
   describe('when rendering', () => {
-    it('should have a field for the new password and for its confirmation', () => {
+    it('should have the correct fields', () => {
       const { baseElement } = renderForm();
       expect(baseElement).toMatchSnapshot();
 
-      expect(screen.getByLabelText(/^new password/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/confirm new password/i)).toBeInTheDocument();
+      const select = screen.getByLabelText(/User Email/i);
+
+      expect(select).toBeInTheDocument();
     });
   });
 });

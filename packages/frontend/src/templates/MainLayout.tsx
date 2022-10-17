@@ -1,6 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
-import { BellOutlined, BookOutlined, HomeOutlined, ProjectOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  BookOutlined,
+  HomeOutlined,
+  ProjectOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
@@ -8,6 +15,8 @@ import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hook
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
 import GlobalSearch from '../components/search/GlobalSearch';
+import { UserPermissionActions } from '../helpers/constants';
+import conditionalRender from '../helpers/conditionalRender';
 
 const { Header, Sider, Content } = Layout;
 
@@ -110,37 +119,49 @@ export default function MainLayout() {
   const menuItems: MenuItem[] = useMemo(
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
-      userInfo?.userRole === 1
-        ? getItem(
-            <Link onClick={(e) => e.stopPropagation()} to="/courses">
-              Courses
-            </Link>,
-            '/courses',
-            <BookOutlined />,
-            courses === undefined || courses.length === 0
-              ? undefined
-              : courses.map((course) =>
-                  getItem(<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>, `/course/${course.id}`),
-                ),
-          )
-        : null,
-      userInfo
-        ? getItem(
-            <Link onClick={(e) => e.stopPropagation()} to="/projects">
-              Project
-            </Link>,
-            '/projects',
-            <ProjectOutlined />,
-            projects === undefined || projects.length === 0
-              ? undefined
-              : projects.map((project) =>
-                  getItem(
-                    <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>,
-                    `/project/${project.id}`,
-                  ),
-                ),
-          )
-        : null,
+      conditionalRender(
+        getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/courses">
+            Courses
+          </Link>,
+          '/courses',
+          <BookOutlined />,
+          courses === undefined || courses.length === 0
+            ? undefined
+            : courses.map((course) =>
+                getItem(<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>, `/course/${course.id}`),
+              ),
+        ),
+        [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
+      conditionalRender(
+        getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/projects">
+            Project
+          </Link>,
+          '/projects',
+          <ProjectOutlined />,
+          projects === undefined || projects.length === 0
+            ? undefined
+            : projects.map((project) =>
+                getItem(<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>, `/project/${project.id}`),
+              ),
+        ),
+        [UserPermissionActions.READ_PROJECT, UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
+      conditionalRender(
+        getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/admin">
+            Admin
+          </Link>,
+          '/admin',
+          <SettingOutlined />,
+        ),
+        [UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
     ],
     [projects, courses, userInfo],
   );

@@ -1,11 +1,15 @@
 import React from 'react';
 import { Form, Input } from 'antd';
 
-export default function NewPasswordFormItem(): JSX.Element {
+type NewPasswordFormItemProps = {
+  isNewPassword?: boolean;
+};
+
+export default function NewPasswordFormItem({ isNewPassword }: NewPasswordFormItemProps): JSX.Element {
   return (
     <>
       <Form.Item
-        label="New Password"
+        label={isNewPassword ? 'New password' : 'Password'}
         name="newPassword"
         rules={[
           {
@@ -21,7 +25,7 @@ export default function NewPasswordFormItem(): JSX.Element {
         <Input type="password" />
       </Form.Item>
       <Form.Item
-        label="Confirm new Password"
+        label={isNewPassword ? 'Confirm new password' : 'Confirm Password'}
         name="confirmNewPassword"
         dependencies={['newPassword']}
         rules={[
@@ -44,3 +48,7 @@ export default function NewPasswordFormItem(): JSX.Element {
     </>
   );
 }
+
+NewPasswordFormItem.defaultProps = {
+  isNewPassword: true,
+};

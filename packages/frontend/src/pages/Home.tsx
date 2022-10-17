@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery, UserRole } from '../api/auth';
 import ProjectsPage from './Projects';
 import FacultyDashboard from './FacultyDashboard';
+import conditionalRender from '../helpers/conditionalRender';
+import { UserPermissionActions } from '../helpers/constants';
 
 const { Title } = Typography;
 
@@ -14,9 +16,9 @@ export default function HomePage(): JSX.Element {
   // User is not logged in
   if (!userInfo) {
     return (
-      <Space size="middle" className='main-content-container centralize-content'>
-        <ExclamationCircleOutlined style={{fontSize: 96, color: '#EFC050'}} />
-        <Title style={{textAlign: "center", margin: 0}}>Please Log In</Title>
+      <Space size="middle" className="main-content-container centralize-content">
+        <ExclamationCircleOutlined style={{ fontSize: 96, color: '#EFC050' }} />
+        <Title style={{ textAlign: 'center', margin: 0 }}>Please Log In</Title>
         <Link to="/login">
           <Button type="primary">Login</Button>
         </Link>
@@ -24,10 +26,10 @@ export default function HomePage(): JSX.Element {
     );
   }
 
-  // Only show faculty dashboard to faculty
-  if (userInfo.userRole === UserRole.FACULTY) {
-    return <FacultyDashboard userInfo={userInfo} />;
-  }
+  conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [
+    UserPermissionActions.READ_COURSE,
+    UserPermissionActions.ADMIN,
+  ]);
 
   // Default to projects page
   return <ProjectsPage />;

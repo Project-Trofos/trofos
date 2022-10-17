@@ -9,9 +9,8 @@ async function applyProjectPolicy(req: express.Request, userSession: UserSession
   let policyOutcome: PolicyOutcome;
   const { projectId } = req.params;
   const isParamsMissing = projectId === undefined;
+  const isUserAdmin = userSession.user_is_admin;
 
-  // TODO: Admin flag not implemented yet. For a future feature
-  const isUserAdmin = false;
   if (isParamsMissing) {
     // Certain operations may not require parameters.
     // Policy alwways assumes it was called correctly.

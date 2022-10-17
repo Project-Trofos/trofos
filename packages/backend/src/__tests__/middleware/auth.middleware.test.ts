@@ -67,6 +67,7 @@ describe('auth.middleware tests', () => {
         user_email: 'testUser@test.com',
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_is_admin: false,
         user_id: 1,
       };
       const roleServiceResponseObject = false;
@@ -102,6 +103,7 @@ describe('auth.middleware tests', () => {
         user_email: 'testUser@test.com',
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_is_admin: false,
         user_id: 1,
       };
       const roleServiceResponseObject = true;
@@ -138,6 +140,7 @@ describe('auth.middleware tests', () => {
         user_email: 'testUser@test.com',
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_is_admin: false,
         user_id: 1,
       };
       const roleServiceResponseObject = true;
@@ -179,6 +182,7 @@ describe('auth.middleware tests', () => {
         user_email: 'testUser@test.com',
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
+        user_is_admin: false,
         user_id: 1,
       };
       const roleServiceResponseObject = true;
