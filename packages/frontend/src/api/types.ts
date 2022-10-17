@@ -21,7 +21,6 @@ export type Course = {
   created_at: string;
 };
 
-<<<<<<< HEAD
 export type User = {
   user_email : string,
   user_id : number,
@@ -50,7 +49,6 @@ export type ActionsOnRoles = {
   role_name : string,
   actions : Action[]
 }
-=======
 export type ProjectData = Project & {
   course: Course | null;
   users: UserData[];
@@ -70,4 +68,3 @@ export type UserData = {
 export type CourseData = Course & {
   users: UserData[];
 };
->>>>>>> main

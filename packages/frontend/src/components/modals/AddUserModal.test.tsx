@@ -6,7 +6,6 @@ import '../../mocks/antd';
 import AddUserModal from './AddUserModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import momentMock from '../../mocks/moment';
 
 describe('test AddUserModal', () => {
   // Establish API mocking before all tests.

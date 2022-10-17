@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery, UserRole } from '../api/auth';
 import ProjectsPage from './Projects';
 import FacultyDashboard from './FacultyDashboard';
+import conditionalRender from '../helpers/conditionalRender';
+import { UserPermissionActions } from '../helpers/constants';
 
 const { Title } = Typography;
 
@@ -24,10 +26,7 @@ export default function HomePage(): JSX.Element {
     );
   }
 
-  // Only show faculty dashboard to faculty
-  if (userInfo.userRole === UserRole.FACULTY) {
-    return <FacultyDashboard userInfo={userInfo} />;
-  }
+  conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN])
 
   // Default to projects page
   return <ProjectsPage />;

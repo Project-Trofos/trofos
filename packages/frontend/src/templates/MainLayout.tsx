@@ -15,7 +15,7 @@ import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hook
 import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
 import trofosApiSlice from '../api/index';
 import GlobalSearch from '../components/search/GlobalSearch';
-import { UserPermissionActions }from '../helpers/constants';
+import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
 
 const { Header, Sider, Content } = Layout;
