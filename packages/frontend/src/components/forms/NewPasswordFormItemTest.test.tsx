@@ -3,14 +3,14 @@ import React from 'react';
 import NewPasswordFormItem from './NewPasswordFormItem';
 import FormWrapper from './__testutils__/FormRenderHelper.test';
 
-describe("NewPasswordFormItem test", () => {
-    function renderForm() {
-        return render(
-            <FormWrapper>
-                <NewPasswordFormItem isNewPassword/>
-            </FormWrapper>
-        )
-    }
+describe('NewPasswordFormItem test', () => {
+  function renderForm() {
+    return render(
+      <FormWrapper>
+        <NewPasswordFormItem isNewPassword />
+      </FormWrapper>,
+    );
+  }
 
   describe('when rendering', () => {
     it('should have a field for the new password and for its confirmation', () => {

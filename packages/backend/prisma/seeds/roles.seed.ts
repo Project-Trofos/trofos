@@ -15,9 +15,9 @@ async function createRoleSeed(prisma: PrismaClient) {
         role_name: 'STUDENT',
       },
       {
-        id : ADMIN_ROLE_ID,
+        id: ADMIN_ROLE_ID,
         role_name: 'ADMIN',
-      }
+      },
     ],
   });
 
@@ -59,12 +59,12 @@ async function createRoleSeed(prisma: PrismaClient) {
         action: Action.delete_project,
       },
       {
-        role_id : FACULTY_ROLE_ID,
-        action : Action.read_users,
+        role_id: FACULTY_ROLE_ID,
+        action: Action.read_users,
       },
       {
-        role_id : STUDENT_ROLE_ID,
-        action : Action.create_project,
+        role_id: STUDENT_ROLE_ID,
+        action: Action.create_project,
       },
       {
         role_id: STUDENT_ROLE_ID,
@@ -79,9 +79,9 @@ async function createRoleSeed(prisma: PrismaClient) {
         action: Action.delete_project,
       },
       {
-        role_id : ADMIN_ROLE_ID,
-        action : Action.admin
-      }
+        role_id: ADMIN_ROLE_ID,
+        action: Action.admin,
+      },
     ],
   });
 
@@ -99,8 +99,8 @@ async function createRoleSeed(prisma: PrismaClient) {
         role_id: STUDENT_ROLE_ID,
       },
       {
-        user_email : 'testAdmin@test.com',
-        role_id : ADMIN_ROLE_ID
+        user_email: 'testAdmin@test.com',
+        role_id: ADMIN_ROLE_ID,
       },
     ],
   });

@@ -6,29 +6,35 @@ import courseConstraint from './constraints/course.constraint';
 
 const POLICY_NAME = 'COURSE_POLICY';
 
-async function applyCoursePolicy(req : express.Request, userSession : UserSession) : Promise<PolicyOutcome> {
-    let policyOutcome : PolicyOutcome;
-    const { courseId, courseYear, courseSem } = req.params;
-    const isParamsMissing = courseId === undefined || courseYear === undefined || courseSem === undefined;
-    const isUserAdmin = userSession.user_is_admin;
+async function applyCoursePolicy(req: express.Request, userSession: UserSession): Promise<PolicyOutcome> {
+  let policyOutcome: PolicyOutcome;
+  const { courseId, courseYear, courseSem } = req.params;
+  const isParamsMissing = courseId === undefined || courseYear === undefined || courseSem === undefined;
+  const isUserAdmin = userSession.user_is_admin;
 
-    if (isParamsMissing) {
-        // Certain operations may not require parameters.
-        // Policy alwways assumes it was called correctly.
-        policyOutcome = {
-            isPolicyValid : true,
-            policyConstraint : courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin)
-        }
-    } else {
-        assertCourseYearIsNumber(courseYear);
-        assertCourseSemIsNumber(courseSem);
-    
-        policyOutcome = {
-            isPolicyValid : await courseConstraint.canManageCourse(userSession.user_id, courseId, Number(courseYear), Number(courseSem), isUserAdmin),
-            policyConstraint : courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin)
-        }
-    }
-    return policyOutcome
+  if (isParamsMissing) {
+    // Certain operations may not require parameters.
+    // Policy alwways assumes it was called correctly.
+    policyOutcome = {
+      isPolicyValid: true,
+      policyConstraint: courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin),
+    };
+  } else {
+    assertCourseYearIsNumber(courseYear);
+    assertCourseSemIsNumber(courseSem);
+
+    policyOutcome = {
+      isPolicyValid: await courseConstraint.canManageCourse(
+        userSession.user_id,
+        courseId,
+        Number(courseYear),
+        Number(courseSem),
+        isUserAdmin,
+      ),
+      policyConstraint: courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin),
+    };
+  }
+  return policyOutcome;
 }
 
 export default {

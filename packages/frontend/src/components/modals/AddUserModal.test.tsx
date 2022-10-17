@@ -66,22 +66,21 @@ describe('test AddUserModal', () => {
   });
 
   it('should require that both passwords are the same and at least 8 characters long', async () => {
-      await setup();
+    await setup();
 
-      const button = screen.getByText('Create User');
-      fireEvent.click(button);
+    const button = screen.getByText('Create User');
+    fireEvent.click(button);
 
-      const passwordField = await screen.findByLabelText(/^password/i);
-      fireEvent.change(passwordField, { target: { value: 'short' } });
+    const passwordField = await screen.findByLabelText(/^password/i);
+    fireEvent.change(passwordField, { target: { value: 'short' } });
 
-      const confirmPasswordField = await screen.findByLabelText(/confirm password/i);
-      fireEvent.change(confirmPasswordField, { target: { value: 'shor' } });
+    const confirmPasswordField = await screen.findByLabelText(/confirm password/i);
+    fireEvent.change(confirmPasswordField, { target: { value: 'shor' } });
 
-      const createButton = await screen.findByText('Create');
-      fireEvent.click(createButton);
+    const createButton = await screen.findByText('Create');
+    fireEvent.click(createButton);
 
-      await screen.findByText("The two passwords that you entered do not match!");
-      await screen.findByText("Password must be atleast 8 characters long");
-  })
-
+    await screen.findByText('The two passwords that you entered do not match!');
+    await screen.findByText('Password must be atleast 8 characters long');
+  });
 });

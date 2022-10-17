@@ -1,7 +1,7 @@
 import express from 'express';
+import { Action } from '@prisma/client';
 import { isAuthorizedRequest } from '../middleware/auth.middleware';
 import role from '../controllers/role';
-import { Action } from '@prisma/client'
 
 const router = express.Router();
 

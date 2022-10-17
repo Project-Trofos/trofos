@@ -47,8 +47,8 @@ function App() {
             <Route path="users" element={<CoursePeople />} />
             <Route path="settings" element={<CourseSettings />} />
           </Route>
-          <Route path="account" element={<Account />}/>
-          <Route path="admin" element={<Admin />}/>
+          <Route path="account" element={<Account />} />
+          <Route path="admin" element={<Admin />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route

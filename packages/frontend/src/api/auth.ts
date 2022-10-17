@@ -11,9 +11,9 @@ export type UserLoginInfo = {
 };
 
 export type UserInfo = {
-  userEmail: string,
-  userRoleActions: string[],
-  userId: number
+  userEmail: string;
+  userRoleActions: string[];
+  userId: number;
 };
 
 export type ChangePassword = {

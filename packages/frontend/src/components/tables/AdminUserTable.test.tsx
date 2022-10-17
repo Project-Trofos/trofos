@@ -13,13 +13,13 @@ describe('test UserTable', () => {
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
-  const users : User[] = [
+  const users: User[] = [
     {
-        user_email : "testEmail@test.com",
-        user_id : 1,
-        projects: [],
-        courses: [],
-        roles: [],
+      user_email: 'testEmail@test.com',
+      user_id: 1,
+      projects: [],
+      courses: [],
+      roles: [],
     },
   ];
 
@@ -27,7 +27,7 @@ describe('test UserTable', () => {
     const { baseElement, debug } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <AdminUserTable users={users}/>
+          <AdminUserTable users={users} />
         </Provider>
       </BrowserRouter>,
     );

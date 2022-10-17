@@ -1,8 +1,7 @@
 .admin-layout {
-    min-height: '100vh';
+  min-height: '100vh';
 }
 
 .admin-content {
-    min-height: 360
+  min-height: 360;
 }
-

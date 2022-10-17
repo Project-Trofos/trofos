@@ -1,5 +1,5 @@
-import express from 'express'
-import { Action } from '@prisma/client'
+import express from 'express';
+import { Action } from '@prisma/client';
 import { isAuthorizedRequest } from '../middleware/auth.middleware';
 import user from '../controllers/user';
 

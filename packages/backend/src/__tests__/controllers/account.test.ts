@@ -11,13 +11,13 @@ import { RoleInformation } from '../../services/types/role.service.types';
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
 const spies = {
-  authenticationServiceValidateUser : jest.spyOn(authenticationService, 'validateUser'),
-  sessionServiceCreateUserSession : jest.spyOn(sessionService, 'createUserSession'),
-  sessionServiceDeleteUserSession : jest.spyOn(sessionService, 'deleteUserSession'),
-  sessionServiceGetUserSession : jest.spyOn(sessionService, 'getUserSession'),
-  roleServiceGetRoleInformation : jest.spyOn(roleService, 'getUserRoleInformation'),
-  accountServiceChangePassword : jest.spyOn(accountService, 'changePassword')
-}
+  authenticationServiceValidateUser: jest.spyOn(authenticationService, 'validateUser'),
+  sessionServiceCreateUserSession: jest.spyOn(sessionService, 'createUserSession'),
+  sessionServiceDeleteUserSession: jest.spyOn(sessionService, 'deleteUserSession'),
+  sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
+  roleServiceGetRoleInformation: jest.spyOn(roleService, 'getUserRoleInformation'),
+  accountServiceChangePassword: jest.spyOn(accountService, 'changePassword'),
+};
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -62,11 +62,11 @@ describe('account.controller tests', () => {
 
     it('should return status 500 INTERNAL SERVER ERROR if an error occurs during session creation', async () => {
       const createUserSessionError = new Error('test error');
-      const roleInformation : RoleInformation = {
-        roleId : 1,
-        roleActions : [],
-        isAdmin : false
-      }
+      const roleInformation: RoleInformation = {
+        roleId: 1,
+        roleActions: [],
+        isAdmin: false,
+      };
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(roleInformation);
       spies.authenticationServiceValidateUser.mockResolvedValueOnce({
         isValidUser: true,
@@ -99,11 +99,11 @@ describe('account.controller tests', () => {
           user_id: 1,
         },
       } as UserAuth);
-      const roleInformation : RoleInformation = {
-        roleId : 1,
-        roleActions : [],
-        isAdmin : false
-      }
+      const roleInformation: RoleInformation = {
+        roleId: 1,
+        roleActions: [],
+        isAdmin: false,
+      };
       spies.sessionServiceCreateUserSession.mockResolvedValueOnce(sessionId);
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(roleInformation);
       const testUserEmail = 'testEmail@test.com';
@@ -168,20 +168,20 @@ describe('account.controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-    it("should return status 200 OK if the user successfully fetches their userInfo", async () => {
+    it('should return status 200 OK if the user successfully fetches their userInfo', async () => {
       const sessionServiceResponseObject = {
-        session_id : 'testSessionId',
-        user_email : 'testUser@test.com',
-        session_expiry : new Date('2022-08-31T15:19:39.104Z'),
+        session_id: 'testSessionId',
+        user_email: 'testUser@test.com',
+        session_expiry: new Date('2022-08-31T15:19:39.104Z'),
         user_role_id: 1,
         user_is_admin: false,
-        user_id: 1
+        user_id: 1,
       };
       const userRoleInformation = {
         roleId: 1,
-        roleActions : [],
-        isAdmin : false
-      }
+        roleActions: [],
+        isAdmin: false,
+      };
       spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(userRoleInformation);
       const testCookie = 'testCookie';
@@ -194,9 +194,9 @@ describe('account.controller tests', () => {
       await authentication.getUserInfo(mockReq, mockRes);
       expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getJSONData()).toEqual({ userEmail : 'testUser@test.com', userId: 1, userRoleActions: []});
-    })
-  })
+      expect(mockRes._getJSONData()).toEqual({ userEmail: 'testUser@test.com', userId: 1, userRoleActions: [] });
+    });
+  });
 
   describe('changePassword', () => {
     it("should return status 200 OK if the user's password was successfully changes", async () => {

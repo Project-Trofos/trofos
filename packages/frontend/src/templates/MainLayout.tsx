@@ -120,24 +120,22 @@ export default function MainLayout() {
     () => [
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
       conditionalRender(
-          getItem(
-            <Link onClick={(e) => e.stopPropagation()} to="/courses">
-              Courses
-            </Link>,
-            '/courses',
-            <BookOutlined />,
-            courses === undefined || courses.length === 0
-              ? undefined
-              : courses.map((course) =>
+        getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/courses">
+            Courses
+          </Link>,
+          '/courses',
+          <BookOutlined />,
+          courses === undefined || courses.length === 0
+            ? undefined
+            : courses.map((course) =>
                 getItem(<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>, `/course/${course.id}`),
-          )), 
-          [
-            UserPermissionActions.READ_COURSE, 
-            UserPermissionActions.ADMIN
-          ], 
-          userInfo?.userRoleActions
-       ),
-       conditionalRender(
+              ),
+        ),
+        [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
+      conditionalRender(
         getItem(
           <Link onClick={(e) => e.stopPropagation()} to="/projects">
             Project
@@ -147,29 +145,23 @@ export default function MainLayout() {
           projects === undefined || projects.length === 0
             ? undefined
             : projects.map((project) =>
-                getItem(
-                  <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>,
-                  `/project/${project.id}`,
-                ),
+                getItem(<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>, `/project/${project.id}`),
               ),
-          ),
-          [
-            UserPermissionActions.READ_PROJECT, 
-            UserPermissionActions.ADMIN
-          ],
-          userInfo?.userRoleActions
-       ),
-       conditionalRender(
-         getItem(
+        ),
+        [UserPermissionActions.READ_PROJECT, UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
+      conditionalRender(
+        getItem(
           <Link onClick={(e) => e.stopPropagation()} to="/admin">
             Admin
           </Link>,
           '/admin',
           <SettingOutlined />,
-         ),
-         [UserPermissionActions.ADMIN],
-         userInfo?.userRoleActions
-       )
+        ),
+        [UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      ),
     ],
     [projects, courses, userInfo],
   );

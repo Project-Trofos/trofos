@@ -31,9 +31,9 @@ describe('index.ts', () => {
     } as UserAuth);
     sessionServiceCreateUserSessionSpy.mockResolvedValueOnce(sessionId);
     roleServiceGetUserRoleInformationSpy.mockResolvedValue({
-      roleId : 1,
-      roleActions : [],
-      isAdmin : false
+      roleId: 1,
+      roleActions: [],
+      isAdmin: false,
     });
     const postData = {
       body: {

@@ -17,9 +17,9 @@ const loginUser = async (req: express.Request, res: express.Response) => {
     if (!userAuth.isValidUser) {
       return res.status(StatusCodes.UNAUTHORIZED).send();
     }
-  
+
     const userRoleInformation = await roleService.getUserRoleInformation(userEmail);
-    const userId = userAuth.userLoginInformation?.user_id as number
+    const userId = userAuth.userLoginInformation?.user_id as number;
     const sessionId = await sessionService.createUserSession(userEmail, userRoleInformation, userId);
 
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
@@ -50,9 +50,9 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
     const userRoleInformation = await roleService.getUserRoleInformation(sessionInformation.user_email);
 
     const userInformation = {
-      userEmail : sessionInformation.user_email,
-      userRoleActions : userRoleInformation.roleActions,
-      userId : sessionInformation.user_id,
+      userEmail: sessionInformation.user_email,
+      userRoleActions: userRoleInformation.roleActions,
+      userId: sessionInformation.user_id,
     };
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {

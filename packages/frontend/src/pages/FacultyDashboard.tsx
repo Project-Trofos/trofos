@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Space, Switch, Typography } from 'antd';
 import { UserInfo } from '../api/auth';
 
-import './FacultyDashboard.css';
 import ProjectTable from '../components/tables/ProjectTable';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';

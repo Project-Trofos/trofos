@@ -16,9 +16,9 @@ export default function HomePage(): JSX.Element {
   // User is not logged in
   if (!userInfo) {
     return (
-      <Space size="middle" className='main-content-container centralize-content'>
-        <ExclamationCircleOutlined style={{fontSize: 96, color: '#EFC050'}} />
-        <Title style={{textAlign: "center", margin: 0}}>Please Log In</Title>
+      <Space size="middle" className="main-content-container centralize-content">
+        <ExclamationCircleOutlined style={{ fontSize: 96, color: '#EFC050' }} />
+        <Title style={{ textAlign: 'center', margin: 0 }}>Please Log In</Title>
         <Link to="/login">
           <Button type="primary">Login</Button>
         </Link>
@@ -26,7 +26,10 @@ export default function HomePage(): JSX.Element {
     );
   }
 
-  conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN])
+  conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [
+    UserPermissionActions.READ_COURSE,
+    UserPermissionActions.ADMIN,
+  ]);
 
   // Default to projects page
   return <ProjectsPage />;
