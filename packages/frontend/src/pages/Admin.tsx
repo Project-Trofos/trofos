@@ -2,14 +2,15 @@ import React from 'react'
 import { Layout, Tabs } from "antd"
 import UserManagementTab from "../components/tabs/UserManagement";
 import RoleManagementTab from '../components/tabs/RoleManagement';
+import './Admin.css'
 
 const { Content } = Layout;
 
 
 function Admin(): JSX.Element {
     return (
-    <Layout style={{ minHeight: '100vh' }}>
-            <Content style={{ minHeight: 360 }}>
+    <Layout className="admin-layout">
+            <Content className="admin-content">
                 <Tabs centered>
                     <Tabs.TabPane tab="User Management" key="user-management">
                         <UserManagementTab />

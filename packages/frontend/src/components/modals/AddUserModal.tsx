@@ -17,25 +17,23 @@ export default function AddUserModal() : JSX.Element {
     };
   
     const submitForm = async () => {
-      form.validateFields()
-        .then(() => {
-            console.log(form.getFieldsValue());
+        try {
+            await form.validateFields();
             const formValues = form.getFieldsValue();
             const user : CreateUserRequest = {
                 userEmail : formValues.userEmail,
                 newPassword : formValues.newPassword
             }
-            createUser(user)
-                .then(() => {
-                    message.success("User Created");
-                    setIsModalOpen(false);
-                })
-                .catch((err) => {
-                    message.error(err.message);
-                });
-        })
-        .catch(console.error);
-
+            await createUser(user).unwrap()
+            message.success("User Created");
+            setIsModalOpen(false);
+            form.resetFields();
+        } catch (err : any) {
+            console.error(err)
+            if (err?.data?.error) {
+                message.error(err.data.error);
+            }
+        }
     };
   
     const handleCancel = () => {
