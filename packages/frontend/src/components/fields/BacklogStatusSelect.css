@@ -1,0 +1,28 @@
+.backlog-status-select.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+	height: 38px;
+	align-items: center;
+	text-align: center;
+}
+
+.backlog-status-option {
+	text-align: center;
+}
+
+.backlog-status-select .ant-select-selection-item {
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.backlog-status-select.todo.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+	background-color: #E6E6E6;
+}
+
+.backlog-status-select.in_progress.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+	background-color: #1849FF;
+	color: #fff;
+}
+
+.backlog-status-select.done.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+	background-color: #009923;
+	color: #fff;
+}

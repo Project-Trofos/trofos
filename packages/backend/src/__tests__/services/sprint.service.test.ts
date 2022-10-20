@@ -58,7 +58,7 @@ describe('sprint.service tests', () => {
       await expect(sprintService.updateSprint(mockSprintToUpdate)).resolves.toEqual(mockReturnedSprint);
     });
 
-    it('should update and return sprint with null dates if dates are not present', async () => {
+    it('should update and return sprint with null dates if the input "dates" is null', async () => {
       const mockReturnedSprint: Sprint = {
         ...mockSprintData,
         duration: 2,
@@ -69,7 +69,21 @@ describe('sprint.service tests', () => {
 
       const sprintToUpdate: Omit<SprintFields, 'projectId'> & { sprintId: number } = {
         ...mockSprintToUpdate,
-        dates: undefined,
+        dates: null,
+      };
+      prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
+      await expect(sprintService.updateSprint(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+    });
+
+    it('should only update status and return sprint if status is provided', async () => {
+      const mockReturnedSprint: Sprint = {
+        ...mockSprintData,
+        status: 'current',
+      };
+
+      const sprintToUpdate: {sprintId: number; status: 'upcoming' | 'current' | 'completed';} = {
+        sprintId: 1,
+        status: 'current',
       };
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
       await expect(sprintService.updateSprint(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);

@@ -35,6 +35,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
         {backlog.backlog_id}
       </div>
       <div className="backlog-card-summary">{backlog.summary}</div>
+      <div>{backlog.status}</div>
       <div>{backlog.type}</div>
       {backlog.priority && renderPriority(backlog.priority)}
       {backlog.assignee_id && renderAssignee(backlog.assignee_id)}

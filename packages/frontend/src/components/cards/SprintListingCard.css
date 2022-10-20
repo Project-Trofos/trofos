@@ -4,8 +4,13 @@ li.sprint-card-container {
   padding: 0;
 }
 
+.sprint-card-container .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  align-items: center;
+}
+
 .sprint-card-inner-container {
   display: flex;
+  align-items: center;
 }
 
 .sprint-card-container > div {
@@ -19,4 +24,8 @@ li.sprint-card-container {
 
 .sprint-card-setting-icon {
   padding: 0 6px 0 10px;
+}
+
+.sprint-status-button {
+  margin: 0 10px;
 }

@@ -62,10 +62,16 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
   };
 
   const handleProcessDate = (data: SprintFormFields) => {
-    const { duration, startDate } = data;
+    const { duration, startDate, dates } = data;
     const updatedData = { ...data };
 
-    if (duration !== 0 && startDate) {
+    if (duration !== 0 && !startDate || duration === 0 && !dates) {
+      updatedData.dates = null;
+      delete updatedData.startDate;
+      return updatedData;
+    }
+
+    if (duration !== 0) {
       updatedData.dates = [
         dayjs(startDate).toString(),
         dayjs(startDate)

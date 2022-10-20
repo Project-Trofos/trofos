@@ -74,6 +74,7 @@ describe('backlogController tests', () => {
           points: 1,
           description: 'Another test description here',
           project_id: 123,
+          status: 'todo',
         },
       ];
       backlogServiceSpies.listBacklogs.mockResolvedValueOnce(expectedBacklogs);
