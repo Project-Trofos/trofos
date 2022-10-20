@@ -31,7 +31,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const renderSprintStatusButton = () => {
     switch (sprint.status) {
@@ -53,9 +53,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
         header={
           <div className="sprint-card-inner-container">
             <div className="sprint-card-name">{sprint.name}</div>
-            <div className="sprint-status-button">
-              {renderSprintStatusButton()}
-            </div>
+            <div className="sprint-status-button">{renderSprintStatusButton()}</div>
             {sprint.start_date && sprint.end_date && (
               <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
                 'DD/MM/YYYY',

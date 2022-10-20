@@ -65,7 +65,7 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
     const { duration, startDate, dates } = data;
     const updatedData = { ...data };
 
-    if (duration !== 0 && !startDate || duration === 0 && !dates) {
+    if ((duration !== 0 && !startDate) || (duration === 0 && !dates)) {
       updatedData.dates = null;
       delete updatedData.startDate;
       return updatedData;

@@ -81,7 +81,7 @@ describe('sprint.service tests', () => {
         status: 'current',
       };
 
-      const sprintToUpdate: {sprintId: number; status: 'upcoming' | 'current' | 'completed';} = {
+      const sprintToUpdate: { sprintId: number; status: 'upcoming' | 'current' | 'completed' } = {
         sprintId: 1,
         status: 'current',
       };

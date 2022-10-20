@@ -106,15 +106,24 @@ function ProjectSprints(): JSX.Element {
       </div>
       <div className="sprint-list">
         <Title level={5}>Current Sprints:</Title>
-        <List dataSource={sprints?.filter(sprint => sprint.status === 'current')} renderItem={renderSprintListingCards} />
+        <List
+          dataSource={sprints?.filter((sprint) => sprint.status === 'current')}
+          renderItem={renderSprintListingCards}
+        />
       </div>
       <div className="sprint-list">
         <Title level={5}>Upcoming Sprints:</Title>
-        <List dataSource={sprints?.filter(sprint => sprint.status === 'upcoming')} renderItem={renderSprintListingCards} />
+        <List
+          dataSource={sprints?.filter((sprint) => sprint.status === 'upcoming')}
+          renderItem={renderSprintListingCards}
+        />
       </div>
       <div className="sprint-list">
         <Title level={5}>Completed Sprints:</Title>
-        <List dataSource={sprints?.filter(sprint => sprint.status === 'completed')} renderItem={renderSprintListingCards} />
+        <List
+          dataSource={sprints?.filter((sprint) => sprint.status === 'completed')}
+          renderItem={renderSprintListingCards}
+        />
       </div>
     </div>
   );

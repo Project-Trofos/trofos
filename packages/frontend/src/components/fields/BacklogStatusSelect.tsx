@@ -9,22 +9,18 @@ type BacklogStatusSelectPropsTypes = {
 };
 
 const STATUS = [
-	{id: 'todo', name: 'To do'},
-	{id: 'in_progress', name: 'In progress'},
-	{id: 'done', name: 'Done'},
-]
+  { id: 'todo', name: 'To do' },
+  { id: 'in_progress', name: 'In progress' },
+  { id: 'done', name: 'Done' },
+];
 
 const { Option } = Select;
 
 function BacklogStatusSelect(props: BacklogStatusSelectPropsTypes): JSX.Element {
-	const { value, onChange, className } = props;
+  const { value, onChange, className } = props;
 
   return (
-    <Select
-      value={value}
-      onChange={onChange}
-      className={`backlog-status-select ${value} ${className}`}
-    >
+    <Select value={value} onChange={onChange} className={`backlog-status-select ${value} ${className}`}>
       {STATUS.map((option) => (
         <Option key={option.id} value={option.id} className="backlog-status-option">
           {option.name}
