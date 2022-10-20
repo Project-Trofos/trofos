@@ -29,6 +29,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
       message.success('Sprint updated');
       console.log('Success');
     } catch (e) {
+      message.error('Failed to update sprint');
       console.error(e);
     }
   };

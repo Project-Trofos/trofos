@@ -7,7 +7,7 @@ import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
 const newSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { dates, duration } = req.body;
-    if (duration < 0 || duration > 4) {
+    if (duration && (duration < 0 || duration > 4)) {
       throw new BadRequestError('Duration is invalid');
     }
     if (dates && dates.length !== 2) {
