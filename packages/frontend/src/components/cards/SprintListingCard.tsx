@@ -1,8 +1,8 @@
 import React from 'react';
-import { Collapse } from 'antd';
+import { Button, Collapse, message } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import type { Sprint } from '../../api/sprint';
+import { Sprint, useUpdateSprintMutation } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
 import './SprintListingCard.css';
@@ -11,9 +11,40 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
   const { Panel } = Collapse;
 
+  const [updateSprint] = useUpdateSprintMutation();
+
   const handleSprintOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
     setSprint(sprint);
     setIsModalVisible(true);
+  };
+
+  const handleSprintStatusUpdate = async (updatedStatus: 'upcoming' | 'current' | 'completed') => {
+    const payload = {
+      status: updatedStatus,
+      sprintId: sprint.id,
+    };
+
+    try {
+      await updateSprint(payload).unwrap();
+      message.success('Sprint updated');
+      console.log('Success');
+    } catch (e) {
+      message.error('Failed to update sprint');
+      console.error(e);
+    }
+  };
+
+  const renderSprintStatusButton = () => {
+    switch (sprint.status) {
+      case 'upcoming':
+        return <Button onClick={() => handleSprintStatusUpdate('current')}>Start Sprint</Button>;
+      case 'current':
+        return <Button onClick={() => handleSprintStatusUpdate('completed')}>Complete Sprint</Button>;
+      case 'completed':
+        return <Button onClick={() => handleSprintStatusUpdate('upcoming')}>Reopen Sprint</Button>;
+      default:
+        return <div>{sprint.status}</div>;
+    }
   };
 
   return (
@@ -23,6 +54,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
         header={
           <div className="sprint-card-inner-container">
             <div className="sprint-card-name">{sprint.name}</div>
+            <div className="sprint-status-button">{renderSprintStatusButton()}</div>
             {sprint.start_date && sprint.end_date && (
               <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
                 'DD/MM/YYYY',

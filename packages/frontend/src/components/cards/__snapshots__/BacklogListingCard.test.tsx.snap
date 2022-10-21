@@ -13,6 +13,9 @@ exports[`BacklogCard test renders backlog card with correct details 1`] = `
       A Test Summary
     </div>
     <div>
+      todo
+    </div>
+    <div>
       story
     </div>
     <div

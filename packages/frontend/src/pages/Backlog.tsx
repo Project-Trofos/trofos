@@ -12,6 +12,7 @@ import type { Backlog as BacklogType } from '../api/backlog';
 import './Backlog.css';
 import BacklogMenu from '../components/dropdowns/BacklogMenu';
 import { useGetProjectQuery } from '../api/project';
+import BacklogStatusSelect from '../components/fields/BacklogStatusSelect';
 
 function Backlog(): JSX.Element {
   const params = useParams();
@@ -139,6 +140,9 @@ function Backlog(): JSX.Element {
           </div>
         </div>
         <div className="backlog-sidebar-container">
+          <Form.Item name="status">
+            <BacklogStatusSelect />
+          </Form.Item>
           <div className="backlog-panel-container">
             <div>
               <span>Assignee</span>

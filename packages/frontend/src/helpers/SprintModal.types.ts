@@ -4,12 +4,12 @@ export interface SprintFormFields extends FormData {
   projectId: number;
   name: string;
   duration: number;
-  dates?: string[];
+  dates?: string[] | null;
   startDate?: string;
   goals?: string;
 }
 
-export interface SprintUpdatePayload extends Omit<SprintFormFields, 'projectId'> {
+export interface SprintUpdatePayload extends Partial<Omit<SprintFormFields, 'projectId'>> {
   sprintId: number;
 }
 

@@ -19,3 +19,7 @@
 li.sprint-card-container.ant-list-item:last-child {
   border-bottom: 1px solid #eee;
 }
+
+.sprint-list {
+  margin-bottom: 20px;
+}

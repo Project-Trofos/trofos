@@ -66,6 +66,7 @@ describe('backlog.service tests', () => {
           points: 1,
           description: 'Another test description here',
           project_id: 123,
+          status: 'todo',
         },
       ];
       const projectId = 123;

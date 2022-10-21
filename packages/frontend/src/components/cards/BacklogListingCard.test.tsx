@@ -15,6 +15,7 @@ describe('BacklogCard test', () => {
     points: 3,
     description: 'A test description here',
     project_id: 123,
+    status: 'todo',
   };
   const { baseElement } = render(<BacklogListingCard backlog={mockBacklog} projectKey="MOCK" />);
 

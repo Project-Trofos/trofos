@@ -14,6 +14,7 @@ describe('SprintCard test', () => {
     end_date: '2022-10-16 07:03:56',
     project_id: 123,
     goals: 'Some test goals',
+    status: 'upcoming',
     backlogs: [],
   };
 

@@ -10,6 +10,7 @@ export type Sprint = {
   start_date: string;
   end_date: string;
   project_id: number;
+  status: 'upcoming' | 'current' | 'completed';
   backlogs: Backlog[];
 };
 

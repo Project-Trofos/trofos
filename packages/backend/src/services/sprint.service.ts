@@ -36,8 +36,10 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
   return sprints;
 }
 
-async function updateSprint(sprintToUpdate: Omit<SprintFields, 'projectId'> & { sprintId: number }): Promise<Sprint> {
-  const { sprintId, name, dates, duration, goals } = sprintToUpdate;
+async function updateSprint(
+  sprintToUpdate: Partial<Omit<SprintFields, 'projectId'>> & { sprintId: number },
+): Promise<Sprint> {
+  const { sprintId, name, dates, duration, goals, status } = sprintToUpdate;
   const updatedSprint = await prisma.sprint.update({
     where: {
       id: sprintId,
@@ -46,8 +48,13 @@ async function updateSprint(sprintToUpdate: Omit<SprintFields, 'projectId'> & { 
       name,
       duration,
       goals,
-      start_date: dates ? new Date(dates[0]) : null,
-      end_date: dates ? new Date(dates[1]) : null,
+      ...(dates !== undefined
+        ? {
+            start_date: dates ? new Date(dates[0]) : null,
+            end_date: dates ? new Date(dates[1]) : null,
+          }
+        : {}),
+      status,
     },
   });
 
