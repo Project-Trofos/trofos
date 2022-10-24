@@ -19,7 +19,7 @@ exports[`CourseCard test renders course card with correct details 1`] = `
               class="ant-card-meta-title"
             >
               <a
-                href="/course/CS3203/overview"
+                href="/course/CS3203/2022/1/overview"
               >
                 Software Engineering Project
               </a>
@@ -49,7 +49,7 @@ exports[`CourseCard test renders course card with correct details 1`] = `
         >
           <span>
             <a
-              href="/course/CS3203/settings"
+              href="/course/CS3203/2022/1/settings"
             >
               <span
                 aria-label="setting"
