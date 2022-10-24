@@ -6,7 +6,11 @@ import ProjectTable from '../components/tables/ProjectTable';
 
 export default function CourseOverview(): JSX.Element {
   const params = useParams();
-  const { filteredProjects, isLoading } = useCourse(params.courseId);
+  const { filteredProjects, isLoading } = useCourse(
+    params.courseId,
+    Number(params.courseYear),
+    Number(params.courseSem),
+  );
 
   return (
     <Container>

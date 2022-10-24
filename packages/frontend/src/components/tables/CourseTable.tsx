@@ -27,7 +27,7 @@ export default function CourseTable({ courses: projects, isLoading, heading, con
         </Space>
         <Table
           dataSource={projects}
-          rowKey={(project) => project.id}
+          rowKey={(project) => `${project.id}-${project.year}-${project.sem}`}
           loading={isLoading}
           bordered
           size="small"
@@ -54,7 +54,7 @@ export default function CourseTable({ courses: projects, isLoading, heading, con
             dataIndex="action"
             render={(_, record: Course) => (
               <Space size="middle">
-                <Link to={`/course/${record.id}/overview`}>Go to</Link>
+                <Link to={`/course/${record.id}/${record.year}/${record.sem}/overview`}>Go to</Link>
               </Space>
             )}
           />
