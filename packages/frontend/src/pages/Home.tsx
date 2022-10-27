@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Space, Typography } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useGetUserInfoQuery, UserRole } from '../api/auth';
+import { useGetUserInfoQuery } from '../api/auth';
 import ProjectsPage from './Projects';
 import FacultyDashboard from './FacultyDashboard';
 import conditionalRender from '../helpers/conditionalRender';
@@ -26,11 +26,10 @@ export default function HomePage(): JSX.Element {
     );
   }
 
-  conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [
-    UserPermissionActions.READ_COURSE,
-    UserPermissionActions.ADMIN,
-  ]);
-
-  // Default to projects page
-  return <ProjectsPage />;
+  return (
+    conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [
+      UserPermissionActions.READ_COURSE,
+      UserPermissionActions.ADMIN,
+    ]) || <ProjectsPage />
+  );
 }

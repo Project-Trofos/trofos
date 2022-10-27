@@ -41,7 +41,7 @@ function App() {
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />
-          <Route path="course/:courseId" element={<Course />}>
+          <Route path="course/:courseId/:courseYear/:courseSem" element={<Course />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
             <Route path="users" element={<CoursePeople />} />

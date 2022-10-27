@@ -360,7 +360,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                           >
                             <tr
                               class="ant-table-row ant-table-row-level-0"
-                              data-row-key="course_id"
+                              data-row-key="course_id-2022-10"
                             >
                               <td
                                 class="ant-table-cell"
@@ -392,7 +392,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                     class="ant-space-item"
                                   >
                                     <a
-                                      href="/course/course_id/overview"
+                                      href="/course/course_id/2022/10/overview"
                                     >
                                       Go to
                                     </a>

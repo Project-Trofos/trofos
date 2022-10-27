@@ -94,7 +94,7 @@ export const useProject = (projectId: number) => {
 };
 
 // Get course information by id
-export const useCourse = (courseId?: string) => {
+export const useCourse = (courseId?: string, year?: number, sem?: number) => {
   const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery();
   const { data: projects } = useGetAllProjectsQuery();
 
@@ -102,11 +102,15 @@ export const useCourse = (courseId?: string) => {
   const [addUser] = useAddCourseUserMutation();
 
   const course = useMemo(() => {
-    if (!courses || courses.length === 0 || !courseId) {
+    if (!courses || courses.length === 0 || !courseId || !year || !sem) {
       return undefined;
     }
-    return courses.filter((p) => p.id.toString() === courseId)[0];
-  }, [courses, courseId]);
+    const possibleCourses = courses.filter((p) => p.id === courseId && p.year === year && p.sem === sem);
+    if (possibleCourses.length === 0) {
+      return undefined;
+    }
+    return possibleCourses[0];
+  }, [courses, courseId, year, sem]);
 
   const filteredProjects = useMemo(() => {
     if (!course || !projects) {

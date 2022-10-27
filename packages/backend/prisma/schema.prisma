@@ -95,6 +95,7 @@ model Backlog {
   project_id    Int
   points        Int?
   description   String?
+  status        BacklogStatus     @default(todo)
   @@id([project_id, backlog_id])
 }
 
@@ -107,6 +108,7 @@ model Sprint {
   project       Project           @relation(fields: [project_id], references: [id])
   project_id    Int
   goals         String?
+  status        SprintStatus      @default(upcoming)
   backlogs      Backlog[]
 }
 
@@ -161,4 +163,16 @@ enum BacklogPriority {
   medium
   low
   very_low
+}
+
+enum BacklogStatus {
+  todo
+  in_progress
+  done
+}
+
+enum SprintStatus {
+  upcoming
+  current
+  completed
 }

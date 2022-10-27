@@ -26,10 +26,10 @@ export default function CoursePage(): JSX.Element {
 
   const selectedTab = useMemo(() => {
     const split = location.pathname.split('/');
-    return split[3];
+    return split[5];
   }, [location.pathname]);
 
-  const { course } = useCourse(params.courseId);
+  const { course } = useCourse(params.courseId, Number(params.courseYear), Number(params.courseSem));
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -87,7 +87,10 @@ export default function CoursePage(): JSX.Element {
           <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>
+                <Link
+                  style={{ textDecoration: 'none' }}
+                  to={`/course/${course.id}/${course.year}/${course.sem}/overview`}
+                >
                   Overview
                 </Link>
               }
@@ -95,7 +98,7 @@ export default function CoursePage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/users`}>
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/${course.year}/${course.sem}/users`}>
                   People
                 </Link>
               }
@@ -103,7 +106,10 @@ export default function CoursePage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
+                <Link
+                  style={{ textDecoration: 'none' }}
+                  to={`/course/${course.id}/${course.year}/${course.sem}/settings`}
+                >
                   Settings
                 </Link>
               }

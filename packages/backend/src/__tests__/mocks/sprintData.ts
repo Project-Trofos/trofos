@@ -9,6 +9,7 @@ export const mockSprintData: Sprint = {
   end_date: new Date('2022-10-16 07:03:56'),
   project_id: 123,
   goals: 'Some test goals',
+  status: 'upcoming',
 };
 
 export const mockSprintFields: SprintFields = {
