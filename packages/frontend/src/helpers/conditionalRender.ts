@@ -1,6 +1,6 @@
-function conditionalRender(componentToRender: any, userActions: string[], allowedActions: string[] | undefined) {
+function conditionalRender(componentToRender: any, userActions: string[], allowedActions: string[] | undefined, defaultComponent : any = null) {
   const canDisplay = userActions?.filter((userAction) => allowedActions?.includes(userAction)).length !== 0;
-  return canDisplay ? componentToRender : null;
+  return canDisplay ? componentToRender : defaultComponent;
 }
 
 export default conditionalRender;
