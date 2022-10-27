@@ -46,7 +46,7 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
     <Card
       className="course-card"
       actions={[
-        <Link to={`/course/${course.id}/settings`}>
+        <Link to={`/course/${course.id}/${course.year}/${course.sem}/settings`}>
           <SettingOutlined key="setting" />
         </Link>,
         <Dropdown overlay={menu} trigger={['click']}>
@@ -55,7 +55,7 @@ export default function CourseCard(props: CourseCardProps): JSX.Element {
       ]}
     >
       <Meta
-        title={<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>}
+        title={<Link to={`/course/${course.id}/${course.year}/${course.sem}/overview`}>{course.cname}</Link>}
         description={
           <>
             <Tag color="green">{course.id}</Tag>

@@ -12,7 +12,7 @@ import { getErrorMessage } from '../helpers/error';
 
 export default function CourseSettings(): JSX.Element {
   const params = useParams();
-  const { course } = useCourse(params.courseId);
+  const { course } = useCourse(params.courseId, Number(params.courseYear), Number(params.courseSem));
 
   const [updateCourse] = useUpdateCourseMutation();
   const [isUpdating, setIsUpdating] = useState(false);
