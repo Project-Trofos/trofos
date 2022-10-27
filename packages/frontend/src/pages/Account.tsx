@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Tabs } from 'antd';
 import UserInformationTab from '../components/tabs/UserInformation';
 import ChangePasswordTab from '../components/tabs/ChangePassword';
+import UserAccessTab from '../components/tabs/UserAccess';
 
 const { Content } = Layout;
 
@@ -15,6 +16,9 @@ export default function AccountPage(): JSX.Element {
           </Tabs.TabPane>
           <Tabs.TabPane tab="Change Password" key="change-password">
             <ChangePasswordTab />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Access Management" key="access-management">
+            <UserAccessTab />
           </Tabs.TabPane>
         </Tabs>
       </Content>
