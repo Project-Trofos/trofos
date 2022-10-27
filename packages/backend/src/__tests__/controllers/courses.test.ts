@@ -8,10 +8,12 @@ import { projectsData } from '../mocks/projectData';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
+import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
   create: jest.spyOn(course, 'create'),
+  bulkCreate: jest.spyOn(course, 'bulkCreate'),
   getByPk: jest.spyOn(course, 'getByPk'),
   update: jest.spyOn(course, 'update'),
   remove: jest.spyOn(course, 'remove'),
@@ -179,6 +181,86 @@ describe('course controller tests', () => {
       await courseController.create(mockReq, mockRes);
 
       expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('bulkCreate', () => {
+    it('should return course created', async () => {
+      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: mockBulkCreateBody,
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.bulkCreate(mockReq, mockRes);
+
+      expect(spies.bulkCreate).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
+    });
+
+    it('should return bad request if user session is not defined', async () => {
+      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: mockBulkCreateBody,
+      });
+      const mockRes = createResponse();
+
+      await courseController.bulkCreate(mockReq, mockRes);
+
+      expect(spies.bulkCreate).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should return bad request if id, year, sem or name is not provided', async () => {
+      const tests = ['courseId', 'courseYear', 'courseSem', 'courseName'].map(async (k) => {
+        spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+        const mockReq = createRequest({
+          body: {
+            ...mockBulkCreateBody,
+            [k]: undefined,
+          },
+        });
+        const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+        await courseController.bulkCreate(mockReq, mockRes);
+
+        expect(spies.bulkCreate).not.toHaveBeenCalled();
+        expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      });
+      await Promise.all(tests);
+    });
+
+    it('should return bad request project is malformed', async () => {
+      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: {
+          ...mockBulkCreateBody,
+          projects: [{ users: [] }],
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.bulkCreate(mockReq, mockRes);
+
+      expect(spies.bulkCreate).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should return bad request user id is malformed', async () => {
+      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: {
+          ...mockBulkCreateBody,
+          projects: [{ projectName: 'p1', users: [{ invalid: 'data' }] }],
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.bulkCreate(mockReq, mockRes);
+
+      expect(spies.bulkCreate).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });

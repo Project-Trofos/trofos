@@ -15,6 +15,7 @@ import {
 import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
 import {
   AddProjectAndCourseRequestBody,
+  BulkCreateProjectBody,
   CourseRequestBody,
   OptionRequestBody,
   ProjectIdRequestBody,
@@ -73,6 +74,32 @@ async function create(req: express.Request, res: express.Response) {
       body.isPublic,
       body.description,
     );
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function bulkCreate(req: express.Request, res: express.Response) {
+  try {
+    const body = req.body as BulkCreateProjectBody;
+    const userSession = res.locals.userSession as UserSession | undefined;
+
+    console.log(body);
+
+    assertUserSessionIsValid(userSession);
+    assertCourseIdIsValid(body.courseId);
+    assertCourseYearIsNumber(body.courseYear);
+    assertCourseSemIsNumber(body.courseSem);
+    assertCourseNameIsValid(body.courseName);
+
+    body.projects.forEach((p) => {
+      assertProjectNameIsValid(p.projectName);
+      p.users.forEach((u) => assertUserIdIsValid(u.userId));
+    });
+
+    const result = await course.bulkCreate(body as Required<BulkCreateProjectBody>, userSession.user_id);
+
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -267,6 +294,7 @@ export default {
   getAll,
   get,
   create,
+  bulkCreate,
   update,
   remove,
   getUsers,

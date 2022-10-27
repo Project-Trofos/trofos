@@ -5,6 +5,7 @@ import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
+import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -89,6 +90,28 @@ describe('course.service tests', () => {
         newCourse.public,
       );
       expect(result).toEqual<Course>(coursesData[INDEX]);
+    });
+  });
+
+  describe('bulkCreate', () => {
+    it('should return created course if course exists', async () => {
+      const mockCourse = coursesData[0];
+      const mockProject = projectData[0];
+      prismaMock.course.findFirst.mockResolvedValueOnce(mockCourse);
+      prismaMock.project.create.mockResolvedValueOnce(mockProject);
+
+      const result = await course.bulkCreate(mockBulkCreateBody, 1);
+      expect(result).toEqual<Course>(mockCourse);
+    });
+
+    it('should return created course if course does not exist', async () => {
+      const mockCourse = coursesData[0];
+      const mockProject = projectData[0];
+      prismaMock.course.findFirst.mockResolvedValueOnce(null);
+      prismaMock.$transaction.mockResolvedValueOnce([mockCourse, mockProject]);
+
+      const result = await course.bulkCreate(mockBulkCreateBody, 1);
+      expect(result).toEqual<Course>(mockCourse);
     });
   });
 

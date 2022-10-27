@@ -4,6 +4,7 @@ import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
+import { BulkCreateProjectBody } from '../controllers/requestTypes';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
   let result;
@@ -99,6 +100,59 @@ async function create(
   });
 
   return result;
+}
+
+async function bulkCreate(course: Required<BulkCreateProjectBody>, userId: number): Promise<Course> {
+  const current = await prisma.course.findFirst({
+    where: {
+      id: course.courseId,
+      year: Number(course.courseYear),
+      sem: Number(course.courseSem),
+    },
+  });
+
+  // Create projects and users
+  const projects = await course.projects.map((p) =>
+    prisma.project.create({
+      data: {
+        pname: p.projectName,
+        pkey: p.projectKey,
+        description: p.description,
+        public: p.isPublic,
+        course_id: course.courseId,
+        course_year: Number(course.courseYear),
+        course_sem: Number(course.courseSem),
+        users: {
+          createMany: {
+            // Add the creator in too
+            data: [...p.users, { userId }].map((u) => ({ user_id: Number(u.userId) })),
+          },
+        },
+      },
+    }),
+  );
+
+  if (current) {
+    // If course already exists,
+    // Only need to create projects and users, then link to the course
+    prisma.$transaction(projects);
+    return current;
+  }
+
+  // If course does not exist,
+  // Need to create course, projects and users
+  const courseNew = prisma.course.create({
+    data: {
+      id: course.courseId,
+      year: Number(course.courseYear),
+      sem: Number(course.courseSem),
+      cname: course.courseName,
+    },
+  });
+
+  const transaction = await prisma.$transaction([courseNew, ...projects]);
+
+  return transaction[0];
 }
 
 async function update(
@@ -326,6 +380,7 @@ async function removeProject(
 
 export default {
   create,
+  bulkCreate,
   getByPk,
   getAll,
   update,
