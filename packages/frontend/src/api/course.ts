@@ -164,7 +164,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: ['Course', 'Project'],
     }),
 
-    // Removing a project to a course will invalidate all courses and all projects
+    // Bulk creation of course will invalidate all Courses, all Projects, and all Users
     bulkCreateProjects: builder.mutation<
       Course,
       {
