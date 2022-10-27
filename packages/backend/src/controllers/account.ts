@@ -15,7 +15,9 @@ const loginUser = async (req: express.Request, res: express.Response) => {
     const userAuth = await authenticationService.validateUser(userEmail, userPassword);
 
     if (!userAuth.isValidUser) {
-      return res.status(StatusCodes.UNAUTHORIZED).send("Incorrect user credentials. Please double-check your credentials.");
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send('Incorrect user credentials. Please double-check your credentials.');
     }
 
     const userRoleInformation = await roleService.getUserRoleInformation(userEmail);

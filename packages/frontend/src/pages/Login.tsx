@@ -13,8 +13,8 @@ export default function LoginPage(): JSX.Element {
     try {
       await loginUser(userLoginInfo).unwrap();
       navigate('/projects');
-    } catch (err : any) {
-      message.error(err.data)
+    } catch (err: any) {
+      message.error(err.data);
     }
   };
 
