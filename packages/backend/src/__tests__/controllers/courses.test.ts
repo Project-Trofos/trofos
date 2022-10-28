@@ -200,19 +200,6 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    it('should return bad request if user session is not defined', async () => {
-      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
-      const mockReq = createRequest({
-        body: mockBulkCreateBody,
-      });
-      const mockRes = createResponse();
-
-      await courseController.bulkCreate(mockReq, mockRes);
-
-      expect(spies.bulkCreate).not.toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    });
-
     it('should return bad request if id, year, sem or name is not provided', async () => {
       const tests = ['courseId', 'courseYear', 'courseSem', 'courseName'].map(async (k) => {
         spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);

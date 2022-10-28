@@ -83,11 +83,7 @@ async function create(req: express.Request, res: express.Response) {
 async function bulkCreate(req: express.Request, res: express.Response) {
   try {
     const body = req.body as BulkCreateProjectBody;
-    const userSession = res.locals.userSession as UserSession | undefined;
 
-    console.log(body);
-
-    assertUserSessionIsValid(userSession);
     assertCourseIdIsValid(body.courseId);
     assertCourseYearIsNumber(body.courseYear);
     assertCourseSemIsNumber(body.courseSem);
@@ -98,7 +94,7 @@ async function bulkCreate(req: express.Request, res: express.Response) {
       p.users.forEach((u) => assertUserIdIsValid(u.userId));
     });
 
-    const result = await course.bulkCreate(body as Required<BulkCreateProjectBody>, userSession.user_id);
+    const result = await course.bulkCreate(body as Required<BulkCreateProjectBody>);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

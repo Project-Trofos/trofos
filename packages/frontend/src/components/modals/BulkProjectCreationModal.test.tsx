@@ -47,7 +47,7 @@ describe('test course creation modal', () => {
     const { baseElement } = setup(mockCourseData, { ...mockUserInfo, userId: 2 }, mockProjectData);
 
     // Ensure fields are present
-    expect(screen.getByText(/Number of students in a group:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Number of students in a project:/i)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
@@ -56,7 +56,7 @@ describe('test course creation modal', () => {
   it('should not render fields if there no user without a project', () => {
     setup(mockCourseData, mockUserInfo, mockProjectData);
 
-    expect(screen.queryByText(/Number of students in a group:/i)).toBeNull();
+    expect(screen.queryByText(/Number of students in a project:/i)).toBeNull();
   });
 
   it('should be able to generate groups', async () => {

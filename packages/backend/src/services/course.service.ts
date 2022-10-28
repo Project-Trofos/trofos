@@ -102,7 +102,7 @@ async function create(
   return result;
 }
 
-async function bulkCreate(course: Required<BulkCreateProjectBody>, userId: number): Promise<Course> {
+async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Course> {
   const current = await prisma.course.findFirst({
     where: {
       id: course.courseId,
@@ -112,7 +112,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>, userId: numbe
   });
 
   // Create projects and users
-  const projects = await course.projects.map((p) =>
+  const projects = course.projects.map((p) =>
     prisma.project.create({
       data: {
         pname: p.projectName,
@@ -125,7 +125,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>, userId: numbe
         users: {
           createMany: {
             // Add the creator in too
-            data: [...p.users, { userId }].map((u) => ({ user_id: Number(u.userId) })),
+            data: [...p.users].map((u) => ({ user_id: Number(u.userId) })),
           },
         },
       },
@@ -135,7 +135,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>, userId: numbe
   if (current) {
     // If course already exists,
     // Only need to create projects and users, then link to the course
-    prisma.$transaction(projects);
+    await prisma.$transaction(projects);
     return current;
   }
 

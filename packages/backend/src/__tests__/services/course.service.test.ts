@@ -100,7 +100,7 @@ describe('course.service tests', () => {
       prismaMock.course.findFirst.mockResolvedValueOnce(mockCourse);
       prismaMock.project.create.mockResolvedValueOnce(mockProject);
 
-      const result = await course.bulkCreate(mockBulkCreateBody, 1);
+      const result = await course.bulkCreate(mockBulkCreateBody);
       expect(result).toEqual<Course>(mockCourse);
     });
 
@@ -110,7 +110,7 @@ describe('course.service tests', () => {
       prismaMock.course.findFirst.mockResolvedValueOnce(null);
       prismaMock.$transaction.mockResolvedValueOnce([mockCourse, mockProject]);
 
-      const result = await course.bulkCreate(mockBulkCreateBody, 1);
+      const result = await course.bulkCreate(mockBulkCreateBody);
       expect(result).toEqual<Course>(mockCourse);
     });
   });

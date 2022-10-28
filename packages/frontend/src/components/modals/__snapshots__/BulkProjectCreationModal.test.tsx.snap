@@ -95,7 +95,7 @@ exports[`test course creation modal should render fields if there are users with
                   <div
                     class="ant-typography"
                   >
-                    Students without groups will be assigned a group randomly.
+                    Students without a project will be assigned a project randomly.
                   </div>
                 </div>
                 <div
@@ -111,7 +111,7 @@ exports[`test course creation modal should render fields if there are users with
                       <span
                         class="ant-typography"
                       >
-                        Number of students in a group:
+                        Number of students in a project:
                       </span>
                     </div>
                     <div

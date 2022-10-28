@@ -104,15 +104,15 @@ export default function BulkProjectCreationModal({
       <Button onClick={showModal}>Bulk Create</Button>
       <Modal title="Bulk Project Creation" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Space direction="vertical" style={{ width: '100%' }}>
-          <Typography.Paragraph>Students without groups will be assigned a group randomly.</Typography.Paragraph>
+          <Typography.Paragraph>Students without a project will be assigned a project randomly.</Typography.Paragraph>
           {usersWithoutProject.length === 0 ? (
             <Space>
-              <Typography.Text>There are no student without a group!</Typography.Text>
+              <Typography.Text>There are no students without a project!</Typography.Text>
             </Space>
           ) : (
             <>
               <Space>
-                <Typography.Text>Number of students in a group:</Typography.Text>
+                <Typography.Text>Number of students in a project:</Typography.Text>
                 <InputNumber min={1} onChange={(value) => setUsersPerGroup(value)} />
                 <Button onClick={() => setAllocations(generate())}>Generate</Button>
               </Space>
