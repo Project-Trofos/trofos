@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import './Login.css';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 
@@ -13,8 +13,8 @@ export default function LoginPage(): JSX.Element {
     try {
       await loginUser(userLoginInfo).unwrap();
       navigate('/projects');
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      message.error(err.data);
     }
   };
 
