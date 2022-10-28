@@ -71,7 +71,13 @@ export default function MainLayout() {
 
   // End of temporary section
 
-  const selectedKeys = useMemo(() => [location.pathname.split('/', 3).join('/')], [location.pathname]);
+  const selectedKeys = useMemo(() => {
+    // Check if a course is selected
+    if (location.pathname.split('/', 2)[1] === 'course') {
+      return [location.pathname.split('/', 5).join('/')];
+    }
+    return [location.pathname.split('/', 3).join('/')];
+  }, [location.pathname]);
 
   // True if onOpenChanged is trying to close submenu
   const [isClosingSubMenu, setIsClosingSubMenu] = useState(false);

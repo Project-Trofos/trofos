@@ -13,6 +13,9 @@ router.get('/', isAuthorizedRequest(Action.read_course, coursePolicy.POLICY_NAME
 // Create course
 router.post('/', isAuthorizedRequest(Action.create_course, coursePolicy.POLICY_NAME), course.create);
 
+// Create course
+router.post('/bulk', isAuthorizedRequest(Action.create_course, coursePolicy.POLICY_NAME), course.bulkCreate);
+
 // Create project and attach or create course
 router.post('/project', isAuthorizedRequest(Action.create_course, null), course.addProjectAndCourse);
 

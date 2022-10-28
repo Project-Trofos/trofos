@@ -38,3 +38,12 @@ export type AddProjectAndCourseRequestBody = {
   projectDescription?: string;
   courseDescription?: string;
 };
+
+export type BulkCreateProjectBody = {
+  courseId?: string;
+  courseYear?: string;
+  courseSem?: string;
+  courseName?: string;
+  isPublic?: string;
+  projects: (ProjectRequestBody & { users: UserRequestBody[] })[];
+};

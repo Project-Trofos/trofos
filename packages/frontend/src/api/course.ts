@@ -163,6 +163,35 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Course', 'Project'],
     }),
+
+    // Bulk creation of course will invalidate all Courses, all Projects, and all Users
+    bulkCreateProjects: builder.mutation<
+      Course,
+      {
+        courseId?: string;
+        courseYear?: number;
+        courseSem?: number;
+        courseName?: string;
+        isPublic?: boolean;
+        projects: {
+          projectName: string;
+          projectKey?: string;
+          isPublic?: boolean;
+          description?: string;
+          users: {
+            userId: number;
+          }[];
+        }[];
+      }
+    >({
+      query: (body) => ({
+        url: 'course/bulk',
+        method: 'POST',
+        body,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Course', 'Project', 'User'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -178,4 +207,5 @@ export const {
   useAddProjectAndCourseMutation,
   useRemoveProjectFromCourseMutation,
   useAddProjectToCourseMutation,
+  useBulkCreateProjectsMutation,
 } = extendedApi;
