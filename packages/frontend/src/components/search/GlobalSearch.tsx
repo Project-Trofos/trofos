@@ -25,7 +25,7 @@ export default function GlobalSearch(): JSX.Element {
     // Filter courses by search string
     const filteredCourses = courses
       .filter((c) => c.cname.toLowerCase().includes(searchString.toLowerCase()))
-      .map((c) => renderItem(c.cname, c.id, 'course'));
+      .map((c) => renderItem(c.cname, `${c.id}/${c.year}/${c.sem}`, 'course'));
     if (filteredCourses.length === 0) {
       return undefined;
     }
