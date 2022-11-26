@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Collapse, message } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useParams } from 'react-router-dom';
 import { Sprint, useUpdateSprintMutation } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
@@ -11,6 +12,9 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
   const { Panel } = Collapse;
 
+  const params = useParams();
+  const projectId = Number(params.projectId);
+
   const [updateSprint] = useUpdateSprintMutation();
 
   const handleSprintOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -18,32 +22,39 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     setIsModalVisible(true);
   };
 
-  const handleSprintStatusUpdate = async (updatedStatus: 'upcoming' | 'current' | 'completed') => {
+  const handleSprintStatusUpdate = async (
+    updatedStatus: 'upcoming' | 'current' | 'completed',
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+
     const payload = {
       status: updatedStatus,
       sprintId: sprint.id,
+      ...(updatedStatus === 'current' ? { projectId } : {}),
     };
 
     try {
       await updateSprint(payload).unwrap();
       message.success('Sprint updated');
       console.log('Success');
-    } catch (e) {
-      message.error('Failed to update sprint');
-      console.error(e);
+    } catch (err: any) {
+      message.error(err?.data?.error || 'Failed to update sprint');
+      console.error(err);
     }
   };
 
   const renderSprintStatusButton = () => {
     switch (sprint.status) {
       case 'upcoming':
-        return <Button onClick={() => handleSprintStatusUpdate('current')}>Start Sprint</Button>;
+        return <Button onClick={(e) => handleSprintStatusUpdate('current', e)}>Start Sprint</Button>;
       case 'current':
-        return <Button onClick={() => handleSprintStatusUpdate('completed')}>Complete Sprint</Button>;
+        return <Button onClick={(e) => handleSprintStatusUpdate('completed', e)}>Complete Sprint</Button>;
       case 'completed':
-        return <Button onClick={() => handleSprintStatusUpdate('upcoming')}>Reopen Sprint</Button>;
+        return <Button onClick={(e) => handleSprintStatusUpdate('current', e)}>Reopen Sprint</Button>;
       default:
-        return <div>{sprint.status}</div>;
+        // eslint-disable-next-line react/jsx-no-useless-fragment
+        return <></>;
     }
   };
 

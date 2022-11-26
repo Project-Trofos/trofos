@@ -42,11 +42,13 @@ export function assertUserIdIsValid(userId: string | undefined): asserts userId 
 }
 
 // Assert projectId is not undefined and it is a number
-export function assertProjectIdIsValid(projectId: string | undefined): asserts projectId is string {
+export function assertProjectIdIsValid(projectId: string | number | undefined): asserts projectId is string | number {
   if (!projectId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('projectId'));
   }
-  assertStringIsNumberOrThrow(projectId, getFieldNotNumberErrorMessage('projectId'));
+  if (typeof projectId !== 'number') {
+    assertStringIsNumberOrThrow(projectId, getFieldNotNumberErrorMessage('projectId'));
+  }
 }
 
 export function assertProjectNameIsValid(projectName: string | undefined): asserts projectName is string {

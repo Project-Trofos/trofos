@@ -35,7 +35,7 @@ const listSprints = async (req: express.Request, res: express.Response) => {
 
 const updateSprint = async (req: express.Request, res: express.Response) => {
   try {
-    const { sprintId, dates, duration } = req.body;
+    const { sprintId, dates, duration, status } = req.body;
     if (!sprintId) {
       throw new BadRequestError('sprintId cannot be empty');
     }
@@ -45,7 +45,9 @@ const updateSprint = async (req: express.Request, res: express.Response) => {
     if (dates && dates.length !== 2) {
       throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
     }
-    const sprint: Sprint = await sprintService.updateSprint(req.body);
+    const sprint: Sprint = await (status
+      ? sprintService.updateSprintStatus(req.body)
+      : sprintService.updateSprint(req.body));
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {
     return getDefaultErrorRes(error, res);

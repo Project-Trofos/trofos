@@ -4,5 +4,5 @@ export type SprintFields = {
   dates?: string[] | null;
   duration: number;
   goals?: string;
-  status?: 'upcoming' | 'current' | 'completed';
+  status?: 'upcoming' | 'current' | 'completed' | 'closed';
 };

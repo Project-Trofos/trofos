@@ -175,4 +175,5 @@ enum SprintStatus {
   upcoming
   current
   completed
+  closed
 }

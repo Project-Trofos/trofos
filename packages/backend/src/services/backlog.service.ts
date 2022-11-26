@@ -60,10 +60,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   return backlog;
 }
 
-async function listBacklogs(projectId: number): Promise<Backlog[]> {
+async function listBacklogs(projectId: number, shouldListUnassignedBacklogs: boolean): Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
+      ...(shouldListUnassignedBacklogs ? { sprint_id: null } : {}),
     },
   });
 
