@@ -80,9 +80,20 @@ describe('backlogController tests', () => {
       backlogServiceSpies.listBacklogs.mockResolvedValueOnce(expectedBacklogs);
 
       await backlogController.listBacklogs(mockRequest, mockResponse);
-      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId, false);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
+    });
+
+    it('should call listBacklogs with true param and return status 200 when called with valid projectId', async () => {
+      const mockRequestForUnassignedBacklogs = createRequest({
+        params: mockProjectId,
+        originalUrl: '/listUnassignedBacklogs/123',
+      });
+
+      await backlogController.listBacklogs(mockRequestForUnassignedBacklogs, mockResponse);
+      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId, true);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
     });
 
     it('should throw an error and return status 400 when projectId is missing', async () => {
@@ -98,7 +109,7 @@ describe('backlogController tests', () => {
       backlogServiceSpies.listBacklogs.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
 
       await backlogController.listBacklogs(mockRequest, mockResponse);
-      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId, false);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });

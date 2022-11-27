@@ -71,7 +71,7 @@ describe('backlog.service tests', () => {
       ];
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
-      await expect(backlogService.listBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogs(projectId, false)).resolves.toEqual(mockReturnedBacklogs);
     });
   });
 
