@@ -56,6 +56,10 @@ export type ProjectData = Project & {
     id: number;
     name: string;
   }[];
+  backlogStatuses: {
+    name: string;
+    type: 'todo' | 'in_progress' | 'done';
+  }[];
 };
 
 export type UserData = {

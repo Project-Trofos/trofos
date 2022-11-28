@@ -2,7 +2,11 @@ import { UserSession } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
-import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
+import {
+  assertProjectNameIsValid,
+  assertStatusNameIsValid,
+  assertUserSessionIsValid,
+} from '../helpers/error/assertions';
 import project from '../services/project.service';
 import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
 
@@ -136,6 +140,69 @@ async function removeUser(req: express.Request, res: express.Response) {
   }
 }
 
+async function createBacklogStatus(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { name } = req.body;
+
+    assertProjectIdIsValid(projectId);
+    assertStatusNameIsValid(name);
+
+    const result = await project.createBacklogStatus(Number(projectId), name);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function getBacklogStatus(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.getBacklogStatus(Number(projectId));
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function updateBacklogStatus(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { currentName, updatedName } = req.body;
+
+    assertProjectIdIsValid(projectId);
+    assertStatusNameIsValid(currentName);
+    assertStatusNameIsValid(updatedName);
+
+    const result = await project.updateBacklogStatus(Number(projectId), currentName, updatedName);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function deleteBacklogStatus(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { name } = req.body;
+
+    assertProjectIdIsValid(projectId);
+    assertStatusNameIsValid(name);
+
+    const result = await project.deleteBacklogStatus(Number(projectId), name);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -145,4 +212,8 @@ export default {
   getUsers,
   addUser,
   removeUser,
+  createBacklogStatus,
+  getBacklogStatus,
+  updateBacklogStatus,
+  deleteBacklogStatus,
 };

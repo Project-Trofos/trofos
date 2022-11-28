@@ -1,4 +1,4 @@
-import { Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, Project, User, UsersOnProjects } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -95,6 +95,12 @@ async function getById(id: number): Promise<Project> {
           name: true,
         },
       },
+      backlogStatuses: {
+        select: {
+          name: true,
+          type: true,
+        },
+      },
       ...INCLUDE_USERS_ID_EMAIL,
     },
   });
@@ -118,6 +124,15 @@ async function create(
       users: {
         create: {
           user_id: userId,
+        },
+      },
+      backlogStatuses: {
+        createMany: {
+          data: [
+            { name: 'To do', type: 'todo' },
+            { name: 'In progress', type: 'in_progress' },
+            { name: 'Done', type: 'done' },
+          ],
         },
       },
     },
@@ -193,6 +208,60 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
   return result;
 }
 
+async function createBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+  const result = await prisma.backlogStatus.create({
+    data: {
+      project_id: projectId,
+      name,
+    },
+  });
+
+  return result;
+}
+
+async function getBacklogStatus(projectId: number): Promise<BacklogStatus[]> {
+  const result = await prisma.backlogStatus.findMany({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return result;
+}
+
+async function updateBacklogStatus(
+  projectId: number,
+  currentName: string,
+  updatedName: string,
+): Promise<BacklogStatus> {
+  const result = await prisma.backlogStatus.update({
+    where: {
+      project_id_name: {
+        project_id: projectId,
+        name: currentName,
+      },
+    },
+    data: {
+      name: updatedName,
+    },
+  });
+
+  return result;
+}
+
+async function deleteBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+  const result = await prisma.backlogStatus.delete({
+    where: {
+      project_id_name: {
+        project_id: projectId,
+        name,
+      },
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getAll,
@@ -202,4 +271,8 @@ export default {
   getUsers,
   addUser,
   removeUser,
+  createBacklogStatus,
+  getBacklogStatus,
+  updateBacklogStatus,
+  deleteBacklogStatus,
 };

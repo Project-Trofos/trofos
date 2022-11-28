@@ -6,23 +6,20 @@ type BacklogStatusSelectPropsTypes = {
   value?: string | number;
   onChange?(e: number | string | undefined): void;
   className?: string;
+  status: { name: string; type: 'todo' | 'in_progress' | 'done' }[];
 };
-
-const STATUS = [
-  { id: 'todo', name: 'To do' },
-  { id: 'in_progress', name: 'In progress' },
-  { id: 'done', name: 'Done' },
-];
 
 const { Option } = Select;
 
 function BacklogStatusSelect(props: BacklogStatusSelectPropsTypes): JSX.Element {
-  const { value, onChange, className } = props;
+  const { value, onChange, className, status } = props;
+
+  const selectStatusType = status.filter((s) => s.name === value)?.[0]?.type;
 
   return (
-    <Select value={value} onChange={onChange} className={`backlog-status-select ${value} ${className}`}>
-      {STATUS.map((option) => (
-        <Option key={option.id} value={option.id} className="backlog-status-option">
+    <Select value={value} onChange={onChange} className={`backlog-status-select ${selectStatusType} ${className}`}>
+      {status.map((option) => (
+        <Option key={option.name} value={option.name} className="backlog-status-option">
           {option.name}
         </Option>
       ))}

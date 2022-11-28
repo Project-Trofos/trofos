@@ -24,13 +24,34 @@ async function createProjectSeed(prisma: PrismaClient) {
     ],
   });
 
+  const backlogStatusCount = await prisma.backlogStatus.createMany({
+    data: [
+      { project_id: 901, name: 'To do', type: 'todo' },
+      { project_id: 901, name: 'In progress', type: 'in_progress' },
+      { project_id: 901, name: 'Done', type: 'done' },
+      { project_id: 902, name: 'To do', type: 'todo' },
+      { project_id: 902, name: 'In progress', type: 'in_progress' },
+      { project_id: 902, name: 'Done', type: 'done' },
+    ],
+  });
+
   console.log('created projects %s', projects);
+  console.log('created default backlog status %s', backlogStatusCount);
 
   const project3 = await prisma.project.create({
     data: {
       id: 904,
       pname: 'project3',
       description: 'project3_description',
+      backlogStatuses: {
+        createMany: {
+          data: [
+            { name: 'To do', type: 'todo' },
+            { name: 'In progress', type: 'in_progress' },
+            { name: 'Done', type: 'done' },
+          ],
+        },
+      },
     },
   });
 

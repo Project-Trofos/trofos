@@ -68,6 +68,8 @@ model Project {
   backlog_counter Int               @default(0)
 
   sprints         Sprint[]
+
+  backlogStatuses BacklogStatus[]
 }
 
 model UsersOnProjects {
@@ -95,8 +97,18 @@ model Backlog {
   project_id    Int
   points        Int?
   description   String?
-  status        BacklogStatus     @default(todo)
+  backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
+  status        String
   @@id([project_id, backlog_id])
+}
+
+model BacklogStatus {
+  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id    Int
+  name          String
+  type          BacklogStatusType @default(in_progress)
+  backlogs      Backlog[]
+  @@id([project_id, name])
 }
 
 model Sprint {
@@ -165,7 +177,7 @@ enum BacklogPriority {
   very_low
 }
 
-enum BacklogStatus {
+enum BacklogStatusType {
   todo
   in_progress
   done

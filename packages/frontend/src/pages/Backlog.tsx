@@ -141,7 +141,7 @@ function Backlog(): JSX.Element {
         </div>
         <div className="backlog-sidebar-container">
           <Form.Item name="status">
-            <BacklogStatusSelect />
+            <BacklogStatusSelect status={projectData?.backlogStatuses || []} />
           </Form.Item>
           <div className="backlog-panel-container">
             <div>

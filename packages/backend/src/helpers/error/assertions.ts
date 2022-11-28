@@ -66,3 +66,9 @@ export function assertInputIsNotEmpty(input: any, inputName: string) {
 export function assertUserSessionIsValid(userSession: UserSession | undefined): asserts userSession is UserSession {
   assertInputIsNotEmpty(userSession, 'userSession');
 }
+
+export function assertStatusNameIsValid(name: string | undefined): asserts name is string {
+  if (!name) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('name'));
+  }
+}

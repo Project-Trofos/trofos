@@ -128,6 +128,15 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
             data: [...p.users].map((u) => ({ user_id: Number(u.userId) })),
           },
         },
+        backlogStatuses: {
+          createMany: {
+            data: [
+              { name: 'To do', type: 'todo' },
+              { name: 'In progress', type: 'in_progress' },
+              { name: 'Done', type: 'done' },
+            ],
+          },
+        },
       },
     }),
   );
@@ -318,6 +327,15 @@ async function addProjectAndCourse(
       users: {
         create: {
           user_id: userId,
+        },
+      },
+      backlogStatuses: {
+        createMany: {
+          data: [
+            { name: 'To do', type: 'todo' },
+            { name: 'In progress', type: 'in_progress' },
+            { name: 'Done', type: 'done' },
+          ],
         },
       },
     },
