@@ -4,7 +4,7 @@ exports[`test InputWithButton when rendering should render correct fields 1`] = 
 <body>
   <div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center"
+      class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-horizontal ant-space-align-center"
       style="display: flex;"
     >
       <div
@@ -12,7 +12,7 @@ exports[`test InputWithButton when rendering should render correct fields 1`] = 
         style="margin-right: 8px;"
       >
         <input
-          class="ant-input"
+          class="ant-input css-dev-only-do-not-override-1qhh31y"
           placeholder="placeholder"
           type="text"
           value=""
@@ -22,7 +22,7 @@ exports[`test InputWithButton when rendering should render correct fields 1`] = 
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default"
+          class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
           type="submit"
         >
           <span>

@@ -1,14 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test course creation modal should render fields if there are users without project 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
-      class="ant-btn ant-btn-default"
+      class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
       type="button"
     >
       <span>
@@ -18,7 +15,7 @@ exports[`test course creation modal should render fields if there are users with
   </div>
   <div>
     <div
-      class="ant-modal-root"
+      class="ant-modal-root css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-modal-mask"
@@ -30,7 +27,7 @@ exports[`test course creation modal should render fields if there are users with
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal"
+          class="ant-modal css-dev-only-do-not-override-1qhh31y"
           role="dialog"
           style="width: 520px;"
         >
@@ -85,7 +82,7 @@ exports[`test course creation modal should render fields if there are users with
               class="ant-modal-body"
             >
               <div
-                class="ant-space ant-space-vertical"
+                class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-vertical"
                 style="width: 100%;"
               >
                 <div
@@ -93,7 +90,7 @@ exports[`test course creation modal should render fields if there are users with
                   style="margin-bottom: 8px;"
                 >
                   <div
-                    class="ant-typography"
+                    class="ant-typography css-dev-only-do-not-override-1qhh31y"
                   >
                     Students without a project will be assigned a project randomly.
                   </div>
@@ -102,14 +99,14 @@ exports[`test course creation modal should render fields if there are users with
                   class="ant-space-item"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-horizontal ant-space-align-center"
                   >
                     <div
                       class="ant-space-item"
                       style="margin-right: 8px;"
                     >
                       <span
-                        class="ant-typography"
+                        class="ant-typography css-dev-only-do-not-override-1qhh31y"
                       >
                         Number of students in a project:
                       </span>
@@ -119,7 +116,7 @@ exports[`test course creation modal should render fields if there are users with
                       style="margin-right: 8px;"
                     >
                       <div
-                        class="ant-input-number"
+                        class="ant-input-number css-dev-only-do-not-override-1qhh31y"
                       >
                         <div
                           class="ant-input-number-handler-wrap"
@@ -197,7 +194,7 @@ exports[`test course creation modal should render fields if there are users with
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-default"
+                        class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
                         type="button"
                       >
                         <span>
@@ -213,7 +210,7 @@ exports[`test course creation modal should render fields if there are users with
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn ant-btn-default"
+                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
                 type="button"
               >
                 <span>
@@ -221,7 +218,7 @@ exports[`test course creation modal should render fields if there are users with
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary"
+                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary"
                 type="button"
               >
                 <span>

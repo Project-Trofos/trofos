@@ -1,14 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test ProjectCreationModal should render modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
-      class="ant-btn ant-btn-primary"
+      class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary"
       type="button"
     >
       <span>
@@ -18,7 +15,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
   </div>
   <div>
     <div
-      class="ant-modal-root"
+      class="ant-modal-root css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-modal-mask"
@@ -30,7 +27,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal"
+          class="ant-modal css-dev-only-do-not-override-1qhh31y"
           role="dialog"
           style="width: 520px;"
         >
@@ -86,20 +83,20 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
             >
               <form
                 autocomplete="off"
-                class="ant-form ant-form-vertical"
+                class="ant-form ant-form-vertical css-dev-only-do-not-override-1qhh31y"
                 id="multi-step-modal-form"
               >
                 <p>
                   You can change these details anytime in your project settings.
                 </p>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class="ant-form-item-required"
@@ -110,7 +107,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-col-20 ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -119,7 +116,8 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                           class="ant-form-item-control-input-content"
                         >
                           <input
-                            class="ant-input"
+                            aria-required="true"
+                            class="ant-input css-dev-only-do-not-override-1qhh31y"
                             id="multi-step-modal-form_projectName"
                             type="text"
                             value=""
@@ -130,13 +128,13 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                   </div>
                 </div>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class=""
@@ -170,7 +168,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-col-20 ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -179,7 +177,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                           class="ant-form-item-control-input-content"
                         >
                           <input
-                            class="ant-input"
+                            class="ant-input css-dev-only-do-not-override-1qhh31y"
                             id="multi-step-modal-form_projectKey"
                             type="text"
                             value=""
@@ -195,7 +193,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn ant-btn-default"
+                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
                 type="button"
               >
                 <span>
@@ -203,7 +201,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary"
+                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary"
                 type="button"
               >
                 <span>

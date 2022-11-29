@@ -4,10 +4,10 @@ exports[`test UserTable should render table with correct fields 1`] = `
 <body>
   <div>
     <div
-      class="ant-table-wrapper"
+      class="ant-table-wrapper css-dev-only-do-not-override-1qhh31y"
     >
       <div
-        class="ant-spin-nested-loading"
+        class="ant-spin-nested-loading css-dev-only-do-not-override-1qhh31y"
       >
         <div
           class="ant-spin-container"
@@ -74,7 +74,7 @@ exports[`test UserTable should render table with correct fields 1`] = `
                         class="ant-table-cell"
                       >
                         <button
-                          class="ant-btn ant-btn-default"
+                          class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
                           type="button"
                         >
                           <span>
@@ -89,8 +89,7 @@ exports[`test UserTable should render table with correct fields 1`] = `
             </div>
           </div>
           <ul
-            class="ant-pagination ant-table-pagination ant-table-pagination-right"
-            unselectable="unselectable"
+            class="ant-pagination ant-table-pagination ant-table-pagination-right css-dev-only-do-not-override-1qhh31y"
           >
             <li
               aria-disabled="true"

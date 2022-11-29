@@ -1,13 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
-      class="ant-btn ant-btn-primary new-sprint-btn"
+      class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary new-sprint-btn"
       type="button"
     >
       <span>
@@ -17,7 +14,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
   </div>
   <div>
     <div
-      class="ant-modal-root"
+      class="ant-modal-root css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-modal-mask"
@@ -29,7 +26,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal"
+          class="ant-modal css-dev-only-do-not-override-1qhh31y"
           role="dialog"
           style="width: 600px;"
         >
@@ -84,17 +81,17 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
               class="ant-modal-body"
             >
               <form
-                class="ant-form ant-form-vertical"
+                class="ant-form ant-form-vertical css-dev-only-do-not-override-1qhh31y"
                 id="newSprint"
               >
                 <div
-                  class="ant-form-item ant-form-item-has-success"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y ant-form-item-has-success"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class="ant-form-item-required"
@@ -105,7 +102,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -114,7 +111,8 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <input
-                            class="ant-input ant-input-status-success"
+                            aria-required="true"
+                            class="ant-input ant-input-status-success css-dev-only-do-not-override-1qhh31y"
                             id="name"
                             type="text"
                             value="Sprint 1"
@@ -125,13 +123,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item ant-form-item-has-success"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y ant-form-item-has-success"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class="ant-form-item-required"
@@ -142,7 +140,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -151,7 +149,8 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
+                            aria-required="true"
+                            class="ant-select ant-select-in-form-item ant-select-status-success css-dev-only-do-not-override-1qhh31y ant-select-single ant-select-show-arrow"
                           >
                             <div
                               class="ant-select-selector"
@@ -165,6 +164,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                                   aria-controls="duration_list"
                                   aria-haspopup="listbox"
                                   aria-owns="duration_list"
+                                  aria-required="true"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
                                   id="duration"
@@ -216,13 +216,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class=""
@@ -233,7 +233,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -242,7 +242,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-picker"
+                            class="ant-picker css-dev-only-do-not-override-1qhh31y"
                           >
                             <div
                               class="ant-picker-input"
@@ -287,13 +287,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item"
+                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
+                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
                     >
                       <label
                         class=""
@@ -304,7 +304,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -313,8 +313,9 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <textarea
-                            class="ant-input"
+                            class="ant-input css-dev-only-do-not-override-1qhh31y"
                             id="goals"
+                            style="height: -54px; resize: none; min-height: -30px; max-height: -54px;"
                           />
                         </div>
                       </div>
@@ -327,7 +328,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn ant-btn-primary"
+                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary"
                 form="newSprint"
                 type="submit"
               >
@@ -346,5 +347,21 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
       </div>
     </div>
   </div>
+  <textarea
+    aria-hidden="true"
+    style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important;
+  pointer-events: none !important;
+"
+    tab-index="-1"
+  />
 </body>
 `;

@@ -4,7 +4,7 @@ exports[`CourseCard test renders course card with correct details 1`] = `
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered course-card"
+      class="ant-card ant-card-bordered course-card css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-card-body"
@@ -28,12 +28,12 @@ exports[`CourseCard test renders course card with correct details 1`] = `
               class="ant-card-meta-description"
             >
               <span
-                class="ant-tag ant-tag-green"
+                class="ant-tag ant-tag-green css-dev-only-do-not-override-1qhh31y"
               >
                 CS3203
               </span>
               <span
-                class="ant-tag"
+                class="ant-tag css-dev-only-do-not-override-1qhh31y"
               >
                 2022 Semester 1
               </span>

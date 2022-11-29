@@ -4,7 +4,7 @@ exports[`SprintCard test renders sprint card with correct details 1`] = `
 <body>
   <div>
     <div
-      class="ant-collapse ant-collapse-icon-position-start"
+      class="ant-collapse ant-collapse-icon-position-start css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-collapse-item"
@@ -54,7 +54,7 @@ exports[`SprintCard test renders sprint card with correct details 1`] = `
                 class="sprint-status-button"
               >
                 <button
-                  class="ant-btn ant-btn-default"
+                  class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
                   type="button"
                 >
                   <span>
@@ -69,7 +69,7 @@ exports[`SprintCard test renders sprint card with correct details 1`] = `
                 class="sprint-card-setting-icon"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center ant-dropdown-trigger sprint-menu-dropdown"
+                  class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-horizontal ant-space-align-center ant-dropdown-trigger sprint-menu-dropdown"
                 >
                   <div
                     class="ant-space-item"
