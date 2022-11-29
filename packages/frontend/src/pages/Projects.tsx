@@ -28,38 +28,46 @@ export default function ProjectsPage(): JSX.Element {
   return (
     <Container>
       <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-        <Title>Projects</Title>
+        <Title style={{ margin: 0 }}>Projects</Title>
         <ProjectCreationModal />
       </Space>
 
-      <Tabs>
-        <Tabs.TabPane tab="Current Projects" key="current-courses">
-          {currentProjects.length === 0 ? (
-            'There are no current projects'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {currentProjects.map((project) => (
-                <Col key={project.id}>
-                  <ProjectCard project={project} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Past Projects" key="past-courses">
-          {pastProjects.length === 0 ? (
-            'There are no past projects'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {pastProjects.map((project) => (
-                <Col key={project.id}>
-                  <ProjectCard project={project} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs
+        items={[
+          {
+            label: 'Current Projects',
+            key: 'current-projects',
+            children:
+              currentProjects.length === 0 ? (
+                'There are no current projects'
+              ) : (
+                <Row gutter={[16, 16]} wrap>
+                  {currentProjects.map((project) => (
+                    <Col key={project.id}>
+                      <ProjectCard project={project} />
+                    </Col>
+                  ))}
+                </Row>
+              ),
+          },
+          {
+            label: 'Past Projects',
+            key: 'past-projects',
+            children:
+              pastProjects.length === 0 ? (
+                'There are no past projects'
+              ) : (
+                <Row gutter={[16, 16]} wrap>
+                  {pastProjects.map((project) => (
+                    <Col key={project.id}>
+                      <ProjectCard project={project} />
+                    </Col>
+                  ))}
+                </Row>
+              ),
+          },
+        ]}
+      />
     </Container>
   );
 }

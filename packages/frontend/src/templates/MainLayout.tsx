@@ -193,7 +193,7 @@ export default function MainLayout() {
         <BellOutlined />
       </Col>
       <Col>
-        <Dropdown overlay={<Menu items={accountMenuItems} />}>
+        <Dropdown menu={{ items: accountMenuItems }}>
           <div className="avatar-group">
             <Avatar>{userInfo?.userEmail[0]}</Avatar>
           </div>

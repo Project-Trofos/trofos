@@ -19,7 +19,7 @@ export default function UserManagementModal(): JSX.Element {
   return (
     <>
       <Button onClick={showModal}>Manage</Button>
-      <Modal title="User Management Panel" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="User Management Panel" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <h1>Does nothing for now</h1>
       </Modal>
     </>

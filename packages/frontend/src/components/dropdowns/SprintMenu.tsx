@@ -30,38 +30,36 @@ function SprintMenu(props: {
     setIsDeleteModalOpen(false);
   };
 
-  const menuItems = (
-    <Menu
-      items={[
-        {
-          key: '1',
-          label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-            <div onClick={handleSprintOnClick}>Edit sprint</div>
-          ),
-        },
-        {
-          key: '2',
-          danger: true,
-          label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-            <div onClick={openDeleteConfirmationModal}>Delete sprint</div>
-          ),
-        },
-      ]}
-    />
-  );
+  const menuItems = {
+    items: [
+      {
+        key: '1',
+        label: (
+          /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+          <div onClick={handleSprintOnClick}>Edit sprint</div>
+        ),
+      },
+      {
+        key: '2',
+        danger: true,
+        label: (
+          /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+          <div onClick={openDeleteConfirmationModal}>Delete sprint</div>
+        ),
+      },
+    ],
+  };
 
   return (
     <>
-      <Dropdown className="sprint-menu-dropdown" overlay={menuItems} trigger={['click']} placement="bottomRight">
+      <Dropdown className="sprint-menu-dropdown" menu={menuItems} trigger={['click']} placement="bottomRight">
         <Space>
           <SettingOutlined style={{ fontSize: '18px' }} />
         </Space>
       </Dropdown>
       <Modal
         title="DELETE SPRINT"
-        visible={isDeleteModalOpen}
+        open={isDeleteModalOpen}
         onOk={handleDeleteSprint}
         onCancel={closeDeleteConfirmationModal}
         okText="Delete"

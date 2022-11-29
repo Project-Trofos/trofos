@@ -184,7 +184,7 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
       </Button>
       <Modal
         title="New Sprint"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={renderFooter()}

@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 1rem 1rem 0 1rem;
+  width: 100%;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.titleRow > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

@@ -1,7 +1,9 @@
-@import '~antd/dist/antd.css';
-
 :root {
   --default-box-shadow: 0 2px 2px rgb(0 0 0 / 5%);
+}
+
+body {
+  margin: 0;
 }
 
 .centralize-content {

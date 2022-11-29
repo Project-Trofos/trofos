@@ -5,7 +5,6 @@ import CourseCreationModal from '../components/modals/CourseCreationModal';
 import { useCurrentAndPastCourses } from '../api/hooks';
 import CourseCard from '../components/cards/CourseCard';
 
-import './Courses.css';
 import Container from '../components/layouts/Container';
 
 const { Title, Paragraph } = Typography;
@@ -33,34 +32,42 @@ export default function CoursesPage(): JSX.Element {
         <Title style={{ margin: 0 }}>Courses</Title>
         <CourseCreationModal />
       </Space>
-      <Tabs>
-        <Tabs.TabPane tab="Current Courses" key="current-courses">
-          {currentCourses.length === 0 ? (
-            'There are no current courses'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {currentCourses.map((course) => (
-                <Col key={`${course.year}-${course.sem}-${course.id}`}>
-                  <CourseCard course={course} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Past Courses" key="past-courses">
-          {pastCourses.length === 0 ? (
-            'There are no past courses'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {pastCourses.map((course) => (
-                <Col key={`${course.year}-${course.sem}-${course.id}`}>
-                  <CourseCard course={course} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
-      </Tabs>
+      <Tabs
+        items={[
+          {
+            label: 'Current Courses',
+            key: 'current-courses',
+            children:
+              currentCourses.length === 0 ? (
+                <p>There are no current courses</p>
+              ) : (
+                <Row gutter={[16, 16]} wrap>
+                  {currentCourses.map((course) => (
+                    <Col key={`${course.year}-${course.sem}-${course.id}`}>
+                      <CourseCard course={course} />
+                    </Col>
+                  ))}
+                </Row>
+              ),
+          },
+          {
+            label: 'Past Courses',
+            key: 'past-courses',
+            children:
+              pastCourses.length === 0 ? (
+                'There are no past courses'
+              ) : (
+                <Row gutter={[16, 16]} wrap>
+                  {pastCourses.map((course) => (
+                    <Col key={`${course.year}-${course.sem}-${course.id}`}>
+                      <CourseCard course={course} />
+                    </Col>
+                  ))}
+                </Row>
+              ),
+          },
+        ]}
+      />
     </Container>
   );
 }

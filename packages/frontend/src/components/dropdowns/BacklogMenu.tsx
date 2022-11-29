@@ -31,31 +31,29 @@ function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Eleme
     setIsDeleteModalOpen(false);
   };
 
-  const menuItems = (
-    <Menu
-      items={[
-        {
-          key: '1',
-          danger: true,
-          label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-            <div onClick={openDeleteConfirmationModal}>Delete backlog</div>
-          ),
-        },
-      ]}
-    />
-  );
+  const menuItems = {
+    items: [
+      {
+        key: '1',
+        danger: true,
+        label: (
+          /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+          <div onClick={openDeleteConfirmationModal}>Delete backlog</div>
+        ),
+      },
+    ],
+  };
 
   return (
     <>
-      <Dropdown className="backlog-menu-dropdown" overlay={menuItems} trigger={['click']} placement="bottomRight">
+      <Dropdown className="backlog-menu-dropdown" menu={menuItems} trigger={['click']} placement="bottomRight">
         <Space>
           <SettingOutlined style={{ fontSize: '18px' }} />
         </Space>
       </Dropdown>
       <Modal
         title="DELETE BACKLOG"
-        visible={isDeleteModalOpen}
+        open={isDeleteModalOpen}
         onOk={handleDeleteBacklog}
         onCancel={closeDeleteConfirmationModal}
         okText="Delete"

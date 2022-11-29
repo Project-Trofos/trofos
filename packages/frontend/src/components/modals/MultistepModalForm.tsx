@@ -72,7 +72,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
       )}
       <Modal
         title={title}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={

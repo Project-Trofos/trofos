@@ -1,18 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import {
-  Breadcrumb,
-  Button,
-  Dropdown,
-  DropdownProps,
-  Menu,
-  message,
-  PageHeader,
-  Spin,
-  Tabs,
-  Tag,
-  Typography,
-} from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, Spin, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../api/project';
 import { useRemoveProjectFromCourseMutation } from '../api/course';
@@ -21,12 +9,13 @@ import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
 import './Project.css';
+import PageHeader from '../components/pageheader/PageHeader';
 
 const { Paragraph } = Typography;
 
-function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
+function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['menu'] }) {
   return (
-    <Dropdown key="more" overlay={projectMenu} placement="bottomRight">
+    <Dropdown key="more" menu={projectMenu} placement="bottomRight">
       <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
@@ -90,27 +79,25 @@ export default function ProjectPage(): JSX.Element {
     return <Typography.Title>This project does not exist!</Typography.Title>;
   }
 
-  const projectMenu = (
-    <Menu
-      onClick={(e) => handleMenuClick(e.key)}
-      items={[
-        {
-          key: 'delete',
-          label: 'Delete project',
-          danger: true,
-        },
-        course
-          ? {
-              key: 'detach',
-              label: 'Detach from course',
-            }
-          : {
-              key: 'attach',
-              label: <ProjectAttachModal project={project} key="attach" />,
-            },
-      ]}
-    />
-  );
+  const projectMenu = {
+    onClick: (e: any) => handleMenuClick(e.key),
+    items: [
+      {
+        key: 'delete',
+        label: 'Delete project',
+        danger: true,
+      },
+      course
+        ? {
+            key: 'detach',
+            label: 'Detach from course',
+          }
+        : {
+            key: 'attach',
+            label: <ProjectAttachModal project={project} key="attach" />,
+          },
+    ],
+  };
 
   const breadCrumbs = (
     <Breadcrumb>
@@ -129,7 +116,7 @@ export default function ProjectPage(): JSX.Element {
           course ? (
             <>
               <Tag>{course?.id}</Tag>
-              <span>{course?.cname}</span>
+              <span style={{ color: 'grey' }}>{course?.cname}</span>
             </>
           ) : (
             <Tag>Independent Project</Tag>
@@ -139,56 +126,61 @@ export default function ProjectPage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
-                  Overview
-                </Link>
-              }
-              key="overview"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
-                  People
-                </Link>
-              }
-              key="users"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
-                  Sprint
-                </Link>
-              }
-              key="sprint"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/backlog`}>
-                  Backlog
-                </Link>
-              }
-              key="backlog"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
-                  Kanban
-                </Link>
-              }
-              key="kanban"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
-                  Settings
-                </Link>
-              }
-              key="settings"
-            />
-          </Tabs>
+          <Tabs
+            className="footer-tabs"
+            defaultActiveKey="overview"
+            activeKey={selectedTab}
+            items={[
+              {
+                key: `overview`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
+                    Overview
+                  </Link>
+                ),
+              },
+              {
+                key: `users`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
+                    People
+                  </Link>
+                ),
+              },
+              {
+                key: `sprint`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
+                    Sprint
+                  </Link>
+                ),
+              },
+              {
+                key: `backlog`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/backlog`}>
+                    Backlog
+                  </Link>
+                ),
+              },
+              {
+                key: `kanban`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
+                    Kanban
+                  </Link>
+                ),
+              },
+              {
+                key: `settings`,
+                label: (
+                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
+                    Settings
+                  </Link>
+                ),
+              },
+            ]}
+          />
         }
       >
         <Paragraph>{project.description}</Paragraph>

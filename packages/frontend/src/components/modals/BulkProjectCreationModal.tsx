@@ -102,7 +102,7 @@ export default function BulkProjectCreationModal({
   return (
     <>
       <Button onClick={showModal}>Bulk Create</Button>
-      <Modal title="Bulk Project Creation" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Bulk Project Creation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Typography.Paragraph>Students without a project will be assigned a project randomly.</Typography.Paragraph>
           {usersWithoutProject.length === 0 ? (
