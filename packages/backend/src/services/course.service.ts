@@ -131,9 +131,9 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
         backlogStatuses: {
           createMany: {
             data: [
-              { name: 'To do', type: 'todo' },
-              { name: 'In progress', type: 'in_progress' },
-              { name: 'Done', type: 'done' },
+              { name: 'To do', type: 'todo', order: 1 },
+              { name: 'In progress', type: 'in_progress', order: 1 },
+              { name: 'Done', type: 'done', order: 1 },
             ],
           },
         },
@@ -332,9 +332,9 @@ async function addProjectAndCourse(
       backlogStatuses: {
         createMany: {
           data: [
-            { name: 'To do', type: 'todo' },
-            { name: 'In progress', type: 'in_progress' },
-            { name: 'Done', type: 'done' },
+            { name: 'To do', type: 'todo', order: 1 },
+            { name: 'In progress', type: 'in_progress', order: 1 },
+            { name: 'Done', type: 'done', order: 1 },
           ],
         },
       },

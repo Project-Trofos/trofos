@@ -102,9 +102,9 @@ async function createProjectForBacklogSeed(prisma: PrismaClient) {
       backlogStatuses: {
         createMany: {
           data: [
-            { name: 'To do', type: 'todo' },
-            { name: 'In progress', type: 'in_progress' },
-            { name: 'Done', type: 'done' },
+            { name: 'To do', type: 'todo', order: 1 },
+            { name: 'In progress', type: 'in_progress', order: 1 },
+            { name: 'Done', type: 'done', order: 1 },
           ],
         },
       },

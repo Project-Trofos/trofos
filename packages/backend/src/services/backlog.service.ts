@@ -14,6 +14,7 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
     where: {
       project_id: projectId,
       type: BacklogStatusType.todo,
+      order: 1,
     },
     select: {
       name: true,

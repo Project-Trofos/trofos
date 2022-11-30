@@ -108,7 +108,9 @@ model BacklogStatus {
   name          String
   type          BacklogStatusType @default(in_progress)
   backlogs      Backlog[]
+  order         Int
   @@id([project_id, name])
+  @@unique([project_id, name, order])
 }
 
 model Sprint {

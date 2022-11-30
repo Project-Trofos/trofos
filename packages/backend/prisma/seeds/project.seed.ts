@@ -26,12 +26,12 @@ async function createProjectSeed(prisma: PrismaClient) {
 
   const backlogStatusCount = await prisma.backlogStatus.createMany({
     data: [
-      { project_id: 901, name: 'To do', type: 'todo' },
-      { project_id: 901, name: 'In progress', type: 'in_progress' },
-      { project_id: 901, name: 'Done', type: 'done' },
-      { project_id: 902, name: 'To do', type: 'todo' },
-      { project_id: 902, name: 'In progress', type: 'in_progress' },
-      { project_id: 902, name: 'Done', type: 'done' },
+      { project_id: 901, name: 'To do', type: 'todo', order: 1 },
+      { project_id: 901, name: 'In progress', type: 'in_progress', order: 1 },
+      { project_id: 901, name: 'Done', type: 'done', order: 1 },
+      { project_id: 902, name: 'To do', type: 'todo', order: 1 },
+      { project_id: 902, name: 'In progress', type: 'in_progress', order: 1 },
+      { project_id: 902, name: 'Done', type: 'done', order: 1 },
     ],
   });
 
@@ -46,9 +46,9 @@ async function createProjectSeed(prisma: PrismaClient) {
       backlogStatuses: {
         createMany: {
           data: [
-            { name: 'To do', type: 'todo' },
-            { name: 'In progress', type: 'in_progress' },
-            { name: 'Done', type: 'done' },
+            { name: 'To do', type: 'todo', order: 1 },
+            { name: 'In progress', type: 'in_progress', order: 1 },
+            { name: 'Done', type: 'done', order: 1 },
           ],
         },
       },

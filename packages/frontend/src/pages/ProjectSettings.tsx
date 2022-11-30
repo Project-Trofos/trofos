@@ -9,6 +9,7 @@ import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
 import Container from '../components/layouts/Container';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
+import ProjectBacklogStatusForm from '../components/forms/ProjectBacklogStatusForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
@@ -55,6 +56,9 @@ export default function ProjectSettings(): JSX.Element {
             <Input.TextArea rows={4} />
           </Form.Item>
         </DefaultForm>
+      </Space>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <ProjectBacklogStatusForm statuses={project?.backlogStatuses || []} />
       </Space>
     </Container>
   );

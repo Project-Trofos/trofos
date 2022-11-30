@@ -3,6 +3,7 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
 import {
+  assertOrderIsValid,
   assertProjectNameIsValid,
   assertStatusNameIsValid,
   assertUserSessionIsValid,
@@ -143,12 +144,13 @@ async function removeUser(req: express.Request, res: express.Response) {
 async function createBacklogStatus(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const { name } = req.body;
+    const { name, order } = req.body;
 
     assertProjectIdIsValid(projectId);
     assertStatusNameIsValid(name);
+    assertOrderIsValid(order);
 
-    const result = await project.createBacklogStatus(Number(projectId), name);
+    const result = await project.createBacklogStatus(Number(projectId), name, order);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

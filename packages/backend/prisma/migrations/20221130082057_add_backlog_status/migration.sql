@@ -22,9 +22,13 @@ CREATE TABLE "BacklogStatus" (
     "project_id" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "type" "BacklogStatusType" NOT NULL DEFAULT 'in_progress',
+    "order" INTEGER NOT NULL,
 
     CONSTRAINT "BacklogStatus_pkey" PRIMARY KEY ("project_id","name")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BacklogStatus_project_id_name_order_key" ON "BacklogStatus"("project_id", "name", "order");
 
 -- AddForeignKey
 ALTER TABLE "Backlog" ADD CONSTRAINT "Backlog_project_id_status_fkey" FOREIGN KEY ("project_id", "status") REFERENCES "BacklogStatus"("project_id", "name") ON DELETE RESTRICT ON UPDATE CASCADE;

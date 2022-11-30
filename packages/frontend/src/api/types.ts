@@ -56,10 +56,7 @@ export type ProjectData = Project & {
     id: number;
     name: string;
   }[];
-  backlogStatuses: {
-    name: string;
-    type: 'todo' | 'in_progress' | 'done';
-  }[];
+  backlogStatuses: Omit<BacklogStatusData, 'projectId'>[];
 };
 
 export type UserData = {
@@ -71,4 +68,10 @@ export type UserData = {
 
 export type CourseData = Course & {
   users: UserData[];
+};
+
+export type BacklogStatusData = {
+  name: string;
+  type: 'todo' | 'in_progress' | 'done';
+  projectId: number;
 };

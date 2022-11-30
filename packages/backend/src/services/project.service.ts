@@ -99,6 +99,7 @@ async function getById(id: number): Promise<Project> {
         select: {
           name: true,
           type: true,
+          order: true,
         },
       },
       ...INCLUDE_USERS_ID_EMAIL,
@@ -129,9 +130,9 @@ async function create(
       backlogStatuses: {
         createMany: {
           data: [
-            { name: 'To do', type: 'todo' },
-            { name: 'In progress', type: 'in_progress' },
-            { name: 'Done', type: 'done' },
+            { name: 'To do', type: 'todo', order: 1 },
+            { name: 'In progress', type: 'in_progress', order: 1 },
+            { name: 'Done', type: 'done', order: 1 },
           ],
         },
       },
@@ -208,11 +209,12 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
   return result;
 }
 
-async function createBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+async function createBacklogStatus(projectId: number, name: string, order: number): Promise<BacklogStatus> {
   const result = await prisma.backlogStatus.create({
     data: {
       project_id: projectId,
       name,
+      order,
     },
   });
 
