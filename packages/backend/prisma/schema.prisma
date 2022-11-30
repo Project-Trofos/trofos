@@ -110,7 +110,6 @@ model BacklogStatus {
   backlogs      Backlog[]
   order         Int
   @@id([project_id, name])
-  @@unique([project_id, name, order])
 }
 
 model Sprint {

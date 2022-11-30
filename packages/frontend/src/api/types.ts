@@ -74,4 +74,5 @@ export type BacklogStatusData = {
   name: string;
   type: 'todo' | 'in_progress' | 'done';
   projectId: number;
+  order: number;
 };

@@ -1,4 +1,4 @@
-import { BacklogStatus, Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -209,12 +209,25 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
   return result;
 }
 
-async function createBacklogStatus(projectId: number, name: string, order: number): Promise<BacklogStatus> {
+async function createBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+  const currentOrder = await prisma.backlogStatus.findMany({
+    where: {
+      project_id: projectId,
+      type: BacklogStatusType.in_progress,
+    },
+    orderBy: [
+      {
+        order: 'desc',
+      },
+    ],
+    take: 1,
+  });
+
   const result = await prisma.backlogStatus.create({
     data: {
       project_id: projectId,
       name,
-      order,
+      order: (currentOrder?.[0]?.order || 0) + 1,
     },
   });
 
@@ -251,6 +264,26 @@ async function updateBacklogStatus(
   return result;
 }
 
+async function updateBacklogStatusOrder(projectId: number, updatedStatus: Omit<BacklogStatus, 'projectId'>[]) {
+  const statusesToUpdate = updatedStatus.map((status) =>
+    prisma.backlogStatus.update({
+      where: {
+        project_id_name: {
+          project_id: projectId,
+          name: status.name,
+        },
+      },
+      data: {
+        order: status.order,
+      },
+    }),
+  );
+
+  const result = await prisma.$transaction(statusesToUpdate);
+
+  return result;
+}
+
 async function deleteBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
   const result = await prisma.backlogStatus.delete({
     where: {
@@ -276,5 +309,6 @@ export default {
   createBacklogStatus,
   getBacklogStatus,
   updateBacklogStatus,
+  updateBacklogStatusOrder,
   deleteBacklogStatus,
 };

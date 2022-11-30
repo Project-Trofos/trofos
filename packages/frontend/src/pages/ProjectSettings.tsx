@@ -58,6 +58,7 @@ export default function ProjectSettings(): JSX.Element {
         </DefaultForm>
       </Space>
       <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>Backlog Statuses</Subheading>
         <ProjectBacklogStatusForm statuses={project?.backlogStatuses || []} />
       </Space>
     </Container>

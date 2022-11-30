@@ -72,9 +72,3 @@ export function assertStatusNameIsValid(name: string | undefined): asserts name 
     throw new BadRequestError(getFieldUndefinedErrorMessage('name'));
   }
 }
-
-export function assertOrderIsValid(order: number | undefined): asserts order is number {
-  if (!order) {
-    throw new BadRequestError(getFieldUndefinedErrorMessage('order'));
-  }
-}

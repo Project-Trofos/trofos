@@ -100,20 +100,22 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
     }),
 
-    createBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string; order: number; }>({
+    createBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string }>({
       query: (param) => ({
         url: `project/${param.projectId}/backlogStatus`,
         method: 'POST',
         body: {
           name: param.name,
-          order: param.order,
         },
         credentials: 'include',
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
     }),
 
-    updateBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; currentName: string; updatedName: string; }>({
+    updateBacklogStatus: builder.mutation<
+      BacklogStatusData,
+      { projectId: number; currentName: string; updatedName: string }
+    >({
       query: (param) => ({
         url: `project/${param.projectId}/backlogStatus`,
         method: 'PUT',
@@ -126,7 +128,22 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
     }),
 
-    deleteBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string; }>({
+    updateBacklogStatusOrder: builder.mutation<
+      BacklogStatusData[],
+      { projectId: number; updatedStatuses: Omit<BacklogStatusData, 'projectId'>[] }
+    >({
+      query: (param) => ({
+        url: `project/${param.projectId}/backlogStatus`,
+        method: 'PUT',
+        body: {
+          updatedStatuses: param.updatedStatuses,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    deleteBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string }>({
       query: (param) => ({
         url: `project/${param.projectId}/backlogStatus`,
         method: 'DELETE',
@@ -152,5 +169,6 @@ export const {
   useGetBacklogStatusQuery,
   useCreateBacklogStatusMutation,
   useUpdateBacklogStatusMutation,
+  useUpdateBacklogStatusOrderMutation,
   useDeleteBacklogStatusMutation,
 } = extendedApi;
