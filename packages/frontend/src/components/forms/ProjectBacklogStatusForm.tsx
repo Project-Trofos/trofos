@@ -14,9 +14,9 @@ import {
 import './ProjectBacklogStatusForm.css';
 import { sortBacklogStatus } from '../../helpers/sortBacklogStatus';
 
-type StatuesesPropType = Omit<BacklogStatusData, 'projectId'>[];
+type StatusesPropType = Omit<BacklogStatusData, 'projectId'>[];
 
-export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPropType }) {
+export default function ProjectBacklogStatusForm(props: { statuses: StatusesPropType }) {
   const { statuses } = props;
 
   const [form] = Form.useForm();
@@ -32,7 +32,7 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
   const [isAddingStatus, setIsAddingStatus] = useState(false);
 
   const handleBacklogStatusUpdate = async (e: React.FocusEvent<HTMLInputElement, Element>) => {
-    if (!e?.target?.id || !e?.target?.value || e.target.id === e.target.value) {
+    if (e.target.id === e.target.value) {
       return;
     }
 
@@ -51,7 +51,7 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
     }
   };
 
-  const reorder = (list: StatuesesPropType, startIndex: number, endIndex: number): StatuesesPropType => {
+  const reorder = (list: StatusesPropType, startIndex: number, endIndex: number): StatusesPropType => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -63,8 +63,8 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
     });
   };
 
-  const [statusOrder, setStatusOrder] = useState<StatuesesPropType>([]);
-  const [inProgressOrder, setInProgressOrder] = useState<StatuesesPropType>([]);
+  const [statusOrder, setStatusOrder] = useState<StatusesPropType>([]);
+  const [inProgressOrder, setInProgressOrder] = useState<StatusesPropType>([]);
 
   useEffect(() => {
     const sortedStatuses = sortBacklogStatus(statuses);
@@ -81,7 +81,7 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
       return;
     }
 
-    const updatedStatusOrder: StatuesesPropType = reorder(
+    const updatedStatusOrder: StatusesPropType = reorder(
       inProgressOrder,
       result.source.index,
       result.destination.index,

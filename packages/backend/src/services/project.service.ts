@@ -4,6 +4,7 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
+import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
   let result;
@@ -129,11 +130,7 @@ async function create(
       },
       backlogStatuses: {
         createMany: {
-          data: [
-            { name: 'To do', type: 'todo', order: 1 },
-            { name: 'In progress', type: 'in_progress', order: 1 },
-            { name: 'Done', type: 'done', order: 1 },
-          ],
+          data: defaultBacklogStatus,
         },
       },
     },
