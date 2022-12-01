@@ -1,4 +1,4 @@
-import { Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
 import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
@@ -142,6 +142,141 @@ describe('project.service tests', () => {
 
       const result = await project.removeUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);
+    });
+  });
+
+  describe('createBacklogStatus', () => {
+    const PROJECT_ID = 1;
+    const NAME = 'QA';
+    const resultMock: BacklogStatus = {
+      project_id: PROJECT_ID,
+      name: NAME,
+      type: BacklogStatusType.in_progress,
+      order: 2,
+    };
+    it('should return created status', async () => {
+      prismaMock.backlogStatus.create.mockResolvedValueOnce(resultMock);
+
+      const result = await project.createBacklogStatus(PROJECT_ID, NAME);
+      expect(result).toEqual<BacklogStatus>(resultMock);
+    });
+
+    it('should automatically find max order for type', async () => {
+      const mockCurrentOrder = [resultMock];
+      prismaMock.backlogStatus.findMany.mockResolvedValueOnce(mockCurrentOrder);
+
+      const modifiedResultMock = {
+        ...resultMock,
+        order: 3,
+      };
+
+      prismaMock.backlogStatus.create.mockResolvedValueOnce(modifiedResultMock);
+
+      const result = await project.createBacklogStatus(PROJECT_ID, NAME);
+      expect(result).toEqual<BacklogStatus>(modifiedResultMock);
+    });
+  });
+
+  describe('updateBacklogStatus', () => {
+    it('should return updated status', async () => {
+      const PROJECT_ID = 1;
+      const CURRENT_NAME = 'In progress';
+      const UPDATED_NAME = 'In development';
+      const resultMock: BacklogStatus = {
+        project_id: PROJECT_ID,
+        name: UPDATED_NAME,
+        type: BacklogStatusType.in_progress,
+        order: 2,
+      };
+      prismaMock.backlogStatus.update.mockResolvedValueOnce(resultMock);
+
+      const result = await project.updateBacklogStatus(PROJECT_ID, CURRENT_NAME, UPDATED_NAME);
+      expect(result).toEqual<BacklogStatus>(resultMock);
+    });
+  });
+
+  describe('updateBacklogStatusOrder', () => {
+    it('should return updated status order', async () => {
+      const PROJECT_ID = 1;
+      const UPDATED_ORDER: Omit<BacklogStatus, 'project_id'>[] = [
+        {
+          name: 'In progress',
+          type: BacklogStatusType.in_progress,
+          order: 2,
+        },
+        {
+          name: 'Triage',
+          type: BacklogStatusType.in_progress,
+          order: 1,
+        },
+      ];
+      const resultMock: BacklogStatus[] = [
+        {
+          project_id: PROJECT_ID,
+          name: 'Triage',
+          type: BacklogStatusType.in_progress,
+          order: 1,
+        },
+        {
+          project_id: PROJECT_ID,
+          name: 'In progress',
+          type: BacklogStatusType.in_progress,
+          order: 2,
+        },
+      ];
+      prismaMock.backlogStatus.update.mockResolvedValueOnce(resultMock[0]);
+      prismaMock.backlogStatus.update.mockResolvedValueOnce(resultMock[1]);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
+
+      const result = await project.updateBacklogStatusOrder(PROJECT_ID, UPDATED_ORDER);
+      expect(result).toEqual<BacklogStatus[]>(resultMock);
+    });
+  });
+
+  describe('getBacklogStatus', () => {
+    it('should return backlog status', async () => {
+      const PROJECT_ID = 1;
+      const resultMock: BacklogStatus[] = [
+        {
+          project_id: PROJECT_ID,
+          name: 'To do',
+          type: BacklogStatusType.todo,
+          order: 1,
+        },
+        {
+          project_id: PROJECT_ID,
+          name: 'In progress',
+          type: BacklogStatusType.in_progress,
+          order: 1,
+        },
+        {
+          project_id: PROJECT_ID,
+          name: 'Done',
+          type: BacklogStatusType.done,
+          order: 1,
+        },
+      ];
+      prismaMock.backlogStatus.findMany.mockResolvedValueOnce(resultMock);
+
+      const result = await project.getBacklogStatus(PROJECT_ID);
+      expect(result).toEqual<BacklogStatus[]>(resultMock);
+    });
+  });
+
+  describe('deleteBacklogStatus', () => {
+    it('should return deleted status', async () => {
+      const PROJECT_ID = 1;
+      const NAME = 'In development';
+      const resultMock: BacklogStatus = {
+        project_id: PROJECT_ID,
+        name: NAME,
+        type: BacklogStatusType.in_progress,
+        order: 2,
+      };
+      prismaMock.backlogStatus.delete.mockResolvedValueOnce(resultMock);
+
+      const result = await project.deleteBacklogStatus(PROJECT_ID, NAME);
+      expect(result).toEqual<BacklogStatus>(resultMock);
     });
   });
 });

@@ -157,7 +157,7 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
           <Input onBlur={handleBacklogStatusUpdate} />
         </Form.Item>
         <DragDropContext onDragEnd={onDragEnd}>
-          <StrictModeDroppable droppableId="list">
+          <StrictModeDroppable droppableId="backlogStatusList">
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {inProgressOrder.map((status, index) => (

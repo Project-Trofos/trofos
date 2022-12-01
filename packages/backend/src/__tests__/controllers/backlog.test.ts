@@ -91,6 +91,15 @@ describe('backlogController tests', () => {
         originalUrl: '/listUnassignedBacklogs/123',
       });
 
+      const expectedBacklogs: Backlog[] = [
+        {
+          ...mockBacklogData,
+          sprint_id: null,
+        },
+      ];
+
+      backlogServiceSpies.listBacklogs.mockResolvedValueOnce(expectedBacklogs);
+
       await backlogController.listBacklogs(mockRequestForUnassignedBacklogs, mockResponse);
       expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId, true);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);

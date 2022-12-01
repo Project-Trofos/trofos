@@ -264,7 +264,7 @@ async function updateBacklogStatus(
   return result;
 }
 
-async function updateBacklogStatusOrder(projectId: number, updatedStatus: Omit<BacklogStatus, 'projectId'>[]) {
+async function updateBacklogStatusOrder(projectId: number, updatedStatus: Omit<BacklogStatus, 'project_id'>[]) {
   const statusesToUpdate = updatedStatus.map((status) =>
     prisma.backlogStatus.update({
       where: {

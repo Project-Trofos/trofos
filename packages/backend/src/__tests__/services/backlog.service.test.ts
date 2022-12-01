@@ -1,4 +1,4 @@
-import { Backlog } from '@prisma/client';
+import { Backlog, BacklogStatusType } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../helpers/types/backlog.service.types';
@@ -49,6 +49,25 @@ describe('backlog.service tests', () => {
       prismaMock.$transaction.mockResolvedValue([mockReturnedBacklog, 2]);
       await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
+
+    it('should create and return backlog with default status when present', async () => {
+      const mockReturnedBacklog: Backlog = mockBacklogData;
+      const backlog: BacklogFields = mockBacklogFields;
+
+      const mockDefaultStatus = {
+        project_id: 123,
+        name: 'Triage',
+        type: BacklogStatusType.in_progress,
+        order: 1,
+      };
+
+      prismaMock.project.findUniqueOrThrow.mockResolvedValue(mockReturnedProject);
+      prismaMock.backlogStatus.findFirst.mockResolvedValue(mockDefaultStatus);
+      prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
+      prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
+      prismaMock.$transaction.mockResolvedValue([mockReturnedBacklog, 2]);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
+    });
   });
 
   describe('get backlogs', () => {
@@ -72,6 +91,13 @@ describe('backlog.service tests', () => {
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
       await expect(backlogService.listBacklogs(projectId, false)).resolves.toEqual(mockReturnedBacklogs);
+    });
+
+    it('should return unassigned backlogs when shouldListUnassignedBacklogs is true', async () => {
+      const mockReturnedBacklogs: Backlog[] = [{ ...mockBacklogData, sprint_id: null }];
+      const projectId = 123;
+      prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogs(projectId, true)).resolves.toEqual(mockReturnedBacklogs);
     });
   });
 
