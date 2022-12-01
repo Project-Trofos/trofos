@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, DragOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { DragDropContext, Draggable } from 'react-beautiful-dnd';
 import StrictModeDroppable from '../dnd/StrictModeDroppable';
@@ -183,6 +183,9 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatuesesPro
                           onClick={() => handleDeleteStatus(status.name)}
                         >
                           <CloseOutlined />
+                        </div>
+                        <div className="project-backlog-status-move-button">
+                          <DragOutlined />
                         </div>
                       </div>
                     )}

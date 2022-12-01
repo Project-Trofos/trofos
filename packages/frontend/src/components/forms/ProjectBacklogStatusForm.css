@@ -29,3 +29,10 @@
 .project-backlog-status-delete-button:hover span {
   visibility: visible;
 }
+
+.project-backlog-status-move-button {
+  padding: 0 2px;
+  position: absolute;
+  right: 2px;
+  top: 3px;
+}
