@@ -1,4 +1,4 @@
-import { Backlog } from '@prisma/client';
+import { Backlog, BacklogStatusType } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 
@@ -8,6 +8,17 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   const backlogCounter = await prisma.project.findUniqueOrThrow({
     where: { id: projectId },
     select: { backlog_counter: true },
+  });
+
+  const defaultBacklogStatus = await prisma.backlogStatus.findFirst({
+    where: {
+      project_id: projectId,
+      type: BacklogStatusType.todo,
+      order: 1,
+    },
+    select: {
+      name: true,
+    },
   });
 
   // optimistic concurrency control (if backlog_id already exists then throw an error)
@@ -42,6 +53,14 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
       }),
       points: points || null,
       description: description || null,
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: projectId,
+            name: defaultBacklogStatus?.name || 'To do',
+          },
+        },
+      },
     },
   });
 
@@ -60,10 +79,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   return backlog;
 }
 
-async function listBacklogs(projectId: number): Promise<Backlog[]> {
+async function listBacklogs(projectId: number, shouldListUnassignedBacklogs: boolean): Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
+      ...(shouldListUnassignedBacklogs ? { sprint_id: null } : {}),
     },
   });
 

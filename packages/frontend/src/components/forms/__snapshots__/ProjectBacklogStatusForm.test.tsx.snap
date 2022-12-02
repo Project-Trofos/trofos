@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProjectBacklogStatusForm test when rendering should render according to the snapshot 1`] = `
+<body>
+  <div>
+    <form
+      class="ant-form ant-form-horizontal"
+    >
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <input
+                  class="ant-input"
+                  id="To do"
+                  type="text"
+                  value="To do"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <input
+                  class="ant-input"
+                  id="Done"
+                  type="text"
+                  value="Done"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        Add
+      </span>
+    </button>
+  </div>
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="rbd-announcement-0"
+    style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
+  />
+  <div
+    id="rbd-hidden-text-0-hidden-text-0"
+    style="display: none;"
+  >
+    
+  Press space bar to start a drag.
+  When dragging you can use the arrow keys to move the item around and escape to cancel.
+  Some screen readers may require you to be in focus mode or to use your pass through key
+
+  </div>
+</body>
+`;

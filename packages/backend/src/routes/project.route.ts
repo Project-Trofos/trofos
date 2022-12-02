@@ -34,4 +34,32 @@ router.delete(
   project.removeUser,
 );
 
+// Get backlog statuses by projectId
+router.get(
+  '/:projectId/backlogStatus',
+  isAuthorizedRequest(Action.read_project, projectPolicy.POLICY_NAME),
+  project.getBacklogStatus,
+);
+
+// Create backlog status by projectId
+router.post(
+  '/:projectId/backlogStatus',
+  isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME),
+  project.createBacklogStatus,
+);
+
+// Update backlog status by projectId
+router.put(
+  '/:projectId/backlogStatus',
+  isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME),
+  project.updateBacklogStatus,
+);
+
+// Delete backlog status by projectId
+router.delete(
+  '/:projectId/backlogStatus',
+  isAuthorizedRequest(Action.update_project, projectPolicy.POLICY_NAME),
+  project.deleteBacklogStatus,
+);
+
 export default router;

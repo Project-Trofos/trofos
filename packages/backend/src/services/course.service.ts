@@ -5,6 +5,7 @@ import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
+import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
   let result;
@@ -126,6 +127,11 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
           createMany: {
             // Add the creator in too
             data: [...p.users].map((u) => ({ user_id: Number(u.userId) })),
+          },
+        },
+        backlogStatuses: {
+          createMany: {
+            data: defaultBacklogStatus,
           },
         },
       },
@@ -318,6 +324,11 @@ async function addProjectAndCourse(
       users: {
         create: {
           user_id: userId,
+        },
+      },
+      backlogStatuses: {
+        createMany: {
+          data: defaultBacklogStatus,
         },
       },
     },

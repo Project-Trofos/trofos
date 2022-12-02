@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes';
-import { User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, User, UsersOnProjects } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import projectController from '../../controllers/project';
@@ -15,6 +15,11 @@ const spies = {
   getUsers: jest.spyOn(project, 'getUsers'),
   addUser: jest.spyOn(project, 'addUser'),
   removeUser: jest.spyOn(project, 'removeUser'),
+  createBacklogStatus: jest.spyOn(project, 'createBacklogStatus'),
+  updateBacklogStatus: jest.spyOn(project, 'updateBacklogStatus'),
+  updateBacklogStatusOrder: jest.spyOn(project, 'updateBacklogStatusOrder'),
+  getBacklogStatus: jest.spyOn(project, 'getBacklogStatus'),
+  deleteBacklogStatus: jest.spyOn(project, 'deleteBacklogStatus'),
 };
 
 describe('project controller tests', () => {
@@ -27,6 +32,11 @@ describe('project controller tests', () => {
 
   // Mock data for users on projects
   const usersProjectData: UsersOnProjects[] = [{ project_id: 1, user_id: 1, created_at: new Date(Date.now()) }];
+
+  // Mock data for backlog status
+  const backlogStatusData: BacklogStatus[] = [
+    { project_id: 1, name: 'In progress', type: BacklogStatusType.in_progress, order: 1 },
+  ];
 
   describe('getAll', () => {
     it('should return all projects', async () => {
@@ -309,6 +319,168 @@ describe('project controller tests', () => {
       await projectController.removeUser(mockReq, mockRes);
 
       expect(spies.removeUser).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('createBacklogStatus', () => {
+    it('should return created backlog status', async () => {
+      spies.createBacklogStatus.mockResolvedValueOnce(backlogStatusData[0]);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+        body: {
+          name: backlogStatusData[0].name,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.createBacklogStatus(mockReq, mockRes);
+
+      expect(spies.createBacklogStatus).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(backlogStatusData[0]));
+    });
+
+    it('should return error if no name given', async () => {
+      spies.createBacklogStatus.mockResolvedValueOnce(backlogStatusData[0]);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+        body: {},
+      });
+      const mockRes = createResponse();
+
+      await projectController.createBacklogStatus(mockReq, mockRes);
+
+      expect(spies.createBacklogStatus).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('getBacklogStatus', () => {
+    it('should return backlog status', async () => {
+      spies.getBacklogStatus.mockResolvedValueOnce(backlogStatusData);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.getBacklogStatus(mockReq, mockRes);
+
+      expect(spies.getBacklogStatus).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(backlogStatusData));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.getBacklogStatus.mockResolvedValueOnce(backlogStatusData);
+      const mockReq = createRequest({
+        params: {},
+      });
+      const mockRes = createResponse();
+
+      await projectController.getBacklogStatus(mockReq, mockRes);
+
+      expect(spies.getBacklogStatus).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('updateBacklogStatus', () => {
+    it('should return updated backlog status name', async () => {
+      const updatedStatus = { ...backlogStatusData[0], name: 'Development' };
+      spies.updateBacklogStatus.mockResolvedValueOnce(updatedStatus);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+        body: {
+          currentName: 'In progress',
+          updatedName: 'Development',
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.updateBacklogStatus(mockReq, mockRes);
+
+      expect(spies.updateBacklogStatus).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(updatedStatus));
+    });
+
+    it('should return updated backlog status order', async () => {
+      spies.updateBacklogStatusOrder.mockResolvedValueOnce(backlogStatusData);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+        body: {
+          updatedStatuses: backlogStatusData,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.updateBacklogStatus(mockReq, mockRes);
+
+      expect(spies.updateBacklogStatusOrder).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(backlogStatusData));
+    });
+
+    it('should return error if no projectId given', async () => {
+      const updatedStatus = { ...backlogStatusData[0], name: 'Development' };
+      spies.updateBacklogStatus.mockResolvedValueOnce(updatedStatus);
+      const mockReq = createRequest({
+        params: {},
+        body: {
+          currentName: 'In progress',
+          updatedName: 'Development',
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.updateBacklogStatus(mockReq, mockRes);
+
+      expect(spies.updateBacklogStatus).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('deleteBacklogStatus', () => {
+    it('should return deleted backlog status', async () => {
+      spies.deleteBacklogStatus.mockResolvedValueOnce(backlogStatusData[0]);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogStatusData[0].project_id,
+        },
+        body: {
+          name: 'In progress',
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.deleteBacklogStatus(mockReq, mockRes);
+
+      expect(spies.deleteBacklogStatus).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(backlogStatusData[0]));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.deleteBacklogStatus.mockResolvedValueOnce(backlogStatusData[0]);
+      const mockReq = createRequest({
+        params: {},
+      });
+      const mockRes = createResponse();
+
+      await projectController.deleteBacklogStatus(mockReq, mockRes);
+
+      expect(spies.deleteBacklogStatus).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });
