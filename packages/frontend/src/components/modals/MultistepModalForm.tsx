@@ -37,10 +37,20 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
   };
 
   const handleFinish = async () => {
-    await form.validateFields();
+    try {
+      await form.validateFields();
+    } catch (e) {
+      console.error(e);
+      return;
+    }
     const partialData = form.getFieldsValue();
     const completeData = { ...data, ...partialData };
-    await onSubmit(completeData);
+    try {
+      await onSubmit(completeData);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
     handleOk();
   };
 

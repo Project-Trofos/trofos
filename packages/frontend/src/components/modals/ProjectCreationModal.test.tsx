@@ -131,7 +131,7 @@ describe('test ProjectCreationModal', () => {
     fireEvent.change(nameInput, { target: { value: 'name' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: dayjsMock } });
+    fireEvent.change(yearInput, { target: { value: '2022' } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });

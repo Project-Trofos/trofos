@@ -75,6 +75,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
         message.success(`Project ${projectName} has been created!`);
       } catch (err) {
         message.error(getErrorMessage(err));
+        throw err;
       }
     },
     [addProject, addProjectAndCourse, course, courses, modules],

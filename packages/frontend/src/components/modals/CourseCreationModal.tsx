@@ -19,13 +19,9 @@ export default function CourseCreationModal() {
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
-    async (values: { courseCode?: string; courseYear: Dayjs; courseSem: string; courseName: string }) => {
+    async (values: { courseCode: string; courseYear: Dayjs; courseSem: string; courseName: string }) => {
       try {
         const { courseCode, courseName, courseSem, courseYear } = values;
-
-        if (!courseCode) {
-          throw new Error('Please provide valid course code!');
-        }
 
         await addCourse({
           code: courseCode.trim(),
@@ -56,7 +52,7 @@ export default function CourseCreationModal() {
 
           <CourseNameFormItem />
 
-          <CourseCodeFormItem />
+          <CourseCodeFormItem isRequired />
 
           <CourseYearSemFormItems />
         </>,
