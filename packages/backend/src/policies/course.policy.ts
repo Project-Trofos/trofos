@@ -1,15 +1,15 @@
 import express from 'express';
 import { UserSession } from '@prisma/client';
 import { PolicyOutcome } from './policyTypes';
-import { assertCourseSemIsNumber, assertCourseYearIsNumber } from '../helpers/error';
+import { assertCourseIdIsValid } from '../helpers/error';
 import courseConstraint from './constraints/course.constraint';
 
 const POLICY_NAME = 'COURSE_POLICY';
 
 async function applyCoursePolicy(req: express.Request, userSession: UserSession): Promise<PolicyOutcome> {
   let policyOutcome: PolicyOutcome;
-  const { courseId, courseYear, courseSem } = req.params;
-  const isParamsMissing = courseId === undefined || courseYear === undefined || courseSem === undefined;
+  const { courseId } = req.params;
+  const isParamsMissing = courseId === undefined;
   const isUserAdmin = userSession.user_is_admin;
 
   if (isParamsMissing) {
@@ -20,17 +20,10 @@ async function applyCoursePolicy(req: express.Request, userSession: UserSession)
       policyConstraint: courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin),
     };
   } else {
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
+    assertCourseIdIsValid(courseId);
 
     policyOutcome = {
-      isPolicyValid: await courseConstraint.canManageCourse(
-        userSession.user_id,
-        courseId,
-        Number(courseYear),
-        Number(courseSem),
-        isUserAdmin,
-      ),
+      isPolicyValid: await courseConstraint.canManageCourse(userSession.user_id, Number(courseId), isUserAdmin),
       policyConstraint: courseConstraint.coursePolicyConstraint(userSession.user_id, isUserAdmin),
     };
   }

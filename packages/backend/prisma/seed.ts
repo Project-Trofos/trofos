@@ -4,15 +4,17 @@ import { setupBacklogSeed } from './seeds/backlog.seed';
 import { createCourseSeed } from './seeds/course.seed';
 import { createProjectSeed } from './seeds/project.seed';
 import { createRoleSeed } from './seeds/roles.seed';
+import { createSettingsSeed } from './seeds/settings.seed';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  createUserSeed(prisma);
+  await createSettingsSeed(prisma);
+  await createUserSeed(prisma);
   await createRoleSeed(prisma);
   await createCourseSeed(prisma);
   await createProjectSeed(prisma);
-  setupBacklogSeed(prisma);
+  await setupBacklogSeed(prisma);
 }
 
 main()

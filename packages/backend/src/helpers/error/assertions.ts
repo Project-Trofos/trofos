@@ -27,11 +27,25 @@ export function assertCourseIdIsValid(courseId: string | undefined): asserts cou
   if (!courseId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('courseId'));
   }
+  try {
+    Number(courseId);
+  } catch (e) {
+    throw new BadRequestError('courseId should be a number!');
+  }
 }
 
 export function assertCourseNameIsValid(courseName: string | undefined): asserts courseName is string {
   if (!courseName) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('courseName'));
+  }
+}
+
+export function assertCourseCodeIsValid(courseCode: string | undefined): asserts courseCode is string {
+  if (!courseCode) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('courseName'));
+  }
+  if (!courseCode.match('[a-zA-Z0-9]')) {
+    throw new BadRequestError('Course code is not alphanumeric!');
   }
 }
 

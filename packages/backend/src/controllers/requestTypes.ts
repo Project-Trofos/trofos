@@ -19,15 +19,19 @@ export type UserRequestBody = {
 
 export type CourseRequestBody = {
   courseId: string;
+  courseCode: string;
   courseName: string;
-  courseYear: string;
-  courseSem: string;
+  courseStartYear: string;
+  courseStartSem: string;
+  courseEndYear: string;
+  courseEndSem: string;
   isPublic?: boolean;
   description?: string;
 };
 
 export type AddProjectAndCourseRequestBody = {
   courseId?: string;
+  courseCode?: string;
   courseYear?: string;
   courseSem?: string;
   courseName?: string;
@@ -41,9 +45,5 @@ export type AddProjectAndCourseRequestBody = {
 
 export type BulkCreateProjectBody = {
   courseId?: string;
-  courseYear?: string;
-  courseSem?: string;
-  courseName?: string;
-  isPublic?: string;
   projects: (ProjectRequestBody & { users: UserRequestBody[] })[];
 };

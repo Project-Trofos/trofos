@@ -14,8 +14,8 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
   try {
     const body = req.body as OptionRequestBody;
 
-    if (body.option && !['all', 'past', 'current'].includes(body.option)) {
-      throw new BadRequestError('Please provide a correct option. option can only be all, past, or current.');
+    if (body.option && !['all', 'past', 'current', 'future'].includes(body.option)) {
+      throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
     }
 
     // default to all
