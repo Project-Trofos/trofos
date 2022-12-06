@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
+import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Spin } from 'antd';
 import {
   BellOutlined,
   BookOutlined,
@@ -48,14 +48,14 @@ export default function MainLayout() {
 
   const dispatch = useDispatch();
 
-  const { data: userInfo } = useGetUserInfoQuery();
+  const { data: userInfo, isLoading } = useGetUserInfoQuery();
   const [logoutUser] = useLogoutUserMutation();
 
   useEffect(() => {
-    if (!userInfo && location.pathname !== '/') {
+    if (!isLoading && !userInfo && location.pathname !== '/') {
       navigate('/');
     }
-  }, [userInfo, location, navigate]);
+  }, [userInfo, location, navigate, isLoading]);
 
   const LogoutComponent = (
     <Typography.Link
