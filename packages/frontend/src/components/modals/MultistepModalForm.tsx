@@ -5,7 +5,7 @@ export type MultistepFromModalProps<T> = {
   title: string;
   form: FormInstance<T>;
   formSteps: React.ReactNode[];
-  onSubmit: (data: T) => void;
+  onSubmit: (data: T) => Promise<void>;
   buttonName: string;
   buttonType?: 'button' | 'span';
 };
@@ -36,19 +36,15 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
     setIsModalVisible(false);
   };
 
-  const handleFinish = () => {
-    form
-      .validateFields()
-      .then(() => {
-        const partialData = form.getFieldsValue();
-        const completeData = { ...data, ...partialData };
-        onSubmit(completeData);
-        handleOk();
-      })
-      .catch(console.error);
+  const handleFinish = async () => {
+    await form.validateFields();
+    const partialData = form.getFieldsValue();
+    const completeData = { ...data, ...partialData };
+    await onSubmit(completeData);
+    handleOk();
   };
 
-  const onNext = () => {
+  const onNext = async () => {
     form
       .validateFields()
       .then(() => {

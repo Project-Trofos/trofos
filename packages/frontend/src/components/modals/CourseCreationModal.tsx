@@ -34,10 +34,11 @@ export default function CourseCreationModal() {
           endYear: Number(courseYear.year()),
           endSem: Number(courseSem),
           cname: courseName.trim(),
-        });
+        }).unwrap();
         message.success(`Course ${values.courseName} has been created!`);
       } catch (err) {
         message.error(getErrorMessage(err));
+        throw err;
       }
     },
     [addCourse],
@@ -48,7 +49,7 @@ export default function CourseCreationModal() {
       title="Create Course"
       buttonName="Create Course"
       form={form}
-      onSubmit={(data) => onFinish(data)}
+      onSubmit={onFinish}
       formSteps={[
         <>
           <Paragraph>Please input the details for your course.</Paragraph>

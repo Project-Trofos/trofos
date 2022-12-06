@@ -1,4 +1,4 @@
-import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnCourses } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -7,6 +7,7 @@ import INCLUDE_USERS_ID_EMAIL from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
+import { BadRequestError } from '../helpers/error';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
@@ -149,25 +150,34 @@ async function create(
 ): Promise<Course> {
   assertStartAndEndIsValid(startYear, startSem, endYear ?? startYear, endSem ?? startSem);
 
-  const result = await prisma.course.create({
-    data: {
-      code,
-      startYear,
-      startSem,
-      endYear: endYear ?? startYear, // defaults to start year
-      endSem: endSem ?? startSem, // defaults to start sem
-      cname: name,
-      public: isPublic,
-      description,
-      users: {
-        create: {
-          user_id: userId,
+  try {
+    const result = await prisma.course.create({
+      data: {
+        code,
+        startYear,
+        startSem,
+        endYear: endYear ?? startYear, // defaults to start year
+        endSem: endSem ?? startSem, // defaults to start sem
+        cname: name,
+        public: isPublic,
+        description,
+        users: {
+          create: {
+            user_id: userId,
+          },
         },
       },
-    },
-  });
+    });
 
-  return result;
+    return result;
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        throw new BadRequestError('There is already a course with the same code, start year and start semester!');
+      }
+    }
+    throw e;
+  }
 }
 
 /**
@@ -238,23 +248,32 @@ async function update(
 
   assertStartAndEndIsValid(tempStartYear, tempStartSem, tempEndYear, tempEndSem);
 
-  const result = await prisma.course.update({
-    where: {
-      id,
-    },
-    data: {
-      code,
-      startYear,
-      startSem,
-      endYear,
-      endSem,
-      cname: name,
-      public: isPublic,
-      description,
-    },
-  });
+  try {
+    const result = await prisma.course.update({
+      where: {
+        id,
+      },
+      data: {
+        code,
+        startYear,
+        startSem,
+        endYear,
+        endSem,
+        cname: name,
+        public: isPublic,
+        description,
+      },
+    });
 
-  return result;
+    return result;
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        throw new BadRequestError('There is already a course with the same code, start year and start semester!');
+      }
+    }
+    throw e;
+  }
 }
 
 async function remove(id: number): Promise<Course> {
