@@ -135,10 +135,7 @@ export default function MainLayout() {
           courses === undefined || courses.length === 0
             ? undefined
             : courses.map((course) =>
-                getItem(
-                  <Link to={`/course/${course.id}/${course.year}/${course.sem}/overview`}>{course.cname}</Link>,
-                  `/course/${course.id}/${course.year}/${course.sem}`,
-                ),
+                getItem(<Link to={`/course/${course.id}/overview`}>{course.cname}</Link>, `/course/${course.id}`),
               ),
         ),
         [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],

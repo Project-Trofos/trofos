@@ -12,12 +12,12 @@ import { getErrorMessage } from '../helpers/error';
 
 export default function CourseSettings(): JSX.Element {
   const params = useParams();
-  const { course } = useCourse(params.courseId, Number(params.courseYear), Number(params.courseSem));
+  const { course } = useCourse(params.courseId);
 
   const [updateCourse] = useUpdateCourseMutation();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleFinish = async (values: { courseName?: string; courseDescription?: string }) => {
+  const handleFinish = async (values: { courseName?: string; courseDescription?: string; courseCode: string }) => {
     try {
       if (!course) {
         throw Error('Course is undefined!');
@@ -25,8 +25,7 @@ export default function CourseSettings(): JSX.Element {
       setIsUpdating(true);
       await updateCourse({
         id: course.id,
-        sem: course.sem,
-        year: course.year,
+        code: values.courseCode,
         description: values.courseDescription,
         cname: values.courseName,
       }).unwrap();
@@ -44,14 +43,14 @@ export default function CourseSettings(): JSX.Element {
         <DefaultForm
           initialValues={{
             courseName: course?.cname,
-            courseCode: course?.id,
+            courseCode: course?.code,
             courseDescription: course?.description,
           }}
           onFinish={handleFinish as (values: unknown) => void}
           isUpdating={isUpdating}
         >
           <CourseNameFormItem />
-          <CourseCodeFormItem isDisabled />
+          <CourseCodeFormItem />
 
           <Form.Item label="Description" name="courseDescription">
             <Input.TextArea rows={4} />

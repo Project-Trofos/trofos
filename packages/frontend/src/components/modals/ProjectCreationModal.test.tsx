@@ -101,6 +101,8 @@ describe('test ProjectCreationModal', () => {
     const segment = screen.getByText(/existing/i);
     fireEvent.click(segment);
 
+    // Wait for data from API to load
+    await screen.findByText('CS3203', { exact: false });
     const courseInput = await screen.findByLabelText('Course');
     fireEvent.change(courseInput, { target: { value: 'CS3203' } });
 

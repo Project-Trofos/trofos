@@ -5,10 +5,13 @@ const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:300
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
 
 const COURSE = {
-  id: 'CS3203',
+  id: '1',
+  code: 'CS3203',
   cname: 'Software Engineering Project',
-  course_year: '2022',
-  course_sem: '1',
+  startYear: '2022',
+  endYear: '2022',
+  startSem: '1',
+  endSem: '1',
   description: null,
   public: false,
   created_at: '2022-09-14T03:33:34.960Z',
@@ -19,9 +22,7 @@ const PROJECT = {
   pname: 'project1',
   pkey: null,
   description: 'project1_description',
-  course_id: 'CS3203',
-  course_year: '2022',
-  course_sem: '1',
+  course_id: '1',
   public: false,
   created_at: '2022-09-15T01:58:01.735Z',
   course: COURSE,

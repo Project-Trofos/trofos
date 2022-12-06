@@ -4,7 +4,7 @@ import { Dayjs } from 'dayjs';
 import { useAddProjectMutation } from '../../api/project';
 import { useAddProjectAndCourseMutation, useGetAllCoursesQuery } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
-import { useGetAllModulesQuery } from '../../api/nusmods';
+import { Module, useGetAllModulesQuery } from '../../api/nusmods';
 import { getErrorMessage } from '../../helpers/error';
 import CourseYearSemFormItems from '../forms/CourseYearSemFormItems';
 import SelectCourseCodeFormItem from '../forms/SelectCourseCodeFormItem';
@@ -12,7 +12,7 @@ import CourseCodeFormItem from '../forms/CourseCodeFormItem';
 import CourseNameFormItem from '../forms/CourseNameFormItem';
 import ProjectNameFormInput from '../forms/ProjectNameFormItem';
 import ProjectKeyFormInput from '../forms/ProjectKeyFormItem';
-import { Course } from '../../api/types';
+import { Course, CourseData } from '../../api/types';
 
 const { Option } = Select;
 
@@ -35,9 +35,6 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
       projectKey?: string;
       courseName?: string;
       courseCode?: string;
-      // Antd datepicker actually returns a moment object
-      // Only year is used for now
-      // Maybe we should consider adding moment to our dependencies?
       courseYear?: Dayjs;
       courseSem?: string;
     }) => {
@@ -52,13 +49,13 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
           await addProjectAndCourse({
             projectName: projectName.trim(),
             projectKey: projectKey?.trim(),
-            courseId: courseCode?.trim(),
+            courseCode: courseCode?.trim(),
             courseYear: Number(courseYear.year()),
             courseSem: Number(courseSem),
             courseName:
               courseName ??
               // Add in names if possible
-              courses?.filter((c) => c.id === courseCode)[0]?.cname ??
+              courses?.filter((c) => c.code === courseCode)[0]?.cname ??
               modules?.filter((m) => m.moduleCode === courseCode)[0]?.title,
           }).unwrap();
         } else if (course) {
@@ -66,9 +63,9 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
           await addProjectAndCourse({
             projectName: projectName.trim(),
             projectKey: projectKey?.trim(),
-            courseId: course.id,
-            courseYear: course.year,
-            courseSem: course.sem,
+            courseCode: course.code,
+            courseYear: course.startYear,
+            courseSem: course.startSem,
             courseName: course.cname,
           }).unwrap();
         } else {
@@ -88,7 +85,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
       title="Create Project"
       buttonName="Create Project"
       form={form}
-      formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 />]}
+      formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
       onSubmit={onFinish}
     />
   );
@@ -104,23 +101,27 @@ function FormStep1(): JSX.Element {
   );
 }
 
-function FormStep2(): JSX.Element {
+function FormStep2({
+  courses,
+  modules,
+}: {
+  courses: CourseData[] | undefined;
+  modules: Module[] | undefined;
+}): JSX.Element {
   const segmentOptions = ['Independent', 'Choose from existing', 'Create new'];
-  const { data: courses } = useGetAllCoursesQuery();
-  const { data: modules } = useGetAllModulesQuery();
   const [type, setType] = useState<string>('Independent');
 
   const courseOptions = useMemo(() => {
-    const results: Set<{ id: string; name: string }> = new Set();
+    const results: Set<{ code: string; name: string }> = new Set();
     if (modules) {
-      modules.forEach((m) => results.add({ id: m.moduleCode, name: m.title }));
+      modules.forEach((m) => results.add({ code: m.moduleCode, name: m.title }));
     }
     if (courses) {
-      courses.forEach((c) => results.add({ id: c.id, name: c.cname }));
+      courses.forEach((c) => results.add({ code: c.code, name: c.cname }));
     }
     return Array.from(results).map((x) => (
-      <Option key={`${x.id} ${x.name}`} value={x.id}>
-        {`${x.id} ${x.name}`}
+      <Option key={`${x.code} ${x.name}`} value={x.code}>
+        {`${x.code} ${x.name}`}
       </Option>
     ));
   }, [courses, modules]);
