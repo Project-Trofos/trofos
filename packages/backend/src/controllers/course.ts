@@ -74,8 +74,8 @@ async function create(req: express.Request, res: express.Response) {
       body.courseName,
       Number(body.courseStartYear),
       Number(body.courseStartSem),
-      Number(body.courseEndYear),
-      Number(body.courseEndSem),
+      numberOrUndefined(body.courseEndYear),
+      numberOrUndefined(body.courseEndSem),
       body.courseCode,
       body.isPublic,
       body.description,
@@ -112,8 +112,8 @@ async function update(req: express.Request, res: express.Response) {
 
     assertCourseIdIsValid(courseId);
 
-    if (!body.courseName && !body.isPublic && !body.description) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
+    if (Object.keys(body).length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide fields to update!' });
     }
 
     const result = await course.update(

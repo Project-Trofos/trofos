@@ -6,6 +6,7 @@ import coursesData from '../mocks/courseData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
+import { BadRequestError } from '../../helpers/error';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -96,10 +97,49 @@ describe('course.service tests', () => {
         newCourse.startSem,
         newCourse.endYear,
         newCourse.endSem,
-        newCourse.description ?? undefined,
+        newCourse.code,
         newCourse.public,
+        newCourse.description ?? undefined,
       );
       expect(result).toEqual<Course>(coursesData[INDEX]);
+    });
+
+    it('should throw error if start year is after end year', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.create(
+        1,
+        newCourse.cname,
+        newCourse.startYear + 1,
+        newCourse.startSem,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.code,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
+    });
+
+    it('should throw error if start year is the same as end year but start sem is after end sem', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.create(
+        1,
+        newCourse.cname,
+        newCourse.startYear,
+        newCourse.startSem + 1,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.code,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
     });
   });
 
@@ -143,6 +183,44 @@ describe('course.service tests', () => {
         updatedCourse.description ?? undefined,
       );
       expect(result).toEqual<Course>(coursesData[INDEX]);
+    });
+
+    it('should throw error if start year is after end year', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.update(
+        1,
+        newCourse.code,
+        newCourse.startYear + 1,
+        newCourse.startSem,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.cname,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
+    });
+
+    it('should throw error if start year is the same as end year but start sem is after end sem', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.update(
+        1,
+        newCourse.code,
+        newCourse.startYear,
+        newCourse.startSem + 1,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.cname,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
     });
   });
 

@@ -6,6 +6,7 @@ import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus } from '../helpers/constants';
+import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
@@ -146,6 +147,8 @@ async function create(
   isPublic?: boolean,
   description?: string,
 ): Promise<Course> {
+  assertStartAndEndIsValid(startYear, startSem, endYear ?? startYear, endSem ?? startSem);
+
   const result = await prisma.course.create({
     data: {
       code,
@@ -222,6 +225,19 @@ async function update(
   isPublic?: boolean,
   description?: string,
 ): Promise<Course> {
+  const current = await prisma.course.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const tempStartYear = startYear ?? current.startYear;
+  const tempStartSem = startSem ?? current.startSem;
+  const tempEndYear = endYear ?? current.endYear;
+  const tempEndSem = endSem ?? current.endSem;
+
+  assertStartAndEndIsValid(tempStartYear, tempStartSem, tempEndYear, tempEndSem);
+
   const result = await prisma.course.update({
     where: {
       id,

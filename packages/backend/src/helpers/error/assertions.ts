@@ -86,3 +86,9 @@ export function assertStatusNameIsValid(name: string | undefined): asserts name 
     throw new BadRequestError(getFieldUndefinedErrorMessage('name'));
   }
 }
+
+export function assertStartAndEndIsValid(startYear: number, startSem: number, endYear: number, endSem: number) {
+  if (startYear > endYear || (startYear === endYear && startSem > endSem)) {
+    throw new BadRequestError('Course end date cannot be before start date!');
+  }
+}

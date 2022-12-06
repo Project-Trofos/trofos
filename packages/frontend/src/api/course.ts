@@ -45,7 +45,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     // Updating a course will invalidate that course
     updateCourse: builder.mutation<
       Course,
-      Pick<Course, 'id'> & Partial<Pick<Course, 'description' | 'cname' | 'public' | 'code'>>
+      Pick<Course, 'id'> &
+        Partial<
+          Pick<Course, 'description' | 'cname' | 'public' | 'code' | 'startYear' | 'startSem' | 'endYear' | 'endSem'>
+        >
     >({
       query: (param) => ({
         url: `course/${param.id}`,
@@ -53,6 +56,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: {
           courseCode: param.code,
           courseName: param.cname,
+          courseStartYear: param.startYear,
+          courseStartSem: param.startSem,
+          courseEndYear: param.endYear,
+          courseEndSem: param.endSem,
           description: param.description,
           isPublic: param.public,
         },
