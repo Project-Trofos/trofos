@@ -1,4 +1,5 @@
 import { UserSession } from '@prisma/client';
+import { OptionRequestBody } from '../../controllers/requestTypes';
 import { BadRequestError } from './errorTypes';
 
 export function assertStringIsNumberOrThrow(str: string | undefined, errorMessage: string) {
@@ -91,4 +92,10 @@ export function assertStartAndEndIsValid(startYear: number, startSem: number, en
   if (startYear > endYear || (startYear === endYear && startSem > endSem)) {
     throw new BadRequestError('Course end date cannot be before start date!');
   }
+}
+
+export function assertGetAllOptionIsValid(option?: OptionRequestBody['option']) {
+    if (option && !['all', 'past', 'current', 'future'].includes(option)) {
+      throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
+    }
 }

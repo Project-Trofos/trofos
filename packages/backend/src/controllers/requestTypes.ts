@@ -10,7 +10,7 @@ export type ProjectIdRequestBody = {
 };
 
 export type OptionRequestBody = {
-  option: 'all' | 'past' | 'current';
+  option: 'all' | 'past' | 'current' | 'future';
 };
 
 export type UserRequestBody = {

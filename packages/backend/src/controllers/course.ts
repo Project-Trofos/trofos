@@ -9,11 +9,11 @@ import {
   assertCourseYearIsNumber,
   assertProjectIdIsValid,
   assertUserIdIsValid,
-  BadRequestError,
   getDefaultErrorRes,
 } from '../helpers/error';
 import {
   assertCourseCodeIsValid,
+  assertGetAllOptionIsValid,
   assertProjectNameIsValid,
   assertUserSessionIsValid,
 } from '../helpers/error/assertions';
@@ -32,9 +32,7 @@ async function getAll(req: express.Request, res: express.Response) {
     const body = req.body as OptionRequestBody;
 
     // If option is provided, it must be one of the following
-    if (body.option && !['all', 'past', 'current', 'future'].includes(body.option)) {
-      throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
-    }
+    assertGetAllOptionIsValid(body.option);
 
     // Default to all
     const result = await course.getAll(res.locals.policyConstraint, body.option ?? 'all');
