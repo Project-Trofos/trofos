@@ -9,10 +9,14 @@ import {
   assertCourseYearIsNumber,
   assertProjectIdIsValid,
   assertUserIdIsValid,
-  BadRequestError,
   getDefaultErrorRes,
 } from '../helpers/error';
-import { assertProjectNameIsValid, assertUserSessionIsValid } from '../helpers/error/assertions';
+import {
+  assertCourseCodeIsValid,
+  assertGetAllOptionIsValid,
+  assertProjectNameIsValid,
+  assertUserSessionIsValid,
+} from '../helpers/error/assertions';
 import {
   AddProjectAndCourseRequestBody,
   BulkCreateProjectBody,
@@ -21,15 +25,14 @@ import {
   ProjectIdRequestBody,
   UserRequestBody,
 } from './requestTypes';
+import numberOrUndefined from '../helpers/common';
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
     const body = req.body as OptionRequestBody;
 
     // If option is provided, it must be one of the following
-    if (body.option && !['all', 'past', 'current'].includes(body.option)) {
-      throw new BadRequestError('Please provide a correct option. option can only be all, past, or current.');
-    }
+    assertGetAllOptionIsValid(body.option);
 
     // Default to all
     const result = await course.getAll(res.locals.policyConstraint, body.option ?? 'all');
@@ -42,12 +45,9 @@ async function getAll(req: express.Request, res: express.Response) {
 
 async function get(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
 
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
-
-    const result = await course.getByPk(courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getById(Number(courseId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -61,16 +61,20 @@ async function create(req: express.Request, res: express.Response) {
     const userSession = res.locals.userSession as UserSession | undefined;
 
     assertUserSessionIsValid(userSession);
-    assertCourseYearIsNumber(body.courseYear);
-    assertCourseSemIsNumber(body.courseSem);
+    assertCourseYearIsNumber(body.courseStartYear);
+    assertCourseSemIsNumber(body.courseStartSem);
+    assertCourseYearIsNumber(body.courseEndYear);
+    assertCourseSemIsNumber(body.courseEndSem);
     assertCourseNameIsValid(body.courseName);
 
     const result = await course.create(
       userSession.user_id,
       body.courseName,
-      Number(body.courseYear),
-      Number(body.courseSem),
-      body.courseId,
+      Number(body.courseStartYear),
+      Number(body.courseStartSem),
+      numberOrUndefined(body.courseEndYear),
+      numberOrUndefined(body.courseEndSem),
+      body.courseCode,
       body.isPublic,
       body.description,
     );
@@ -85,9 +89,6 @@ async function bulkCreate(req: express.Request, res: express.Response) {
     const body = req.body as BulkCreateProjectBody;
 
     assertCourseIdIsValid(body.courseId);
-    assertCourseYearIsNumber(body.courseYear);
-    assertCourseSemIsNumber(body.courseSem);
-    assertCourseNameIsValid(body.courseName);
 
     body.projects.forEach((p) => {
       assertProjectNameIsValid(p.projectName);
@@ -104,21 +105,22 @@ async function bulkCreate(req: express.Request, res: express.Response) {
 
 async function update(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
-    const body = req.body as Partial<Pick<CourseRequestBody, 'courseName' | 'isPublic' | 'description'>>;
+    const { courseId } = req.params;
+    const body = req.body as Partial<Omit<CourseRequestBody, 'courseId'>>;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
 
-    if (!body.courseName && !body.isPublic && !body.description) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide valid changes!' });
+    if (Object.keys(body).length === 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Please provide fields to update!' });
     }
 
     const result = await course.update(
-      courseId,
-      Number(courseYear),
-      Number(courseSem),
+      Number(courseId),
+      body.courseCode,
+      numberOrUndefined(body.courseStartYear),
+      numberOrUndefined(body.courseStartSem),
+      numberOrUndefined(body.courseEndYear),
+      numberOrUndefined(body.courseEndSem),
       body.courseName,
       body.isPublic,
       body.description,
@@ -131,13 +133,11 @@ async function update(req: express.Request, res: express.Response) {
 
 async function remove(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
 
-    const result = await course.remove(courseId, Number(courseYear), Number(courseSem));
+    const result = await course.remove(Number(courseId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -147,13 +147,11 @@ async function remove(req: express.Request, res: express.Response) {
 
 async function getUsers(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getUsers(res.locals.policyConstraint, courseId, Number(courseYear), Number(courseSem));
+    const result = await course.getUsers(res.locals.policyConstraint, Number(courseId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -163,15 +161,13 @@ async function getUsers(req: express.Request, res: express.Response) {
 
 async function addUser(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
     const body = req.body as UserRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
     assertUserIdIsValid(body.userId);
 
-    const result = await course.addUser(courseId, Number(courseYear), Number(courseSem), Number(body.userId));
+    const result = await course.addUser(Number(courseId), Number(body.userId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -181,15 +177,13 @@ async function addUser(req: express.Request, res: express.Response) {
 
 async function removeUser(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
     const body = req.body as UserRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
     assertUserIdIsValid(body.userId);
 
-    const result = await course.removeUser(courseId, Number(courseYear), Number(courseSem), Number(body.userId));
+    const result = await course.removeUser(Number(courseId), Number(body.userId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -199,18 +193,11 @@ async function removeUser(req: express.Request, res: express.Response) {
 
 async function getProjects(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
 
-    const result = await course.getProjects(
-      res.locals.policyConstraint,
-      courseId,
-      Number(courseYear),
-      Number(courseSem),
-    );
+    const result = await course.getProjects(res.locals.policyConstraint, Number(courseId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -220,15 +207,13 @@ async function getProjects(req: express.Request, res: express.Response) {
 
 async function addProject(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
     const body = req.body as ProjectIdRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
     assertProjectIdIsValid(body.projectId);
 
-    const result = await course.addProject(courseId, Number(courseYear), Number(courseSem), Number(body.projectId));
+    const result = await course.addProject(Number(courseId), Number(body.projectId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -238,15 +223,13 @@ async function addProject(req: express.Request, res: express.Response) {
 
 async function removeProject(req: express.Request, res: express.Response) {
   try {
-    const { courseId, courseYear, courseSem } = req.params;
+    const { courseId } = req.params;
     const body = req.body as ProjectIdRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertCourseYearIsNumber(courseYear);
-    assertCourseSemIsNumber(courseSem);
     assertProjectIdIsValid(body.projectId);
 
-    const result = await course.removeProject(courseId, Number(courseYear), Number(courseSem), Number(body.projectId));
+    const result = await course.removeProject(Number(courseId), Number(body.projectId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -260,7 +243,7 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
     const userSession = res.locals.userSession as UserSession | undefined;
 
     assertUserSessionIsValid(userSession);
-    assertCourseIdIsValid(body.courseId);
+    assertCourseCodeIsValid(body.courseCode);
     assertCourseYearIsNumber(body.courseYear);
     assertCourseSemIsNumber(body.courseSem);
     assertProjectNameIsValid(body.projectName);
@@ -268,7 +251,7 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
 
     const result = await course.addProjectAndCourse(
       userSession.user_id,
-      body.courseId,
+      body.courseCode,
       Number(body.courseYear),
       Number(body.courseSem),
       body.courseName,

@@ -1,5 +1,4 @@
 import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
-import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { projectsData } from '../mocks/projectData';
@@ -15,12 +14,12 @@ describe('project.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll(projectPolicyConstraint);
+      const result = await project.getAll(projectPolicyConstraint, 'all');
       expect(result).toEqual<Project[]>(projectsData);
     });
 
     it('should return past projects', async () => {
-      const pastProjects = projectsData.filter((p) => !p.course_year || p.course_year < CURRENT_SEM);
+      const pastProjects = [projectsData[2]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
       const result = await project.getAll(projectPolicyConstraint, 'past');
@@ -28,13 +27,19 @@ describe('project.service tests', () => {
     });
 
     it('should return current projects', async () => {
-      const currentProjects = projectsData.filter(
-        (p) => !p.course_sem || !p.course_year || (p.course_sem === CURRENT_SEM && p.course_year === CURRENT_YEAR),
-      );
+      const currentProjects = [projectsData[0], projectsData[1]];
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
       const result = await project.getAll(projectPolicyConstraint, 'current');
       expect(result).toEqual<Project[]>(currentProjects);
+    });
+
+    it('should return past projects', async () => {
+      const pastProjects = [projectsData[3]];
+      prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
+
+      const result = await project.getAll(projectPolicyConstraint, 'future');
+      expect(result).toEqual<Project[]>(pastProjects);
     });
   });
 

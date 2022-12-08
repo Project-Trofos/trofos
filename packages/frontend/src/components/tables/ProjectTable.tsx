@@ -42,16 +42,14 @@ export default function ProjectTable({ projects, isLoading, heading, control, sh
   const handleRemoveProjectFromCourse = useCallback(
     async (project: Project) => {
       try {
-        if (!project.course_id || !project.course_year || !project.course_sem) {
+        if (!project.course_id) {
           throw Error('Invalid project to be deleted!');
         }
 
         confirmDetachProject(async () => {
           removeProjectFromCourse({
             projectId: project.id,
-            courseId: project.course_id as string,
-            courseYear: project.course_year as number,
-            courseSem: project.course_sem as number,
+            courseId: project.course_id as number,
           }).unwrap();
         });
       } catch (err) {

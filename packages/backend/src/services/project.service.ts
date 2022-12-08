@@ -6,11 +6,15 @@ import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
 import { defaultBacklogStatus } from '../helpers/constants';
 
-async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
+async function getAll(
+  policyConstraint: AppAbility,
+  option?: 'all' | 'current' | 'past' | 'future',
+): Promise<Project[]> {
   let result;
 
   if (option === 'current') {
-    // year == current_year OR year == null and sem == null
+    // Same constraints as course year and sem
+    // OR course id == null
     result = await prisma.project.findMany({
       where: {
         AND: [
@@ -18,16 +22,31 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
           {
             OR: [
               {
-                AND: {
-                  course_year: CURRENT_YEAR,
-                  course_sem: CURRENT_SEM,
-                },
+                AND: [
+                  {
+                    course: {
+                      startYear: {
+                        lte: CURRENT_YEAR,
+                      },
+                      endYear: {
+                        gte: CURRENT_YEAR,
+                      },
+                    },
+                  },
+                  {
+                    course: {
+                      startSem: {
+                        lte: CURRENT_SEM,
+                      },
+                      endSem: {
+                        gte: CURRENT_SEM,
+                      },
+                    },
+                  },
+                ],
               },
               {
-                AND: {
-                  course_year: null,
-                  course_sem: null,
-                },
+                course_id: null,
               },
             ],
           },
@@ -39,29 +58,73 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
       },
     });
   } else if (option === 'past') {
-    // year < current_year OR year == current_year && sem < current_sem
+    // endYear < currentYear
+    // OR
+    // endYear = currentYear AND endSem < currentSem
     result = await prisma.project.findMany({
       where: {
         AND: [
           accessibleBy(policyConstraint).Project,
           {
-            OR: [
-              {
-                AND: {
-                  course_year: {
+            course: {
+              OR: [
+                {
+                  endYear: {
                     lt: CURRENT_YEAR,
                   },
                 },
-              },
-              {
-                AND: {
-                  course_year: CURRENT_YEAR,
-                  course_sem: {
-                    lt: CURRENT_SEM,
+                {
+                  AND: [
+                    {
+                      endYear: CURRENT_YEAR,
+                    },
+                    {
+                      endSem: {
+                        lt: CURRENT_SEM,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+      include: {
+        course: true,
+        ...INCLUDE_USERS_ID_EMAIL,
+      },
+    });
+  } else if (option === 'future') {
+    // currentYear < startYear
+    // OR
+    // currentYear = startYear AND currentSem < startSem
+    result = await prisma.project.findMany({
+      where: {
+        AND: [
+          accessibleBy(policyConstraint).Project,
+          {
+            course: {
+              OR: [
+                {
+                  startYear: {
+                    gt: CURRENT_YEAR,
                   },
                 },
-              },
-            ],
+                {
+                  AND: [
+                    {
+                      startYear: CURRENT_YEAR,
+                    },
+                    {
+                      startSem: {
+                        gt: CURRENT_SEM,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
           },
         ],
       },

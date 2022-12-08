@@ -11,25 +11,28 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
       providesTags: (result, error, arg) =>
-        result
-          ? [...result.map(({ id, year, sem }) => ({ type: 'Course' as const, id: `${year}-${sem}-${id}` })), 'Course']
-          : ['Course'],
+        result ? [...result.map(({ id }) => ({ type: 'Course' as const, id })), 'Course'] : ['Course'],
     }),
 
-    getCourse: builder.query<CourseData, Pick<Course, 'id' | 'year' | 'sem'>>({
-      query: ({ year, sem, id }) => `course/${year}/${sem}/${id}`,
-      providesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
+    getCourse: builder.query<CourseData, Pick<Course, 'id'>>({
+      query: ({ id }) => `course//${id}`,
+      providesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
 
     // Adding a course will invalidate all courses
-    addCourse: builder.mutation<Course, Partial<Course> & Pick<Course, 'cname'>>({
+    addCourse: builder.mutation<
+      Course,
+      Partial<Course> & Pick<Course, 'cname' | 'code' | 'startYear' | 'startSem' | 'endYear' | 'endSem'>
+    >({
       query: (course) => ({
         url: 'course/',
         method: 'POST',
         body: {
-          courseId: course.id,
-          courseYear: course.year,
-          courseSem: course.sem,
+          courseCode: course.code,
+          courseStartYear: course.startYear,
+          courseStartSem: course.startSem,
+          courseEndYear: course.endYear,
+          courseEndSem: course.endSem,
           courseName: course.cname,
           isPublic: course.public,
           description: course.description,
@@ -42,78 +45,80 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     // Updating a course will invalidate that course
     updateCourse: builder.mutation<
       Course,
-      Pick<Course, 'id' | 'year' | 'sem'> & Partial<Pick<Course, 'description' | 'cname' | 'public'>>
+      Pick<Course, 'id'> &
+        Partial<
+          Pick<Course, 'description' | 'cname' | 'public' | 'code' | 'startYear' | 'startSem' | 'endYear' | 'endSem'>
+        >
     >({
       query: (param) => ({
-        url: `course/${param.year}/${param.sem}/${param.id}`,
+        url: `course/${param.id}`,
         method: 'PUT',
         body: {
+          courseCode: param.code,
           courseName: param.cname,
+          courseStartYear: param.startYear,
+          courseStartSem: param.startSem,
+          courseEndYear: param.endYear,
+          courseEndSem: param.endSem,
           description: param.description,
           isPublic: param.public,
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
 
     // Removing a course will invalidate that course and all projects
-    removeCourse: builder.mutation<Course, Pick<Course, 'id' | 'year' | 'sem'>>({
+    removeCourse: builder.mutation<Course, Pick<Course, 'id'>>({
       query: (param) => ({
-        url: `course/${param.year}/${param.sem}/${param.id}`,
+        url: `course/${param.id}`,
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id, year, sem }) => [
-        { type: 'Course', id: `${year}-${sem}-${id}` },
-        'Project',
-      ],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }, 'Project'],
     }),
 
     // Invalidate course
-    addCourseUser: builder.mutation<Course, Pick<Course, 'id' | 'year' | 'sem'> & { userId: number }>({
+    addCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userId: number }>({
       query: (param) => ({
-        url: `course/${param.year}/${param.sem}/${param.id}/user`,
+        url: `course/${param.id}/user`,
         method: 'POST',
         body: {
           userId: param.userId,
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
 
     // Invalidate course
-    removeCourseUser: builder.mutation<Course, Pick<Course, 'id' | 'year' | 'sem'> & { userId: number }>({
+    removeCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userId: number }>({
       query: (param) => ({
-        url: `course/${param.year}/${param.sem}/${param.id}/user`,
+        url: `course/${param.id}/user`,
         method: 'DELETE',
         body: {
           userId: param.userId,
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id, year, sem }) => [{ type: 'Course', id: `${year}-${sem}-${id}` }],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
 
     // Adding a project to a course will invalidate that course and all projects
     addProjectToCourse: builder.mutation<
       Course,
-      PickRename<Course, 'id', 'courseId'> &
-        PickRename<Course, 'year', 'courseYear'> &
-        PickRename<Course, 'sem', 'courseSem'> &
-        PickRename<Project, 'id', 'projectId'>
+      PickRename<Course, 'id', 'courseId'> & PickRename<Project, 'id', 'projectId'>
     >({
       query: (param) => ({
-        url: `course/${param.courseYear}/${param.courseSem}/${param.courseId}/project`,
+        url: `course/${param.courseId}/project`,
         body: {
           projectId: param.projectId,
         },
         method: 'POST',
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { courseId, courseYear, courseSem, projectId }) => [
-        { type: 'Course', id: `${courseYear}-${courseSem}-${courseId}` },
+      invalidatesTags: (result, error, { courseId, projectId }) => [
+        { type: 'Course', id: courseId },
         { type: 'Project', id: projectId },
       ],
     }),
@@ -121,21 +126,18 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     // Removing a project to a course will invalidate that course and that project
     removeProjectFromCourse: builder.mutation<
       Course,
-      PickRename<Course, 'id', 'courseId'> &
-        PickRename<Course, 'year', 'courseYear'> &
-        PickRename<Course, 'sem', 'courseSem'> &
-        PickRename<Project, 'id', 'projectId'>
+      PickRename<Course, 'id', 'courseId'> & PickRename<Project, 'id', 'projectId'>
     >({
       query: (param) => ({
-        url: `course/${param.courseYear}/${param.courseSem}/${param.courseId}/project`,
+        url: `course/${param.courseId}/project`,
         body: {
           projectId: param.projectId,
         },
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { courseId, courseYear, courseSem, projectId }) => [
-        { type: 'Course', id: `${courseYear}-${courseSem}-${courseId}` },
+      invalidatesTags: (result, error, { courseId, projectId }) => [
+        { type: 'Course', id: courseId },
         { type: 'Project', id: projectId },
       ],
     }),
@@ -144,7 +146,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     addProjectAndCourse: builder.mutation<
       Project,
       {
-        courseId?: string;
+        courseCode?: string;
         courseYear?: number;
         courseSem?: number;
         courseName?: string;

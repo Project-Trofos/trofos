@@ -13,7 +13,8 @@ jest.mock('../components/datetime/DatePicker', () => {
         disabled={disabled}
         onChange={(e) => {
           if (onChange) {
-            onChange(jest.fn() as unknown as Parameters<typeof onChange>['0'], e.target.value);
+            // Returns the value as year
+            onChange({ year: () => e.target.value } as unknown as Parameters<typeof onChange>['0'], e.target.value);
           }
         }}
       />

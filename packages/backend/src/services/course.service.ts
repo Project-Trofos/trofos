@@ -1,4 +1,4 @@
-import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnCourses } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -6,24 +6,55 @@ import { AppAbility } from '../policies/policyTypes';
 import INCLUDE_USERS_ID_EMAIL from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus } from '../helpers/constants';
+import { assertStartAndEndIsValid } from '../helpers/error/assertions';
+import { BadRequestError } from '../helpers/error';
 
-async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all'): Promise<Course[]> {
+async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
   if (option === 'current') {
+    // startYear <= currentYear <= endYear
+    // AND
+    // startSem <= currentSem <= endSem
     result = await prisma.course.findMany({
       where: {
         AND: [
           accessibleBy(policyConstraint).Course,
           {
-            year: CURRENT_YEAR,
-            sem: CURRENT_SEM,
+            AND: [
+              {
+                AND: [
+                  {
+                    startYear: {
+                      lte: CURRENT_YEAR,
+                    },
+                    endYear: {
+                      gte: CURRENT_YEAR,
+                    },
+                  },
+                ],
+              },
+              {
+                AND: [
+                  {
+                    startSem: {
+                      lte: CURRENT_SEM,
+                    },
+                    endSem: {
+                      gte: CURRENT_SEM,
+                    },
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
       include: INCLUDE_USERS_ID_EMAIL,
     });
   } else if (option === 'past') {
-    // year < current_year OR year == current_year and sem < current_sem
+    // endYear < currentYear
+    // OR
+    // endYear = currentYear AND endSem < currentSem
     result = await prisma.course.findMany({
       where: {
         AND: [
@@ -31,19 +62,54 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           {
             OR: [
               {
-                AND: {
-                  year: {
-                    lt: CURRENT_YEAR,
-                  },
+                endYear: {
+                  lt: CURRENT_YEAR,
                 },
               },
               {
-                AND: {
-                  year: CURRENT_YEAR,
-                  sem: {
-                    lt: CURRENT_SEM,
+                AND: [
+                  {
+                    endYear: CURRENT_YEAR,
                   },
+                  {
+                    endSem: {
+                      lt: CURRENT_SEM,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      include: INCLUDE_USERS_ID_EMAIL,
+    });
+  } else if (option === 'future') {
+    // currentYear < startYear
+    // OR
+    // currentYear = startYear AND currentSem < startSem
+    result = await prisma.course.findMany({
+      where: {
+        AND: [
+          accessibleBy(policyConstraint).Course,
+          {
+            OR: [
+              {
+                startYear: {
+                  gt: CURRENT_YEAR,
                 },
+              },
+              {
+                AND: [
+                  {
+                    startYear: CURRENT_YEAR,
+                  },
+                  {
+                    startSem: {
+                      gt: CURRENT_SEM,
+                    },
+                  },
+                ],
               },
             ],
           },
@@ -60,14 +126,10 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
   return result;
 }
 
-async function getByPk(id: string, year: number, sem: number): Promise<Course> {
+async function getById(id: number): Promise<Course> {
   const result = await prisma.course.findUniqueOrThrow({
     where: {
-      id_year_sem: {
-        id,
-        year,
-        sem,
-      },
+      id,
     },
     include: INCLUDE_USERS_ID_EMAIL,
   });
@@ -78,41 +140,63 @@ async function getByPk(id: string, year: number, sem: number): Promise<Course> {
 async function create(
   userId: number,
   name: string,
-  year: number,
-  sem: number,
-  id?: string,
+  startYear: number,
+  startSem: number,
+  endYear?: number,
+  endSem?: number,
+  code?: string,
   isPublic?: boolean,
   description?: string,
 ): Promise<Course> {
-  const result = await prisma.course.create({
-    data: {
-      id,
-      year,
-      sem,
-      cname: name,
-      public: isPublic,
-      description,
-      users: {
-        create: {
-          user_id: userId,
+  assertStartAndEndIsValid(startYear, startSem, endYear ?? startYear, endSem ?? startSem);
+
+  try {
+    const result = await prisma.course.create({
+      data: {
+        code,
+        startYear,
+        startSem,
+        endYear: endYear ?? startYear, // defaults to start year
+        endSem: endSem ?? startSem, // defaults to start sem
+        cname: name,
+        public: isPublic,
+        description,
+        users: {
+          create: {
+            user_id: userId,
+          },
         },
       },
-    },
-  });
+    });
 
-  return result;
+    return result;
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        throw new BadRequestError('There is already a course with the same code, start year and start semester!');
+      }
+    }
+    throw e;
+  }
 }
 
+/**
+ * Bulk create projects in a course. Throw error if course specified does not exist.
+ */
 async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Course> {
   const current = await prisma.course.findFirst({
     where: {
-      id: course.courseId,
-      year: Number(course.courseYear),
-      sem: Number(course.courseSem),
+      id: Number(course.courseId),
     },
   });
 
-  // Create projects and users
+  if (!current) {
+    // If course does not exist, throw error
+    throw new Error('Course does not exist!');
+  }
+
+  // If course already exists,
+  // Only need to create projects and users, then link to the course
   const projects = course.projects.map((p) =>
     prisma.project.create({
       data: {
@@ -120,9 +204,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
         pkey: p.projectKey,
         description: p.description,
         public: p.isPublic,
-        course_id: course.courseId,
-        course_year: Number(course.courseYear),
-        course_sem: Number(course.courseSem),
+        course_id: current.id,
         users: {
           createMany: {
             // Add the creator in too
@@ -137,79 +219,80 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
       },
     }),
   );
+  await prisma.$transaction(projects);
 
-  if (current) {
-    // If course already exists,
-    // Only need to create projects and users, then link to the course
-    await prisma.$transaction(projects);
-    return current;
-  }
-
-  // If course does not exist,
-  // Need to create course, projects and users
-  const courseNew = prisma.course.create({
-    data: {
-      id: course.courseId,
-      year: Number(course.courseYear),
-      sem: Number(course.courseSem),
-      cname: course.courseName,
-    },
-  });
-
-  const transaction = await prisma.$transaction([courseNew, ...projects]);
-
-  return transaction[0];
+  return current;
 }
 
 async function update(
-  id: string,
-  year: number,
-  sem: number,
+  id: number,
+  code?: string,
+  startYear?: number,
+  startSem?: number,
+  endYear?: number,
+  endSem?: number,
   name?: string,
   isPublic?: boolean,
   description?: string,
 ): Promise<Course> {
-  const result = await prisma.course.update({
+  const current = await prisma.course.findUniqueOrThrow({
     where: {
-      id_year_sem: {
-        id,
-        year,
-        sem,
-      },
-    },
-    data: {
-      cname: name,
-      public: isPublic,
-      description,
+      id,
     },
   });
 
-  return result;
+  const tempStartYear = startYear ?? current.startYear;
+  const tempStartSem = startSem ?? current.startSem;
+  const tempEndYear = endYear ?? current.endYear;
+  const tempEndSem = endSem ?? current.endSem;
+
+  assertStartAndEndIsValid(tempStartYear, tempStartSem, tempEndYear, tempEndSem);
+
+  try {
+    const result = await prisma.course.update({
+      where: {
+        id,
+      },
+      data: {
+        code,
+        startYear,
+        startSem,
+        endYear,
+        endSem,
+        cname: name,
+        public: isPublic,
+        description,
+      },
+    });
+
+    return result;
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === 'P2002') {
+        throw new BadRequestError('There is already a course with the same code, start year and start semester!');
+      }
+    }
+    throw e;
+  }
 }
 
-async function remove(id: string, year: number, sem: number): Promise<Course> {
+async function remove(id: number): Promise<Course> {
   const result = await prisma.course.delete({
     where: {
-      id_year_sem: {
-        id,
-        year,
-        sem,
-      },
+      id,
     },
   });
 
   return result;
 }
 
-async function getUsers(policyConstraint: AppAbility, id: string, year: number, sem: number): Promise<User[]> {
+async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
   const result = await prisma.usersOnCourses.findMany({
     where: {
       AND: [
         accessibleBy(policyConstraint).Course,
         {
-          course_id: id,
-          course_year: year,
-          course_sem: sem,
+          id,
         },
       ],
     },
@@ -221,17 +304,10 @@ async function getUsers(policyConstraint: AppAbility, id: string, year: number, 
   return result.map((x) => x.user);
 }
 
-async function addUser(
-  courseId: string,
-  courseYear: number,
-  courseSem: number,
-  userId: number,
-): Promise<UsersOnCourses> {
+async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
-      course_year: courseYear,
-      course_sem: courseSem,
       user_id: userId,
     },
   });
@@ -239,18 +315,11 @@ async function addUser(
   return result;
 }
 
-async function removeUser(
-  courseId: string,
-  courseYear: number,
-  courseSem: number,
-  userId: number,
-): Promise<UsersOnCourses> {
+async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
   const result = await prisma.usersOnCourses.delete({
     where: {
-      course_id_course_year_course_sem_user_id: {
+      course_id_user_id: {
         course_id: courseId,
-        course_year: courseYear,
-        course_sem: courseSem,
         user_id: userId,
       },
     },
@@ -259,16 +328,14 @@ async function removeUser(
   return result;
 }
 
-// Get project by any combination of id, year or sem
-async function getProjects(policyConstraint: AppAbility, id?: string, year?: number, sem?: number): Promise<Project[]> {
+// Get project by course id
+async function getProjects(policyConstraint: AppAbility, id: number): Promise<Project[]> {
   const result = await prisma.project.findMany({
     where: {
       AND: [
         accessibleBy(policyConstraint).Project,
         {
           course_id: id,
-          course_year: year,
-          course_sem: sem,
         },
       ],
     },
@@ -278,9 +345,10 @@ async function getProjects(policyConstraint: AppAbility, id?: string, year?: num
 }
 
 // Add project and link to course, create course if necessary
+// Created course defaults to ending on the same year and semester
 async function addProjectAndCourse(
   userId: number,
-  courseId: string,
+  courseCode: string,
   courseYear: number,
   courseSem: number,
   courseName: string,
@@ -300,17 +368,19 @@ async function addProjectAndCourse(
       course: {
         connectOrCreate: {
           where: {
-            id_year_sem: {
-              id: courseId,
-              year: courseYear,
-              sem: courseSem,
+            code_startYear_startSem: {
+              code: courseCode,
+              startYear: courseYear,
+              startSem: courseSem,
             },
           },
           create: {
-            id: courseId,
-            year: courseYear,
-            sem: courseSem,
             cname: courseName,
+            code: courseCode,
+            startYear: courseYear,
+            startSem: courseSem,
+            endYear: courseYear,
+            endSem: courseSem,
             public: isProjectPublic,
             description: courseDesc,
             users: {
@@ -338,20 +408,13 @@ async function addProjectAndCourse(
 }
 
 // Add project to course
-async function addProject(
-  courseId: string,
-  courseYear: number,
-  courseSem: number,
-  projectId: number,
-): Promise<Project> {
+async function addProject(courseId: number, projectId: number): Promise<Project> {
   const result = await prisma.project.update({
     where: {
       id: projectId,
     },
     data: {
       course_id: courseId,
-      course_year: courseYear,
-      course_sem: courseSem,
     },
   });
 
@@ -359,19 +422,14 @@ async function addProject(
 }
 
 // Remove project from course
-async function removeProject(
-  courseId: string,
-  courseYear: number,
-  courseSem: number,
-  projectId: number,
-): Promise<Project> {
+async function removeProject(courseId: number, projectId: number): Promise<Project> {
   const project = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
     },
   });
 
-  if (project.course_id !== courseId || project.course_year !== courseYear || project.course_sem !== courseSem) {
+  if (project.course_id !== courseId) {
     throw Error('This project does not belong to the course specified!');
   }
 
@@ -381,8 +439,6 @@ async function removeProject(
     },
     data: {
       course_id: null,
-      course_year: null,
-      course_sem: null,
     },
   });
 
@@ -392,7 +448,7 @@ async function removeProject(
 export default {
   create,
   bulkCreate,
-  getByPk,
+  getById,
   getAll,
   update,
   remove,

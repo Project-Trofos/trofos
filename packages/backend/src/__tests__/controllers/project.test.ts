@@ -4,7 +4,6 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import projectController from '../../controllers/project';
 import { projectsData } from '../mocks/projectData';
-import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
@@ -53,12 +52,7 @@ describe('project controller tests', () => {
     });
 
     it('should return all past projects', async () => {
-      const pastProjects = projectsData.filter(
-        (p) =>
-          p.course_year &&
-          p.course_sem &&
-          (p.course_year < CURRENT_YEAR || (p.course_year === CURRENT_YEAR && p.course_sem < CURRENT_SEM)),
-      );
+      const pastProjects = [projectsData[2]];
       spies.getAll.mockResolvedValueOnce(pastProjects);
       const mockReq = createRequest({
         body: {
@@ -75,9 +69,7 @@ describe('project controller tests', () => {
     });
 
     it('should return all current projects', async () => {
-      const currentProjects = projectsData.filter(
-        (p) => !p.course_year || !p.course_sem || (p.course_year === CURRENT_YEAR && p.course_sem === CURRENT_SEM),
-      );
+      const currentProjects = [projectsData[0], projectsData[1]];
       spies.getAll.mockResolvedValueOnce(currentProjects);
       const mockReq = createRequest({
         body: {
@@ -91,6 +83,23 @@ describe('project controller tests', () => {
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(currentProjects));
+    });
+
+    it('should return all future projects', async () => {
+      const futureProjects = [projectsData[3]];
+      spies.getAll.mockResolvedValueOnce(futureProjects);
+      const mockReq = createRequest({
+        body: {
+          option: 'future',
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.getAll(mockReq, mockRes);
+
+      expect(spies.getAll).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(futureProjects));
     });
 
     it('should throw if option is incorrect', async () => {

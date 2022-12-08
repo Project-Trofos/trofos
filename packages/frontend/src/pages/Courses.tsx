@@ -7,24 +7,15 @@ import CourseCard from '../components/cards/CourseCard';
 
 import './Courses.css';
 import Container from '../components/layouts/Container';
+import { Course } from '../api/types';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 export default function CoursesPage(): JSX.Element {
-  const { data: courses, currentCourses, pastCourses, isLoading } = useCurrentAndPastCourses();
+  const { currentCourses, pastCourses, futureCourses, isLoading } = useCurrentAndPastCourses();
 
   if (isLoading) {
     return <main style={{ margin: '48px' }}>Loading...</main>;
-  }
-
-  if (!currentCourses || !pastCourses || !courses || courses.length === 0) {
-    return (
-      <main style={{ margin: '48px' }}>
-        <Title>Courses</Title>
-        <Paragraph>It seems that you do not have a course yet...</Paragraph>
-        <CourseCreationModal />
-      </main>
-    );
   }
 
   return (
@@ -34,33 +25,28 @@ export default function CoursesPage(): JSX.Element {
         <CourseCreationModal />
       </Space>
       <Tabs>
-        <Tabs.TabPane tab="Current Courses" key="current-courses">
-          {currentCourses.length === 0 ? (
-            'There are no current courses'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {currentCourses.map((course) => (
-                <Col key={`${course.year}-${course.sem}-${course.id}`}>
-                  <CourseCard course={course} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Past Courses" key="past-courses">
-          {pastCourses.length === 0 ? (
-            'There are no past courses'
-          ) : (
-            <Row gutter={[16, 16]} wrap>
-              {pastCourses.map((course) => (
-                <Col key={`${course.year}-${course.sem}-${course.id}`}>
-                  <CourseCard course={course} />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Tabs.TabPane>
+        {renderCoursesPane(currentCourses, 'Current Courses', 'There are no current courses.')}
+        {renderCoursesPane(pastCourses, 'Past Courses', 'There are no past courses.')}
+        {renderCoursesPane(futureCourses, 'Future Courses', 'There are no future courses.')}
       </Tabs>
     </Container>
+  );
+}
+
+function renderCoursesPane(courses: Course[] | undefined, tabName: string, emptyPrompt: string) {
+  return (
+    <Tabs.TabPane tab={tabName} key={tabName}>
+      {!courses || courses.length === 0 ? (
+        emptyPrompt
+      ) : (
+        <Row gutter={[16, 16]} wrap>
+          {courses.map((course) => (
+            <Col key={course.id}>
+              <CourseCard course={course} />
+            </Col>
+          ))}
+        </Row>
+      )}
+    </Tabs.TabPane>
   );
 }

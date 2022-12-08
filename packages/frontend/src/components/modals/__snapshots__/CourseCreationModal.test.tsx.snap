@@ -141,7 +141,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       class="ant-col ant-form-item-label"
                     >
                       <label
-                        class=""
+                        class="ant-form-item-required"
                         for="multi-step-modal-form_courseCode"
                         title="Course Code"
                       >

@@ -9,11 +9,7 @@ import UserTable from '../components/tables/UserTable';
 
 export default function CoursePeople(): JSX.Element {
   const params = useParams();
-  const { course, handleAddUser, handleRemoveUser, isLoading } = useCourse(
-    params.courseId,
-    Number(params.courseYear),
-    Number(params.courseSem),
-  );
+  const { course, handleAddUser, handleRemoveUser, isLoading } = useCourse(params.courseId);
   const { data: userInfo } = useGetUserInfoQuery();
 
   return (
