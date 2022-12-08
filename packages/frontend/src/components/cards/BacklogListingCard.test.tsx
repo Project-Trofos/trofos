@@ -1,7 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import BacklogListingCard from './BacklogListingCard';
 import type { Backlog } from '../../api/backlog';
+import store from '../../app/store';
 
 describe('BacklogCard test', () => {
   const mockBacklog: Backlog = {
@@ -17,15 +19,19 @@ describe('BacklogCard test', () => {
     project_id: 123,
     status: 'todo',
   };
-  const { baseElement } = render(<BacklogListingCard backlog={mockBacklog} projectKey="MOCK" />);
+  const { baseElement } = render(
+    <Provider store={store}>
+      <BacklogListingCard backlog={mockBacklog} projectKey="MOCK" />
+    </Provider>,
+  );
 
   it('renders backlog card with correct details', () => {
     expect(screen.getByText('MOCK-111')).toBeInTheDocument();
     expect(screen.getByText('A Test Summary')).toBeInTheDocument();
-    expect(screen.getByText('story')).toBeInTheDocument();
-    expect(screen.getByText('very_high')).toBeInTheDocument();
-    expect(screen.getByText('User2')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('Story')).toBeInTheDocument();
+    expect(screen.getByText('Very High')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByDisplayValue(3)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();

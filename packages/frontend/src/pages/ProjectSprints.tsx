@@ -4,13 +4,13 @@ import { List, Typography } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { useGetSprintsQuery } from '../api/sprint';
+import { useGetUnassignedBacklogsQuery } from '../api/backlog';
 import type { Sprint } from '../api/sprint';
 import SprintCreationModal from '../components/modals/SprintCreationModal';
 import SprintListingCard from '../components/cards/SprintListingCard';
 import type { AutoSprintTypes } from '../helpers/SprintModal.types';
 import './ProjectSprints.css';
 import BacklogList from '../components/lists/BacklogList';
-import { useGetUnassignedBacklogsQuery } from '../api/backlog';
 import BacklogCreationModal from '../components/modals/BacklogCreationModal';
 
 const GENERIC_NEW_SPRINT: AutoSprintTypes = {

@@ -30,7 +30,19 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
       project_id: projectId,
     },
     include: {
-      backlogs: true,
+      backlogs: {
+        include: {
+          assignee: {
+            include: {
+              user: {
+                select: {
+                  user_email: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

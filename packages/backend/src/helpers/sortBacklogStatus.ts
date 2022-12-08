@@ -2,13 +2,9 @@
  * Sort backlog status according to type
  */
 
-import { BacklogStatusData } from '../api/types';
+import { BacklogStatus } from '@prisma/client';
 
-// eslint-disable-next-line import/prefer-default-export
-const backlogStatusCompareFunc = (
-  s1: Omit<BacklogStatusData, 'project_id'>,
-  s2: Omit<BacklogStatusData, 'project_id'>,
-): -1 | 0 | 1 => {
+const backlogStatusCompareFunc = (s1: BacklogStatus, s2: BacklogStatus): -1 | 0 | 1 => {
   if (s1.type === s2.type) {
     if (s1.order < s2.order) {
       return -1;
@@ -33,9 +29,7 @@ const backlogStatusCompareFunc = (
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export const sortBacklogStatus = (
-  statuses: Omit<BacklogStatusData, 'project_id'>[],
-): Omit<BacklogStatusData, 'project_id'>[] => {
+export const sortBacklogStatus = (statuses: BacklogStatus[]): BacklogStatus[] => {
   // deep copy statuses array
   // eslint-disable-next-line arrow-body-style
   const sortedStatuses = statuses.map((s) => {

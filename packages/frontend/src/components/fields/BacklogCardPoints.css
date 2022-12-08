@@ -1,0 +1,11 @@
+.backlog-card-points {
+  width: 72px;
+  background: #ededed;
+  border-radius: 8px;
+  min-width: 28px;
+  border: none;
+}
+
+.backlog-card-points input {
+  text-align: center;
+}
