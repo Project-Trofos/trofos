@@ -17,17 +17,6 @@ export default function BacklogCardAssignee(props: {
   const projectId = Number(params.projectId);
   const [updateBacklog] = useUpdateBacklogMutation();
 
-  // const processUserOptions = (users: UserData[] | undefined) => {
-  //   if (!users) {
-  //     return [];
-  //   }
-
-  //   // eslint-disable-next-line arrow-body-style
-  //   return users.map((user) => {
-  //     return { value: user.user.user_id, label: user.user.user_email };
-  //   });
-  // };
-
   const handleAssigneeChange = async (updatedAssignee: number | undefined) => {
     const payload = {
       backlogId,
