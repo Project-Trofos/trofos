@@ -9,3 +9,7 @@
 .backlog-card-points input {
   text-align: center;
 }
+
+.backlog-card-points.ant-input-number-status-error {
+  border: 1px solid;
+}
