@@ -14,7 +14,7 @@ const spies = {
   getAll: jest.spyOn(course, 'getAll'),
   create: jest.spyOn(course, 'create'),
   bulkCreate: jest.spyOn(course, 'bulkCreate'),
-  getByPk: jest.spyOn(course, 'getByPk'),
+  getById: jest.spyOn(course, 'getById'),
   update: jest.spyOn(course, 'update'),
   remove: jest.spyOn(course, 'remove'),
   getUsers: jest.spyOn(course, 'getUsers'),
@@ -35,12 +35,21 @@ describe('course controller tests', () => {
   const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
   // Mock data for users on courses
-  const usersCourseData: UsersOnCourses[] = [
-    { course_id: '1', course_year: 2022, course_sem: 1, user_id: 1, created_at: new Date(Date.now()) },
-  ];
+  const usersCourseData: UsersOnCourses[] = [{ course_id: 1, user_id: 1, created_at: new Date(Date.now()) }];
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
+
+  const validBody = {
+    courseId: coursesData[0].id,
+    courseCode: coursesData[0].code,
+    courseStartYear: coursesData[0].startYear,
+    courseStartSem: coursesData[0].startSem,
+    courseEndYear: coursesData[0].endYear,
+    courseEndSem: coursesData[0].endSem,
+    courseName: coursesData[0].cname,
+    description: coursesData[0].description,
+  };
 
   describe('getAll', () => {
     it('should return all courses', async () => {
@@ -58,7 +67,7 @@ describe('course controller tests', () => {
 
     it('should return all past courses', async () => {
       const pastCourses = coursesData.filter(
-        (c) => c.year < CURRENT_YEAR || (c.year === CURRENT_YEAR && c.sem < CURRENT_SEM),
+        (c) => c.startYear < CURRENT_YEAR || (c.startYear === CURRENT_YEAR && c.startSem < CURRENT_SEM),
       );
       spies.getAll.mockResolvedValueOnce(pastCourses);
       const mockReq = createRequest({
@@ -77,7 +86,7 @@ describe('course controller tests', () => {
     });
 
     it('should return all current courses', async () => {
-      const currentCourses = coursesData.filter((c) => c.year === CURRENT_YEAR && c.sem === CURRENT_SEM);
+      const currentCourses = coursesData.filter((c) => c.startYear === CURRENT_YEAR && c.startSem === CURRENT_SEM);
       spies.getAll.mockResolvedValueOnce(currentCourses);
       const mockReq = createRequest({
         body: {
@@ -111,19 +120,17 @@ describe('course controller tests', () => {
 
   describe('get', () => {
     it('should return course', async () => {
-      spies.getByPk.mockResolvedValueOnce(coursesData[0]);
+      spies.getById.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
 
       await courseController.get(mockReq, mockRes);
 
-      expect(spies.getByPk).toHaveBeenCalled();
+      expect(spies.getById).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
@@ -133,13 +140,7 @@ describe('course controller tests', () => {
     it('should return course created', async () => {
       spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
-        body: {
-          courseId: coursesData[0].id,
-          courseYear: coursesData[0].year,
-          courseSem: coursesData[0].sem,
-          courseName: coursesData[0].cname,
-          description: coursesData[0].description,
-        },
+        body: validBody,
       });
       const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
 
@@ -151,15 +152,8 @@ describe('course controller tests', () => {
     });
 
     it('should return bad request if user session is not defined', async () => {
-      spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
-        body: {
-          courseId: coursesData[0].id,
-          courseYear: coursesData[0].year,
-          courseSem: coursesData[0].sem,
-          courseName: coursesData[0].cname,
-          description: coursesData[0].description,
-        },
+        body: validBody,
       });
       const mockRes = createResponse();
 
@@ -170,7 +164,6 @@ describe('course controller tests', () => {
     });
 
     it('should return bad request if name is not provided', async () => {
-      spies.create.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         body: {
           description: coursesData[0].description,
@@ -181,6 +174,40 @@ describe('course controller tests', () => {
       await courseController.create(mockReq, mockRes);
 
       expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should return bad request if start year is after end year', async () => {
+      const mockReq = createRequest({
+        body: {
+          ...validBody,
+          courseStartYear: validBody.courseStartYear + 1,
+          courseEndYear: validBody.courseStartYear,
+          courseEndSem: validBody.courseStartSem,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.create(mockReq, mockRes);
+
+      expect(spies.create).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should return bad request if start year is the same as end year but start sem is after end sem', async () => {
+      const mockReq = createRequest({
+        body: {
+          ...validBody,
+          courseStartSem: validBody.courseStartSem + 1,
+          courseEndYear: validBody.courseStartYear,
+          courseEndSem: validBody.courseStartSem,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.create(mockReq, mockRes);
+
+      expect(spies.create).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });
@@ -200,26 +227,23 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(coursesData[0]));
     });
 
-    it('should return bad request if id, year, sem or name is not provided', async () => {
-      const tests = ['courseId', 'courseYear', 'courseSem', 'courseName'].map(async (k) => {
-        spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
-        const mockReq = createRequest({
-          body: {
-            ...mockBulkCreateBody,
-            [k]: undefined,
-          },
-        });
-        const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
-
-        await courseController.bulkCreate(mockReq, mockRes);
-
-        expect(spies.bulkCreate).not.toHaveBeenCalled();
-        expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    it('should return bad request if id is not provided', async () => {
+      spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
+      const mockReq = createRequest({
+        body: {
+          ...mockBulkCreateBody,
+          courseId: undefined,
+        },
       });
-      await Promise.all(tests);
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await courseController.bulkCreate(mockReq, mockRes);
+
+      expect(spies.bulkCreate).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should return bad request project is malformed', async () => {
+    it('should return bad request if project details is malformed', async () => {
       spies.bulkCreate.mockResolvedValueOnce(coursesData[0]);
       const mockReq = createRequest({
         body: {
@@ -258,8 +282,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           name: coursesData[0].cname,
@@ -279,8 +301,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {},
       });
@@ -291,6 +311,44 @@ describe('course controller tests', () => {
       expect(spies.update).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
+
+    it('should return bad request if start year is after end year', async () => {
+      const mockReq = createRequest({
+        params: {
+          courseId: coursesData[0].id,
+        },
+        body: {
+          courseStartYear: coursesData[0].startYear + 1,
+          courseEndYear: coursesData[0].startYear,
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.update(mockReq, mockRes);
+
+      expect(spies.update).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should return bad request if start year is same as end year but start sem is after end sem', async () => {
+      const mockReq = createRequest({
+        params: {
+          courseId: coursesData[0].id,
+        },
+        body: {
+          courseStartYear: coursesData[0].startYear,
+          courseStartSem: coursesData[0].startSem + 1,
+          courseEndYear: coursesData[0].startYear,
+          courseEndSem: coursesData[0].startSem,
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.update(mockReq, mockRes);
+
+      expect(spies.update).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('get', () => {
@@ -299,8 +357,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -319,8 +375,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -340,8 +394,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           userId: usersData[0].user_id.toString(),
@@ -361,8 +413,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {},
       });
@@ -381,8 +431,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           userId: usersData[0].user_id.toString(),
@@ -402,8 +450,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {},
       });
@@ -422,8 +468,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
       });
       const mockRes = createResponse();
@@ -443,8 +487,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           projectId: projectsData[0].id.toString(),
@@ -463,8 +505,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {},
       });
@@ -483,8 +523,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {
           projectId: projectsData[0].id.toString(),
@@ -504,8 +542,6 @@ describe('course controller tests', () => {
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
         },
         body: {},
       });
@@ -525,9 +561,10 @@ describe('course controller tests', () => {
         params: {},
         body: {
           courseId: coursesData[0].id,
-          courseYear: coursesData[0].year.toString(),
-          courseSem: coursesData[0].sem.toString(),
           courseName: coursesData[0].cname.toString(),
+          courseCode: coursesData[0].code,
+          courseYear: coursesData[0].startYear,
+          courseSem: coursesData[0].startSem,
           projectName: projectsData[0].pname.toString(),
         },
       });

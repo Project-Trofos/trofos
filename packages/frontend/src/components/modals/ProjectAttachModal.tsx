@@ -17,21 +17,18 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
-    async (data: { courseCode?: string }) => {
+    async (data: { courseCode?: number }) => {
       try {
         if (!courses) {
           throw new Error('Courses not loaded!');
         }
 
         const { courseCode } = data;
-        const selectedCourse = courses.filter((c) => c.id === courseCode)[0];
         if (!courseCode) {
           throw new Error('Invalid data!');
         }
         await addProjectToCourse({
           courseId: courseCode,
-          courseYear: selectedCourse.year,
-          courseSem: selectedCourse.sem,
           projectId: project.id,
         }).unwrap();
       } catch (err) {

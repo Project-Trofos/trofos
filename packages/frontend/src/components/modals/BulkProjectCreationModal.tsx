@@ -41,10 +41,8 @@ export default function BulkProjectCreationModal({
         return;
       }
       await bulkCreateProject({
-        courseId: course.id,
+        courseId: course.id.toString(),
         courseName: course.cname,
-        courseYear: course.year,
-        courseSem: course.sem,
         isPublic: course.public,
         projects: allocations.map((p) => ({
           projectName: p.name,

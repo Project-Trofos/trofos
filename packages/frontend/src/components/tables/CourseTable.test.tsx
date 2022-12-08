@@ -8,9 +8,12 @@ import { Course } from '../../api/types';
 describe('test CourseTable', () => {
   const mockCourses: Course[] = [
     {
-      id: 'course_id',
-      year: 2022,
-      sem: 10,
+      id: 1,
+      code: 'course_id',
+      startYear: 2022,
+      startSem: 102,
+      endYear: 2023,
+      endSem: 103,
       cname: 'course1',
       description: 'project1_description',
       public: false,
@@ -34,13 +37,16 @@ describe('test CourseTable', () => {
 
     // Ensure columns are present
     expect(screen.getByText('ID')).toBeInTheDocument();
+    expect(screen.getByText('Code')).toBeInTheDocument();
     expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Action')).toBeInTheDocument();
 
     // Ensure row is present
-    expect(screen.getByText(mockCourses[0].id)).toBeInTheDocument();
-    expect(screen.getByText(mockCourses[0].year)).toBeInTheDocument();
-    expect(screen.getByText(mockCourses[0].sem)).toBeInTheDocument();
+    expect(screen.getByText(mockCourses[0].code)).toBeInTheDocument();
+    expect(screen.getByText(mockCourses[0].startYear)).toBeInTheDocument();
+    expect(screen.getByText(mockCourses[0].startSem)).toBeInTheDocument();
+    expect(screen.getByText(mockCourses[0].endYear)).toBeInTheDocument();
+    expect(screen.getByText(mockCourses[0].endSem)).toBeInTheDocument();
     expect(screen.getByText(mockCourses[0].cname)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same

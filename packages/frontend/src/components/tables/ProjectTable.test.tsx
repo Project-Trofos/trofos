@@ -6,21 +6,20 @@ import { BrowserRouter } from 'react-router-dom';
 import ProjectTable from './ProjectTable';
 import store from '../../app/store';
 import server from '../../mocks/server';
+import { Project } from '../../api/types';
 
 describe('test ProjectTable', () => {
   beforeAll(() => server.listen());
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
-  const mockProjects = [
+  const mockProjects: Project[] = [
     {
       id: 1,
       pname: 'project1',
       pkey: null,
       description: 'project1_description',
-      course_id: 'CS3203',
-      course_year: 2022,
-      course_sem: 1,
+      course_id: 1,
       public: false,
       created_at: '2022-09-15T01:58:01.735Z',
     },

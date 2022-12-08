@@ -1,8 +1,9 @@
 import { UserSession } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { assertProjectIdIsValid, assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import { assertProjectIdIsValid, assertUserIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
+  assertGetAllOptionIsValid,
   assertProjectNameIsValid,
   assertStatusNameIsValid,
   assertUserSessionIsValid,
@@ -15,9 +16,7 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
   try {
     const body = req.body as OptionRequestBody;
 
-    if (body.option && !['all', 'past', 'current'].includes(body.option)) {
-      throw new BadRequestError('Please provide a correct option. option can only be all, past, or current.');
-    }
+    assertGetAllOptionIsValid(body.option);
 
     // default to all
     const result = await project.getAll(res.locals.policyConstraint, body.option ?? 'all');

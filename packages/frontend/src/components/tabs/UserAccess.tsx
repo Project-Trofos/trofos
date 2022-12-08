@@ -22,14 +22,12 @@ export default function UserAccessTab(): JSX.Element {
     <Row className="entry">
       <h1>{course.cname}</h1>
       <Tag color="green">{course.id}</Tag>
-      <Tag>{`${course.year} Semester ${course.sem}`}</Tag>
+      <Tag>{`${course.startYear} Semester ${course.startSem}`}</Tag>
       <Button
         danger
         onClick={() =>
           removeUserFromCourse({
             id: course.id,
-            year: course.year,
-            sem: course.sem,
             userId: userInfo?.userId || NO_USER_ID_FOUND,
           })
         }

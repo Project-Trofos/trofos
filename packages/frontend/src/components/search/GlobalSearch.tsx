@@ -25,7 +25,7 @@ export default function GlobalSearch(): JSX.Element {
     // Filter courses by search string
     const filteredCourses = courses
       .filter((c) => c.cname.toLowerCase().includes(searchString.toLowerCase()))
-      .map((c) => renderItem(c.cname, `${c.id}/${c.year}/${c.sem}`, 'course'));
+      .map((c) => renderItem(c.cname, c.id, 'course'));
     if (filteredCourses.length === 0) {
       return undefined;
     }
@@ -42,7 +42,7 @@ export default function GlobalSearch(): JSX.Element {
     }
     const filteredProjects = projects
       .filter((p) => p.pname.toLocaleLowerCase().includes(searchString.toLowerCase()))
-      .map((p) => renderItem(p.pname, p.id.toString(), 'project'));
+      .map((p) => renderItem(p.pname, p.id, 'project'));
     if (filteredProjects.length === 0) {
       return undefined;
     }
@@ -100,7 +100,7 @@ export default function GlobalSearch(): JSX.Element {
 
 const renderTitle = (title: string) => <span>{title}</span>;
 
-const renderItem = (title: string, id: string, type: 'course' | 'project') => ({
+const renderItem = (title: string, id: number, type: 'course' | 'project') => ({
   type_id: id,
   type,
   value: title,

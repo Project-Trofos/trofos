@@ -10,9 +10,12 @@ import { UserInfo } from '../../api/auth';
 
 describe('test course creation modal', () => {
   const mockCourseData: CourseData = {
-    id: 'course_id',
-    year: 2022,
-    sem: 10,
+    id: 1,
+    code: 'course_id',
+    startYear: 2022,
+    startSem: 10,
+    endYear: 2022,
+    endSem: 10,
     cname: 'course1',
     description: 'project1_description',
     public: false,

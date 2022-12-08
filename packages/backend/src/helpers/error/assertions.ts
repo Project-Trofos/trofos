@@ -1,4 +1,5 @@
 import { UserSession } from '@prisma/client';
+import { OptionRequestBody } from '../../controllers/requestTypes';
 import { BadRequestError } from './errorTypes';
 
 export function assertStringIsNumberOrThrow(str: string | undefined, errorMessage: string) {
@@ -27,11 +28,25 @@ export function assertCourseIdIsValid(courseId: string | undefined): asserts cou
   if (!courseId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('courseId'));
   }
+  try {
+    Number(courseId);
+  } catch (e) {
+    throw new BadRequestError('courseId should be a number!');
+  }
 }
 
 export function assertCourseNameIsValid(courseName: string | undefined): asserts courseName is string {
   if (!courseName) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('courseName'));
+  }
+}
+
+export function assertCourseCodeIsValid(courseCode: string | undefined): asserts courseCode is string {
+  if (!courseCode) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('courseName'));
+  }
+  if (!courseCode.match('[a-zA-Z0-9]')) {
+    throw new BadRequestError('Course code is not alphanumeric!');
   }
 }
 
@@ -71,4 +86,16 @@ export function assertStatusNameIsValid(name: string | undefined): asserts name 
   if (!name) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('name'));
   }
+}
+
+export function assertStartAndEndIsValid(startYear: number, startSem: number, endYear: number, endSem: number) {
+  if (startYear > endYear || (startYear === endYear && startSem > endSem)) {
+    throw new BadRequestError('Course end date cannot be before start date!');
+  }
+}
+
+export function assertGetAllOptionIsValid(option?: OptionRequestBody['option']) {
+    if (option && !['all', 'past', 'current', 'future'].includes(option)) {
+      throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
+    }
 }

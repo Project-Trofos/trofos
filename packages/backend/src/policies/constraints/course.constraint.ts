@@ -28,13 +28,7 @@ function coursePolicyConstraint(userId: number, isUserAdmin: boolean) {
   return build();
 }
 
-async function canManageCourse(
-  userId: number,
-  course_id: string,
-  course_year: number,
-  course_sem: number,
-  isUserAdmin: boolean,
-): Promise<boolean> {
+async function canManageCourse(userId: number, course_id: number, isUserAdmin: boolean): Promise<boolean> {
   if (isUserAdmin) return true;
 
   // Returns at most one course
@@ -44,8 +38,6 @@ async function canManageCourse(
         accessibleBy(coursePolicyConstraint(userId, isUserAdmin)).Course,
         {
           id: course_id,
-          year: course_year,
-          sem: course_sem,
         },
       ],
     },

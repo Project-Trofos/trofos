@@ -17,7 +17,7 @@ type CourseTableProps = {
 /**
  * Table for listing projects
  */
-export default function CourseTable({ courses: projects, isLoading, heading, control }: CourseTableProps) {
+export default function CourseTable({ courses, isLoading, heading, control }: CourseTableProps) {
   return (
     <Card className="table-card">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -26,21 +26,44 @@ export default function CourseTable({ courses: projects, isLoading, heading, con
           {control}
         </Space>
         <Table
-          dataSource={projects}
-          rowKey={(project) => `${project.id}-${project.year}-${project.sem}`}
+          dataSource={courses}
+          rowKey={(project) => project.id}
           loading={isLoading}
           bordered
           size="small"
           pagination={{ pageSize: 5 }}
         >
+          <Table.Column width={150} title="ID" dataIndex="id" sorter={(a: Course, b: Course) => a.id - b.id} />
           <Table.Column
             width={150}
-            title="ID"
-            dataIndex="id"
-            sorter={(a: Course, b: Course) => a.id.localeCompare(b.id)}
+            title="Code"
+            dataIndex="code"
+            sorter={(a: Course, b: Course) => a.code.localeCompare(b.code)}
           />
-          <Table.Column width={150} title="Year" dataIndex="year" sorter={(a: Course, b: Course) => a.year - b.year} />
-          <Table.Column width={150} title="Semester" dataIndex="sem" sorter={(a: Course, b: Course) => a.sem - b.sem} />
+          <Table.Column
+            width={150}
+            title="Start Year"
+            dataIndex="startYear"
+            sorter={(a: Course, b: Course) => a.startYear - b.startYear}
+          />
+          <Table.Column
+            width={150}
+            title="Start Semester"
+            dataIndex="startSem"
+            sorter={(a: Course, b: Course) => a.startSem - b.startSem}
+          />
+          <Table.Column
+            width={150}
+            title="End Year"
+            dataIndex="endYear"
+            sorter={(a: Course, b: Course) => a.endYear - b.endYear}
+          />
+          <Table.Column
+            width={150}
+            title="End Semester"
+            dataIndex="endSem"
+            sorter={(a: Course, b: Course) => a.endSem - b.endSem}
+          />
           <Table.Column
             title="Name"
             dataIndex="cname"
@@ -54,7 +77,7 @@ export default function CourseTable({ courses: projects, isLoading, heading, con
             dataIndex="action"
             render={(_, record: Course) => (
               <Space size="middle">
-                <Link to={`/course/${record.id}/${record.year}/${record.sem}/overview`}>Go to</Link>
+                <Link to={`/course/${record.id}/overview`}>Go to</Link>
               </Space>
             )}
           />

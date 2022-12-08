@@ -29,7 +29,7 @@ export default function CoursePage(): JSX.Element {
     return split[5];
   }, [location.pathname]);
 
-  const { course } = useCourse(params.courseId, Number(params.courseYear), Number(params.courseSem));
+  const { course } = useCourse(params.courseId);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -76,7 +76,7 @@ export default function CoursePage(): JSX.Element {
     <>
       <PageHeader
         title={course.cname}
-        subTitle={<Tag>{course.id}</Tag>}
+        subTitle={<Tag>{course.code}</Tag>}
         extra={[
           <ProjectCreationModal key="create-project" course={course} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
@@ -87,10 +87,7 @@ export default function CoursePage(): JSX.Element {
           <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
             <Tabs.TabPane
               tab={
-                <Link
-                  style={{ textDecoration: 'none' }}
-                  to={`/course/${course.id}/${course.year}/${course.sem}/overview`}
-                >
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>
                   Overview
                 </Link>
               }
@@ -98,7 +95,7 @@ export default function CoursePage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/${course.year}/${course.sem}/users`}>
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/users`}>
                   People
                 </Link>
               }
@@ -106,10 +103,7 @@ export default function CoursePage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link
-                  style={{ textDecoration: 'none' }}
-                  to={`/course/${course.id}/${course.year}/${course.sem}/settings`}
-                >
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
                   Settings
                 </Link>
               }

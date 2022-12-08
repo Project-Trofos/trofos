@@ -56,21 +56,13 @@ export default function ProjectPage(): JSX.Element {
             await removeProject({ id: project.id }).unwrap();
             navigate('/projects');
           });
-        } else if (
-          key === 'detach' &&
-          project &&
-          project.course_id !== null &&
-          project.course_year !== null &&
-          project.course_sem !== null
-        ) {
+        } else if (key === 'detach' && project && project.course_id !== null) {
           confirmDetachProject(async () => {
-            if (!project.course_id || !project.course_year || !project.course_sem) {
+            if (!project.course_id) {
               throw new Error('Invalid data!');
             }
             removeProjectFromCourse({
               courseId: project.course_id,
-              courseYear: project.course_year,
-              courseSem: project.course_sem,
               projectId: project.id,
             }).unwrap();
           });
@@ -128,7 +120,7 @@ export default function ProjectPage(): JSX.Element {
         subTitle={
           course ? (
             <>
-              <Tag>{course?.id}</Tag>
+              <Tag>{course?.code}</Tag>
               <span>{course?.cname}</span>
             </>
           ) : (
