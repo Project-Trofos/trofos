@@ -4,7 +4,6 @@
 
 import { Backlog } from '../api/backlog';
 
-// eslint-disable-next-line import/prefer-default-export
 const backlogCompareFunc = (b1: Backlog, b2: Backlog): -1 | 0 | 1 => {
   if (b1.assignee_id === b2.assignee_id) {
     if (b1.backlog_id < b2.backlog_id) {
@@ -37,14 +36,12 @@ const backlogCompareFunc = (b1: Backlog, b2: Backlog): -1 | 0 | 1 => {
   return 0;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const sortBacklogs = (backlogs: Backlog[] | undefined): Backlog[] | undefined => {
   if (!backlogs) {
     return backlogs;
   }
 
-  // deep copy statuses array
-  // eslint-disable-next-line arrow-body-style
+  // deep copy backlogs array
   const sortedBacklogs = backlogs.map((b) => {
     return { ...b };
   });

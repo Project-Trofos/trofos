@@ -4,8 +4,6 @@ import { useParams } from 'react-router-dom';
 import { useUpdateBacklogMutation } from '../../api/backlog';
 import './BacklogCardSummary.css';
 
-const { TextArea } = Input;
-
 export default function BacklogCardSummary(props: { backlogId: number; currentSummary: string }) {
   const { backlogId, currentSummary } = props;
 
@@ -14,7 +12,7 @@ export default function BacklogCardSummary(props: { backlogId: number; currentSu
   const [updateBacklog] = useUpdateBacklogMutation();
   const [isError, setIsError] = useState(false);
 
-  const handleSummaryChange = async (event: React.FocusEvent<HTMLTextAreaElement, Element>) => {
+  const handleSummaryChange = async (event: React.FocusEvent<HTMLInputElement, Element>) => {
     const updatedSummary = event.target.value;
     if (!updatedSummary) {
       setIsError(true);
@@ -46,10 +44,8 @@ export default function BacklogCardSummary(props: { backlogId: number; currentSu
   };
 
   return (
-    <TextArea
+    <Input
       className="backlog-card-summary"
-      style={{ resize: 'none' }}
-      autoSize={{ minRows: 1, maxRows: 6 }}
       defaultValue={currentSummary}
       onBlur={handleSummaryChange}
       onClick={(e) => e.stopPropagation()}

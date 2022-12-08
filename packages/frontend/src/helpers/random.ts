@@ -1,7 +1,6 @@
 /**
  * Fisher–Yates shuffle
  */
-// eslint-disable-next-line import/prefer-default-export
 export function shuffleArray<T>(array: T[]): T[] {
   const arrayCopy = [...array];
   for (let i = array.length - 1; i >= 1; i -= 1) {

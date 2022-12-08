@@ -13,11 +13,11 @@ export default function BacklogCardStatus(props: { backlogId: number; currentSta
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const [updateBacklog] = useUpdateBacklogMutation();
 
-  const processBacklogStatusOptions = (statuses: BacklogStatusData[] | undefined) =>
-    // eslint-disable-next-line arrow-body-style
-    statuses?.map((status: BacklogStatusData) => {
+  const processBacklogStatusOptions = (statuses: BacklogStatusData[] | undefined) => {
+    return statuses?.map((status: BacklogStatusData) => {
       return { value: status.name };
     });
+  };
 
   const handleStatusChange = async (updatedStatus: string) => {
     const payload = {

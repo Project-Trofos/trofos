@@ -27,7 +27,7 @@ describe('BacklogCard test', () => {
 
   it('renders backlog card with correct details', () => {
     expect(screen.getByText('MOCK-111')).toBeInTheDocument();
-    expect(screen.getByText('A Test Summary')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('A Test Summary')).toBeInTheDocument();
     expect(screen.getByText('Story')).toBeInTheDocument();
     expect(screen.getByText('Very High')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();

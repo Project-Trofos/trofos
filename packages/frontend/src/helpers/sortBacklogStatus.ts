@@ -4,7 +4,6 @@
 
 import { BacklogStatusData } from '../api/types';
 
-// eslint-disable-next-line import/prefer-default-export
 const backlogStatusCompareFunc = (
   s1: Omit<BacklogStatusData, 'project_id'>,
   s2: Omit<BacklogStatusData, 'project_id'>,
@@ -32,12 +31,10 @@ const backlogStatusCompareFunc = (
   return 0;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const sortBacklogStatus = (
   statuses: Omit<BacklogStatusData, 'project_id'>[],
 ): Omit<BacklogStatusData, 'project_id'>[] => {
   // deep copy statuses array
-  // eslint-disable-next-line arrow-body-style
   const sortedStatuses = statuses.map((s) => {
     return { ...s };
   });

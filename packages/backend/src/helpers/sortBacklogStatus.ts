@@ -28,10 +28,8 @@ const backlogStatusCompareFunc = (s1: BacklogStatus, s2: BacklogStatus): -1 | 0 
   return 0;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const sortBacklogStatus = (statuses: BacklogStatus[]): BacklogStatus[] => {
   // deep copy statuses array
-  // eslint-disable-next-line arrow-body-style
   const sortedStatuses = statuses.map((s) => {
     return { ...s };
   });
