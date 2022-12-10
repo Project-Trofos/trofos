@@ -2,12 +2,9 @@
  * Sort backlog status according to type
  */
 
-import { BacklogStatusData } from '../api/types';
+import { BacklogStatus } from '@prisma/client';
 
-const backlogStatusCompareFunc = (
-  s1: Omit<BacklogStatusData, 'project_id'>,
-  s2: Omit<BacklogStatusData, 'project_id'>,
-): -1 | 0 | 1 => {
+const backlogStatusCompareFunc = (s1: BacklogStatus, s2: BacklogStatus): -1 | 0 | 1 => {
   if (s1.type === s2.type) {
     if (s1.order < s2.order) {
       return -1;
@@ -31,9 +28,7 @@ const backlogStatusCompareFunc = (
   return 0;
 };
 
-export const sortBacklogStatus = (
-  statuses: Omit<BacklogStatusData, 'project_id'>[],
-): Omit<BacklogStatusData, 'project_id'>[] => {
+export const sortBacklogStatus = (statuses: BacklogStatus[]): BacklogStatus[] => {
   // deep copy statuses array
   const sortedStatuses = statuses.map((s) => {
     return { ...s };

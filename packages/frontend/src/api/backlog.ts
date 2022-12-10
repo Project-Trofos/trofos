@@ -12,7 +12,7 @@ export type Backlog = {
   points: number | null;
   description: string | null;
   project_id: number;
-  status: 'todo' | 'in_progress' | 'done';
+  status: string;
 };
 
 type BacklogUpdatePayload = {

@@ -14,7 +14,7 @@ import {
 import './ProjectBacklogStatusForm.css';
 import { sortBacklogStatus } from '../../helpers/sortBacklogStatus';
 
-type StatusesPropType = Omit<BacklogStatusData, 'projectId'>[];
+type StatusesPropType = Omit<BacklogStatusData, 'project_id'>[];
 
 export default function ProjectBacklogStatusForm(props: { statuses: StatusesPropType }) {
   const { statuses } = props;

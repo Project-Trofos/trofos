@@ -8,7 +8,7 @@ type BacklogStatusSelectPropsTypes = {
   value?: string | number;
   onChange?(e: number | string | undefined): void;
   className?: string;
-  status: Omit<BacklogStatusData, 'projectId'>[];
+  status: Omit<BacklogStatusData, 'project_id'>[];
 };
 
 const { Option } = Select;

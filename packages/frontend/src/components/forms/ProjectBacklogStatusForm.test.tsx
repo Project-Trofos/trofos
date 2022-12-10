@@ -8,19 +8,19 @@ import ProjectBacklogStatusForm from './ProjectBacklogStatusForm';
 describe('ProjectBacklogStatusForm test', () => {
   const mockStatuses: BacklogStatusData[] = [
     {
-      projectId: 123,
+      project_id: 123,
       name: 'To do',
       type: 'todo',
       order: 1,
     },
     {
-      projectId: 123,
+      project_id: 123,
       name: 'In progress',
       type: 'in_progress',
       order: 1,
     },
     {
-      projectId: 123,
+      project_id: 123,
       name: 'Done',
       type: 'done',
       order: 1,

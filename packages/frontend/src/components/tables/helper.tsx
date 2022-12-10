@@ -2,7 +2,6 @@ import React from 'react';
 import { Input } from 'antd';
 
 // A simple filter dropdown to filter element based on keys
-// eslint-disable-next-line import/prefer-default-export
 export const filterDropdown = ({
   setSelectedKeys,
   selectedKeys,

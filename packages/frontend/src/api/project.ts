@@ -92,7 +92,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     // Backlog status APIs
-    getBacklogStatus: builder.query<Pick<ProjectData, 'backlogStatuses'>, Pick<Project, 'id'>>({
+    getBacklogStatus: builder.query<BacklogStatusData[], Pick<Project, 'id'>>({
       query: ({ id }) => ({
         url: `project/${id}/backlogStatus`,
         credentials: 'include',
@@ -130,7 +130,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 
     updateBacklogStatusOrder: builder.mutation<
       BacklogStatusData[],
-      { projectId: number; updatedStatuses: Omit<BacklogStatusData, 'projectId'>[] }
+      { projectId: number; updatedStatuses: Omit<BacklogStatusData, 'project_id'>[] }
     >({
       query: (param) => ({
         url: `project/${param.projectId}/backlogStatus`,

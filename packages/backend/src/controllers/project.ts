@@ -8,6 +8,7 @@ import {
   assertStatusNameIsValid,
   assertUserSessionIsValid,
 } from '../helpers/error/assertions';
+import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
 
@@ -162,8 +163,9 @@ async function getBacklogStatus(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
 
     const result = await project.getBacklogStatus(Number(projectId));
+    const sortedResult = sortBacklogStatus(result);
 
-    return res.status(StatusCodes.OK).json(result);
+    return res.status(StatusCodes.OK).json(sortedResult);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }

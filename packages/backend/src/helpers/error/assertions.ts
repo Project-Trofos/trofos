@@ -95,7 +95,7 @@ export function assertStartAndEndIsValid(startYear: number, startSem: number, en
 }
 
 export function assertGetAllOptionIsValid(option?: OptionRequestBody['option']) {
-    if (option && !['all', 'past', 'current', 'future'].includes(option)) {
-      throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
-    }
+  if (option && !['all', 'past', 'current', 'future'].includes(option)) {
+    throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
+  }
 }
