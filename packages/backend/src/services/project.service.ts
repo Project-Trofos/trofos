@@ -3,7 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-import INCLUDE_USERS_ID_EMAIL from './helper';
+import { INCLUDE_USERS_ID_EMAIL } from './helper';
 import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(
