@@ -53,7 +53,7 @@ export default function MilestoneCreationModal({ courseId }: { courseId: string 
             name="dates"
             rules={[{ required: true, message: `Please input start and end dates!` }]}
           >
-            <DatePicker.RangePicker onCalendarChange={(e) => {}} />
+            <DatePicker.RangePicker />
           </Form.Item>
         </>,
       ]}
