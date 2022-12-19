@@ -1,0 +1,164 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test course creation modal when rendering should render correct fields 1`] = `
+<body>
+  <div>
+    <div
+      class="ant-card ant-card-bordered milestone-card"
+    >
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="display: flex; flex-direction: row; justify-content: space-between; gap: 15px;"
+        >
+          <h4
+            class="ant-typography"
+          >
+            Milestones
+          </h4>
+        </div>
+        <div
+          class="ant-steps ant-steps-horizontal ant-steps-label-horizontal"
+        >
+          <div
+            class="ant-steps-item ant-steps-item-wait"
+          >
+            <div
+              class="ant-steps-item-container"
+            >
+              <div
+                class="ant-steps-item-tail"
+              />
+              <div
+                class="ant-steps-item-icon"
+              >
+                <span
+                  class="ant-steps-icon"
+                >
+                  1
+                </span>
+              </div>
+              <div
+                class="ant-steps-item-content"
+              >
+                <div
+                  class="ant-steps-item-title"
+                >
+                  <div>
+                    Milestone 1
+                  </div>
+                </div>
+                <div
+                  class="ant-steps-item-description"
+                >
+                  <div>
+                    <div>
+                      Start Date: 
+                      10/01/2023
+                    </div>
+                    <div>
+                      Deadline: 
+                      01/01/2023
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-steps-item ant-steps-item-wait"
+          >
+            <div
+              class="ant-steps-item-container"
+            >
+              <div
+                class="ant-steps-item-tail"
+              />
+              <div
+                class="ant-steps-item-icon"
+              >
+                <span
+                  class="ant-steps-icon"
+                >
+                  2
+                </span>
+              </div>
+              <div
+                class="ant-steps-item-content"
+              >
+                <div
+                  class="ant-steps-item-title"
+                >
+                  <div>
+                    Milestone 2
+                  </div>
+                </div>
+                <div
+                  class="ant-steps-item-description"
+                >
+                  <div>
+                    <div>
+                      Start Date: 
+                      20/01/2023
+                    </div>
+                    <div>
+                      Deadline: 
+                      11/01/2023
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-steps-item ant-steps-item-wait"
+          >
+            <div
+              class="ant-steps-item-container"
+            >
+              <div
+                class="ant-steps-item-tail"
+              />
+              <div
+                class="ant-steps-item-icon"
+              >
+                <span
+                  class="ant-steps-icon"
+                >
+                  3
+                </span>
+              </div>
+              <div
+                class="ant-steps-item-content"
+              >
+                <div
+                  class="ant-steps-item-title"
+                >
+                  <div>
+                    Milestone 3
+                  </div>
+                </div>
+                <div
+                  class="ant-steps-item-description"
+                >
+                  <div>
+                    <div>
+                      Start Date: 
+                      31/01/2023
+                    </div>
+                    <div>
+                      Deadline: 
+                      21/01/2023
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;

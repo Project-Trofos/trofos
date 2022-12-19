@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test button form modal modal should appear when button is pressed 1`] = `
+exports[`test course creation modal should render modal with correct fields 1`] = `
 <body
   class="ant-scrolling-effect"
   style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
@@ -12,7 +12,7 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
       type="button"
     >
       <span>
-        button-name
+        Create Milestone
       </span>
     </button>
   </div>
@@ -78,7 +78,7 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
                 class="ant-modal-title"
                 id="test-id"
               >
-                title
+                Create Milestone
               </div>
             </div>
             <div
@@ -99,11 +99,11 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
                       class="ant-col ant-form-item-label"
                     >
                       <label
-                        class=""
-                        for="multi-step-modal-form_attrName"
-                        title="label"
+                        class="ant-form-item-required"
+                        for="multi-step-modal-form_milestoneName"
+                        title="Milestone Name"
                       >
-                        label
+                        Milestone Name
                       </label>
                     </div>
                     <div
@@ -117,8 +117,43 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
                         >
                           <input
                             class="ant-input"
-                            id="multi-step-modal-form_attrName"
+                            id="multi-step-modal-form_milestoneName"
                             type="text"
+                            value=""
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="multi-step-modal-form_dates"
+                        title="Start and end dates"
+                      >
+                        Start and end dates
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-20 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <input
+                            id="multi-step-modal-form_dates"
                             value=""
                           />
                         </div>
@@ -150,21 +185,6 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
         </div>
       </div>
     </div>
-  </div>
-</body>
-`;
-
-exports[`test button form modal render modal correctly 1`] = `
-<body>
-  <div>
-    <button
-      class="ant-btn ant-btn-default"
-      type="button"
-    >
-      <span>
-        button-name
-      </span>
-    </button>
   </div>
 </body>
 `;
