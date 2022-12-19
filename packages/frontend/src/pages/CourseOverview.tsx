@@ -21,7 +21,7 @@ export default function CourseOverview(): JSX.Element {
 
   return (
     <Container>
-      <MilestoneCard courseId={params.courseId} showEdit={showEdit} />
+      <MilestoneCard course={course} showEdit={showEdit} />
       <ProjectTable
         projects={filteredProjects}
         isLoading={isLoading}

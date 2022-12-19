@@ -16,7 +16,7 @@ describe('test course creation modal', () => {
   const setup = () => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <MilestoneCard courseId={MSW_COURSE.id.toString()} />
+        <MilestoneCard course={MSW_COURSE} />
       </Provider>,
     );
     return { baseElement, debug };

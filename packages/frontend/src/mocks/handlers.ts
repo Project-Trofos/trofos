@@ -1,17 +1,18 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
+import { CourseData } from '../api/types';
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
 
-export const MSW_COURSE = {
+export const MSW_COURSE: CourseData = {
   id: 1,
   code: 'CS3203',
   cname: 'Software Engineering Project',
-  startYear: '2022',
-  endYear: '2022',
-  startSem: '1',
-  endSem: '1',
+  startYear: 2022,
+  endYear: 2022,
+  startSem: 1,
+  endSem: 1,
   description: null,
   milestones: [
     {
@@ -39,6 +40,7 @@ export const MSW_COURSE = {
       created_at: '2022-12-18T17:06:07.072Z',
     },
   ],
+  users: [],
   public: false,
   created_at: '2022-09-14T03:33:34.960Z',
 };

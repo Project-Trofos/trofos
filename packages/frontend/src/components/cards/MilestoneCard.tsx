@@ -7,18 +7,19 @@ import { useMilestone } from './useMilestone';
 import { DatePicker } from '../datetime';
 
 import './MilestoneCard.css';
+import { Course } from '../../api/types';
 
 const { Step } = Steps;
 
 type MilestoneCardProps = {
-  courseId: string | undefined;
+  course?: Course;
   showEdit?: boolean;
 };
 
 // Card for displaying and editing milestones of a course
 export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
-  const { courseId, showEdit = false } = props;
-  const { course, handleDeleteMilestone, handleUpdateMilestone } = useCourse(courseId);
+  const { course, showEdit = false } = props;
+  const { handleDeleteMilestone, handleUpdateMilestone } = useCourse(course?.id.toString());
   const { milestones, statuses } = useMilestone(course?.milestones);
 
   return (
