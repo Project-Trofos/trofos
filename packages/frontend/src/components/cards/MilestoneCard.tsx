@@ -33,9 +33,18 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
             return (
               <Step
                 key={milestone.id}
-                title={renderTitle(showEdit, milestone, handleUpdateMilestone)}
+                title={
+                  <Title showEdit={showEdit} milestone={milestone} handleUpdateMilestone={handleUpdateMilestone} />
+                }
                 status={statuses[index]}
-                description={renderDescription(showEdit, milestone, handleUpdateMilestone, handleDeleteMilestone)}
+                description={
+                  <Description
+                    showEdit={showEdit}
+                    milestone={milestone}
+                    handleUpdateMilestone={handleUpdateMilestone}
+                    handleDeleteMilestone={handleDeleteMilestone}
+                  />
+                }
               />
             );
           })}
@@ -47,12 +56,13 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
   );
 }
 
-function renderDescription(
-  showEdit: boolean,
-  milestone: NonNullable<ReturnType<typeof useMilestone>['milestones']>[number],
-  handleUpdateMilestone: ReturnType<typeof useCourse>['handleUpdateMilestone'],
-  handleDeleteMilestone: (milestoneId: number) => Promise<void>,
-): React.ReactNode {
+function Description(props: {
+  showEdit: boolean;
+  milestone: NonNullable<ReturnType<typeof useMilestone>['milestones']>[number];
+  handleUpdateMilestone: ReturnType<typeof useCourse>['handleUpdateMilestone'];
+  handleDeleteMilestone: (milestoneId: number) => Promise<void>;
+}): JSX.Element {
+  const { handleDeleteMilestone, handleUpdateMilestone, milestone, showEdit } = props;
   return showEdit ? (
     <div>
       <DatePicker.RangePicker
@@ -78,17 +88,19 @@ function renderDescription(
   );
 }
 
-function renderTitle(
-  showEdit: boolean,
-  milestone: NonNullable<ReturnType<typeof useMilestone>['milestones']>[number],
-  handleUpdateMilestone: ReturnType<typeof useCourse>['handleUpdateMilestone'],
-): React.ReactNode {
+function Title(props: {
+  showEdit: boolean;
+  milestone: NonNullable<ReturnType<typeof useMilestone>['milestones']>[number];
+  handleUpdateMilestone: ReturnType<typeof useCourse>['handleUpdateMilestone'];
+}): JSX.Element {
+  const { handleUpdateMilestone, milestone, showEdit } = props;
   if (!showEdit) {
     return <div>{milestone.name}</div>;
   }
 
   return (
     <Input
+      key={milestone.id}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           (e.target as typeof e.target & { blur: () => void }).blur();
