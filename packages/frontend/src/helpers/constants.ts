@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 const UserPermissionActions = {
   READ_COURSE: 'read_course',
+  UPDATE_COURSE: 'update_course',
   READ_PROJECT: 'read_project',
   ADMIN: 'admin',
 };

@@ -88,6 +88,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
       form={form}
       formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
       onSubmit={onFinish}
+      buttonType="primary"
     />
   );
 }

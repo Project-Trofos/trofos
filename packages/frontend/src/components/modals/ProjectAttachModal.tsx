@@ -45,7 +45,7 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
       form={form}
       formSteps={[<FormStep />]}
       onSubmit={onFinish}
-      buttonType="span"
+      buttonElement="span"
     />
   );
 }

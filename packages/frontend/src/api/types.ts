@@ -67,8 +67,18 @@ export type UserData = {
   };
 };
 
+export type Milestone = {
+  id: number;
+  name: string;
+  start_date: string;
+  deadline: string;
+  course_id: number;
+  created_at: string;
+};
+
 export type CourseData = Course & {
   users: UserData[];
+  milestones: Milestone[];
 };
 
 export type BacklogStatusData = {

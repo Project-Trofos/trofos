@@ -1,0 +1,4 @@
+.milestone-card .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description {
+  max-width: 220px;
+  white-space: normal;
+}
