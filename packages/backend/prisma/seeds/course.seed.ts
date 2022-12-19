@@ -57,20 +57,20 @@ async function createCourseSeed(prisma: PrismaClient) {
       {
         course_id: 1,
         name: 'Milestone 1',
-        deadline: new Date(2022, 12, 1),
-        start_date: new Date(2022, 12, 10),
+        start_date: new Date(2022, 12, 1),
+        deadline: new Date(2022, 12, 10),
       },
       {
         course_id: 1,
         name: 'Milestone 2',
-        deadline: new Date(2022, 12, 11),
-        start_date: new Date(2022, 12, 20),
+        start_date: new Date(2022, 12, 11),
+        deadline: new Date(2022, 12, 20),
       },
       {
         course_id: 1,
         name: 'Milestone 3',
-        deadline: new Date(2022, 12, 21),
-        start_date: new Date(2022, 12, 31),
+        start_date: new Date(2022, 12, 21),
+        deadline: new Date(2022, 12, 31),
       },
     ],
   });

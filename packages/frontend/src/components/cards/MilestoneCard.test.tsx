@@ -8,7 +8,7 @@ import server from '../../mocks/server';
 import MilestoneCard from './MilestoneCard';
 import { MSW_COURSE } from '../../mocks/handlers';
 
-describe('test course creation modal', () => {
+describe('test milestone creation modal', () => {
   beforeAll(() => server.listen());
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());

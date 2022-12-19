@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test course creation modal when rendering should render correct fields 1`] = `
+exports[`test milestone creation modal when rendering should render correct fields 1`] = `
 <body>
   <div>
     <div
@@ -46,7 +46,7 @@ exports[`test course creation modal when rendering should render correct fields 
                   class="ant-steps-item-title"
                 >
                   <div>
-                    Milestone 1
+                    Milestone 2
                   </div>
                 </div>
                 <div
@@ -59,7 +59,7 @@ exports[`test course creation modal when rendering should render correct fields 
                     </div>
                     <div>
                       Deadline: 
-                      01/01/2023
+                      19/01/2023
                     </div>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ exports[`test course creation modal when rendering should render correct fields 
                   class="ant-steps-item-title"
                 >
                   <div>
-                    Milestone 2
+                    Milestone 3
                   </div>
                 </div>
                 <div
@@ -104,7 +104,7 @@ exports[`test course creation modal when rendering should render correct fields 
                     </div>
                     <div>
                       Deadline: 
-                      11/01/2023
+                      30/01/2023
                     </div>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ exports[`test course creation modal when rendering should render correct fields 
                   class="ant-steps-item-title"
                 >
                   <div>
-                    Milestone 3
+                    Milestone 1
                   </div>
                 </div>
                 <div
@@ -145,11 +145,11 @@ exports[`test course creation modal when rendering should render correct fields 
                   <div>
                     <div>
                       Start Date: 
-                      31/01/2023
+                      31/12/2023
                     </div>
                     <div>
                       Deadline: 
-                      21/01/2023
+                      09/01/2023
                     </div>
                   </div>
                 </div>
