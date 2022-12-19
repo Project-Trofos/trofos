@@ -64,8 +64,10 @@ describe('course controller tests', () => {
       const milestone = milestoneData[0];
       spies.create.mockResolvedValueOnce(milestone);
       const mockReq = createRequest({
-        body: {
+        params: {
           courseId: milestone.course_id,
+        },
+        body: {
           milestoneDeadline: milestone.deadline.toString(),
           milestoneStartDate: milestone.start_date.toString(),
           milestoneName: milestone.name,
