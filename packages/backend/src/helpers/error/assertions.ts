@@ -99,3 +99,30 @@ export function assertGetAllOptionIsValid(option?: OptionRequestBody['option']) 
     throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
   }
 }
+
+// Assert backlogId is not undefined and it is a number
+export function assertBacklogIdIsValid(backlogId: string | number | undefined): asserts backlogId is string | number {
+  if (!backlogId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('backlogId'));
+  }
+  if (typeof backlogId !== 'number') {
+    assertStringIsNumberOrThrow(backlogId, getFieldNotNumberErrorMessage('backlogId'));
+  }
+}
+
+// Assert commentId is not undefined and it is a number
+export function assertCommentIdIsValid(commentId: string | number | undefined): asserts commentId is string | number {
+  if (!commentId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('commentId'));
+  }
+  if (typeof commentId !== 'number') {
+    assertStringIsNumberOrThrow(commentId, getFieldNotNumberErrorMessage('commentId'));
+  }
+}
+
+// Assert comment is not undefined and it is a string
+export function assertCommentIsValid(comment: string | undefined): asserts comment is string {
+  if (!comment) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('comment'));
+  }
+}

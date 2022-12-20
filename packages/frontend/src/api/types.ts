@@ -77,3 +77,27 @@ export type BacklogStatusData = {
   project_id: number;
   order: number;
 };
+
+export type Comment = {
+  comment_id: number;
+  backlog_id: number;
+  project_id: number;
+  commenter_id: number;
+  content: string;
+  created_at: string;
+  commenter: {
+    created_at: string;
+    project_id: string;
+    user: {
+      user_id: number;
+      user_email: string;
+    };
+  };
+};
+
+export type CommentFieldsType = {
+  projectId: number;
+  backlogId: number;
+  commenterId: number;
+  content: string;
+};
