@@ -81,6 +81,32 @@ describe('course controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(milestone));
     });
+
+    it('should throw error if start date is after deadline', async () => {
+      const milestone = milestoneData[0];
+      spies.create.mockResolvedValueOnce(milestone);
+
+      // Deadline is one day before the start date
+      const deadlineDate = new Date(milestone.start_date);
+      deadlineDate.setDate(deadlineDate.getDate() - 1);
+
+      const mockReq = createRequest({
+        params: {
+          courseId: milestone.course_id,
+        },
+        body: {
+          milestoneStartDate: milestone.start_date.toString(),
+          milestoneDeadline: deadlineDate.toString(),
+          milestoneName: milestone.name,
+        },
+      });
+      const mockRes = createResponse();
+
+      await milestoneController.create(mockReq, mockRes);
+
+      expect(spies.create).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('update', () => {

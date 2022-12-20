@@ -1,5 +1,6 @@
 import { accessibleBy } from '@casl/prisma';
 import { Milestone } from '@prisma/client';
+import { assertDateIsBefore } from '../helpers/error/assertions';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 
@@ -53,6 +54,17 @@ async function update(
   milestoneDeadline?: Date,
   milestoneName?: string,
 ): Promise<Milestone> {
+  const current = await prisma.milestone.findUniqueOrThrow({
+    where: {
+      id: milestoneId,
+    },
+  });
+
+  // Check if updated dates are valid (start date before deadline)
+  const startDate = milestoneStartDate ?? current.start_date;
+  const deadline = milestoneDeadline ?? current.deadline;
+  assertDateIsBefore(startDate, deadline);
+
   const result = await prisma.milestone.update({
     where: {
       id: milestoneId,

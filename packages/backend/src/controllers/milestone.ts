@@ -1,7 +1,7 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertCourseIdIsValid, getDefaultErrorRes } from '../helpers/error';
-import { assertDateIsValid, assertMilestoneIdIsValid, assertMilestoneNameIsValid } from '../helpers/error/assertions';
+import { assertDateIsBefore, assertDateIsValid, assertMilestoneIdIsValid, assertMilestoneNameIsValid } from '../helpers/error/assertions';
 import milestoneService from '../services/milestone.service';
 import { MilestoneRequestBody } from './requestTypes';
 
@@ -42,6 +42,7 @@ async function create(req: express.Request, res: express.Response) {
     assertCourseIdIsValid(courseId);
     assertDateIsValid(body.milestoneDeadline);
     assertDateIsValid(body.milestoneStartDate);
+    assertDateIsBefore(new Date(body.milestoneStartDate), new Date(body.milestoneDeadline));
     assertMilestoneNameIsValid(body.milestoneName);
 
     const result = await milestoneService.create(

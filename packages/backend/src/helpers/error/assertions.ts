@@ -127,3 +127,11 @@ export function assertMilestoneNameIsValid(milestoneName: string | undefined): a
     throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneName'));
   }
 }
+
+// Asserts that dateA is dateA is before dateB or throw BadRequestError
+export function assertDateIsBefore(dateA: Date, dateB: Date): void {
+  if (dateA > dateB) {
+    throw new BadRequestError(`Date Error: ${dateA.toISOString()} is not before ${dateB.toISOString()}!`);
+  }
+}
+

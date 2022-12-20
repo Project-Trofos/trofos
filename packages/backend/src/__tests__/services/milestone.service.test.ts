@@ -3,6 +3,7 @@ import { prismaMock } from '../../models/mock/mockPrismaClient';
 import milestoneService from '../../services/milestone.service';
 
 import coursePolicy from '../../policies/constraints/course.constraint';
+import { BadRequestError } from '../../helpers/error';
 
 describe('milestone.service tests', () => {
   const milestoneMock: Milestone[] = [
@@ -60,10 +61,29 @@ describe('milestone.service tests', () => {
         ...milestone,
         name: newName,
       };
+      prismaMock.milestone.findUniqueOrThrow.mockResolvedValueOnce(milestone);
       prismaMock.milestone.update.mockResolvedValueOnce(updatedMilestone);
 
       const result = await milestoneService.update(milestone.course_id, undefined, undefined, newName);
       expect(result).toEqual<Milestone>(updatedMilestone);
+    });
+
+    it('should throw bad request error if updated deadline is before start date', async () => {
+      const milestone = milestoneMock[0];
+
+      // Deadline is before start date
+      const newDeadline = new Date(milestone.start_date);
+      newDeadline.setDate(newDeadline.getDate() - 1);
+
+      const updatedMilestone: Milestone = {
+        ...milestone,
+        deadline: newDeadline,
+      };
+      prismaMock.milestone.findUniqueOrThrow.mockResolvedValueOnce(milestone);
+      prismaMock.milestone.update.mockResolvedValueOnce(updatedMilestone);
+
+      const result = milestoneService.update(milestone.course_id, undefined, newDeadline, undefined);
+      expect(result).rejects.toThrow(BadRequestError);
     });
   });
 });
