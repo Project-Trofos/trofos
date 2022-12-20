@@ -10,7 +10,7 @@ exports[`test milestone creation modal when rendering should render correct fiel
         class="ant-card-body"
       >
         <div
-          style="display: flex; flex-direction: row; justify-content: space-between; gap: 15px;"
+          class="milestone-card-header"
         >
           <h4
             class="ant-typography"

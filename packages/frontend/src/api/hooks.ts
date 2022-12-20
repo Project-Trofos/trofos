@@ -196,7 +196,15 @@ export const useCourse = (courseId?: string) => {
   );
 
   const handleUpdateMilestone = useCallback(
-    async (milestoneId: number, milestoneName?: string, milestoneStartDate?: Dayjs, milestoneDeadline?: Dayjs) => {
+    async (
+      milestoneId: number,
+      payload: {
+        milestoneName?: string;
+        milestoneStartDate?: Dayjs;
+        milestoneDeadline?: Dayjs;
+      },
+    ) => {
+      const { milestoneDeadline, milestoneName, milestoneStartDate } = payload;
       try {
         if (course) {
           await updateMilestone({

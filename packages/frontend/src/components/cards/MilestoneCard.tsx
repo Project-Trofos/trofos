@@ -24,7 +24,7 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
 
   return (
     <Card className="milestone-card">
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '15px' }}>
+      <div className="milestone-card-header">
         <Subheading>Milestones</Subheading>
         {course && showEdit && <MilestoneCreationModal courseId={course.id.toString()} />}
       </div>
@@ -71,11 +71,15 @@ function Description(props: {
           if (!e) {
             return;
           }
-          handleUpdateMilestone(milestone.id, undefined, e[0] ?? undefined, e[1] ?? undefined);
+          handleUpdateMilestone(milestone.id, {
+            milestoneName: undefined,
+            milestoneStartDate: e[0] ?? undefined,
+            milestoneDeadline: e[1] ?? undefined,
+          });
         }}
         size="small"
         value={[milestone.start_date, milestone.deadline]}
-        style={{ marginBottom: '5px' }}
+        className="milestone-card-range-picker"
       />
       <Button danger size="small" onClick={() => handleDeleteMilestone(milestone.id)}>
         Delete
@@ -111,7 +115,7 @@ function Title(props: {
         if (e.target.value === milestone.name) {
           return;
         }
-        handleUpdateMilestone(milestone.id, e.target.value);
+        handleUpdateMilestone(milestone.id, { milestoneName: e.target.value });
       }}
       size="small"
       defaultValue={milestone.name}
