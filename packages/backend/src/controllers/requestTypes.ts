@@ -47,3 +47,10 @@ export type BulkCreateProjectBody = {
   courseId?: string;
   projects: (ProjectRequestBody & { users: UserRequestBody[] })[];
 };
+
+export type MilestoneRequestBody = {
+  courseId?: string;
+  milestoneName?: string;
+  milestoneStartDate?: string;
+  milestoneDeadline?: string;
+};

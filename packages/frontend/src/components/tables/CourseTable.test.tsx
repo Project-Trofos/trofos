@@ -15,6 +15,7 @@ describe('test CourseTable', () => {
       endYear: 2023,
       endSem: 103,
       cname: 'course1',
+      milestones: [],
       description: 'project1_description',
       public: false,
       created_at: '2022-09-15T01:58:01.735Z',
