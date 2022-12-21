@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Dropdown, Form, List, Menu, message, Modal, Space, Input } from 'antd';
-import { MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { useDeleteCommentMutation, useGetCommentsQuery, useUpdateCommentMutation } from '../../api/comment';
 import type { Comment as CommentType } from '../../api/types';
@@ -174,6 +174,14 @@ function Comment(): JSX.Element {
 
   return (
     <List
+      locale={{
+        emptyText: (
+          <>
+            <CommentOutlined style={{ fontSize: '34px' }} />
+            <p>No Comment</p>
+          </>
+        ),
+      }}
       className="comment-list"
       itemLayout="horizontal"
       dataSource={comments}
