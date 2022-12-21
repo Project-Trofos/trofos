@@ -1,6 +1,7 @@
 import { Action } from '@prisma/client';
 import express from 'express';
 import course from '../controllers/course';
+import milestone from '../controllers/milestone';
 import { isAuthorizedRequest } from '../middleware/auth.middleware';
 import coursePolicy from '../policies/course.policy';
 import projectPolicy from '../policies/project.policy';
@@ -18,6 +19,21 @@ router.post('/bulk', isAuthorizedRequest(Action.create_course, coursePolicy.POLI
 
 // Create project and attach or create course
 router.post('/project', isAuthorizedRequest(Action.create_course, null), course.addProjectAndCourse);
+
+// Get milestone
+router.get('/:courseId/milestone/:milestoneId', isAuthorizedRequest(Action.read_course, null), milestone.get);
+
+// List milestone
+router.get('/:courseId/milestone', isAuthorizedRequest(Action.read_course, null), milestone.list);
+
+// Create milestone
+router.post('/:courseId/milestone', isAuthorizedRequest(Action.create_course, null), milestone.create);
+
+// Update milestone
+router.put('/:courseId/milestone/:milestoneId', isAuthorizedRequest(Action.create_course, null), milestone.update);
+
+// Delete milestone
+router.delete('/:courseId/milestone/:milestoneId', isAuthorizedRequest(Action.create_course, null), milestone.remove);
 
 // Get course
 router.get('/:courseId', isAuthorizedRequest(Action.read_course, coursePolicy.POLICY_NAME), course.get);

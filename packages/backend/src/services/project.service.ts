@@ -3,7 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-import INCLUDE_USERS_ID_EMAIL from './helper';
+import { INCLUDE_USERS_ID_EMAIL } from './helper';
 import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(
@@ -53,7 +53,11 @@ async function getAll(
         ],
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -91,7 +95,11 @@ async function getAll(
         ],
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -129,7 +137,11 @@ async function getAll(
         ],
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -137,7 +149,11 @@ async function getAll(
     result = await prisma.project.findMany({
       where: accessibleBy(policyConstraint).Project,
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -152,7 +168,11 @@ async function getById(id: number): Promise<Project> {
       id,
     },
     include: {
-      course: true,
+      course: {
+        include: {
+          milestones: true,
+        },
+      },
       sprints: {
         select: {
           id: true,

@@ -51,6 +51,31 @@ async function createCourseSeed(prisma: PrismaClient) {
   });
 
   console.log('created usersOnCourses %s', usersOnCourses);
+
+  const milestones = await prisma.milestone.createMany({
+    data: [
+      {
+        course_id: 1,
+        name: 'Milestone 1',
+        start_date: new Date(2022, 12, 1),
+        deadline: new Date(2022, 12, 10),
+      },
+      {
+        course_id: 1,
+        name: 'Milestone 2',
+        start_date: new Date(2022, 12, 11),
+        deadline: new Date(2022, 12, 20),
+      },
+      {
+        course_id: 1,
+        name: 'Milestone 3',
+        start_date: new Date(2022, 12, 21),
+        deadline: new Date(2022, 12, 31),
+      },
+    ],
+  });
+
+  console.log('created milestones %s', milestones);
 }
 
 export { createCourseSeed };

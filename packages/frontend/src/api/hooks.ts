@@ -1,7 +1,14 @@
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { getErrorMessage } from '../helpers/error';
-import { useGetAllCoursesQuery, useAddCourseUserMutation, useRemoveCourseUserMutation } from './course';
+import {
+  useGetAllCoursesQuery,
+  useAddCourseUserMutation,
+  useRemoveCourseUserMutation,
+  useDeleteMilestoneMutation,
+  useUpdateMilestoneMutation,
+} from './course';
 import { isCurrent, isFuture, isPast } from './currentTime';
 import {
   useAddProjectUserMutation,
@@ -113,12 +120,15 @@ export const useCourse = (courseId?: string) => {
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
+  const [deleteMilestone] = useDeleteMilestoneMutation();
+  const [updateMilestone] = useUpdateMilestoneMutation();
 
   const course = useMemo(() => {
     if (!courses || courses.length === 0 || !courseIdNumber) {
       return undefined;
     }
     const possibleCourses = courses.filter((p) => p.id === courseIdNumber);
+
     if (possibleCourses.length === 0) {
       return undefined;
     }
@@ -170,5 +180,59 @@ export const useCourse = (courseId?: string) => {
     [addUser, course],
   );
 
-  return { course, filteredProjects, handleAddUser, handleRemoveUser, isLoading: isCoursesLoading };
+  const handleDeleteMilestone = useCallback(
+    async (milestoneId: number) => {
+      try {
+        if (course) {
+          await deleteMilestone({ courseId: course.id.toString(), milestoneId }).unwrap();
+          message.success('Milestone deleted!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to delete milestone');
+      }
+    },
+    [deleteMilestone, course],
+  );
+
+  const handleUpdateMilestone = useCallback(
+    async (
+      milestoneId: number,
+      payload: {
+        milestoneName?: string;
+        milestoneStartDate?: Dayjs;
+        milestoneDeadline?: Dayjs;
+      },
+    ) => {
+      const { milestoneDeadline, milestoneName, milestoneStartDate } = payload;
+      try {
+        if (course) {
+          await updateMilestone({
+            courseId: course.id.toString(),
+            milestoneId,
+            payload: {
+              milestoneName,
+              milestoneDeadline: milestoneDeadline?.toDate(),
+              milestoneStartDate: milestoneStartDate?.toDate(),
+            },
+          }).unwrap();
+          message.success('Milestone updated!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to update milestone');
+      }
+    },
+    [updateMilestone, course],
+  );
+
+  return {
+    course,
+    filteredProjects,
+    handleAddUser,
+    handleRemoveUser,
+    handleDeleteMilestone,
+    handleUpdateMilestone,
+    isLoading: isCoursesLoading,
+  };
 };

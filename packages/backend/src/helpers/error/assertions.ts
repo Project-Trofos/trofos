@@ -99,3 +99,39 @@ export function assertGetAllOptionIsValid(option?: OptionRequestBody['option']) 
     throw new BadRequestError('Please provide a correct option. option can only be all, past, current, or future.');
   }
 }
+
+export function assertDateIsValid(date: string | undefined): asserts date is string {
+  try {
+    if (!date) {
+      throw new Error();
+    }
+    const d = new Date(date);
+    // If date is not a valid string,
+    // `new` returns a Date object whose `toString()` method returns the literal string `Invalid Date`
+    if (d.toString() === 'Invalid Date') {
+      throw new Error();
+    }
+  } catch (e) {
+    throw new BadRequestError('Please provide a valid date!');
+  }
+}
+
+export function assertMilestoneIdIsValid(milestoneId: string | undefined): asserts milestoneId is string {
+  if (!milestoneId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneId'));
+  }
+}
+
+export function assertMilestoneNameIsValid(milestoneName: string | undefined): asserts milestoneName is string {
+  if (!milestoneName) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneName'));
+  }
+}
+
+// Asserts that dateA is dateA is before dateB or throw BadRequestError
+export function assertDateIsBefore(dateA: Date, dateB: Date): void {
+  if (dateA > dateB) {
+    throw new BadRequestError(`Date Error: ${dateA.toISOString()} is not before ${dateB.toISOString()}!`);
+  }
+}
+

@@ -2,14 +2,27 @@
   margin: 24px;
 }
 
+.main-content-container > *:not(:last-child) {
+  display: block;
+  margin-bottom: 24px;
+}
+
 @media only screen and (max-width: 992px) {
   .main-content-container {
     margin: 16px;
+  }
+
+  .main-content-container > *:not(:last-child) {
+    margin-bottom: 16px;
   }
 }
 
 @media only screen and (max-width: 576px) {
   .main-content-container {
     margin: 8px;
+  }
+
+  .main-content-container > *:not(:last-child) {
+    margin-bottom: 8px;
   }
 }
