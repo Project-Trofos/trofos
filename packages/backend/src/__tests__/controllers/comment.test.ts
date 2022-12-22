@@ -112,6 +112,7 @@ describe('commentController tests', () => {
       const expectedComment: Comment = {
         ...mockCommentData,
         content: 'An updated comment',
+        updated_at: new Date(Date.now()),
       };
       commentServiceSpies.update.mockResolvedValueOnce(expectedComment);
 

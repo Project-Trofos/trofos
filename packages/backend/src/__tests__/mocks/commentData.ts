@@ -8,6 +8,7 @@ export const mockCommentData: Comment = {
   project_id: 123,
   content: 'Test comment content',
   created_at: new Date(Date.now()),
+  updated_at: null,
 };
 
 export const mockCommentFields: CommentFields = {

@@ -127,7 +127,8 @@ model Comment {
   commenter_id  Int
   project_id    Int
   content       String
-  created_at    DateTime          @default(now()) 
+  created_at    DateTime          @default(now())
+  updated_at    DateTime?
 }
 
 model Sprint {

@@ -60,6 +60,7 @@ async function update(commentId: number, updatedComment: string) {
     },
     data: {
       content: updatedComment,
+      updated_at: new Date(Date.now()),
     },
   });
 

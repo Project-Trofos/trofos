@@ -1,0 +1,28 @@
+.editing-comment-container {
+  width: 100%;
+}
+
+.editing-comment-container form {
+  width: 100%;
+  text-align: right;
+  padding-left: 48px;
+}
+
+.editing-comment-container button {
+  margin-right: 8px;
+}
+
+.comment-content-container .ant-list-item-meta-description {
+  white-space: pre;
+  color: #000;
+}
+
+.comment-menu-button {
+  margin-top: 0;
+  margin-bottom: auto;
+}
+
+.comment-timestamp {
+  color: #5b5b5b;
+  font-size: 12px;
+}

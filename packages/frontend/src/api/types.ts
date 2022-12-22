@@ -85,6 +85,7 @@ export type Comment = {
   commenter_id: number;
   content: string;
   created_at: string;
+  updated_at: string | null;
   commenter: {
     created_at: string;
     project_id: string;

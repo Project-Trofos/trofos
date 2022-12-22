@@ -32,6 +32,7 @@ describe('comment.service tests', () => {
       const mockReturnedComment: Comment = {
         ...mockCommentData,
         content: 'An updated comment',
+        updated_at: new Date(Date.now()),
       };
 
       const commentToUpdate = {
