@@ -1,0 +1,15 @@
+.milestone-card .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description {
+  max-width: 220px;
+  white-space: normal;
+}
+
+.milestone-card .milestone-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.milestone-card .milestone-card-range-picker {
+  margin-bottom: 5px;
+}

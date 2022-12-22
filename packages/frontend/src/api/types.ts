@@ -20,6 +20,7 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
+  milestones: Milestone[];
 };
 
 export type User = {
@@ -65,6 +66,15 @@ export type UserData = {
     user_id: number;
     user_email: string;
   };
+};
+
+export type Milestone = {
+  id: number;
+  name: string;
+  start_date: string;
+  deadline: string;
+  course_id: number;
+  created_at: string;
 };
 
 export type CourseData = Course & {

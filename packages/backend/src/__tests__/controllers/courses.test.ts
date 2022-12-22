@@ -9,6 +9,7 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
+import { BadRequestError } from '../../helpers/error';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
@@ -313,6 +314,9 @@ describe('course controller tests', () => {
     });
 
     it('should return bad request if start year is after end year', async () => {
+      spies.update.mockImplementation(async () => {
+        throw new BadRequestError('');
+      });
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,
@@ -331,6 +335,9 @@ describe('course controller tests', () => {
     });
 
     it('should return bad request if start year is same as end year but start sem is after end sem', async () => {
+      spies.update.mockImplementation(async () => {
+        throw new BadRequestError('');
+      });
       const mockReq = createRequest({
         params: {
           courseId: coursesData[0].id,

@@ -194,6 +194,66 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Course', 'Project', 'User'],
     }),
+
+    createMilestone: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        milestoneName: string;
+        milestoneStartDate: Date;
+        milestoneDeadline: Date;
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/milestone`,
+        method: 'POST',
+        body: {
+          milestoneName: params.milestoneName,
+          milestoneStartDate: params.milestoneStartDate.toString(),
+          milestoneDeadline: params.milestoneDeadline.toString(),
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
+
+    deleteMilestone: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        milestoneId: number;
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/milestone/${params.milestoneId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
+
+    updateMilestone: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        milestoneId: number;
+        payload: {
+          milestoneName?: string;
+          milestoneStartDate?: Date;
+          milestoneDeadline?: Date;
+        };
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/milestone/${params.milestoneId}`,
+        method: 'PUT',
+        body: {
+          ...params.payload,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -210,4 +270,7 @@ export const {
   useRemoveProjectFromCourseMutation,
   useAddProjectToCourseMutation,
   useBulkCreateProjectsMutation,
+  useCreateMilestoneMutation,
+  useDeleteMilestoneMutation,
+  useUpdateMilestoneMutation,
 } = extendedApi;

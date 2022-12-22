@@ -42,6 +42,7 @@ model Course {
   description   String?
   users         UsersOnCourses[]
   projects      Project[]
+  milestones    Milestone[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
   @@unique([code, startYear, startSem])
@@ -75,6 +76,17 @@ model Project {
   sprints         Sprint[]
 
   backlogStatuses BacklogStatus[]
+}
+
+model Milestone {
+  id             Int              @id @default(autoincrement())
+  name           String
+  course_id      Int
+  course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  start_date      DateTime
+  deadline       DateTime
+
+  created_at     DateTime         @default(now())
 }
 
 model UsersOnProjects {
