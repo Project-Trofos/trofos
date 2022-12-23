@@ -97,6 +97,7 @@ model UsersOnProjects {
   created_at        DateTime      @default(now())
   reported_backlogs Backlog[]     @relation("ReportedBacklogs")
   assigned_backlogs Backlog[]     @relation("AssignedBacklogs")
+  comments          Comment[]
   @@id([project_id, user_id])
 }
 
@@ -116,6 +117,7 @@ model Backlog {
   description   String?
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
   status        String
+  comments      Comment[]
   @@id([project_id, backlog_id])
 }
 
@@ -127,6 +129,18 @@ model BacklogStatus {
   backlogs      Backlog[]
   order         Int
   @@id([project_id, name])
+}
+
+model Comment {
+  comment_id    Int               @id @default(autoincrement())
+  backlog       Backlog           @relation(fields: [backlog_id, project_id], references: [backlog_id, project_id], onDelete: Cascade)
+  backlog_id    Int
+  commenter     UsersOnProjects   @relation(fields: [commenter_id, project_id], references: [user_id, project_id])
+  commenter_id  Int
+  project_id    Int
+  content       String
+  created_at    DateTime          @default(now())
+  updated_at    DateTime?
 }
 
 model Sprint {
