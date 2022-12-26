@@ -1,4 +1,4 @@
-import { Sprint } from '@prisma/client';
+import { Sprint, SprintStatus } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import sprintService from '../../services/sprint.service';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
@@ -42,6 +42,16 @@ describe('sprint.service tests', () => {
       const projectId = 123;
       prismaMock.sprint.findMany.mockResolvedValueOnce(mockReturnedSprints);
       await expect(sprintService.listSprints(projectId)).resolves.toEqual(mockReturnedSprints);
+    });
+
+    it('should return active sprint when called with valid project id', async () => {
+      const mockReturnedSprint: Sprint = {
+        ...mockSprintData,
+        status: SprintStatus.current,
+      };
+      const projectId = 123;
+      prismaMock.sprint.findFirst.mockResolvedValueOnce(mockReturnedSprint);
+      await expect(sprintService.listActiveSprint(projectId)).resolves.toEqual(mockReturnedSprint);
     });
   });
 
