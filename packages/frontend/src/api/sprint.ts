@@ -23,6 +23,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['Sprint'],
     }),
+    getActiveSprint: builder.query<Sprint, number>({
+      query: (projectId) => ({
+        url: `sprint/listActiveSprint/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Sprint'],
+    }),
     addSprint: builder.mutation<Sprint, SprintFormFields>({
       query: (sprint) => ({
         url: 'sprint/newSprint/',
@@ -53,5 +60,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetSprintsQuery, useAddSprintMutation, useUpdateSprintMutation, useDeleteSprintMutation } =
-  extendedApi;
+export const {
+  useGetSprintsQuery,
+  useGetActiveSprintQuery,
+  useAddSprintMutation,
+  useUpdateSprintMutation,
+  useDeleteSprintMutation,
+} = extendedApi;
