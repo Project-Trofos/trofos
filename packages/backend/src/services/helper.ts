@@ -11,7 +11,7 @@ export const INCLUDE_USERS_ID_EMAIL = {
   },
 };
 
-export const INCLUDE_USERS_ID_EMAIL_AND_MILESTONES = {
+export const INCLUDE_ALL = {
   users: {
     select: {
       user: {
@@ -23,4 +23,5 @@ export const INCLUDE_USERS_ID_EMAIL_AND_MILESTONES = {
     },
   },
   milestones: true,
+  announcements: true,
 };

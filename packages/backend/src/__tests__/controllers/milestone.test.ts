@@ -13,7 +13,7 @@ const spies = {
   remove: jest.spyOn(milestoneService, 'remove'),
 };
 
-describe('course controller tests', () => {
+describe('milestone controller tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
