@@ -1,14 +1,13 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import '../../mocks/antd';
 
-import dayjs from 'dayjs';
 import store from '../../app/store';
-import MilestoneCreationModal from './MilestoneCreationModal';
 import server from '../../mocks/server';
 
-describe('test course creation modal', () => {
+import AnnouncementCreationModal from './AnnouncementCreationModal';
+
+describe('test announcement creation modal', () => {
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
 
@@ -23,7 +22,7 @@ describe('test course creation modal', () => {
   const setup = () => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <MilestoneCreationModal courseId="1" />
+        <AnnouncementCreationModal courseId="1" />
       </Provider>,
     );
     return { baseElement, debug };
@@ -45,14 +44,14 @@ describe('test course creation modal', () => {
     fireEvent.click(button);
 
     // Ensure fields are present
-    expect(screen.getByLabelText(/milestone name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/start and end dates/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/announcement title/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/announcement content/i)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
   });
 
-  it('should require milestone name', async () => {
+  it('should require announcement title', async () => {
     setup();
 
     const button = screen.getByText(/new/i);
@@ -61,22 +60,22 @@ describe('test course creation modal', () => {
     const finishButton = await screen.findByText(/finish/i);
     fireEvent.click(finishButton);
 
-    await screen.findByText('Please input milestone name!');
+    await screen.findByText('Please input announcement title!');
   });
 
-  it('should require start and end dates', async () => {
+  it('should require announcement content', async () => {
     setup();
 
     const button = screen.getByText(/new/i);
     fireEvent.click(button);
 
-    const milestone = screen.getByLabelText(/milestone name/i);
-    fireEvent.change(milestone, { target: { value: 'name' } });
+    const title = screen.getByLabelText(/announcement title/i);
+    fireEvent.change(title, { target: { value: 'title' } });
 
     const finishButton = screen.getByText(/finish/i);
     fireEvent.click(finishButton);
 
-    await screen.findByText('Please input start and end dates!');
+    await screen.findByText('Please input announcement content!');
   });
 
   it('should submit correctly if fields are typed in', async () => {
@@ -87,11 +86,11 @@ describe('test course creation modal', () => {
 
     const finishButton = await screen.findByText(/finish/i);
 
-    const milestone = screen.getByLabelText(/milestone name/i);
-    fireEvent.change(milestone, { target: { value: 'name' } });
+    const title = screen.getByLabelText(/announcement title/i);
+    fireEvent.change(title, { target: { value: 'title' } });
 
-    const dates = screen.getByLabelText(/start and end dates/i);
-    fireEvent.change(dates, { target: { value: [dayjs(), dayjs()] } });
+    const content = screen.getByLabelText(/announcement content/i);
+    fireEvent.change(content, { target: { value: 'content' } });
 
     fireEvent.click(finishButton);
 

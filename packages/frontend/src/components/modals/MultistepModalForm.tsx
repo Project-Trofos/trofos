@@ -79,7 +79,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
   return (
     <>
       {buttonElement === 'button' && (
-        <Button onClick={showModal} type={buttonType} size={buttonSize}>
+        <Button aria-label="open-form" onClick={showModal} type={buttonType} size={buttonSize}>
           {buttonChildren}
         </Button>
       )}

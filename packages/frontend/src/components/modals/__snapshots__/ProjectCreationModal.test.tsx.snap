@@ -8,6 +8,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
   <div>
     <button
       ant-click-animating-without-extra-node="false"
+      aria-label="open-form"
       class="ant-btn ant-btn-primary"
       type="button"
     >
@@ -110,7 +111,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -170,7 +171,7 @@ exports[`test ProjectCreationModal should render modal with correct fields 1`] =
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
