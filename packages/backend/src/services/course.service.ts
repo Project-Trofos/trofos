@@ -49,7 +49,24 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
-      include: INCLUDE_ALL,
+      include: {
+        users: {
+          select: {
+            user: {
+              select: {
+                user_id: true,
+                user_email: true,
+              },
+            },
+          },
+        },
+        milestones: true,
+        announcements: {
+          orderBy: {
+            created_at: 'desc',
+          },
+        },
+      },
     });
   } else if (option === 'past') {
     // endYear < currentYear
