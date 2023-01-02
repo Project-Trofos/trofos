@@ -45,6 +45,7 @@ export default function AnnouncementCard(props: AnnouncementCardProps): JSX.Elem
                   {showEdit && (
                     <div className="announcement-card-title-button-group">
                       <AnnouncementUpdateModal
+                        key={announcement.created_at + announcement.updated_at}
                         initialTitle={announcement.title}
                         initialContent={announcement.content}
                         handleUpdate={(payload) => handleUpdateAnnouncement(announcement.id, payload)}
