@@ -17,7 +17,7 @@ export default function Timestamp(props: TimestampProps) {
     <div>
       {updatedAtDayjs ? (
         <div>
-          {updatedAtDayjs.format('DD/MM/YYYY HH:mm')} <Tag>Updated</Tag>
+          {updatedAtDayjs.format('DD/MM/YYYY HH:mm')} <Tag>Edited</Tag>
         </div>
       ) : (
         <div>{createdAtDayjs.format('DD/MM/YYYY HH:mm')}</div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar as AntdAvatar } from 'antd';
 
-import './Avatar.css';
+import './AvatarWithName.css';
 
 export type AvatarProps = {
   username: string | React.ReactNode;

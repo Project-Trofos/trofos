@@ -5,7 +5,7 @@ import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import { Subheading } from '../typography';
 import { CourseData } from '../../api/types';
 import AnnouncementCreationModal from '../modals/AnnouncementCreationModal';
-import AvatarWithName from '../avatar/Avatar';
+import AvatarWithName from '../avatar/AvatarWithName';
 import Timestamp from '../common/Timestamp';
 import AnnouncementUpdateModal from '../modals/AnnouncementUpdateModal';
 
