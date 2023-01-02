@@ -7,6 +7,7 @@ CREATE TABLE "Announcement" (
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "course_id" INTEGER NOT NULL,
+    "user_id" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -15,3 +16,6 @@ CREATE TABLE "Announcement" (
 
 -- AddForeignKey
 ALTER TABLE "Announcement" ADD CONSTRAINT "Announcement_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Announcement" ADD CONSTRAINT "Announcement_user_id_course_id_fkey" FOREIGN KEY ("user_id", "course_id") REFERENCES "UsersOnCourses"("user_id", "course_id") ON DELETE RESTRICT ON UPDATE CASCADE;
