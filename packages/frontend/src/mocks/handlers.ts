@@ -40,6 +40,7 @@ export const MSW_COURSE: CourseData = {
       created_at: '2022-12-18',
     },
   ],
+  announcements: [],
   users: [],
   public: false,
   created_at: '2022-09-14T03:33:34.960Z',

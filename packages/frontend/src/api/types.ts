@@ -20,7 +20,6 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
-  milestones: Milestone[];
 };
 
 export type User = {
@@ -77,7 +76,18 @@ export type Milestone = {
   created_at: string;
 };
 
+export type Announcement = {
+  id: number;
+  title: string;
+  content: string;
+  user_id: number;
+  created_at: string;
+  updated_at?: string;
+};
+
 export type CourseData = Course & {
+  milestones: Milestone[];
+  announcements: Announcement[];
   users: UserData[];
 };
 

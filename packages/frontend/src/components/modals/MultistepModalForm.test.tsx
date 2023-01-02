@@ -6,10 +6,16 @@ import MultistepFormModal, { MultistepFromModalProps } from './MultistepModalFor
 
 function FormWrapper<T>(props: Omit<MultistepFromModalProps<T>, 'form'>) {
   const [form] = Form.useForm();
-  const { title, buttonName, formSteps, onSubmit } = props;
+  const { title, buttonChildren, formSteps, onSubmit } = props;
 
   return (
-    <MultistepFormModal title={title} form={form} buttonName={buttonName} formSteps={formSteps} onSubmit={onSubmit} />
+    <MultistepFormModal
+      title={title}
+      form={form}
+      buttonChildren={buttonChildren}
+      formSteps={formSteps}
+      onSubmit={onSubmit}
+    />
   );
 }
 
@@ -24,7 +30,7 @@ describe('test button form modal', () => {
     const { baseElement } = render(
       <FormWrapper
         title={TITLE}
-        buttonName={BUTTON_NAME}
+        buttonChildren={BUTTON_NAME}
         formSteps={[
           <Form.Item label={LABEL} name={ATTR_NAME}>
             <Input />

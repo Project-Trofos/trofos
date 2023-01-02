@@ -17,7 +17,6 @@ describe('CourseCard test', () => {
     endYear: 2022,
     endSem: 1,
     public: true,
-    milestones: [],
     created_at: '2022-09-14T03:33:34.960Z',
   };
   const { baseElement } = render(
