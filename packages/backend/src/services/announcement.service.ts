@@ -17,7 +17,6 @@ async function list(policyConstraint: AppAbility, courseId: number): Promise<Ann
   const result = await prisma.announcement.findMany({
     where: {
       AND: [
-        // User who has access of course will have access of all the milestones in that course
         accessibleBy(policyConstraint).Course,
         {
           course_id: courseId,
