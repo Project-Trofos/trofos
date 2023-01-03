@@ -7,3 +7,8 @@ li.backlog-card-container {
 .backlog-card-container div {
   margin-right: 8px;
 }
+
+.backlog-card-id {
+  word-break: break-all;
+  width: 60px;
+}

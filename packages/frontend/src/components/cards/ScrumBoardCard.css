@@ -1,0 +1,52 @@
+.scrum-board-card-container {
+  width: 350px;
+}
+
+.scrum-board-card-container .ant-card-body {
+  padding: 12px;
+}
+
+.scrum-board-card-container .backlog-card-id {
+  margin-top: 6px;
+  width: 52px;
+}
+
+.scrum-board-card-container .backlog-card-type {
+  width: 50px;
+}
+
+.scrum-board-card-container .backlog-card-priority {
+  width: 89px;
+}
+
+.scrum-board-card-container .backlog-card-assignee {
+  width: 69px;
+}
+
+.scrum-board-card-container .ant-avatar.ant-avatar-icon {
+  font-size: 12px;
+}
+
+.scrum-board-card-container textarea.backlog-card-summary.ant-input {
+  margin: 0;
+}
+
+.scrum-board-card-container .backlog-card-points.ant-input-number {
+  width: 46px;
+}
+
+.scrum-board-card-details {
+  display: flex;
+  margin-top: 10px;
+}
+
+.scrum-board-card-details span,
+.scrum-board-card-details div,
+.scrum-board-card-details input,
+.scrum-board-card-details .ant-avatar.ant-avatar-icon {
+  font-size: 12px;
+}
+
+.scrum-board-card-details div {
+  margin-right: 3px;
+}

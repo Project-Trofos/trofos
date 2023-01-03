@@ -13,6 +13,14 @@ export type Backlog = {
   description: string | null;
   project_id: number;
   status: string;
+  assignee: {
+    created_at: string;
+    project_id: number;
+    user_id: number;
+    user: {
+      user_email: string;
+    };
+  };
 };
 
 type BacklogUpdatePayload = {

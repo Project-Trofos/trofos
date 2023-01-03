@@ -1,5 +1,6 @@
 .backlog-card-assignee {
   width: 72px;
+  height: 32px;
 }
 
 .backlog-card-assignee.ant-select:not(.ant-select-customize-input) .ant-select-selector {
@@ -17,4 +18,8 @@
 
 span.assignee-avatar {
   margin-right: 4px;
+}
+
+.backlog-card-assignee.ant-select:hover .ant-select-selector {
+  background: #ededed;
 }
