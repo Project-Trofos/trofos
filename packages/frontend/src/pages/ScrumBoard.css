@@ -1,0 +1,8 @@
+.scrum-board-droppable-context {
+  display: flex;
+}
+
+.scrum-board-droppable-context > div {
+  width: 260px;
+  min-height: 160px;
+}

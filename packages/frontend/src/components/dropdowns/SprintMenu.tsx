@@ -36,7 +36,6 @@ function SprintMenu(props: {
         {
           key: '1',
           label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
             <div onClick={handleSprintOnClick}>Edit sprint</div>
           ),
         },
@@ -44,7 +43,6 @@ function SprintMenu(props: {
           key: '2',
           danger: true,
           label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
             <div onClick={openDeleteConfirmationModal}>Delete sprint</div>
           ),
         },

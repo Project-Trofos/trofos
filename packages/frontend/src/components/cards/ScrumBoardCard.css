@@ -1,5 +1,5 @@
 .scrum-board-card-container {
-  width: 350px;
+  width: 260px;
 }
 
 .scrum-board-card-container .ant-card-body {
@@ -7,37 +7,56 @@
 }
 
 .scrum-board-card-container .backlog-card-id {
-  margin-top: 6px;
   width: 52px;
-}
-
-.scrum-board-card-container .backlog-card-type {
-  width: 50px;
-}
-
-.scrum-board-card-container .backlog-card-priority {
-  width: 89px;
-}
-
-.scrum-board-card-container .backlog-card-assignee {
-  width: 69px;
-}
-
-.scrum-board-card-container .ant-avatar.ant-avatar-icon {
-  font-size: 12px;
-}
-
-.scrum-board-card-container textarea.backlog-card-summary.ant-input {
-  margin: 0;
-}
-
-.scrum-board-card-container .backlog-card-points.ant-input-number {
-  width: 46px;
 }
 
 .scrum-board-card-details {
   display: flex;
+  justify-content: space-around;
   margin-top: 10px;
+}
+
+.scrum-board-card-type {
+  width: 27px;
+}
+
+.scrum-board-card-points {
+  padding: 2px 0;
+  border-radius: 8px;
+  width: 26px;
+  text-align: center;
+}
+
+.scrum-board-card-points.points-active {
+  background-color: #ededed;
+}
+
+.scrum-board-card-priority {
+  width: 60px;
+  border-radius: 8px;
+  padding: 2px;
+  text-align: center;
+}
+
+.scrum-board-card-priority.very_high-priority,
+.scrum-board-card-priority.high-priority {
+  background: #ca2828;
+  color: #fff;
+}
+
+.scrum-board-card-priority.medium-priority {
+  background: #ebd42f;
+  color: #000;
+}
+
+.scrum-board-card-priority.very_low-priority,
+.scrum-board-card-priority.low-priority {
+  background: #2f84eb;
+  color: #fff;
+}
+
+.scrum-board-card-assignee {
+  width: 28px;
 }
 
 .scrum-board-card-details span,
@@ -45,8 +64,4 @@
 .scrum-board-card-details input,
 .scrum-board-card-details .ant-avatar.ant-avatar-icon {
   font-size: 12px;
-}
-
-.scrum-board-card-details div {
-  margin-right: 3px;
 }
