@@ -1,10 +1,9 @@
 .summary-input {
-  border: none;
-  border-radius: 8px;
+  border: none !important;
+  border-radius: 8px !important;
   transition: none;
   outline: none;
   box-shadow: none !important;
-  font-size: 16px;
   font-weight: 600;
 }
 
