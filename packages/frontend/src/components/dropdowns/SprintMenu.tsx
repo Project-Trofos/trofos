@@ -35,16 +35,12 @@ function SprintMenu(props: {
       items={[
         {
           key: '1',
-          label: (
-            <div onClick={handleSprintOnClick}>Edit sprint</div>
-          ),
+          label: <div onClick={handleSprintOnClick}>Edit sprint</div>,
         },
         {
           key: '2',
           danger: true,
-          label: (
-            <div onClick={openDeleteConfirmationModal}>Delete sprint</div>
-          ),
+          label: <div onClick={openDeleteConfirmationModal}>Delete sprint</div>,
         },
       ]}
     />

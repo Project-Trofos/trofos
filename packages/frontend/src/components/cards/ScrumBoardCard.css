@@ -2,6 +2,10 @@
   width: 260px;
 }
 
+.scrum-board-card-container.ant-card {
+  border-radius: 6px;
+}
+
 .scrum-board-card-container .ant-card-body {
   padding: 12px;
 }
@@ -38,6 +42,7 @@
   text-align: center;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .scrum-board-card-priority.very_high-priority,
 .scrum-board-card-priority.high-priority {
   background: #ca2828;
@@ -49,6 +54,7 @@
   color: #000;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .scrum-board-card-priority.very_low-priority,
 .scrum-board-card-priority.low-priority {
   background: #2f84eb;
