@@ -28,28 +28,6 @@ export default function ScrumBoard(): JSX.Element {
     return [...backlogs].sort((b1, b2) => b1.backlog_id - b2.backlog_id);
   };
 
-  // Generate an object to keep track of the droppableId to the respective user and status
-  const generateDroppableMapping = () => {
-    if (!projectData || !backlogStatus) {
-      return {};
-    }
-
-    const mapping: { [key: number | string]: { user: number | null; status: string } } = {};
-    let key = 0;
-
-    for (let i = 0; i < users.length; i += 1) {
-      for (let j = 0; j < backlogStatus.length; j += 1) {
-        mapping[key] = {
-          user: users[i].user.user_id,
-          status: backlogStatus[j].name,
-        };
-        key += 1;
-      }
-    }
-
-    return mapping;
-  };
-
   // Add a placeholder user for the unassigned backlogs
   const addUnassignedUser = (users: ScrumBoardUserData[] | undefined) => {
     if (!users) {
@@ -64,6 +42,29 @@ export default function ScrumBoard(): JSX.Element {
 
   const backlogs = processBacklogs(activeSprint?.backlogs);
   const users = addUnassignedUser(projectData?.users);
+
+  // Generate an object to keep track of the droppableId to the respective user and status
+  const generateDroppableMapping = () => {
+    if (!projectData || !backlogStatus) {
+      return {};
+    }
+
+    const mapping: { [key: number | string]: { user: number | null; status: string } } = {};
+    let key = 0;
+
+    for (const user of users) {
+      for (const status of backlogStatus) {
+        mapping[key] = {
+          user: user.user.user_id,
+          status: status.name,
+        };
+        key += 1;
+      }
+    }
+
+    return mapping;
+  };
+
   const droppableIdMapping = generateDroppableMapping();
 
   const onDragEnd = async (result: DropResult) => {
