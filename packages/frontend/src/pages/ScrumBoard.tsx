@@ -99,11 +99,11 @@ export default function ScrumBoard(): JSX.Element {
     const droppables = [];
     const key = { count: 0 };
 
-    const renderUserDroppables = (userId: number | null, currentKey: { count: number }) => {
+    const renderUserDroppables = (userId: number | null) => {
       const userDroppables = [];
       for (const status of backlogStatus) {
         userDroppables.push(
-          <StrictModeDroppable key={key.count} droppableId={currentKey.count.toString()}>
+          <StrictModeDroppable key={key.count} droppableId={key.count.toString()}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {backlogs
@@ -134,7 +134,7 @@ export default function ScrumBoard(): JSX.Element {
           <Title className="scrum-board-user-title" level={5}>
             {user.user.user_email}
           </Title>
-          <div className="scrum-board-droppable">{renderUserDroppables(user.user.user_id, key)}</div>
+          <div className="scrum-board-droppable">{renderUserDroppables(user.user.user_id)}</div>
         </div>,
       );
     }
