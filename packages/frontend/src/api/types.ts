@@ -67,6 +67,13 @@ export type UserData = {
   };
 };
 
+export type ScrumBoardUserData = {
+  user: {
+    user_id: number | null;
+    user_email: string;
+  };
+};
+
 export type Milestone = {
   id: number;
   name: string;

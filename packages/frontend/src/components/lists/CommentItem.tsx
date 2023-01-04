@@ -114,16 +114,12 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
         items={[
           {
             key: `${comment.comment_id}-edit`,
-            label: (
-              <div onClick={() => startEditingComment()}>Edit</div>
-            ),
+            label: <div onClick={() => startEditingComment()}>Edit</div>,
           },
           {
             key: `${comment.comment_id}-delete`,
             danger: true,
-            label: (
-              <div onClick={() => openDeleteConfirmationModal()}>Delete</div>
-            ),
+            label: <div onClick={() => openDeleteConfirmationModal()}>Delete</div>,
           },
         ]}
       />
