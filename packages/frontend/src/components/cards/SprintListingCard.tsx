@@ -7,6 +7,7 @@ import { Sprint, useUpdateSprintMutation } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
 import './SprintListingCard.css';
+import StrictModeDroppable from '../dnd/StrictModeDroppable';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
@@ -59,27 +60,34 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   };
 
   return (
-    <Collapse>
-      <Panel
-        key={sprint.id}
-        header={
-          <div className="sprint-card-inner-container">
-            <div className="sprint-card-name">{sprint.name}</div>
-            <div className="sprint-status-button">{renderSprintStatusButton()}</div>
-            {sprint.start_date && sprint.end_date && (
-              <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
-                'DD/MM/YYYY',
-              )}`}</div>
-            )}
-            <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
-              <SprintMenu sprintId={sprint.id} handleSprintOnClick={handleSprintOnClick} />
-            </div>
-          </div>
-        }
-      >
-        <BacklogList backlogs={sprint.backlogs} />
-      </Panel>
-    </Collapse>
+    <StrictModeDroppable droppableId={sprint.id.toString()}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.droppableProps}>
+          <Collapse>
+            <Panel
+              key={sprint.id}
+              header={
+                <div className="sprint-card-inner-container">
+                  <div className="sprint-card-name">{sprint.name}</div>
+                  <div className="sprint-status-button">{renderSprintStatusButton()}</div>
+                  {sprint.start_date && sprint.end_date && (
+                    <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
+                      'DD/MM/YYYY',
+                    )}`}</div>
+                  )}
+                  <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
+                    <SprintMenu sprintId={sprint.id} handleSprintOnClick={handleSprintOnClick} />
+                  </div>
+                </div>
+              }
+            >
+              <BacklogList backlogs={sprint.backlogs} />
+              {provided.placeholder}
+            </Panel>
+          </Collapse>
+        </div>
+      )}
+    </StrictModeDroppable>
   );
 }
 

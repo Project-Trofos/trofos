@@ -20,7 +20,7 @@ export default function BacklogCardPoints(props: { backlogId: number; currentPoi
       return;
     }
 
-    if (updatedPoints === currentPoints) {
+    if (updatedPoints === currentPoints || (currentPoints === null && updatedPoints === 0)) {
       setIsError(false);
       return;
     }
