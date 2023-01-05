@@ -31,12 +31,14 @@ function ScrumBoardCard(props: { backlog: Backlog; projectKey: string | null | u
               <div className={`scrum-board-card-points ${backlog.points ? 'points-active' : ''}`}>{backlog.points}</div>
               <div className={`scrum-board-card-priority ${backlog.priority}-priority`}>{backlog.priority}</div>
               <div className="scrum-board-card-assignee">
-                <Avatar
-                  className="assignee-avatar"
-                  size="small"
-                  style={{ backgroundColor: '#85041C' }}
-                  icon={<UserOutlined />}
-                />
+                {backlog.assignee_id && (
+                  <Avatar
+                    className="assignee-avatar"
+                    size="small"
+                    style={{ backgroundColor: '#85041C' }}
+                    icon={<UserOutlined />}
+                  />
+                )}
               </div>
             </div>
           </Card>
