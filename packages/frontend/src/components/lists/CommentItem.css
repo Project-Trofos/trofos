@@ -12,6 +12,10 @@
   margin-right: 8px;
 }
 
+.ant-list-item-meta-title {
+  margin-top: 0px;
+}
+
 .comment-content-container .ant-list-item-meta-description {
   white-space: pre;
   color: #000;
