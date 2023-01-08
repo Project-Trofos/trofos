@@ -6,24 +6,30 @@ async function createCourseSeed(prisma: PrismaClient) {
   const courses = await prisma.course.createMany({
     data: [
       {
-        id: 'course1_id',
+        code: 'course1_id',
         cname: 'course1',
-        year: CURRENT_YEAR,
-        sem: CURRENT_SEM,
+        startYear: CURRENT_YEAR,
+        startSem: CURRENT_SEM,
+        endYear: CURRENT_YEAR,
+        endSem: CURRENT_SEM + 1,
         description: 'course1_description',
       },
       {
-        id: 'course2_id',
+        code: 'course2_id',
         cname: 'course2',
-        year: CURRENT_YEAR,
-        sem: CURRENT_SEM,
+        startYear: CURRENT_YEAR,
+        startSem: CURRENT_SEM,
+        endYear: CURRENT_YEAR,
+        endSem: CURRENT_SEM + 1,
         description: 'course2_description',
       },
       {
-        id: 'course3_id',
+        code: 'course3_id',
         cname: 'course3',
-        year: CURRENT_YEAR - 1,
-        sem: CURRENT_SEM,
+        startYear: CURRENT_YEAR - 1,
+        startSem: CURRENT_SEM,
+        endYear: CURRENT_YEAR - 1,
+        endSem: CURRENT_SEM + 1,
         description: 'course3_description',
       },
     ],
@@ -34,21 +40,42 @@ async function createCourseSeed(prisma: PrismaClient) {
   const usersOnCourses = await prisma.usersOnCourses.createMany({
     data: [
       {
-        course_id: 'course1_id',
-        course_year: CURRENT_YEAR,
-        course_sem: CURRENT_SEM,
+        course_id: 1,
         user_id: 2,
       },
       {
-        course_id: 'course3_id',
-        course_year: CURRENT_YEAR - 1,
-        course_sem: CURRENT_SEM,
+        course_id: 3,
         user_id: 2,
       },
     ],
   });
 
   console.log('created usersOnCourses %s', usersOnCourses);
+
+  const milestones = await prisma.milestone.createMany({
+    data: [
+      {
+        course_id: 1,
+        name: 'Milestone 1',
+        start_date: new Date(2022, 12, 1),
+        deadline: new Date(2022, 12, 10),
+      },
+      {
+        course_id: 1,
+        name: 'Milestone 2',
+        start_date: new Date(2022, 12, 11),
+        deadline: new Date(2022, 12, 20),
+      },
+      {
+        course_id: 1,
+        name: 'Milestone 3',
+        start_date: new Date(2022, 12, 21),
+        deadline: new Date(2022, 12, 31),
+      },
+    ],
+  });
+
+  console.log('created milestones %s', milestones);
 }
 
 export { createCourseSeed };

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, message, Spin, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../api/project';
 import { useRemoveProjectFromCourseMutation } from '../api/course';
@@ -45,21 +45,13 @@ export default function ProjectPage(): JSX.Element {
             await removeProject({ id: project.id }).unwrap();
             navigate('/projects');
           });
-        } else if (
-          key === 'detach' &&
-          project &&
-          project.course_id !== null &&
-          project.course_year !== null &&
-          project.course_sem !== null
-        ) {
+        } else if (key === 'detach' && project && project.course_id !== null) {
           confirmDetachProject(async () => {
-            if (!project.course_id || !project.course_year || !project.course_sem) {
+            if (!project.course_id) {
               throw new Error('Invalid data!');
             }
             removeProjectFromCourse({
               courseId: project.course_id,
-              courseYear: project.course_year,
-              courseSem: project.course_sem,
               projectId: project.id,
             }).unwrap();
           });
@@ -115,8 +107,8 @@ export default function ProjectPage(): JSX.Element {
         subTitle={
           course ? (
             <>
-              <Tag>{course?.id}</Tag>
-              <span style={{ color: 'grey' }}>{course?.cname}</span>
+              <Tag>{course?.code}</Tag>
+              <span>{course?.cname}</span>
             </>
           ) : (
             <Tag>Independent Project</Tag>
@@ -126,61 +118,48 @@ export default function ProjectPage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs
-            className="footer-tabs"
-            defaultActiveKey="overview"
-            activeKey={selectedTab}
-            items={[
-              {
-                key: `overview`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
-                    Overview
-                  </Link>
-                ),
-              },
-              {
-                key: `users`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
-                    People
-                  </Link>
-                ),
-              },
-              {
-                key: `sprint`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
-                    Sprint
-                  </Link>
-                ),
-              },
-              {
-                key: `backlog`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/backlog`}>
-                    Backlog
-                  </Link>
-                ),
-              },
-              {
-                key: `kanban`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
-                    Kanban
-                  </Link>
-                ),
-              },
-              {
-                key: `settings`,
-                label: (
-                  <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
-                    Settings
-                  </Link>
-                ),
-              },
-            ]}
-          />
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
+                  Overview
+                </Link>
+              }
+              key="overview"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
+                  People
+                </Link>
+              }
+              key="users"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
+                  Sprint
+                </Link>
+              }
+              key="sprint"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
+                  Kanban
+                </Link>
+              }
+              key="kanban"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
+                  Settings
+                </Link>
+              }
+              key="settings"
+            />
+          </Tabs>
         }
       >
         <Paragraph>{project.description}</Paragraph>

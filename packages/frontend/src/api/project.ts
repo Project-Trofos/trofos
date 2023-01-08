@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { Project, ProjectData } from './types';
+import { BacklogStatusData, Project, ProjectData } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -90,6 +90,70 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
     }),
+
+    // Backlog status APIs
+    getBacklogStatus: builder.query<BacklogStatusData[], Pick<Project, 'id'>>({
+      query: ({ id }) => ({
+        url: `project/${id}/backlogStatus`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
+    }),
+
+    createBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string }>({
+      query: (param) => ({
+        url: `project/${param.projectId}/backlogStatus`,
+        method: 'POST',
+        body: {
+          name: param.name,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    updateBacklogStatus: builder.mutation<
+      BacklogStatusData,
+      { projectId: number; currentName: string; updatedName: string }
+    >({
+      query: (param) => ({
+        url: `project/${param.projectId}/backlogStatus`,
+        method: 'PUT',
+        body: {
+          currentName: param.currentName,
+          updatedName: param.updatedName,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    updateBacklogStatusOrder: builder.mutation<
+      BacklogStatusData[],
+      { projectId: number; updatedStatuses: Omit<BacklogStatusData, 'project_id'>[] }
+    >({
+      query: (param) => ({
+        url: `project/${param.projectId}/backlogStatus`,
+        method: 'PUT',
+        body: {
+          updatedStatuses: param.updatedStatuses,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    deleteBacklogStatus: builder.mutation<BacklogStatusData, { projectId: number; name: string }>({
+      query: (param) => ({
+        url: `project/${param.projectId}/backlogStatus`,
+        method: 'DELETE',
+        body: {
+          name: param.name,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -102,4 +166,9 @@ export const {
   useRemoveProjectMutation,
   useAddProjectUserMutation,
   useRemoveProjectUserMutation,
+  useGetBacklogStatusQuery,
+  useCreateBacklogStatusMutation,
+  useUpdateBacklogStatusMutation,
+  useUpdateBacklogStatusOrderMutation,
+  useDeleteBacklogStatusMutation,
 } = extendedApi;

@@ -3,22 +3,24 @@ export type Project = {
   pname: string;
   pkey: string | null;
   description: string | null;
-  course_id: string | null;
-  course_year: number | null;
-  course_sem: number | null;
+  course_id: number | null;
   public: boolean;
   created_at: string;
   course?: Course;
 };
 
 export type Course = {
-  id: string;
-  year: number;
-  sem: number;
+  id: number;
+  code: string;
+  startYear: number;
+  startSem: number;
+  endYear: number;
+  endSem: number;
   cname: string;
   description: string | null;
   public: boolean;
   created_at: string;
+  milestones: Milestone[];
 };
 
 export type User = {
@@ -56,6 +58,7 @@ export type ProjectData = Project & {
     id: number;
     name: string;
   }[];
+  backlogStatuses: Omit<BacklogStatusData, 'project_id'>[];
 };
 
 export type UserData = {
@@ -65,6 +68,47 @@ export type UserData = {
   };
 };
 
+export type Milestone = {
+  id: number;
+  name: string;
+  start_date: string;
+  deadline: string;
+  course_id: number;
+  created_at: string;
+};
+
 export type CourseData = Course & {
   users: UserData[];
+};
+
+export type BacklogStatusData = {
+  name: string;
+  type: 'todo' | 'in_progress' | 'done';
+  project_id: number;
+  order: number;
+};
+
+export type Comment = {
+  comment_id: number;
+  backlog_id: number;
+  project_id: number;
+  commenter_id: number;
+  content: string;
+  created_at: string;
+  updated_at: string | null;
+  commenter: {
+    created_at: string;
+    project_id: string;
+    user: {
+      user_id: number;
+      user_email: string;
+    };
+  };
+};
+
+export type CommentFieldsType = {
+  projectId: number;
+  backlogId: number;
+  commenterId: number;
+  content: string;
 };

@@ -74,19 +74,67 @@ describe('sprint.service tests', () => {
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
       await expect(sprintService.updateSprint(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
     });
+  });
 
-    it('should only update status and return sprint if status is provided', async () => {
+  describe('update sprint status', () => {
+    it('should update current and completed sprints and return updated sprint if status is current', async () => {
       const mockReturnedSprint: Sprint = {
         ...mockSprintData,
         status: 'current',
       };
 
-      const sprintToUpdate: { sprintId: number; status: 'upcoming' | 'current' | 'completed' } = {
+      const sprintToUpdate: {
+        sprintId: number;
+        status: 'upcoming' | 'current' | 'completed' | 'closed';
+        projectId: number;
+      } = {
         sprintId: 1,
         status: 'current',
+        projectId: 123,
+      };
+      prismaMock.sprint.findFirst.mockResolvedValueOnce(null);
+      prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
+      prismaMock.sprint.updateMany.mockResolvedValue({ count: 0 });
+      prismaMock.$transaction.mockResolvedValue([mockReturnedSprint, 0]);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+    });
+
+    it('should only update current sprint and return sprint if status is not current', async () => {
+      const mockReturnedSprint: Sprint = {
+        ...mockSprintData,
+        status: 'completed',
+      };
+
+      const sprintToUpdate: {
+        sprintId: number;
+        status: 'upcoming' | 'current' | 'completed' | 'closed';
+        projectId: number;
+      } = {
+        sprintId: 1,
+        status: 'completed',
+        projectId: 123,
       };
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
-      await expect(sprintService.updateSprint(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+    });
+
+    it('should throw a BadRequestError if there is already an active sprint', async () => {
+      const mockReturnedSprint: Sprint = {
+        ...mockSprintData,
+        status: 'current',
+      };
+
+      const sprintToUpdate: {
+        sprintId: number;
+        status: 'upcoming' | 'current' | 'completed' | 'closed';
+        projectId: number;
+      } = {
+        sprintId: 1,
+        status: 'current',
+        projectId: 123,
+      };
+      prismaMock.sprint.findFirst.mockResolvedValueOnce(mockReturnedSprint);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate)).rejects.toThrow('An active sprint already exists');
     });
   });
 

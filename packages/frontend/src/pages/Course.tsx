@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, Space, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveCourseMutation } from '../api/course';
 import { confirmDeleteCourse } from '../components/modals/confirm';
@@ -30,7 +30,7 @@ export default function CoursePage(): JSX.Element {
     return split[5];
   }, [location.pathname]);
 
-  const { course } = useCourse(params.courseId, Number(params.courseYear), Number(params.courseSem));
+  const { course } = useCourse(params.courseId);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -75,7 +75,7 @@ export default function CoursePage(): JSX.Element {
     <>
       <PageHeader
         title={course.cname}
-        subTitle={<Tag>{course.id}</Tag>}
+        subTitle={<Tag>{course.code}</Tag>}
         extra={[
           <ProjectCreationModal key="create-project" course={course} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
@@ -83,46 +83,32 @@ export default function CoursePage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs
-            defaultActiveKey="overview"
-            className="footer-tabs"
-            activeKey={selectedTab}
-            items={[
-              {
-                key: 'overview',
-                label: (
-                  <Link
-                    style={{ textDecoration: 'none' }}
-                    to={`/course/${course.id}/${course.year}/${course.sem}/overview`}
-                  >
-                    Overview
-                  </Link>
-                ),
-              },
-              {
-                key: 'users',
-                label: (
-                  <Link
-                    style={{ textDecoration: 'none' }}
-                    to={`/course/${course.id}/${course.year}/${course.sem}/users`}
-                  >
-                    People
-                  </Link>
-                ),
-              },
-              {
-                label: (
-                  <Link
-                    style={{ textDecoration: 'none' }}
-                    to={`/course/${course.id}/${course.year}/${course.sem}/settings`}
-                  >
-                    Settings
-                  </Link>
-                ),
-                key: 'settings',
-              },
-            ]}
-          />
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>
+                  Overview
+                </Link>
+              }
+              key="overview"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/users`}>
+                  People
+                </Link>
+              }
+              key="users"
+            />
+            <Tabs.TabPane
+              tab={
+                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
+                  Settings
+                </Link>
+              }
+              key="settings"
+            />
+          </Tabs>
         }
       >
         <Paragraph>{course.description}</Paragraph>

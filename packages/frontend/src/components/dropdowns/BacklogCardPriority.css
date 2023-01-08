@@ -1,0 +1,36 @@
+.backlog-card-priority {
+  width: 100px;
+}
+
+.backlog-card-priority.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 8px;
+  border: none;
+}
+
+.backlog-card-priority.ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+  padding-right: 0;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.backlog-card-priority.very_high-priority.ant-select .ant-select-selector,
+.backlog-card-priority.high-priority.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: #ca2828;
+  color: #fff;
+}
+
+.backlog-card-priority.medium-priority.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: #ebd42f;
+  color: #000;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.backlog-card-priority.very_low-priority.ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.backlog-card-priority.low-priority.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: #2f84eb;
+  color: #fff;
+}
+
+.backlog-card-priority .ant-select-clear {
+  background: transparent;
+  color: #000;
+}

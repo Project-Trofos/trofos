@@ -5,6 +5,7 @@ import BacklogListingCard from '../cards/BacklogListingCard';
 import { Backlog } from '../../api/backlog';
 import { useGetProjectQuery } from '../../api/project';
 import './BacklogList.css';
+import { sortBacklogs } from '../../helpers/sortBacklogs';
 
 function BacklogList(props: { backlogs: Backlog[] | undefined }): JSX.Element {
   const { backlogs } = props;
@@ -19,12 +20,16 @@ function BacklogList(props: { backlogs: Backlog[] | undefined }): JSX.Element {
   };
 
   const renderBacklogListingCards = (backlog: Backlog) => (
-    <List.Item className="backlog-card-container" onClick={() => handleBacklogOnClick(backlog.backlog_id)}>
-      <BacklogListingCard backlog={backlog} projectKey={projectData?.pkey} />
+    <List.Item
+      key={backlog.backlog_id}
+      className="backlog-card-container"
+      onClick={() => handleBacklogOnClick(backlog.backlog_id)}
+    >
+      <BacklogListingCard backlog={backlog} projectKey={projectData?.pkey} users={projectData?.users} />
     </List.Item>
   );
 
-  return <List dataSource={backlogs} renderItem={renderBacklogListingCards} />;
+  return <List dataSource={sortBacklogs(backlogs)} renderItem={renderBacklogListingCards} />;
 }
 
 export default BacklogList;

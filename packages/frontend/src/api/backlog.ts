@@ -12,7 +12,7 @@ export type Backlog = {
   points: number | null;
   description: string | null;
   project_id: number;
-  status: 'todo' | 'in_progress' | 'done';
+  status: string;
 };
 
 type BacklogUpdatePayload = {
@@ -26,6 +26,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     getBacklogs: builder.query<Backlog[], number>({
       query: (projectId) => ({
         url: `backlog/listBacklogs/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Backlog'],
+    }),
+    getUnassignedBacklogs: builder.query<Backlog[], number>({
+      query: (projectId) => ({
+        url: `backlog/listUnassignedBacklogs/${projectId}`,
         credentials: 'include',
       }),
       providesTags: ['Backlog'],
@@ -69,6 +76,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 
 export const {
   useGetBacklogsQuery,
+  useGetUnassignedBacklogsQuery,
   useGetBacklogQuery,
   useAddBacklogMutation,
   useUpdateBacklogMutation,

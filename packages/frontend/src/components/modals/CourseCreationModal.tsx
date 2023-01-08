@@ -19,27 +19,22 @@ export default function CourseCreationModal() {
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
-    async (values: {
-      courseCode?: string;
-      // Antd datepicker actually returns a moment object
-      // Only year is used for now
-      // Maybe we should consider adding moment to our dependencies?
-      courseYear: Dayjs;
-      courseSem: string;
-      courseName: string;
-    }) => {
+    async (values: { courseCode: string; courseYear: Dayjs; courseSem: string; courseName: string }) => {
       try {
         const { courseCode, courseName, courseSem, courseYear } = values;
 
         await addCourse({
-          id: courseCode?.trim(),
-          year: Number(courseYear.year()),
-          sem: Number(courseSem),
+          code: courseCode.trim(),
+          startYear: Number(courseYear.year()),
+          startSem: Number(courseSem),
+          endYear: Number(courseYear.year()),
+          endSem: Number(courseSem),
           cname: courseName.trim(),
-        });
+        }).unwrap();
         message.success(`Course ${values.courseName} has been created!`);
       } catch (err) {
         message.error(getErrorMessage(err));
+        throw err;
       }
     },
     [addCourse],
@@ -50,18 +45,19 @@ export default function CourseCreationModal() {
       title="Create Course"
       buttonName="Create Course"
       form={form}
-      onSubmit={(data) => onFinish(data)}
+      onSubmit={onFinish}
       formSteps={[
         <>
           <Paragraph>Please input the details for your course.</Paragraph>
 
           <CourseNameFormItem />
 
-          <CourseCodeFormItem />
+          <CourseCodeFormItem isRequired />
 
           <CourseYearSemFormItems />
         </>,
       ]}
+      buttonType="primary"
     />
   );
 }

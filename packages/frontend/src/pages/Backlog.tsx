@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, message } from 'antd';
+import { Form, message, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetBacklogQuery, useUpdateBacklogMutation } from '../api/backlog';
 import BacklogInputNumber from '../components/fields/BacklogInputNumber';
@@ -9,12 +9,15 @@ import BacklogTextArea from '../components/fields/BacklogTextArea';
 import BacklogUserSelect from '../components/fields/BacklogUserSelect';
 import { BacklogSelectTypes } from '../helpers/BacklogModal.types';
 import type { Backlog as BacklogType } from '../api/backlog';
-import './Backlog.css';
 import BacklogMenu from '../components/dropdowns/BacklogMenu';
 import { useGetProjectQuery } from '../api/project';
 import BacklogStatusSelect from '../components/fields/BacklogStatusSelect';
+import Comment from '../components/lists/Comment';
+import './Backlog.css';
+import BacklogComment from '../components/fields/BacklogComment';
 
 function Backlog(): JSX.Element {
+  const { Title } = Typography;
   const params = useParams();
   const [form] = Form.useForm();
   const [updateBacklog] = useUpdateBacklogMutation();
@@ -121,72 +124,81 @@ function Backlog(): JSX.Element {
   }
 
   return (
-    <Form
-      form={form}
-      initialValues={backlog}
-      onValuesChange={handleSelectFieldsUpdate}
-      className="backlog-page-container"
-    >
-      <div className="backlog-data-container">
-        <div className="backlog-input-container">
-          <Form.Item name="summary" rules={[{ required: true }]}>
-            <BacklogSummaryInput onBlur={handleSummaryFieldUpdate} />
-          </Form.Item>
-          <div className="backlog-description-container">
-            <p>Description:</p>
-            <Form.Item name="description">
-              <BacklogTextArea onBlur={handleDescriptionFieldUpdate} autoSize={{ minRows: 1, maxRows: 11 }} />
-            </Form.Item>
+    <>
+      <div>
+        <Form
+          form={form}
+          initialValues={backlog}
+          onValuesChange={handleSelectFieldsUpdate}
+          className="backlog-page-container"
+        >
+          <div className="backlog-data-container">
+            <div className="backlog-input-container">
+              <Form.Item name="summary" rules={[{ required: true }]}>
+                <BacklogSummaryInput onBlur={handleSummaryFieldUpdate} />
+              </Form.Item>
+              <div className="backlog-description-container">
+                <p>Description:</p>
+                <Form.Item name="description">
+                  <BacklogTextArea onBlur={handleDescriptionFieldUpdate} autoSize={{ minRows: 1, maxRows: 11 }} />
+                </Form.Item>
+              </div>
+            </div>
+            <div className="backlog-sidebar-container">
+              <Form.Item name="status">
+                <BacklogStatusSelect status={projectData?.backlogStatuses || []} />
+              </Form.Item>
+              <div className="backlog-panel-container">
+                <div>
+                  <span>Assignee</span>
+                  <Form.Item name="assignee_id">
+                    <BacklogUserSelect options={projectData?.users || []} allowClear />
+                  </Form.Item>
+                </div>
+                <div>
+                  <span>Type</span>
+                  <Form.Item name="type" rules={[{ required: true }]}>
+                    <BacklogSelect options={TYPES} />
+                  </Form.Item>
+                </div>
+                <div>
+                  <span>Priority</span>
+                  <Form.Item name="priority">
+                    <BacklogSelect options={PRIORITIES} allowClear />
+                  </Form.Item>
+                </div>
+                <div>
+                  <span>Sprint</span>
+                  <Form.Item name="sprint_id">
+                    <BacklogSelect options={projectData?.sprints || []} allowClear />
+                  </Form.Item>
+                </div>
+                <div>
+                  <span>Point(s)</span>
+                  <Form.Item name="points">
+                    <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
+                  </Form.Item>
+                </div>
+                <div>
+                  <span>Reporter</span>
+                  <Form.Item name="reporter_id" rules={[{ required: true }]}>
+                    <BacklogUserSelect options={projectData?.users || []} />
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="backlog-menu-container">
+                <BacklogMenu projectId={projectId} backlogId={backlogId} />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="backlog-sidebar-container">
-          <Form.Item name="status">
-            <BacklogStatusSelect />
-          </Form.Item>
-          <div className="backlog-panel-container">
-            <div>
-              <span>Assignee</span>
-              <Form.Item name="assignee_id">
-                <BacklogUserSelect options={projectData?.users || []} allowClear />
-              </Form.Item>
-            </div>
-            <div>
-              <span>Type</span>
-              <Form.Item name="type" rules={[{ required: true }]}>
-                <BacklogSelect options={TYPES} />
-              </Form.Item>
-            </div>
-            <div>
-              <span>Priority</span>
-              <Form.Item name="priority">
-                <BacklogSelect options={PRIORITIES} allowClear />
-              </Form.Item>
-            </div>
-            <div>
-              <span>Sprint</span>
-              <Form.Item name="sprint_id">
-                <BacklogSelect options={projectData?.sprints || []} allowClear />
-              </Form.Item>
-            </div>
-            <div>
-              <span>Point(s)</span>
-              <Form.Item name="points">
-                <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
-              </Form.Item>
-            </div>
-            <div>
-              <span>Reporter</span>
-              <Form.Item name="reporter_id" rules={[{ required: true }]}>
-                <BacklogUserSelect options={projectData?.users || []} />
-              </Form.Item>
-            </div>
-          </div>
-          <div className="backlog-menu-container">
-            <BacklogMenu projectId={projectId} backlogId={backlogId} />
-          </div>
-        </div>
+        </Form>
       </div>
-    </Form>
+      <div className="comment-container">
+        <Title level={2}>Comments</Title>
+        <BacklogComment />
+        <Comment />
+      </div>
+    </>
   );
 }
 

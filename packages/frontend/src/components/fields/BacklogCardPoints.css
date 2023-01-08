@@ -1,0 +1,15 @@
+.backlog-card-points.ant-input-number {
+  width: 72px;
+  background: #ededed;
+  border-radius: 8px;
+  min-width: 28px;
+  border: none;
+}
+
+.backlog-card-points input {
+  text-align: center;
+}
+
+.backlog-card-points.ant-input-number-status-error {
+  border: 1px solid;
+}

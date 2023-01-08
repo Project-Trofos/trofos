@@ -1,45 +1,29 @@
 import React from 'react';
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
 import type { Backlog } from '../../api/backlog';
+import { UserData } from '../../api/types';
+import BacklogCardStatus from '../dropdowns/BacklogCardStatus';
+import BacklogCardType from '../dropdowns/BacklogCardType';
+import BacklogCardPriority from '../dropdowns/BacklogCardPriority';
+import BacklogCardAssignee from '../dropdowns/BacklogCardAssignee';
+import BacklogCardPoints from '../fields/BacklogCardPoints';
+import BacklogCardSummary from '../fields/BacklogCardSummary';
 import './BacklogListingCard.css';
 
 function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
-  const { backlog, projectKey } = props;
-
-  const renderAssignee = (assigneeId: number): JSX.Element => (
-    <div>
-      <Avatar className="assignee-avatar" style={{ backgroundColor: '#85041C' }} icon={<UserOutlined />} />
-      <span>{assigneeId === 1 ? 'User1' : 'User2'}</span>
-    </div>
-  );
-
-  // eslint-disable-next-line consistent-return
-  const renderPriority = (priority: BacklogPriority): JSX.Element => {
-    switch (priority) {
-      case 'very_high':
-      case 'high':
-        return <div className="backlog-card-high-priority">{backlog.priority}</div>;
-      case 'medium':
-        return <div className="backlog-card-medium-priority">{backlog.priority}</div>;
-      case 'low':
-      case 'very_low':
-        return <div className="backlog-card-low-priority">{backlog.priority}</div>;
-    }
-  };
+  const { backlog, projectKey, users } = props;
 
   return (
     <>
-      <div>
+      <div className="backlog-card-id">
         {projectKey ? `${projectKey}-` : ''}
         {backlog.backlog_id}
       </div>
-      <div className="backlog-card-summary">{backlog.summary}</div>
-      <div>{backlog.status}</div>
-      <div>{backlog.type}</div>
-      {backlog.priority && renderPriority(backlog.priority)}
-      {backlog.assignee_id && renderAssignee(backlog.assignee_id)}
-      {backlog.points && <div className="backlog-card-points">{backlog.points}</div>}
+      <BacklogCardSummary backlogId={backlog.backlog_id} currentSummary={backlog.summary} />
+      <BacklogCardStatus backlogId={backlog.backlog_id} currentStatus={backlog.status} />
+      <BacklogCardType backlogId={backlog.backlog_id} currentType={backlog.type} />
+      <BacklogCardPriority backlogId={backlog.backlog_id} currentPriority={backlog.priority} />
+      <BacklogCardAssignee backlogId={backlog.backlog_id} currentAssignee={backlog.assignee_id} projectUsers={users} />
+      <BacklogCardPoints backlogId={backlog.backlog_id} currentPoints={backlog.points} />
     </>
   );
 }
@@ -47,8 +31,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
 type BacklogListingCardProps = {
   backlog: Backlog;
   projectKey: string | null | undefined;
+  users?: UserData[];
 };
-
-type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
 
 export default BacklogListingCard;

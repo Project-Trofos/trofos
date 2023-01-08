@@ -1,5 +1,6 @@
 import React from 'react';
 import { Select as AntdSelect, DatePicker as AntdDatePicker } from 'antd';
+import mockDayjs from 'dayjs';
 
 // Mock dayjs datepicker
 jest.mock('../components/datetime/DatePicker', () => {
@@ -13,12 +14,32 @@ jest.mock('../components/datetime/DatePicker', () => {
         disabled={disabled}
         onChange={(e) => {
           if (onChange) {
-            onChange(jest.fn() as unknown as Parameters<typeof onChange>['0'], e.target.value);
+            // Returns the value as year
+            onChange({ year: () => e.target.value } as unknown as Parameters<typeof onChange>['0'], e.target.value);
           }
         }}
       />
     );
   }
+
+  // eslint-disable-next-line func-names
+  DatePicker.RangePicker = function (props: React.ComponentProps<typeof AntdDatePicker.RangePicker>) {
+    const { defaultValue, id, onChange } = props;
+    return (
+      <input
+        id={id}
+        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLInputElement>['defaultValue']}
+        onChange={(e) => {
+          if (onChange) {
+            onChange(
+              [mockDayjs(e.target.value), mockDayjs(e.target.value)] as unknown as Parameters<typeof onChange>['0'],
+              [e.target.value, e.target.value],
+            );
+          }
+        }}
+      />
+    );
+  };
   return DatePicker;
 });
 

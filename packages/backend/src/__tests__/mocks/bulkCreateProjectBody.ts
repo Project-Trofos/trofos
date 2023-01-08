@@ -1,12 +1,9 @@
+import { BulkCreateProjectBody } from '../../controllers/requestTypes';
 import coursesData from './courseData';
 import { projectsData } from './projectData';
 
-const mockBulkCreateBody = {
-  courseId: coursesData[0].id,
-  courseName: coursesData[0].cname,
-  courseSem: coursesData[0].sem.toString(),
-  courseYear: coursesData[0].year.toString(),
-  isPublic: coursesData[0].public.toString(),
+const mockBulkCreateBody: Required<BulkCreateProjectBody> = {
+  courseId: coursesData[0].id.toString(),
   projects: [
     {
       projectName: projectsData[0].pname,

@@ -7,6 +7,8 @@
   "extends": ["eslint:recommended", "airbnb", "prettier"],
   "rules": {
     "no-underscore-dangle": "off",
+    "arrow-body-style": "off",
+    "import/prefer-default-export": "off",
     "react/jsx-props-no-spreading": [
       1,
       {

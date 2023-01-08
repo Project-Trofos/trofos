@@ -43,6 +43,14 @@ type BacklogDataType = {
     | undefined;
   summary: string;
   type: BacklogType;
+  backlogStatus: {
+    connect: {
+      project_id_name: {
+        project_id: number;
+        name: string;
+      };
+    };
+  };
 };
 
 async function createUsersForBacklogSeed(prisma: PrismaClient) {
@@ -91,8 +99,18 @@ async function createProjectForBacklogSeed(prisma: PrismaClient) {
     data: {
       id: 903,
       pname: 'Backlog test project',
+      backlogStatuses: {
+        createMany: {
+          data: [
+            { name: 'To do', type: 'todo', order: 1 },
+            { name: 'In progress', type: 'in_progress', order: 1 },
+            { name: 'Done', type: 'done', order: 1 },
+          ],
+        },
+      },
     },
   });
+
   console.log('created project %s', project);
 }
 
@@ -161,6 +179,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       },
       points: 2,
       description: 'Test desc',
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: 903,
+            name: 'To do',
+          },
+        },
+      },
     },
     {
       backlog_id: 2,
@@ -190,6 +216,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       },
       points: 2,
       description: 'Test desc 2',
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: 903,
+            name: 'To do',
+          },
+        },
+      },
     },
     {
       backlog_id: 3,
@@ -219,6 +253,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       },
       points: 1,
       description: 'Test desc 3',
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: 903,
+            name: 'To do',
+          },
+        },
+      },
     },
     {
       backlog_id: 4,
@@ -248,6 +290,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       },
       points: 3,
       description: 'Test desc 4',
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: 903,
+            name: 'To do',
+          },
+        },
+      },
     },
     {
       backlog_id: 5,
@@ -277,6 +327,14 @@ async function createBacklogsSeed(prisma: PrismaClient) {
       },
       points: 2,
       description: 'Test desc 5',
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: 903,
+            name: 'To do',
+          },
+        },
+      },
     },
   ];
 

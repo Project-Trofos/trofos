@@ -6,7 +6,6 @@ import '../../mocks/antd';
 import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import dayjsMock from '../../mocks/dayjs';
 
 describe('test course creation modal', () => {
   // Establish API mocking before all tests.
@@ -52,7 +51,7 @@ describe('test course creation modal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  it('should be required course name', async () => {
+  it('should require course name', async () => {
     setup();
 
     const button = screen.getByText(/create course/i);
@@ -66,15 +65,20 @@ describe('test course creation modal', () => {
 
   it('should submit correctly if fields are typed in', async () => {
     const { baseElement } = setup();
+
     const button = screen.getByText(/create course/i);
     fireEvent.click(button);
+
     const finishButton = await screen.findByText(/finish/i);
 
-    const input = screen.getByLabelText(/course name/i);
-    fireEvent.change(input, { target: { value: 'name' } });
+    const nameInput = screen.getByLabelText(/course name/i);
+    fireEvent.change(nameInput, { target: { value: 'name' } });
+
+    const courseCodeInput = screen.getByLabelText(/course code/i);
+    fireEvent.change(courseCodeInput, { target: { value: 'code' } });
 
     const yearInput = screen.getByLabelText('Academic Year');
-    fireEvent.change(yearInput, { target: { value: dayjsMock } });
+    fireEvent.change(yearInput, { target: { value: '2022' } });
 
     const semesterInput = screen.getByLabelText('Semester');
     fireEvent.change(semesterInput, { target: { value: '1' } });

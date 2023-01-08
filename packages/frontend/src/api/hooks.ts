@@ -1,8 +1,15 @@
 import { message } from 'antd';
+import { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { getErrorMessage } from '../helpers/error';
-import { useGetAllCoursesQuery, useAddCourseUserMutation, useRemoveCourseUserMutation } from './course';
-import { isCurrent } from './currentTime';
+import {
+  useGetAllCoursesQuery,
+  useAddCourseUserMutation,
+  useRemoveCourseUserMutation,
+  useDeleteMilestoneMutation,
+  useUpdateMilestoneMutation,
+} from './course';
+import { isCurrent, isFuture, isPast } from './currentTime';
 import {
   useAddProjectUserMutation,
   useGetAllProjectsQuery,
@@ -20,8 +27,15 @@ export const useCurrentAndPastProjects = () => {
       return undefined;
     }
     return {
-      pastProjects: (projectsData.data as Project[]).filter((p) => !isCurrent(p.course_year, p.course_sem)),
-      currentProjects: (projectsData.data as Project[]).filter((p) => isCurrent(p.course_year, p.course_sem)),
+      pastProjects: (projectsData.data as Project[]).filter((p) =>
+        isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+      ),
+      currentProjects: (projectsData.data as Project[]).filter((p) =>
+        isCurrent(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+      ),
+      futureProjects: (projectsData.data as Project[]).filter((p) =>
+        isFuture(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+      ),
     };
   }, [projectsData]);
 
@@ -37,8 +51,13 @@ export const useCurrentAndPastCourses = () => {
       return undefined;
     }
     return {
-      pastCourses: (coursesData.data as Course[]).filter((c) => !isCurrent(c.year, c.sem)),
-      currentCourses: (coursesData.data as Course[]).filter((c) => isCurrent(c.year, c.sem)),
+      pastCourses: (coursesData.data as Course[]).filter((c) => isPast(c.startYear, c.startSem, c.endYear, c.endSem)),
+      currentCourses: (coursesData.data as Course[]).filter((c) =>
+        isCurrent(c.startYear, c.startSem, c.endYear, c.endSem),
+      ),
+      futureCourses: (coursesData.data as Course[]).filter((c) =>
+        isFuture(c.startYear, c.startSem, c.endYear, c.endSem),
+      ),
     };
   }, [coursesData]);
 
@@ -94,23 +113,27 @@ export const useProject = (projectId: number) => {
 };
 
 // Get course information by id
-export const useCourse = (courseId?: string, year?: number, sem?: number) => {
+export const useCourse = (courseId?: string) => {
+  const courseIdNumber = courseId ? Number(courseId) : undefined;
   const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery();
   const { data: projects } = useGetAllProjectsQuery();
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
+  const [deleteMilestone] = useDeleteMilestoneMutation();
+  const [updateMilestone] = useUpdateMilestoneMutation();
 
   const course = useMemo(() => {
-    if (!courses || courses.length === 0 || !courseId || !year || !sem) {
+    if (!courses || courses.length === 0 || !courseIdNumber) {
       return undefined;
     }
-    const possibleCourses = courses.filter((p) => p.id === courseId && p.year === year && p.sem === sem);
+    const possibleCourses = courses.filter((p) => p.id === courseIdNumber);
+
     if (possibleCourses.length === 0) {
       return undefined;
     }
     return possibleCourses[0];
-  }, [courses, courseId, year, sem]);
+  }, [courses, courseIdNumber]);
 
   const filteredProjects = useMemo(() => {
     if (!course || !projects) {
@@ -127,7 +150,7 @@ export const useCourse = (courseId?: string, year?: number, sem?: number) => {
             message.error('No such user to remove!');
             return;
           }
-          await removeUser({ id: course.id, sem: course.sem, year: course.year, userId }).unwrap();
+          await removeUser({ id: course.id, userId }).unwrap();
           message.success('User removed!');
         }
       } catch (e) {
@@ -146,7 +169,7 @@ export const useCourse = (courseId?: string, year?: number, sem?: number) => {
             message.error('User already in this course!');
             return;
           }
-          await addUser({ id: course?.id, sem: course?.sem, year: course?.year, userId }).unwrap();
+          await addUser({ id: course?.id, userId }).unwrap();
           message.success('User added!');
         }
       } catch (e) {
@@ -157,5 +180,59 @@ export const useCourse = (courseId?: string, year?: number, sem?: number) => {
     [addUser, course],
   );
 
-  return { course, filteredProjects, handleAddUser, handleRemoveUser, isLoading: isCoursesLoading };
+  const handleDeleteMilestone = useCallback(
+    async (milestoneId: number) => {
+      try {
+        if (course) {
+          await deleteMilestone({ courseId: course.id.toString(), milestoneId }).unwrap();
+          message.success('Milestone deleted!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to delete milestone');
+      }
+    },
+    [deleteMilestone, course],
+  );
+
+  const handleUpdateMilestone = useCallback(
+    async (
+      milestoneId: number,
+      payload: {
+        milestoneName?: string;
+        milestoneStartDate?: Dayjs;
+        milestoneDeadline?: Dayjs;
+      },
+    ) => {
+      const { milestoneDeadline, milestoneName, milestoneStartDate } = payload;
+      try {
+        if (course) {
+          await updateMilestone({
+            courseId: course.id.toString(),
+            milestoneId,
+            payload: {
+              milestoneName,
+              milestoneDeadline: milestoneDeadline?.toDate(),
+              milestoneStartDate: milestoneStartDate?.toDate(),
+            },
+          }).unwrap();
+          message.success('Milestone updated!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to update milestone');
+      }
+    },
+    [updateMilestone, course],
+  );
+
+  return {
+    course,
+    filteredProjects,
+    handleAddUser,
+    handleRemoveUser,
+    handleDeleteMilestone,
+    handleUpdateMilestone,
+    isLoading: isCoursesLoading,
+  };
 };

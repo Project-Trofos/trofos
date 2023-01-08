@@ -1,15 +1,20 @@
-import { Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-import INCLUDE_USERS_ID_EMAIL from './helper';
+import { INCLUDE_USERS_ID_EMAIL } from './helper';
+import { defaultBacklogStatus } from '../helpers/constants';
 
-async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' | 'past'): Promise<Project[]> {
+async function getAll(
+  policyConstraint: AppAbility,
+  option?: 'all' | 'current' | 'past' | 'future',
+): Promise<Project[]> {
   let result;
 
   if (option === 'current') {
-    // year == current_year OR year == null and sem == null
+    // Same constraints as course year and sem
+    // OR course id == null
     result = await prisma.project.findMany({
       where: {
         AND: [
@@ -17,55 +22,126 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
           {
             OR: [
               {
-                AND: {
-                  course_year: CURRENT_YEAR,
-                  course_sem: CURRENT_SEM,
-                },
+                AND: [
+                  {
+                    course: {
+                      startYear: {
+                        lte: CURRENT_YEAR,
+                      },
+                      endYear: {
+                        gte: CURRENT_YEAR,
+                      },
+                    },
+                  },
+                  {
+                    course: {
+                      startSem: {
+                        lte: CURRENT_SEM,
+                      },
+                      endSem: {
+                        gte: CURRENT_SEM,
+                      },
+                    },
+                  },
+                ],
               },
               {
-                AND: {
-                  course_year: null,
-                  course_sem: null,
-                },
+                course_id: null,
               },
             ],
           },
         ],
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else if (option === 'past') {
-    // year < current_year OR year == current_year && sem < current_sem
+    // endYear < currentYear
+    // OR
+    // endYear = currentYear AND endSem < currentSem
     result = await prisma.project.findMany({
       where: {
         AND: [
           accessibleBy(policyConstraint).Project,
           {
-            OR: [
-              {
-                AND: {
-                  course_year: {
+            course: {
+              OR: [
+                {
+                  endYear: {
                     lt: CURRENT_YEAR,
                   },
                 },
-              },
-              {
-                AND: {
-                  course_year: CURRENT_YEAR,
-                  course_sem: {
-                    lt: CURRENT_SEM,
-                  },
+                {
+                  AND: [
+                    {
+                      endYear: CURRENT_YEAR,
+                    },
+                    {
+                      endSem: {
+                        lt: CURRENT_SEM,
+                      },
+                    },
+                  ],
                 },
-              },
-            ],
+              ],
+            },
           },
         ],
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
+        ...INCLUDE_USERS_ID_EMAIL,
+      },
+    });
+  } else if (option === 'future') {
+    // currentYear < startYear
+    // OR
+    // currentYear = startYear AND currentSem < startSem
+    result = await prisma.project.findMany({
+      where: {
+        AND: [
+          accessibleBy(policyConstraint).Project,
+          {
+            course: {
+              OR: [
+                {
+                  startYear: {
+                    gt: CURRENT_YEAR,
+                  },
+                },
+                {
+                  AND: [
+                    {
+                      startYear: CURRENT_YEAR,
+                    },
+                    {
+                      startSem: {
+                        gt: CURRENT_SEM,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+      include: {
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -73,7 +149,11 @@ async function getAll(policyConstraint: AppAbility, option?: 'all' | 'current' |
     result = await prisma.project.findMany({
       where: accessibleBy(policyConstraint).Project,
       include: {
-        course: true,
+        course: {
+          include: {
+            milestones: true,
+          },
+        },
         ...INCLUDE_USERS_ID_EMAIL,
       },
     });
@@ -88,11 +168,22 @@ async function getById(id: number): Promise<Project> {
       id,
     },
     include: {
-      course: true,
+      course: {
+        include: {
+          milestones: true,
+        },
+      },
       sprints: {
         select: {
           id: true,
           name: true,
+        },
+      },
+      backlogStatuses: {
+        select: {
+          name: true,
+          type: true,
+          order: true,
         },
       },
       ...INCLUDE_USERS_ID_EMAIL,
@@ -118,6 +209,11 @@ async function create(
       users: {
         create: {
           user_id: userId,
+        },
+      },
+      backlogStatuses: {
+        createMany: {
+          data: defaultBacklogStatus,
         },
       },
     },
@@ -193,6 +289,94 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
   return result;
 }
 
+async function createBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+  const currentOrder = await prisma.backlogStatus.findMany({
+    where: {
+      project_id: projectId,
+      type: BacklogStatusType.in_progress,
+    },
+    orderBy: [
+      {
+        order: 'desc',
+      },
+    ],
+    take: 1,
+  });
+
+  const result = await prisma.backlogStatus.create({
+    data: {
+      project_id: projectId,
+      name,
+      order: (currentOrder?.[0]?.order || 0) + 1,
+    },
+  });
+
+  return result;
+}
+
+async function getBacklogStatus(projectId: number): Promise<BacklogStatus[]> {
+  const result = await prisma.backlogStatus.findMany({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return result;
+}
+
+async function updateBacklogStatus(
+  projectId: number,
+  currentName: string,
+  updatedName: string,
+): Promise<BacklogStatus> {
+  const result = await prisma.backlogStatus.update({
+    where: {
+      project_id_name: {
+        project_id: projectId,
+        name: currentName,
+      },
+    },
+    data: {
+      name: updatedName,
+    },
+  });
+
+  return result;
+}
+
+async function updateBacklogStatusOrder(projectId: number, updatedStatus: Omit<BacklogStatus, 'project_id'>[]) {
+  const statusesToUpdate = updatedStatus.map((status) =>
+    prisma.backlogStatus.update({
+      where: {
+        project_id_name: {
+          project_id: projectId,
+          name: status.name,
+        },
+      },
+      data: {
+        order: status.order,
+      },
+    }),
+  );
+
+  const result = await prisma.$transaction(statusesToUpdate);
+
+  return result;
+}
+
+async function deleteBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {
+  const result = await prisma.backlogStatus.delete({
+    where: {
+      project_id_name: {
+        project_id: projectId,
+        name,
+      },
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getAll,
@@ -202,4 +386,9 @@ export default {
   getUsers,
   addUser,
   removeUser,
+  createBacklogStatus,
+  getBacklogStatus,
+  updateBacklogStatus,
+  updateBacklogStatusOrder,
+  deleteBacklogStatus,
 };

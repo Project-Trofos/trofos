@@ -6,6 +6,7 @@ import coursesData from '../mocks/courseData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
+import { BadRequestError } from '../../helpers/error';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -16,9 +17,7 @@ describe('course.service tests', () => {
       description: null,
       pkey: null,
       public: false,
-      course_id: '1',
-      course_year: 2022,
-      course_sem: 1,
+      course_id: 1,
       created_at: new Date(Date.now()),
       backlog_counter: 0,
     },
@@ -34,13 +33,13 @@ describe('course.service tests', () => {
     it('should return all courses', async () => {
       prismaMock.course.findMany.mockResolvedValueOnce(coursesData);
 
-      const result = await course.getAll(coursePolicyConstraint);
+      const result = await course.getAll(coursePolicyConstraint, 'all');
       expect(result).toEqual<Course[]>(coursesData);
     });
 
     it('should return past courses', async () => {
       const pastCourses = coursesData.filter(
-        (p) => p.year < CURRENT_SEM || (p.year === CURRENT_YEAR && p.sem < CURRENT_SEM),
+        (p) => p.startYear < CURRENT_YEAR || (p.startYear === CURRENT_YEAR && p.startSem < CURRENT_SEM),
       );
       prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
 
@@ -48,30 +47,40 @@ describe('course.service tests', () => {
       expect(result).toEqual<Course[]>(pastCourses);
     });
 
-    it('should return current projects', async () => {
-      const currentCourses = coursesData.filter((c) => c.sem === CURRENT_SEM && c.year === CURRENT_YEAR);
+    it('should return current courses', async () => {
+      const currentCourses = coursesData.filter((c) => c.startSem === CURRENT_SEM && c.startYear === CURRENT_YEAR);
       prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
 
       const result = await course.getAll(coursePolicyConstraint, 'current');
       expect(result).toEqual<Course[]>(currentCourses);
+    });
+
+    it('should return future courses', async () => {
+      const futureCourses = coursesData.filter(
+        (p) => p.startYear > CURRENT_YEAR || (p.startYear === CURRENT_YEAR && p.startSem > CURRENT_SEM),
+      );
+      prismaMock.course.findMany.mockResolvedValueOnce(futureCourses);
+
+      const result = await course.getAll(coursePolicyConstraint, 'future');
+      expect(result).toEqual<Course[]>(futureCourses);
     });
   });
 
   describe('getById', () => {
     it('should return correct course with the same id', async () => {
       const index = 0;
-      const { id, year, sem } = coursesData[index];
+      const { id } = coursesData[index];
       prismaMock.course.findUniqueOrThrow.mockResolvedValueOnce(coursesData.filter((c) => c.id === id)[0]);
 
-      const result = await course.getByPk(id, year, sem);
+      const result = await course.getById(id);
       expect(result).toEqual<Course>(coursesData[index]);
     });
 
     it('should throw if course with the same id, year, or sem does not exist', async () => {
-      const invalidId = '999';
+      const invalidId = 999;
       prismaMock.course.findUniqueOrThrow.mockRejectedValue(Error());
 
-      await expect(course.getByPk(invalidId, 2022, 1)).rejects.toThrow(Error);
+      await expect(course.getById(invalidId)).rejects.toThrow(Error);
     });
   });
 
@@ -84,12 +93,53 @@ describe('course.service tests', () => {
       const result = await course.create(
         1,
         newCourse.cname,
-        newCourse.year,
-        newCourse.sem,
-        newCourse.description ?? undefined,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.endYear,
+        newCourse.endSem,
+        newCourse.code,
         newCourse.public,
+        newCourse.description ?? undefined,
       );
       expect(result).toEqual<Course>(coursesData[INDEX]);
+    });
+
+    it('should throw error if start year is after end year', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.create(
+        1,
+        newCourse.cname,
+        newCourse.startYear + 1,
+        newCourse.startSem,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.code,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
+    });
+
+    it('should throw error if start year is the same as end year but start sem is after end sem', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.create(
+        1,
+        newCourse.cname,
+        newCourse.startYear,
+        newCourse.startSem + 1,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.code,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
     });
   });
 
@@ -104,14 +154,14 @@ describe('course.service tests', () => {
       expect(result).toEqual<Course>(mockCourse);
     });
 
-    it('should return created course if course does not exist', async () => {
+    it('should throw error if course does not exist', async () => {
       const mockCourse = coursesData[0];
       const mockProject = projectData[0];
       prismaMock.course.findFirst.mockResolvedValueOnce(null);
       prismaMock.$transaction.mockResolvedValueOnce([mockCourse, mockProject]);
 
-      const result = await course.bulkCreate(mockBulkCreateBody);
-      expect(result).toEqual<Course>(mockCourse);
+      const result = course.bulkCreate(mockBulkCreateBody);
+      expect(result).rejects.toThrow();
     });
   });
 
@@ -123,13 +173,54 @@ describe('course.service tests', () => {
 
       const result = await course.update(
         updatedCourse.id,
-        updatedCourse.year,
-        updatedCourse.sem,
+        updatedCourse.code,
+        updatedCourse.startYear,
+        updatedCourse.startSem,
+        updatedCourse.endYear,
+        updatedCourse.endSem,
         updatedCourse.cname,
         updatedCourse.public,
         updatedCourse.description ?? undefined,
       );
       expect(result).toEqual<Course>(coursesData[INDEX]);
+    });
+
+    it('should throw error if start year is after end year', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.update(
+        1,
+        newCourse.code,
+        newCourse.startYear + 1,
+        newCourse.startSem,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.cname,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
+    });
+
+    it('should throw error if start year is the same as end year but start sem is after end sem', async () => {
+      const INDEX = 0;
+      const newCourse = coursesData[INDEX];
+      prismaMock.course.create.mockResolvedValueOnce(newCourse);
+
+      const result = course.update(
+        1,
+        newCourse.code,
+        newCourse.startYear,
+        newCourse.startSem + 1,
+        newCourse.startYear,
+        newCourse.startSem,
+        newCourse.cname,
+        newCourse.public,
+        newCourse.description ?? undefined,
+      );
+      expect(result).rejects.toThrowError(BadRequestError);
     });
   });
 
@@ -139,7 +230,7 @@ describe('course.service tests', () => {
       const deletedCourse = coursesData[INDEX];
       prismaMock.course.delete.mockResolvedValueOnce(deletedCourse);
 
-      const result = await course.remove(deletedCourse.id, deletedCourse.year, deletedCourse.sem);
+      const result = await course.remove(deletedCourse.id);
       expect(result).toEqual<Course>(coursesData[INDEX]);
     });
   });
@@ -148,17 +239,16 @@ describe('course.service tests', () => {
     it('should return users in a course', async () => {
       const INDEX = 0;
       const targetCourse = coursesData[INDEX];
-      // TODO: get the type right
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(userData.map((x) => ({ user: x })));
-
-      const result = await course.getUsers(
-        coursePolicyConstraint,
-        targetCourse.id,
-        targetCourse.year,
-        targetCourse.sem,
+      prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(
+        userData.map((x) => ({
+          user: x,
+          course_id: targetCourse.id,
+          created_at: targetCourse.created_at,
+          user_id: x.user_id,
+        })),
       );
+
+      const result = await course.getUsers(coursePolicyConstraint, targetCourse.id);
       expect(result).toEqual<User[]>(userData);
     });
   });
@@ -170,14 +260,12 @@ describe('course.service tests', () => {
       const USER_ID = 1;
       const resultMock: UsersOnCourses = {
         course_id: targetCourse.id,
-        course_year: targetCourse.year,
-        course_sem: targetCourse.sem,
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
       prismaMock.usersOnCourses.create.mockResolvedValueOnce(resultMock);
 
-      const result = await course.addUser(targetCourse.id, targetCourse.year, targetCourse.sem, USER_ID);
+      const result = await course.addUser(targetCourse.id, USER_ID);
       expect(result).toEqual<UsersOnCourses>(resultMock);
     });
   });
@@ -189,14 +277,12 @@ describe('course.service tests', () => {
       const USER_ID = 1;
       const resultMock: UsersOnCourses = {
         course_id: targetCourse.id,
-        course_year: targetCourse.year,
-        course_sem: targetCourse.sem,
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
       prismaMock.usersOnCourses.delete.mockResolvedValueOnce(resultMock);
 
-      const result = await course.removeUser(targetCourse.id, targetCourse.year, targetCourse.sem, USER_ID);
+      const result = await course.removeUser(targetCourse.id, USER_ID);
       expect(result).toEqual<UsersOnCourses>(resultMock);
     });
   });
@@ -205,7 +291,7 @@ describe('course.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectData);
 
-      const result = await course.getProjects(projectPolicyConstraint, projectData[0].course_id ?? '1');
+      const result = await course.getProjects(projectPolicyConstraint, projectData[0].course_id ?? 1);
       expect(result).toEqual<Project[]>(projectData);
     });
   });
@@ -215,16 +301,11 @@ describe('course.service tests', () => {
       const resultMock: Project = projectData[0];
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
 
-      if (!resultMock.course_id || !resultMock.course_year || !resultMock.course_sem) {
+      if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.addProject(
-        resultMock.course_id,
-        resultMock.course_year,
-        resultMock.course_sem,
-        resultMock.id,
-      );
+      const result = await course.addProject(resultMock.course_id, resultMock.id);
       expect(result).toEqual<Project>(resultMock);
     });
   });
@@ -235,25 +316,20 @@ describe('course.service tests', () => {
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
 
-      if (!resultMock.course_id || !resultMock.course_year || !resultMock.course_sem) {
+      if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.removeProject(
-        resultMock.course_id,
-        resultMock.course_year,
-        resultMock.course_sem,
-        resultMock.id,
-      );
+      const result = await course.removeProject(resultMock.course_id, resultMock.id);
 
       expect(result).toEqual<Project>(resultMock);
     });
 
     it('should throw error if courseId does not match', async () => {
-      const INVALID_ID = '999';
+      const INVALID_ID = 999;
       const resultMock: Project = projectData[0];
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
-      expect(course.removeProject(INVALID_ID, 2022, 1, resultMock.id)).rejects.toThrow();
+      expect(course.removeProject(INVALID_ID, 2022)).rejects.toThrow();
     });
   });
 
@@ -263,16 +339,11 @@ describe('course.service tests', () => {
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
 
-      if (!resultMock.course_id || !resultMock.course_year || !resultMock.course_sem) {
+      if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.removeProject(
-        resultMock.course_id,
-        resultMock.course_year,
-        resultMock.course_sem,
-        resultMock.id,
-      );
+      const result = await course.removeProject(resultMock.course_id, resultMock.id);
       expect(result).toEqual<Project>(resultMock);
     });
   });
