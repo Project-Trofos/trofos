@@ -21,6 +21,7 @@ describe('test course creation modal', () => {
     public: false,
     created_at: '2022-09-15T01:58:01.735Z',
     milestones: [],
+    announcements: [],
     users: [{ user: { user_id: 1, user_email: 'email' } }],
   };
 

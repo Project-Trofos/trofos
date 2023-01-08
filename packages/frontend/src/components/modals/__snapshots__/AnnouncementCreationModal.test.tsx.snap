@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test course creation modal should render modal with correct fields 1`] = `
+exports[`test announcement creation modal should render modal with correct fields 1`] = `
 <body
   class="ant-scrolling-effect"
   style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
@@ -79,7 +79,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                 class="ant-modal-title"
                 id="test-id"
               >
-                Create Milestone
+                Create Announcement
               </div>
             </div>
             <div
@@ -101,10 +101,10 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                     >
                       <label
                         class="ant-form-item-required"
-                        for="multi-step-modal-form_milestoneName"
-                        title="Milestone Name"
+                        for="multi-step-modal-form_announcementTitle"
+                        title="Announcement Title"
                       >
-                        Milestone Name
+                        Announcement Title
                       </label>
                     </div>
                     <div
@@ -118,7 +118,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                         >
                           <input
                             class="ant-input"
-                            id="multi-step-modal-form_milestoneName"
+                            id="multi-step-modal-form_announcementTitle"
                             type="text"
                             value=""
                           />
@@ -138,10 +138,10 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                     >
                       <label
                         class="ant-form-item-required"
-                        for="multi-step-modal-form_dates"
-                        title="Start and end dates"
+                        for="multi-step-modal-form_announcementContent"
+                        title="Announcement Content"
                       >
-                        Start and end dates
+                        Announcement Content
                       </label>
                     </div>
                     <div
@@ -153,9 +153,10 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                         <div
                           class="ant-form-item-control-input-content"
                         >
-                          <input
-                            id="multi-step-modal-form_dates"
-                            value=""
+                          <textarea
+                            class="ant-input"
+                            id="multi-step-modal-form_announcementContent"
+                            rows="4"
                           />
                         </div>
                       </div>

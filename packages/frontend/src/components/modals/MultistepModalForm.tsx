@@ -6,16 +6,26 @@ export type MultistepFromModalProps<T> = {
   form: FormInstance<T>;
   formSteps: React.ReactNode[];
   onSubmit: (data: T) => Promise<void>;
-  buttonName: string;
   buttonElement?: 'button' | 'span';
   buttonType?: 'link' | 'text' | 'ghost' | 'primary' | 'default' | 'dashed' | undefined;
+  buttonSize?: 'small' | 'middle' | 'large';
+  buttonChildren: React.ReactNode | string;
 };
 
 /**
  * A multi-step form built around Antd's Form and Modal
  */
 export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>) {
-  const { form, formSteps, onSubmit, buttonName, title, buttonElement = 'button', buttonType = 'default' } = props;
+  const {
+    form,
+    formSteps,
+    onSubmit,
+    title,
+    buttonElement = 'button',
+    buttonType = 'default',
+    buttonChildren,
+    buttonSize,
+  } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState<Partial<T>>({});
@@ -69,13 +79,13 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
   return (
     <>
       {buttonElement === 'button' && (
-        <Button onClick={showModal} type={buttonType}>
-          {buttonName}
+        <Button aria-label="open-form" onClick={showModal} type={buttonType} size={buttonSize}>
+          {buttonChildren}
         </Button>
       )}
       {buttonElement === 'span' && (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-        <span onClick={showModal}>{buttonName}</span>
+        <span onClick={showModal}>{buttonChildren}</span>
       )}
       <Modal
         title={title}
@@ -104,14 +114,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
               ]
         }
       >
-        <Form
-          name="multi-step-modal-form"
-          layout="vertical"
-          form={form}
-          wrapperCol={{ span: 20 }}
-          onFinish={onSubmit}
-          autoComplete="off"
-        >
+        <Form name="multi-step-modal-form" layout="vertical" form={form} onFinish={onSubmit} autoComplete="off">
           {formSteps[step]}
         </Form>
       </Modal>

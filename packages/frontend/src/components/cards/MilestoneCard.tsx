@@ -5,14 +5,15 @@ import { Subheading } from '../typography';
 import MilestoneCreationModal from '../modals/MilestoneCreationModal';
 import { useMilestone } from './useMilestone';
 import { DatePicker } from '../datetime';
+import { CourseData } from '../../api/types';
 
+import './CommonCard.css';
 import './MilestoneCard.css';
-import { Course } from '../../api/types';
 
 const { Step } = Steps;
 
 type MilestoneCardProps = {
-  course?: Course;
+  course?: CourseData;
   showEdit?: boolean;
 };
 
@@ -23,8 +24,8 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
   const { milestones, statuses } = useMilestone(course?.milestones);
 
   return (
-    <Card className="milestone-card">
-      <div className="milestone-card-header">
+    <Card className="common-card">
+      <div className="common-card-header">
         <Subheading>Milestones</Subheading>
         {course && showEdit && <MilestoneCreationModal courseId={course.id.toString()} />}
       </div>
