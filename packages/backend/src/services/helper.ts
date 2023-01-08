@@ -13,7 +13,7 @@ export const INCLUDE_USERS_ID_EMAIL = {
   },
 };
 
-export const INCLUDE_ALL = {
+export const INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS = {
   users: {
     select: {
       user: {
