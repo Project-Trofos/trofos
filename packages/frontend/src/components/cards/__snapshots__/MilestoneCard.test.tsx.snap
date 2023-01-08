@@ -4,7 +4,7 @@ exports[`test milestone creation modal when rendering should render correct fiel
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered milestone-card"
+      class="ant-card ant-card-bordered milestone-card css-dev-only-do-not-override-1qhh31y"
     >
       <div
         class="ant-card-body"
@@ -13,13 +13,14 @@ exports[`test milestone creation modal when rendering should render correct fiel
           class="milestone-card-header"
         >
           <h4
-            class="ant-typography"
+            class="ant-typography css-dev-only-do-not-override-1qhh31y"
+            style="margin-top: 0px;"
           >
             Milestones
           </h4>
         </div>
         <div
-          class="ant-steps ant-steps-horizontal ant-steps-label-horizontal"
+          class="ant-steps ant-steps-horizontal css-dev-only-do-not-override-1qhh31y ant-steps-label-horizontal"
         >
           <div
             class="ant-steps-item ant-steps-item-wait"

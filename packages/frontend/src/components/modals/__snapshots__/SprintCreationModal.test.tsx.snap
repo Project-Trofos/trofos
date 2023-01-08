@@ -4,7 +4,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
 <body>
   <div>
     <button
-      class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary new-sprint-btn"
+      class="ant-btn ant-btn-primary new-sprint-btn"
       type="button"
     >
       <span>
@@ -14,7 +14,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
   </div>
   <div>
     <div
-      class="ant-modal-root css-dev-only-do-not-override-1qhh31y"
+      class="ant-modal-root"
     >
       <div
         class="ant-modal-mask"
@@ -26,7 +26,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal css-dev-only-do-not-override-1qhh31y"
+          class="ant-modal"
           role="dialog"
           style="width: 600px;"
         >
@@ -81,17 +81,17 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
               class="ant-modal-body"
             >
               <form
-                class="ant-form ant-form-vertical css-dev-only-do-not-override-1qhh31y"
+                class="ant-form ant-form-vertical"
                 id="newSprint"
               >
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y ant-form-item-has-success"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class="ant-form-item-required"
@@ -102,7 +102,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -112,7 +112,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                         >
                           <input
                             aria-required="true"
-                            class="ant-input ant-input-status-success css-dev-only-do-not-override-1qhh31y"
+                            class="ant-input ant-input-status-success"
                             id="name"
                             type="text"
                             value="Sprint 1"
@@ -123,13 +123,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y ant-form-item-has-success"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class="ant-form-item-required"
@@ -140,7 +140,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -150,7 +150,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                         >
                           <div
                             aria-required="true"
-                            class="ant-select ant-select-in-form-item ant-select-status-success css-dev-only-do-not-override-1qhh31y ant-select-single ant-select-show-arrow"
+                            class="ant-select ant-select-in-form-item ant-select-status-success ant-select-single ant-select-show-arrow"
                           >
                             <div
                               class="ant-select-selector"
@@ -216,13 +216,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
+                  class="ant-form-item"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class=""
@@ -233,7 +233,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -287,13 +287,13 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
+                  class="ant-form-item"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class=""
@@ -304,7 +304,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -313,7 +313,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <textarea
-                            class="ant-input css-dev-only-do-not-override-1qhh31y"
+                            class="ant-input"
                             id="goals"
                             style="height: -54px; resize: none; min-height: -30px; max-height: -54px;"
                           />
@@ -328,7 +328,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-primary"
+                class="ant-btn ant-btn-primary"
                 form="newSprint"
                 type="submit"
               >

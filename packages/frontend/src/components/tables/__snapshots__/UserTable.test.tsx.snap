@@ -4,13 +4,13 @@ exports[`test UserTable should render table with correct fields 1`] = `
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered table-card css-dev-only-do-not-override-1qhh31y"
+      class="ant-card ant-card-bordered table-card"
     >
       <div
         class="ant-card-body"
       >
         <div
-          class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-vertical"
+          class="ant-space ant-space-vertical"
           style="display: flex;"
         >
           <div
@@ -18,14 +18,15 @@ exports[`test UserTable should render table with correct fields 1`] = `
             style="margin-bottom: 16px;"
           >
             <div
-              class="ant-space css-dev-only-do-not-override-1qhh31y ant-space-horizontal ant-space-align-center"
+              class="ant-space ant-space-horizontal ant-space-align-center"
               style="display: flex; justify-content: space-between;"
             >
               <div
                 class="ant-space-item"
               >
                 <h4
-                  class="ant-typography css-dev-only-do-not-override-1qhh31y"
+                  class="ant-typography"
+                  style="margin-top: 0px;"
                 >
                   People
                 </h4>
@@ -36,10 +37,10 @@ exports[`test UserTable should render table with correct fields 1`] = `
             class="ant-space-item"
           >
             <div
-              class="ant-table-wrapper css-dev-only-do-not-override-1qhh31y"
+              class="ant-table-wrapper"
             >
               <div
-                class="ant-spin-nested-loading css-dev-only-do-not-override-1qhh31y"
+                class="ant-spin-nested-loading"
               >
                 <div
                   class="ant-spin-container"
@@ -226,7 +227,7 @@ exports[`test UserTable should render table with correct fields 1`] = `
                     </div>
                   </div>
                   <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right css-dev-only-do-not-override-1qhh31y"
+                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
                   >
                     <li
                       aria-disabled="true"
