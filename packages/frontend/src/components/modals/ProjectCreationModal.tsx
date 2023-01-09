@@ -84,7 +84,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
   return (
     <MultistepFormModal
       title="Create Project"
-      buttonName="Create Project"
+      buttonChildren="Create Project"
       form={form}
       formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
       onSubmit={onFinish}

@@ -5,6 +5,7 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
   <div>
     <button
       ant-click-animating-without-extra-node="false"
+      aria-label="open-form"
       class="ant-btn ant-btn-default"
       type="button"
     >
@@ -104,7 +105,7 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -155,6 +156,7 @@ exports[`test button form modal render modal correctly 1`] = `
 <body>
   <div>
     <button
+      aria-label="open-form"
       class="ant-btn ant-btn-default"
       type="button"
     >

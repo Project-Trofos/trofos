@@ -43,7 +43,7 @@ export default function CourseCreationModal() {
   return (
     <MultistepFormModal
       title="Create Course"
-      buttonName="Create Course"
+      buttonChildren="Create Course"
       form={form}
       onSubmit={onFinish}
       formSteps={[

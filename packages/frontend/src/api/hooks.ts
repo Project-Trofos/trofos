@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
+import { confirmDeleteAnnouncement } from '../components/modals/confirm';
 import { getErrorMessage } from '../helpers/error';
 import {
   useGetAllCoursesQuery,
@@ -8,6 +9,8 @@ import {
   useRemoveCourseUserMutation,
   useDeleteMilestoneMutation,
   useUpdateMilestoneMutation,
+  useDeleteAnnouncementMutation,
+  useUpdateAnnouncementMutation,
 } from './course';
 import { isCurrent, isFuture, isPast } from './currentTime';
 import {
@@ -123,6 +126,9 @@ export const useCourse = (courseId?: string) => {
   const [deleteMilestone] = useDeleteMilestoneMutation();
   const [updateMilestone] = useUpdateMilestoneMutation();
 
+  const [deleteAnnouncement] = useDeleteAnnouncementMutation();
+  const [updateAnnouncement] = useUpdateAnnouncementMutation();
+
   const course = useMemo(() => {
     if (!courses || courses.length === 0 || !courseIdNumber) {
       return undefined;
@@ -226,6 +232,48 @@ export const useCourse = (courseId?: string) => {
     [updateMilestone, course],
   );
 
+  const handleDeleteAnnouncement = useCallback(
+    async (announcementId: number) => {
+      try {
+        if (course) {
+          await confirmDeleteAnnouncement(async () => {
+            await deleteAnnouncement({ courseId: course.id.toString(), announcementId }).unwrap();
+            message.success('Announcement deleted!');
+          });
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to delete announcement');
+      }
+    },
+    [deleteAnnouncement, course],
+  );
+
+  const handleUpdateAnnouncement = useCallback(
+    async (
+      announcementId: number,
+      payload: {
+        announcementTitle?: string;
+        announcementContent?: string;
+      },
+    ) => {
+      try {
+        if (course) {
+          await updateAnnouncement({
+            courseId: course.id.toString(),
+            announcementId,
+            payload,
+          }).unwrap();
+          message.success('Announcement updated!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to update announcement');
+      }
+    },
+    [updateAnnouncement, course],
+  );
+
   return {
     course,
     filteredProjects,
@@ -233,6 +281,8 @@ export const useCourse = (courseId?: string) => {
     handleRemoveUser,
     handleDeleteMilestone,
     handleUpdateMilestone,
+    handleDeleteAnnouncement,
+    handleUpdateAnnouncement,
     isLoading: isCoursesLoading,
   };
 };
