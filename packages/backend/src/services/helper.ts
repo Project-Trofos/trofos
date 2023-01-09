@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 export const INCLUDE_USERS_ID_EMAIL = {
   users: {
     select: {
@@ -11,7 +13,7 @@ export const INCLUDE_USERS_ID_EMAIL = {
   },
 };
 
-export const INCLUDE_USERS_ID_EMAIL_AND_MILESTONES = {
+export const INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS = {
   users: {
     select: {
       user: {
@@ -23,4 +25,9 @@ export const INCLUDE_USERS_ID_EMAIL_AND_MILESTONES = {
     },
   },
   milestones: true,
+  announcements: {
+    orderBy: {
+      created_at: Prisma.SortOrder.desc,
+    },
+  },
 };

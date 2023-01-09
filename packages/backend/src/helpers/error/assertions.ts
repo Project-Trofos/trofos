@@ -16,6 +16,12 @@ function getFieldNotNumberErrorMessage(fieldName: string) {
   return `Please provide a valid ${fieldName}! ${fieldName} must be a number.`;
 }
 
+export function assertFieldIsDefined(field: string | undefined, fieldName: string): asserts field is string {
+  if (!field) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage(fieldName));
+  }
+}
+
 export function assertCourseYearIsNumber(year: string | undefined): asserts year is string {
   assertStringIsNumberOrThrow(year, getFieldNotNumberErrorMessage('year'));
 }
@@ -146,6 +152,12 @@ export function assertDateIsValid(date: string | undefined): asserts date is str
 export function assertMilestoneIdIsValid(milestoneId: string | undefined): asserts milestoneId is string {
   if (!milestoneId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneId'));
+  }
+}
+
+export function assertAnnouncementIdIsValid(announcementId: string | undefined): asserts announcementId is string {
+  if (!announcementId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('announcementId'));
   }
 }
 

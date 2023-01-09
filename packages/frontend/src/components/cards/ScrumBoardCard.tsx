@@ -3,7 +3,7 @@ import { Avatar, Card } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import './ScrumBoardCard.css';
 
 function ScrumBoardCard(props: { backlog: Backlog; projectKey: string | null | undefined; index: number }) {

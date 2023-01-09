@@ -54,3 +54,9 @@ export type MilestoneRequestBody = {
   milestoneStartDate?: string;
   milestoneDeadline?: string;
 };
+
+export type AnnouncementRequestBody = {
+  courseId?: string;
+  announcementTitle?: string;
+  announcementContent?: string;
+};

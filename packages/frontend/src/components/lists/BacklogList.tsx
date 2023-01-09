@@ -3,7 +3,7 @@ import { List } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Draggable } from 'react-beautiful-dnd';
 import BacklogListingCard from '../cards/BacklogListingCard';
-import { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import { useGetProjectQuery } from '../../api/project';
 import { sortBacklogs } from '../../helpers/sortBacklogs';
 import './BacklogList.css';

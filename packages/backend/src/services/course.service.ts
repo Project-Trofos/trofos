@@ -3,7 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-import { INCLUDE_USERS_ID_EMAIL_AND_MILESTONES } from './helper';
+import { INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS } from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
@@ -49,7 +49,24 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
-      include: INCLUDE_USERS_ID_EMAIL_AND_MILESTONES,
+      include: {
+        users: {
+          select: {
+            user: {
+              select: {
+                user_id: true,
+                user_email: true,
+              },
+            },
+          },
+        },
+        milestones: true,
+        announcements: {
+          orderBy: {
+            created_at: 'desc',
+          },
+        },
+      },
     });
   } else if (option === 'past') {
     // endYear < currentYear
@@ -82,7 +99,7 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
-      include: INCLUDE_USERS_ID_EMAIL_AND_MILESTONES,
+      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
   } else if (option === 'future') {
     // currentYear < startYear
@@ -115,12 +132,12 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
           },
         ],
       },
-      include: INCLUDE_USERS_ID_EMAIL_AND_MILESTONES,
+      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
   } else {
     result = await prisma.course.findMany({
       where: accessibleBy(policyConstraint).Course,
-      include: INCLUDE_USERS_ID_EMAIL_AND_MILESTONES,
+      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
   }
   return result;
@@ -131,7 +148,7 @@ async function getById(id: number): Promise<Course> {
     where: {
       id,
     },
-    include: INCLUDE_USERS_ID_EMAIL_AND_MILESTONES,
+    include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
   });
 
   return result;

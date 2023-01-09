@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Collapse, message } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { Sprint, useUpdateSprintMutation } from '../../api/sprint';

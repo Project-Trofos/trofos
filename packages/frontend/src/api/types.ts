@@ -20,7 +20,6 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
-  milestones: Milestone[];
 };
 
 export type User = {
@@ -84,7 +83,18 @@ export type Milestone = {
   created_at: string;
 };
 
+export type Announcement = {
+  id: number;
+  title: string;
+  content: string;
+  user_id: number;
+  created_at: string;
+  updated_at?: string;
+};
+
 export type CourseData = Course & {
+  milestones: Milestone[];
+  announcements: Announcement[];
   users: UserData[];
 };
 
@@ -118,4 +128,32 @@ export type CommentFieldsType = {
   backlogId: number;
   commenterId: number;
   content: string;
+};
+
+export type Backlog = {
+  backlog_id: number;
+  summary: string;
+  type: 'story' | 'task' | 'bug';
+  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  reporter_id: number;
+  assignee_id: number | null;
+  sprint_id: number | null;
+  points: number | null;
+  description: string | null;
+  project_id: number;
+  status: string;
+  assignee: {
+    created_at: string;
+    project_id: number;
+    user_id: number;
+    user: {
+      user_email: string;
+    };
+  };
+};
+
+export type BacklogUpdatePayload = {
+  projectId: number;
+  backlogId: number;
+  fieldToUpdate: Partial<Backlog>;
 };

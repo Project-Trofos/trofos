@@ -42,7 +42,7 @@ export default function MilestoneCreationModal({ courseId }: { courseId: string 
   return (
     <MultistepFormModal
       title="Create Milestone"
-      buttonName="Create Milestone"
+      buttonChildren="New"
       form={form}
       onSubmit={onFinish}
       formSteps={[

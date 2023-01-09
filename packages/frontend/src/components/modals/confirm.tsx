@@ -50,3 +50,10 @@ export function confirmDeleteProject(onOk: () => Promise<void>) {
 export function confirmDetachProject(onOk: () => Promise<void>) {
   return confirm('Are you sure you want to remove this project from this course?', onOk);
 }
+
+/**
+ * Shows a modal with prompt for deleting an announcement.
+ */
+export function confirmDeleteAnnouncement(onOk: () => Promise<void>) {
+  return confirm('Are you sure you want to delete this announcement?', onOk);
+}

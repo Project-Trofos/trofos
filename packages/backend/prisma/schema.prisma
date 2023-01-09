@@ -43,17 +43,20 @@ model Course {
   users         UsersOnCourses[]
   projects      Project[]
   milestones    Milestone[]
+  announcements Announcement[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
   @@unique([code, startYear, startSem])
 }
 
 model UsersOnCourses {
-  course_id     Int
-  course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  user_id       Int
-  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at    DateTime          @default(now())
+  course_id               Int
+  course                  Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  user_id                 Int
+  user                    User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at              DateTime          @default(now())
+
+  created_announcements   Announcement[]
   @@id([course_id, user_id])
 }
 
@@ -76,6 +79,20 @@ model Project {
   sprints         Sprint[]
 
   backlogStatuses BacklogStatus[]
+}
+
+model Announcement {
+  id             Int              @id @default(autoincrement())
+  title          String
+  content        String
+  course_id      Int
+  course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+
+  user_id        Int?
+  user           UsersOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
+
+  created_at     DateTime         @default(now())
+  updated_at     DateTime?
 }
 
 model Milestone {

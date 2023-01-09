@@ -2,16 +2,17 @@ import React from 'react';
 import { Alert, message, Typography } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useParams } from 'react-router-dom';
-import { Backlog, useUpdateBacklogMutation } from '../api/backlog';
+import { useUpdateBacklogMutation } from '../api/backlog';
 import { useGetBacklogStatusQuery, useGetProjectQuery } from '../api/project';
 import { useGetActiveSprintQuery } from '../api/sprint';
-import { ScrumBoardUserData } from '../api/types';
+import type { Backlog, ScrumBoardUserData } from '../api/types';
 import ScrumBoardCard from '../components/cards/ScrumBoardCard';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import './ScrumBoard.css';
 
+const { Title } = Typography;
+
 export default function ScrumBoard(): JSX.Element {
-  const { Title } = Typography;
   const params = useParams();
   const projectId = Number(params.projectId);
   const { data: activeSprint } = useGetActiveSprintQuery(projectId);

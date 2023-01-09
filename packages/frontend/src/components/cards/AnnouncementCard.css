@@ -1,0 +1,21 @@
+.announcement-card .ant-list-vertical .ant-list-item-meta-title {
+  margin-bottom: 2px;
+}
+
+.announcement-card .announcement-card-content {
+  white-space: pre-wrap;
+}
+
+.announcement-card .announcement-card-title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.announcement-card .announcement-card-title-container .announcement-card-title-button-group {
+  display: flex;
+  gap: 5px;
+}
+
+.common-card .common-card-header .title {
+  margin-bottom: 20px;
+}

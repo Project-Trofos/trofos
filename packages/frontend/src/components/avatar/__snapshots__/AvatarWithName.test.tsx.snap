@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test Avatar when rendering should render correctly 1`] = `
+<body>
+  <div>
+    <div
+      class="avatar-container"
+    >
+      <span
+        class="ant-avatar ant-avatar-circle ant-avatar-icon"
+      >
+        <div>
+          icon
+        </div>
+      </span>
+      <div>
+        username1
+      </div>
+    </div>
+  </div>
+</body>
+`;
