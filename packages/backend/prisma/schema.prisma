@@ -135,16 +135,43 @@ model Backlog {
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
   status        String
   comments      Comment[]
+
   @@id([project_id, backlog_id])
 }
 
-model BacklogStatus {
-  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+// Track history of backlog for analysis
+model BacklogHistory {
   project_id    Int
-  name          String
-  type          BacklogStatusType @default(in_progress)
-  backlogs      Backlog[]
-  order         Int
+  backlog_id    Int
+
+  sprint_id     Int?
+  sprint        Sprint?          @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+
+  history_type  HistoryType
+
+  // Data in a Backlog
+  type          BacklogType?
+  priority      BacklogPriority?
+  summary       String
+  reporter_id   Int
+  assignee_id   Int?
+  points        Int?
+  description   String?
+  status        String
+  backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name], onDelete: Cascade)
+
+  date          DateTime          @default(now())
+  @@id([project_id, backlog_id, date])
+}
+
+model BacklogStatus {
+  project           Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id        Int
+  name              String
+  type              BacklogStatusType @default(in_progress)
+  backlogs          Backlog[]
+  order             Int
+  backlog_histories BacklogHistory[]
   @@id([project_id, name])
 }
 
@@ -171,6 +198,7 @@ model Sprint {
   goals         String?
   status        SprintStatus      @default(upcoming)
   backlogs      Backlog[]
+  backlog_history BacklogHistory[]
 }
 
 model Role {
@@ -237,4 +265,10 @@ enum SprintStatus {
   current
   completed
   closed
+}
+
+enum HistoryType {
+  create
+  update
+  delete
 }
