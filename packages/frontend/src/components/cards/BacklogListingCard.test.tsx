@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import BacklogListingCard from './BacklogListingCard';
-import type { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import store from '../../app/store';
 
 describe('BacklogCard test', () => {

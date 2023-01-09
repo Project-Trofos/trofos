@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import type { SprintFormFields, SprintUpdatePayload } from '../helpers/SprintModal.types';
-import { Backlog } from './backlog';
+import type { Backlog } from './types';
 
 export type Sprint = {
   id: number;
@@ -14,7 +14,7 @@ export type Sprint = {
   backlogs: Backlog[];
 };
 
-const extendedApi = trofosApiSlice.injectEndpoints({
+export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSprints: builder.query<Sprint[], number>({
       query: (projectId) => ({

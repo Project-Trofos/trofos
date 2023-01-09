@@ -1,33 +1,7 @@
 import trofosApiSlice from '.';
-import { BacklogFormFields } from '../helpers/BacklogModal.types';
-
-export type Backlog = {
-  backlog_id: number;
-  summary: string;
-  type: 'story' | 'task' | 'bug';
-  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
-  reporter_id: number;
-  assignee_id: number | null;
-  sprint_id: number | null;
-  points: number | null;
-  description: string | null;
-  project_id: number;
-  status: string;
-  assignee: {
-    created_at: string;
-    project_id: number;
-    user_id: number;
-    user: {
-      user_email: string;
-    };
-  };
-};
-
-type BacklogUpdatePayload = {
-  projectId: number;
-  backlogId: number;
-  fieldToUpdate: Partial<Backlog>;
-};
+import { extendedApi as sprintApi } from './sprint';
+import type { BacklogFormFields } from '../helpers/BacklogModal.types';
+import type { Backlog, BacklogUpdatePayload } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -68,6 +42,18 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: backlogToUpdate,
         credentials: 'include',
       }),
+      async onQueryStarted({ backlogId, projectId, ...patch }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          sprintApi.util.updateQueryData('getActiveSprint', projectId, (draft) => {
+            Object.assign(draft, patch);
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
       invalidatesTags: ['Backlog', 'Sprint'],
     }),
     deleteBacklog: builder.mutation<Backlog, { projectId: number; backlogId: number }>({
