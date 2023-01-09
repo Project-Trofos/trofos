@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
+import { STUDENT_ROLE_ID } from '../../src/helpers/constants';
 
 async function createProjectSeed(prisma: PrismaClient) {
   const projects = await prisma.project.createMany({
@@ -66,6 +67,18 @@ async function createProjectSeed(prisma: PrismaClient) {
   });
 
   console.log('created usersOnProject %s', usersOnProject);
+
+  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.createMany({
+    data : [
+      {
+        user_email: 'testUser@test.com',
+        course_id: 1,
+        role_id: STUDENT_ROLE_ID
+      }
+    ]
+  });
+
+  console.log('create usersOnRolesOnCourses %s', usersOnRolesOnCourses);
 }
 
 export { createProjectSeed };

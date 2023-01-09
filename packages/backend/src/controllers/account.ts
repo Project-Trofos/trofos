@@ -56,6 +56,7 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
       userRoleActions: userRoleInformation.roleActions,
       userId: sessionInformation.user_id,
     };
+
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
     console.error(e);

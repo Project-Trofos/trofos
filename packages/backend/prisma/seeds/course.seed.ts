@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
 import { CURRENT_YEAR, CURRENT_SEM } from '../../src/helpers/currentTime';
+import { FACULTY_ROLE_ID } from '../../src/helpers/constants';
 
 async function createCourseSeed(prisma: PrismaClient) {
   const courses = await prisma.course.createMany({
@@ -51,6 +52,23 @@ async function createCourseSeed(prisma: PrismaClient) {
   });
 
   console.log('created usersOnCourses %s', usersOnCourses);
+
+  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.createMany({
+    data : [
+      {
+        user_email: 'testFaculty@test.com',
+        course_id: 1,
+        role_id: FACULTY_ROLE_ID
+      },
+      {
+        user_email: 'testFaculty@test.com',
+        course_id: 3,
+        role_id: FACULTY_ROLE_ID
+      }
+    ]
+  });
+
+  console.log('create usersOnRolesOnCourses %s', usersOnRolesOnCourses);
 
   const milestones = await prisma.milestone.createMany({
     data: [

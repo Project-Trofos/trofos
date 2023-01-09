@@ -8,7 +8,7 @@ export type Users = {
   user_id: number;
   courses: UsersOnCourses[];
   projects: UsersOnProjects[];
-  roles: UsersOnRoles[];
+  basicRoles: UsersOnRoles[];
 };
 
 async function getAll(): Promise<Users[]> {
@@ -18,7 +18,7 @@ async function getAll(): Promise<Users[]> {
       user_id: true,
       courses: true,
       projects: true,
-      roles: true,
+      basicRoles: true,
     },
   });
 
@@ -31,7 +31,7 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
     data: {
       user_email: userEmail,
       user_password_hash: passwordHash,
-      roles: {
+      basicRoles: {
         create: [
           {
             role_id: STUDENT_ROLE_ID,

@@ -1,10 +1,10 @@
 import { Action, ActionsOnRoles } from '@prisma/client';
 import prisma from '../models/prismaClient';
-import { RoleInformation } from './types/role.service.types';
+import { RoleInformation, UserRolesForCourse } from './types/role.service.types';
 import { ADMIN_ROLE_ID } from '../helpers/constants';
 
 async function getUserRoleInformation(userEmail: string): Promise<RoleInformation> {
-  const queryResult = await prisma.usersOnRoles.findFirstOrThrow({
+  const basicRoleQueryResult = await prisma.usersOnRoles.findFirstOrThrow({
     where: {
       user_email: userEmail,
     },
@@ -17,10 +17,28 @@ async function getUserRoleInformation(userEmail: string): Promise<RoleInformatio
     },
   });
 
+  const specificRoleQueryResult = await prisma.usersOnRolesOnCourses.findMany({
+    where : {
+      user_email : userEmail,
+    },
+    include : {
+      role: {
+        include: {
+          actions: true,
+        }
+      }
+    }
+  });
+
+  const basicRoleActions = basicRoleQueryResult.role.actions.map((actionsOnRoles) => actionsOnRoles.action);
+  const specificRoleActions = specificRoleQueryResult.flatMap((courseOrProjectRole) => courseOrProjectRole.role.actions.map((actionsOnRoles) => actionsOnRoles.action));
+  const combinedRoleActions = basicRoleActions.concat(specificRoleActions);
+  const uniqueCombinedRoleActions = combinedRoleActions.filter((item, pos) => combinedRoleActions.indexOf(item) === pos);
+
   const userRoleInformation: RoleInformation = {
-    roleId: queryResult.role_id,
-    roleActions: queryResult.role.actions.map((actionsOnRoles) => actionsOnRoles.action),
-    isAdmin: queryResult.role_id === ADMIN_ROLE_ID,
+    roleId: basicRoleQueryResult.role_id,
+    roleActions: uniqueCombinedRoleActions,
+    isAdmin: basicRoleQueryResult.role_id === ADMIN_ROLE_ID,
   };
 
   return userRoleInformation;
@@ -93,6 +111,46 @@ async function removeActionFromRole(roleId: number, action: Action): Promise<Act
   return actionOnRole;
 }
 
+async function getUserRoleActionsForCourse(userEmail: string, courseId: number) : Promise<UserRolesForCourse> {
+  const userRoleForCourse = await prisma.usersOnRolesOnCourses.findFirstOrThrow({
+    where : {
+      user_email : userEmail,
+      course_id : courseId
+    },
+    include : {
+      role : {
+        include: {
+          actions: true,
+        },
+      }
+    }
+  })
+  return userRoleForCourse
+}
+
+async function getUserRoleActionsForProject(userEmail: string, projectId: number) : Promise<UserRolesForCourse> {
+  const projectInformation = await prisma.project.findFirstOrThrow({
+    where : {
+      id : projectId
+    }
+  })
+
+  const userRoleForProject = await prisma.usersOnRolesOnCourses.findFirstOrThrow({
+    where : {
+      user_email : userEmail,
+      course_id : projectInformation?.course_id as number
+    },
+    include : {
+      role : {
+        include: {
+          actions: true,
+        },
+      }
+    }
+  })
+  return userRoleForProject
+}
+
 export default {
   getUserRoleId,
   isActionAllowed,
@@ -101,4 +159,6 @@ export default {
   getRoleActions,
   addActionToRole,
   removeActionFromRole,
+  getUserRoleActionsForCourse,
+  getUserRoleActionsForProject,
 };
