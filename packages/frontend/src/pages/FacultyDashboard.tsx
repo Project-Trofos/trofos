@@ -39,7 +39,7 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Heading style={{ margin: 0 }}>Home</Heading>
+        <Heading>Home</Heading>
         <WelcomeMessage username={userInfo.userEmail} />
         <CourseTable
           courses={isPastCourse ? pastCourses : currentCourses}
@@ -60,9 +60,5 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
 }
 
 function WelcomeMessage({ username }: { username: string }) {
-  return (
-    <Title style={{ margin: 0 }} level={5}>
-      Welcome, {username}!
-    </Title>
-  );
+  return <Title level={5}>Welcome, {username}!</Title>;
 }

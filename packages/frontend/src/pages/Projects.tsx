@@ -19,7 +19,7 @@ export default function ProjectsPage(): JSX.Element {
   return (
     <Container>
       <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-        <Title style={{ margin: 0 }}>Projects</Title>
+        <Title>Projects</Title>
         <ProjectCreationModal />
       </Space>
 

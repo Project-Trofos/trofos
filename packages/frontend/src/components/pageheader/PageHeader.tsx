@@ -19,9 +19,7 @@ export default function PageHeader(props: React.ComponentPropsWithoutRef<'div'> 
       {breadcrumb}
       <div className={styles.titleRow}>
         <div className={styles.titleGroup}>
-          <Title level={4} style={{ margin: 0 }}>
-            {title}
-          </Title>
+          <Title level={4}>{title}</Title>
           {subTitle}
         </div>
         <div>{extra}</div>
