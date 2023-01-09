@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, message, Modal, Select } from 'antd';
+import { Button, Form, Input, message, Modal, Select, DatePicker } from 'antd';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { DatePicker } from '../datetime';
 import { useAddSprintMutation, useUpdateSprintMutation } from '../../api/sprint';
 import type { Sprint } from '../../api/sprint';
 import type { SprintFormFields, SprintUpdatePayload, AutoSprintTypes } from '../../helpers/SprintModal.types';

@@ -5,7 +5,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
   <div>
     <button
       ant-click-animating-without-extra-node="false"
-      class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
+      class="ant-btn ant-btn-default"
       type="button"
     >
       <span>
@@ -15,7 +15,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
   </div>
   <div>
     <div
-      class="ant-modal-root css-dev-only-do-not-override-1qhh31y"
+      class="ant-modal-root"
     >
       <div
         class="ant-modal-mask"
@@ -27,7 +27,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal css-dev-only-do-not-override-1qhh31y"
+          class="ant-modal"
           role="dialog"
           style="width: 520px;"
         >
@@ -82,16 +82,16 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
               class="ant-modal-body"
             >
               <form
-                class="ant-form ant-form-vertical css-dev-only-do-not-override-1qhh31y"
+                class="ant-form ant-form-vertical"
               >
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
+                  class="ant-form-item"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class="ant-form-item-required"
@@ -102,7 +102,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -112,7 +112,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                         >
                           <input
                             aria-required="true"
-                            class="ant-input css-dev-only-do-not-override-1qhh31y"
+                            class="ant-input"
                             id="userEmail"
                             type="text"
                             value=""
@@ -123,13 +123,13 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
+                  class="ant-form-item"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class="ant-form-item-required"
@@ -140,7 +140,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -150,7 +150,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                         >
                           <input
                             aria-required="true"
-                            class="ant-input css-dev-only-do-not-override-1qhh31y"
+                            class="ant-input"
                             id="newPassword"
                             type="password"
                             value=""
@@ -161,13 +161,13 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-form-item css-dev-only-do-not-override-1qhh31y"
+                  class="ant-form-item"
                 >
                   <div
-                    class="ant-row ant-form-item-row css-dev-only-do-not-override-1qhh31y"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-col ant-form-item-label css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-label"
                     >
                       <label
                         class="ant-form-item-required"
@@ -178,7 +178,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-form-item-control css-dev-only-do-not-override-1qhh31y"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -188,7 +188,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                         >
                           <input
                             aria-required="true"
-                            class="ant-input css-dev-only-do-not-override-1qhh31y"
+                            class="ant-input"
                             id="confirmNewPassword"
                             type="password"
                             value=""
@@ -204,7 +204,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
               class="ant-modal-footer"
             >
               <button
-                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
+                class="ant-btn ant-btn-default"
                 type="button"
               >
                 <span>
@@ -212,7 +212,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                 </span>
               </button>
               <button
-                class="ant-btn css-dev-only-do-not-override-1qhh31y ant-btn-default"
+                class="ant-btn ant-btn-default"
                 type="button"
               >
                 <span>

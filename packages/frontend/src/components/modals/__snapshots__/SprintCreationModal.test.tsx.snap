@@ -242,7 +242,7 @@ exports[`SprintModal tests renders new sprint modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-picker css-dev-only-do-not-override-1qhh31y"
+                            class="ant-picker"
                           >
                             <div
                               class="ant-picker-input"

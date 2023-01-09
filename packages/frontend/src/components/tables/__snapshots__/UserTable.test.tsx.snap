@@ -26,7 +26,6 @@ exports[`test UserTable should render table with correct fields 1`] = `
               >
                 <h4
                   class="ant-typography"
-                  style="margin-top: 0px;"
                 >
                   People
                 </h4>
