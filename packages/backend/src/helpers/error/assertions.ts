@@ -72,6 +72,16 @@ export function assertProjectIdIsValid(projectId: string | number | undefined): 
   }
 }
 
+// Assert sprintId is not undefined and it is a number
+export function assertSprintIdIsValid(sprintId: string | number | undefined): asserts sprintId is string | number {
+  if (!sprintId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('sprintId'));
+  }
+  if (typeof sprintId !== 'number') {
+    assertStringIsNumberOrThrow(sprintId, getFieldNotNumberErrorMessage('sprintId'));
+  }
+}
+
 export function assertProjectNameIsValid(projectName: string | undefined): asserts projectName is string {
   if (!projectName) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('projectName'));

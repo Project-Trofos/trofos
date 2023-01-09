@@ -1,4 +1,4 @@
-import { Backlog, BacklogStatusType } from '@prisma/client';
+import { Backlog, BacklogStatusType, HistoryType } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 
@@ -73,8 +73,40 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
     },
   });
 
+  // Create backlog history for this create operation
+  const createBacklogHistory = prisma.backlogHistory.create({
+    data: {
+      history_type: HistoryType.create,
+      reporter_id: reporterId,
+      backlog_id: backlogCounter.backlog_counter + 1,
+      summary,
+      type,
+      ...(sprintId && {
+        sprint: {
+          connect: { id: sprintId },
+        },
+      }),
+      priority: priority || null,
+      assignee_id: assigneeId,
+      points: points || null,
+      description: description || null,
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: projectId,
+            name: defaultBacklogStatus?.name || 'To do',
+          },
+        },
+      },
+    },
+  });
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [backlog, counter] = await prisma.$transaction([createBacklog, incrementBacklogCounter]);
+  const [backlog, counter, backlogHistory] = await prisma.$transaction([
+    createBacklog,
+    incrementBacklogCounter,
+    createBacklogHistory,
+  ]);
 
   return backlog;
 }
@@ -119,6 +151,35 @@ async function updateBacklog(backlogToUpdate: {
     data: fieldToUpdate,
   });
 
+  // Create backlog history for this update operation
+  // TODO (Luoyi): Could this lead to race condition?
+  await prisma.backlogHistory.create({
+    data: {
+      history_type: HistoryType.update,
+      reporter_id: updatedBacklog.reporter_id,
+      backlog_id: updatedBacklog.backlog_id,
+      summary: updatedBacklog.summary,
+      type: updatedBacklog.type,
+      ...(updatedBacklog.sprint_id && {
+        sprint: {
+          connect: { id: updatedBacklog.sprint_id },
+        },
+      }),
+      priority: updatedBacklog.priority,
+      assignee_id: updatedBacklog.assignee_id,
+      points: updatedBacklog.points,
+      description: updatedBacklog.description,
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: projectId,
+            name: updatedBacklog.status,
+          },
+        },
+      },
+    },
+  });
+
   return updatedBacklog;
 }
 
@@ -128,6 +189,35 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
       project_id_backlog_id: {
         project_id: projectId,
         backlog_id: backlogId,
+      },
+    },
+  });
+
+  // Create backlog history for this delete operation
+  // TODO (Luoyi): Could this lead to race condition?
+  await prisma.backlogHistory.create({
+    data: {
+      history_type: HistoryType.delete,
+      reporter_id: backlog.reporter_id,
+      backlog_id: backlog.backlog_id,
+      summary: backlog.summary,
+      type: backlog.type,
+      ...(backlog.sprint_id && {
+        sprint: {
+          connect: { id: backlog.sprint_id },
+        },
+      }),
+      priority: backlog.priority,
+      assignee_id: backlog.assignee_id,
+      points: backlog.points,
+      description: backlog.description,
+      backlogStatus: {
+        connect: {
+          project_id_name: {
+            project_id: projectId,
+            name: backlog.status,
+          },
+        },
       },
     },
   });

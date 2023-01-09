@@ -1,6 +1,7 @@
 import { Action } from '@prisma/client';
 import express from 'express';
 import backlog from '../controllers/backlog';
+import backlogHistory from '../controllers/backlogHistory';
 import comment from '../controllers/comment';
 import { isAuthorizedRequest } from '../middleware/auth.middleware';
 
@@ -16,6 +17,18 @@ router.delete(
   '/deleteBacklog/:projectId/:backlogId',
   isAuthorizedRequest(Action.update_project, null),
   backlog.deleteBacklog,
+);
+
+// Routes for backlog history
+router.get(
+  '/getHistory/project/:projectId',
+  isAuthorizedRequest(Action.read_project, null),
+  backlogHistory.getProjectBacklogHistory,
+);
+router.get(
+  '/getHistory/sprint/:sprintID',
+  isAuthorizedRequest(Action.read_project, null),
+  backlogHistory.getSprintBacklogHistory,
 );
 
 // Routes for comment system
