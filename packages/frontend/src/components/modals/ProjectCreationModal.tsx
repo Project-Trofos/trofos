@@ -135,6 +135,7 @@ function FormStep2({
         options={segmentOptions}
         style={{ marginBottom: '10px' }}
         onChange={(t) => setType(t.toString())}
+        // TODO (Luoyi): These two props are required for some reason
         onResize={() => {}}
         onResizeCapture={() => {}}
       />

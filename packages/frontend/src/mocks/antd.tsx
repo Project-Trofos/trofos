@@ -7,7 +7,6 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd');
   antd.theme.defaultConfig.hashed = false;
 
-  // eslint-disable-next-line func-names
   function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
     const { defaultValue, placeholder, disabled, id, onChange } = props;
     return (
