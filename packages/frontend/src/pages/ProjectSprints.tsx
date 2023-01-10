@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useGetSprintsQuery } from '../api/sprint';
-import { useGetUnassignedBacklogsQuery, useUpdateBacklogMutation } from '../api/backlog';
+import { useUpdateBacklogMutation } from '../api/backlog';
 import type { Sprint } from '../api/sprint';
 import SprintCreationModal from '../components/modals/SprintCreationModal';
 import SprintListingCard from '../components/cards/SprintListingCard';

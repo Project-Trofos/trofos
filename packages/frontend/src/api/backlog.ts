@@ -13,13 +13,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['Backlog'],
     }),
-    getUnassignedBacklogs: builder.query<Backlog[], number>({
-      query: (projectId) => ({
-        url: `backlog/listUnassignedBacklogs/${projectId}`,
-        credentials: 'include',
-      }),
-      providesTags: ['Backlog'],
-    }),
     getBacklog: builder.query<Backlog, { projectId: number; backlogId: number }>({
       query: ({ projectId, backlogId }) => ({
         url: `backlog/getBacklog/${projectId}/${backlogId}`,
@@ -133,7 +126,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 
 export const {
   useGetBacklogsQuery,
-  useGetUnassignedBacklogsQuery,
   useGetBacklogQuery,
   useAddBacklogMutation,
   useUpdateBacklogMutation,
