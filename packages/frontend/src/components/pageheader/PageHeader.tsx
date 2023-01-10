@@ -1,4 +1,4 @@
-import { Space, Typography } from 'antd';
+import { Typography } from 'antd';
 import React from 'react';
 import styles from './PageHeader.module.css';
 
@@ -17,8 +17,8 @@ export default function PageHeader(props: React.ComponentPropsWithoutRef<'div'> 
   return (
     <div className={styles.container} style={style}>
       {breadcrumb}
-      <div className={styles.titleRow}>
-        <div className={styles.titleGroup}>
+      <div className={styles['title-row']}>
+        <div>
           <Title level={4}>{title}</Title>
           {subTitle}
         </div>
