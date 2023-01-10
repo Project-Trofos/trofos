@@ -2,10 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import store from '../../app/store';
 import type { Backlog } from '../../api/types';
 import ScrumBoardCard from './ScrumBoardCard';
+import StrictModeDroppable from '../dnd/StrictModeDroppable';
 
 describe('ScrumBoardCard test', () => {
   const mockBacklog: Backlog = {
@@ -37,13 +38,13 @@ describe('ScrumBoardCard test', () => {
     <Provider store={store}>
       <BrowserRouter>
         <DragDropContext onDragEnd={jest.fn()}>
-          <Droppable droppableId={mockDroppableId}>
+          <StrictModeDroppable droppableId={mockDroppableId}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <ScrumBoardCard backlog={mockBacklog} projectKey={mockProjectKey} index={mockIndex} />
               </div>
             )}
-          </Droppable>
+          </StrictModeDroppable>
         </DragDropContext>
       </BrowserRouter>
     </Provider>,
