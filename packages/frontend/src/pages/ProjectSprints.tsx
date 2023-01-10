@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { List, message, Typography } from 'antd';
 import dayjs from 'dayjs';
@@ -30,7 +30,6 @@ function ProjectSprints(): JSX.Element {
 
   const projectId = Number(params.projectId);
   const { data: sprintsData } = useGetSprintsQuery(projectId);
-  const { data: backlogs } = useGetUnassignedBacklogsQuery(projectId);
 
   const [updateBacklog] = useUpdateBacklogMutation();
 
@@ -82,9 +81,13 @@ function ProjectSprints(): JSX.Element {
     };
   };
 
-  const sprintsDataCopy = sprintsData ? [...sprintsData] : [];
-  sprintsDataCopy.sort(sortSprintsByStartDate);
-  const sprints = sprintsDataCopy;
+  const sprints = useMemo(() => {
+    const sprintsDataCopy = sprintsData?.sprints ? [...sprintsData.sprints] : [];
+    sprintsDataCopy.sort(sortSprintsByStartDate);
+    return sprintsDataCopy;
+  }, [sprintsData]);
+
+  const backlogs = sprintsData?.unassignedBacklogs;
 
   const renderSprintListingCards = (sprint: Sprint) => (
     <List.Item className="sprint-card-container">

@@ -16,7 +16,7 @@ export type Sprint = {
 
 export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSprints: builder.query<Sprint[], number>({
+    getSprints: builder.query<{ sprints: Sprint[]; unassignedBacklogs: Backlog[] }, number>({
       query: (projectId) => ({
         url: `sprint/listSprints/${projectId}`,
         credentials: 'include',
