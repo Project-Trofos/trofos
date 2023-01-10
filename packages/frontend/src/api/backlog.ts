@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import trofosApiSlice from '.';
 import { extendedApi as sprintApi } from './sprint';
 import type { BacklogFormFields } from '../helpers/BacklogModal.types';
