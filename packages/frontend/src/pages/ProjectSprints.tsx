@@ -109,6 +109,7 @@ function ProjectSprints(): JSX.Element {
       const payload = {
         projectId,
         backlogId: Number(draggableId),
+        srcSprintId: Number(source.droppableId) || null,
         fieldToUpdate: {
           sprint_id: Number(destination.droppableId) || null,
         },
@@ -120,6 +121,8 @@ function ProjectSprints(): JSX.Element {
       console.error(e);
     }
   };
+
+  console.log(sprints);
 
   return (
     <div className="project-sprint-container">
