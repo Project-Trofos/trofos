@@ -12,8 +12,8 @@ import SprintListingCard from '../components/cards/SprintListingCard';
 import type { AutoSprintTypes } from '../helpers/SprintModal.types';
 import BacklogList from '../components/lists/BacklogList';
 import BacklogCreationModal from '../components/modals/BacklogCreationModal';
-import './ProjectSprints.css';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
+import './ProjectSprints.css';
 
 const GENERIC_NEW_SPRINT: AutoSprintTypes = {
   name: 'Sprint 1',
@@ -27,7 +27,6 @@ function ProjectSprints(): JSX.Element {
 
   const [sprintToEdit, setSprintToEdit] = useState<Sprint | undefined>(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [sprints, setSprints] = useState<Sprint[] | undefined>(undefined);
 
   const projectId = Number(params.projectId);
   const { data: sprintsData } = useGetSprintsQuery(projectId);
@@ -83,11 +82,9 @@ function ProjectSprints(): JSX.Element {
     };
   };
 
-  useEffect(() => {
-    const sprintsDataCopy = sprintsData ? [...sprintsData] : [];
-    sprintsDataCopy.sort(sortSprintsByStartDate);
-    setSprints(sprintsDataCopy);
-  }, [sprintsData]);
+  const sprintsDataCopy = sprintsData ? [...sprintsData] : [];
+  sprintsDataCopy.sort(sortSprintsByStartDate);
+  const sprints = sprintsDataCopy;
 
   const renderSprintListingCards = (sprint: Sprint) => (
     <List.Item className="sprint-card-container">

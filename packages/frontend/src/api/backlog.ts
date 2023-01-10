@@ -103,7 +103,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
             if (patchSprintsResult) patchSprintsResult.undo();
           }
           // update from drag and drop on the scrum board
-        } else if (patch.fieldToUpdate.assignee_id && patch.fieldToUpdate.status) {
+        } else if (patch.fieldToUpdate.assignee_id !== undefined && patch.fieldToUpdate.status !== undefined) {
           const patchResult = dispatch(
             sprintApi.util.updateQueryData('getActiveSprint', projectId, (draft) => {
               const updatedDraft = {
