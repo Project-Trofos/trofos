@@ -83,10 +83,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
           {buttonChildren}
         </Button>
       )}
-      {buttonElement === 'span' && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-        <span onClick={showModal}>{buttonChildren}</span>
-      )}
+      {buttonElement === 'span' && <span onClick={showModal}>{buttonChildren}</span>}
       <Modal
         title={title}
         open={isModalVisible}

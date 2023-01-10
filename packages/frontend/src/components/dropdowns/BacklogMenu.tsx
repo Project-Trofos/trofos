@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, Menu, message, Modal, Space } from 'antd';
+import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteBacklogMutation } from '../../api/backlog';
@@ -36,10 +36,7 @@ function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Eleme
       {
         key: '1',
         danger: true,
-        label: (
-          /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-          <div onClick={openDeleteConfirmationModal}>Delete backlog</div>
-        ),
+        label: <div onClick={openDeleteConfirmationModal}>Delete backlog</div>,
       },
     ],
   };

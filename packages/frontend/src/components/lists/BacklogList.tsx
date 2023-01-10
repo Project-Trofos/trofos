@@ -2,7 +2,7 @@ import React from 'react';
 import { List } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import BacklogListingCard from '../cards/BacklogListingCard';
-import { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import { useGetProjectQuery } from '../../api/project';
 import './BacklogList.css';
 import { sortBacklogs } from '../../helpers/sortBacklogs';

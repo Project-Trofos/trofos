@@ -145,11 +145,11 @@ export default function ProjectPage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
-                  Kanban
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/board`}>
+                  Board
                 </Link>
               }
-              key="kanban"
+              key="Board"
             />
             <Tabs.TabPane
               tab={

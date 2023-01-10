@@ -22,7 +22,7 @@ exports[`test milestone creation modal when rendering should render correct fiel
           class="ant-steps ant-steps-horizontal ant-steps-label-horizontal"
         >
           <div
-            class="ant-steps-item ant-steps-item-wait"
+            class="ant-steps-item ant-steps-item-process"
           >
             <div
               class="ant-steps-item-container"

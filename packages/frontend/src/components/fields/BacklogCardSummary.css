@@ -4,11 +4,11 @@
   word-break: break-all;
 }
 
-input.backlog-card-summary.ant-input {
+textarea.backlog-card-summary.ant-input {
   border: none;
   margin: 0 10px;
 }
 
-input.backlog-card-summary.ant-input-status-error {
+textarea.backlog-card-summary.ant-input-status-error {
   border: 1px solid;
 }

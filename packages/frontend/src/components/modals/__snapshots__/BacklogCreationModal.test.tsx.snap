@@ -100,11 +100,9 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                         <div
                           class="ant-form-item-control-input-content"
                         >
-                          <input
+                          <textarea
                             class="ant-input summary-input "
                             placeholder="* Type summary here..."
-                            type="text"
-                            value=""
                           />
                         </div>
                       </div>

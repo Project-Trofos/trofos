@@ -13,7 +13,7 @@ import Admin from '../pages/Admin';
 
 import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklogs from '../pages/ProjectBacklogs';
-import ProjectKanban from '../pages/ProjectKanban';
+import ScrumBoard from '../pages/ScrumBoard';
 
 import './App.css';
 import ProjectSettings from '../pages/ProjectSettings';
@@ -37,7 +37,7 @@ function App() {
             <Route path="sprint" element={<ProjectSprints />} />
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
-            <Route path="kanban" element={<ProjectKanban />} />
+            <Route path="board" element={<ScrumBoard />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />

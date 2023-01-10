@@ -1,4 +1,4 @@
-import { Sprint } from '@prisma/client';
+import { Sprint, SprintStatus } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
@@ -47,6 +47,32 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
   });
 
   return sprints;
+}
+
+async function listActiveSprint(projectId: number): Promise<Sprint | null> {
+  const sprint = await prisma.sprint.findFirst({
+    where: {
+      project_id: projectId,
+      status: SprintStatus.current,
+    },
+    include: {
+      backlogs: {
+        include: {
+          assignee: {
+            include: {
+              user: {
+                select: {
+                  user_email: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return sprint;
 }
 
 async function updateSprint(
@@ -144,6 +170,7 @@ async function deleteSprint(sprintId: number): Promise<Sprint> {
 export default {
   newSprint,
   listSprints,
+  listActiveSprint,
   updateSprint,
   updateSprintStatus,
   deleteSprint,
