@@ -45,7 +45,19 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       async onQueryStarted({ backlogId, projectId, ...patch }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           sprintApi.util.updateQueryData('getActiveSprint', projectId, (draft) => {
-            Object.assign(draft, patch);
+            const updatedDraft = {
+              ...draft,
+              backlogs: draft.backlogs.map((b) => {
+                if (b.project_id === projectId && b.backlog_id === backlogId) {
+                  return {
+                    ...b,
+                    ...patch.fieldToUpdate,
+                  };
+                }
+                return b;
+              }),
+            };
+            Object.assign(draft, updatedDraft);
           }),
         );
         try {

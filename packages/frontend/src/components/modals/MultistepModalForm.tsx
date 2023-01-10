@@ -83,9 +83,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
           {buttonChildren}
         </Button>
       )}
-      {buttonElement === 'span' && (
-        <span onClick={showModal}>{buttonChildren}</span>
-      )}
+      {buttonElement === 'span' && <span onClick={showModal}>{buttonChildren}</span>}
       <Modal
         title={title}
         visible={isModalVisible}
