@@ -44,39 +44,47 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
       async onQueryStarted({ backlogId, projectId, ...patch }, { dispatch, queryFulfilled }) {
+        // update from drag and drop on sprint page
         if (patch.srcSprintId !== undefined && patch.fieldToUpdate.sprint_id !== undefined) {
           let backlogToMove: Backlog;
           let patchUnassignedBacklogResult;
           let patchSprintsResult;
+
+          // moving backlog from unassigned sprint to a sprint
           if (patch.srcSprintId === null) {
+            // find and remove backlog from 'getUnassignedBacklogs' API
             patchUnassignedBacklogResult = dispatch(
               extendedApi.util.updateQueryData('getUnassignedBacklogs', projectId, (draft) => {
                 const backlogIndex = draft.findIndex((b) => b.backlog_id === backlogId);
                 backlogToMove = _.cloneDeep<Backlog>(draft.splice(backlogIndex, 1)[0]);
               }),
             );
+            // add backlog to the relevant sprint's backlog array in the 'getSprints' API
             patchSprintsResult = dispatch(
               sprintApi.util.updateQueryData('getSprints', projectId, (draft) => {
                 const sprintIndex = draft.findIndex((s) => s.id === patch.fieldToUpdate.sprint_id);
                 draft[sprintIndex].backlogs.push(backlogToMove);
               }),
             );
+            // moving backlog from a sprint to unassigned sprint
           } else if (patch.fieldToUpdate.sprint_id === null) {
+            // find and remove the backlog from the relevant sprint's backlog array in the 'getSprints' API
             patchSprintsResult = dispatch(
               sprintApi.util.updateQueryData('getSprints', projectId, (draft) => {
                 const sprintIndex = draft.findIndex((s) => s.id === patch.srcSprintId);
                 const backlogIndex = draft[sprintIndex].backlogs.findIndex((b) => b.backlog_id === backlogId);
                 backlogToMove = _.cloneDeep<Backlog>(draft[sprintIndex].backlogs.splice(backlogIndex, 1)[0]);
-                // eslint-disable-next-line no-param-reassign
-                draft[sprintIndex].duration = 999;
               }),
             );
+            // add backlog to the 'getUnassignedBacklogs' API
             patchUnassignedBacklogResult = dispatch(
               extendedApi.util.updateQueryData('getUnassignedBacklogs', projectId, (draft) => {
                 draft.push(backlogToMove);
               }),
             );
+            // moving backlog between sprints
           } else {
+            // find and move backlog from the source sprint to the destination sprint in the 'getSprints' API
             patchSprintsResult = dispatch(
               sprintApi.util.updateQueryData('getSprints', projectId, (draft) => {
                 const srcSprintIndex = draft.findIndex((s) => s.id === patch.srcSprintId);
@@ -94,6 +102,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
             if (patchUnassignedBacklogResult) patchUnassignedBacklogResult.undo();
             if (patchSprintsResult) patchSprintsResult.undo();
           }
+          // update from drag and drop on the scrum board
         } else if (patch.fieldToUpdate.assignee_id && patch.fieldToUpdate.status) {
           const patchResult = dispatch(
             sprintApi.util.updateQueryData('getActiveSprint', projectId, (draft) => {

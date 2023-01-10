@@ -122,8 +122,6 @@ function ProjectSprints(): JSX.Element {
     }
   };
 
-  console.log(sprints);
-
   return (
     <div className="project-sprint-container">
       <div className="project-sprint-title-container">
