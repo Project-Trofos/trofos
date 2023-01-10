@@ -37,10 +37,7 @@ function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Eleme
         {
           key: '1',
           danger: true,
-          label: (
-            /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-            <div onClick={openDeleteConfirmationModal}>Delete backlog</div>
-          ),
+          label: <div onClick={openDeleteConfirmationModal}>Delete backlog</div>,
         },
       ]}
     />

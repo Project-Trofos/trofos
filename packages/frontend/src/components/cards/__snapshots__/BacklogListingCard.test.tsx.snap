@@ -9,11 +9,11 @@ exports[`BacklogCard test renders backlog card with correct details 1`] = `
       MOCK-
       111
     </div>
-    <input
+    <textarea
       class="ant-input backlog-card-summary"
-      type="text"
-      value="A Test Summary"
-    />
+    >
+      A Test Summary
+    </textarea>
     <div
       class="ant-select backlog-card-status ant-select-single"
     >
@@ -203,7 +203,7 @@ exports[`BacklogCard test renders backlog card with correct details 1`] = `
       </span>
     </div>
     <div
-      class="ant-input-number backlog-card-points"
+      class="ant-input-number backlog-card-points points-active"
     >
       <div
         class="ant-input-number-input-wrap"

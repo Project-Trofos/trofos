@@ -1,7 +1,12 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertCourseIdIsValid, getDefaultErrorRes } from '../helpers/error';
-import { assertDateIsBefore, assertDateIsValid, assertMilestoneIdIsValid, assertMilestoneNameIsValid } from '../helpers/error/assertions';
+import {
+  assertDateIsBefore,
+  assertDateIsValid,
+  assertMilestoneIdIsValid,
+  assertMilestoneNameIsValid,
+} from '../helpers/error/assertions';
 import milestoneService from '../services/milestone.service';
 import { MilestoneRequestBody } from './requestTypes';
 
