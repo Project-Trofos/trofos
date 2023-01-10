@@ -40,9 +40,7 @@ export default function ScrumBoard(): JSX.Element {
     updatedUsers.push(unassignedUser);
     return updatedUsers;
   };
-
-  console.log(activeSprint);
-
+  
   const backlogs = processBacklogs(activeSprint?.backlogs);
   const users = addUnassignedUser(projectData?.users);
 
