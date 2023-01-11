@@ -64,6 +64,7 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                     class="ant-form-item-control-input-content"
                   >
                     <input
+                      aria-required="true"
                       class="ant-input"
                       id="In progress"
                       type="text"

@@ -1,6 +1,7 @@
-li.backlog-card-container {
+li.backlog-card-container.ant-list-item {
   background: #fff;
   padding: 0;
+  border-block-end: none;
 }
 
 .backlog-card-container > div > div {
