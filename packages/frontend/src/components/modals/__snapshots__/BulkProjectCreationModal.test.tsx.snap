@@ -4,7 +4,6 @@ exports[`test course creation modal should render fields if there are users with
 <body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
       class="ant-btn ant-btn-default"
       type="button"
     >

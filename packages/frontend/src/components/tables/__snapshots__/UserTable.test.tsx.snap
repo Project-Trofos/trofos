@@ -70,8 +70,9 @@ exports[`test UserTable should render table with correct fields 1`] = `
                           >
                             <tr>
                               <th
-                                aria-label="this column's title is ID,this column is sortable"
+                                aria-label="ID"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -131,8 +132,9 @@ exports[`test UserTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is Email,this column is sortable"
+                                aria-label="Email"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -193,6 +195,7 @@ exports[`test UserTable should render table with correct fields 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                scope="col"
                               >
                                 Action
                               </th>
