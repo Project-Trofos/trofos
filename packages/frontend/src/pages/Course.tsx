@@ -1,17 +1,18 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Menu, PageHeader, Space, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveCourseMutation } from '../api/course';
 import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCourse } from '../api/hooks';
+import PageHeader from '../components/pageheader/PageHeader';
 
 const { Paragraph } = Typography;
 
-function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['overlay'] }) {
+function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['menu'] }) {
   return (
-    <Dropdown key="more" overlay={courseMenu} placement="bottomRight">
+    <Dropdown key="more" menu={courseMenu} placement="bottomRight">
       <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
@@ -51,17 +52,15 @@ export default function CoursePage(): JSX.Element {
     );
   }
 
-  const courseMenu = (
-    <Menu
-      onClick={(e) => handleMenuClick(e.key)}
-      items={[
-        {
-          key: '1',
-          label: 'Delete course',
-        },
-      ]}
-    />
-  );
+  const courseMenu = {
+    onClick: (e: any) => handleMenuClick(e.key),
+    items: [
+      {
+        key: '1',
+        label: 'Delete course',
+      },
+    ],
+  };
 
   const breadCrumbs = (
     <Breadcrumb>
@@ -84,7 +83,7 @@ export default function CoursePage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
             <Tabs.TabPane
               tab={
                 <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>

@@ -39,6 +39,7 @@ exports[`CourseYearSemesterFormItem test when rendering should have correct fiel
                     class="ant-picker-input"
                   >
                     <input
+                      aria-required="true"
                       autocomplete="off"
                       id="courseYear"
                       placeholder="Select year"
@@ -104,6 +105,7 @@ exports[`CourseYearSemesterFormItem test when rendering should have correct fiel
                 class="ant-form-item-control-input-content"
               >
                 <div
+                  aria-required="true"
                   class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
                 >
                   <div
@@ -118,6 +120,7 @@ exports[`CourseYearSemesterFormItem test when rendering should have correct fiel
                         aria-controls="courseSem_list"
                         aria-haspopup="listbox"
                         aria-owns="courseSem_list"
+                        aria-required="true"
                         autocomplete="off"
                         class="ant-select-selection-search-input"
                         id="courseSem"

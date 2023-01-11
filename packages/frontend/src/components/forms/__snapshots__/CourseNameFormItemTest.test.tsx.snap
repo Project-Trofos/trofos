@@ -33,6 +33,7 @@ exports[`CourseNameFormItem test when rendering should have correct fields 1`] =
                 class="ant-form-item-control-input-content"
               >
                 <input
+                  aria-required="true"
                   class="ant-input"
                   id="courseName"
                   type="text"

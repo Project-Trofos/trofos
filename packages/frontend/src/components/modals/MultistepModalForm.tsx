@@ -86,7 +86,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
       {buttonElement === 'span' && <span onClick={showModal}>{buttonChildren}</span>}
       <Modal
         title={title}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={

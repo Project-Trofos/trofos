@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, Menu, message, Modal, Space } from 'antd';
+import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import { useDeleteSprintMutation } from '../../api/sprint';
 
@@ -30,32 +30,30 @@ function SprintMenu(props: {
     setIsDeleteModalOpen(false);
   };
 
-  const menuItems = (
-    <Menu
-      items={[
-        {
-          key: '1',
-          label: <div onClick={handleSprintOnClick}>Edit sprint</div>,
-        },
-        {
-          key: '2',
-          danger: true,
-          label: <div onClick={openDeleteConfirmationModal}>Delete sprint</div>,
-        },
-      ]}
-    />
-  );
+  const menuItems = {
+    items: [
+      {
+        key: '1',
+        label: <div onClick={handleSprintOnClick}>Edit sprint</div>,
+      },
+      {
+        key: '2',
+        danger: true,
+        label: <div onClick={openDeleteConfirmationModal}>Delete sprint</div>,
+      },
+    ],
+  };
 
   return (
     <>
-      <Dropdown className="sprint-menu-dropdown" overlay={menuItems} trigger={['click']} placement="bottomRight">
+      <Dropdown className="sprint-menu-dropdown" menu={menuItems} trigger={['click']} placement="bottomRight">
         <Space>
           <SettingOutlined style={{ fontSize: '18px' }} />
         </Space>
       </Dropdown>
       <Modal
         title="DELETE SPRINT"
-        visible={isDeleteModalOpen}
+        open={isDeleteModalOpen}
         onOk={handleDeleteSprint}
         onCancel={closeDeleteConfirmationModal}
         okText="Delete"

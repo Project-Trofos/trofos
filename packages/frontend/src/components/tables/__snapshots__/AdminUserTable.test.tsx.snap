@@ -90,7 +90,6 @@ exports[`test UserTable should render table with correct fields 1`] = `
           </div>
           <ul
             class="ant-pagination ant-table-pagination ant-table-pagination-right"
-            unselectable="unselectable"
           >
             <li
               aria-disabled="true"
