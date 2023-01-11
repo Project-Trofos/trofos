@@ -19,8 +19,7 @@ const listBacklogs = async (req: express.Request, res: express.Response) => {
     if (!projectId) {
       throw new BadRequestError('projectId cannot be empty');
     }
-    const shouldListUnassignedBacklogs = req.originalUrl.includes('listUnassignedBacklogs');
-    const backlogs: Backlog[] = await backlogService.listBacklogs(Number(projectId), shouldListUnassignedBacklogs);
+    const backlogs: Backlog[] = await backlogService.listBacklogs(Number(projectId));
     return res.status(StatusCodes.OK).json(backlogs);
   } catch (error) {
     return getDefaultErrorRes(error, res);

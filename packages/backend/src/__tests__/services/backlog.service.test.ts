@@ -90,14 +90,16 @@ describe('backlog.service tests', () => {
       ];
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
-      await expect(backlogService.listBacklogs(projectId, false)).resolves.toEqual(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
     });
+  });
 
-    it('should return unassigned backlogs when shouldListUnassignedBacklogs is true', async () => {
+  describe('get unassigned backlogs', () => {
+    it('should return unassigned backlogs when called with valid project id', async () => {
       const mockReturnedBacklogs: Backlog[] = [{ ...mockBacklogData, sprint_id: null }];
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
-      await expect(backlogService.listBacklogs(projectId, true)).resolves.toEqual(mockReturnedBacklogs);
+      await expect(backlogService.listUnassignedBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
     });
   });
 

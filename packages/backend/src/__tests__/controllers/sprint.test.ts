@@ -1,11 +1,13 @@
 import StatusCodes from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { Sprint, SprintStatus } from '@prisma/client';
+import { Backlog, Sprint, SprintStatus } from '@prisma/client';
 import { PrismaClientValidationError } from '@prisma/client/runtime';
 import sprintController from '../../controllers/sprint';
 import sprintService from '../../services/sprint.service';
+import backlogService from '../../services/backlog.service';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
 import { mockSprintData, mockSprintFields, mockSprintToUpdate } from '../mocks/sprintData';
+import { mockBacklogData } from '../mocks/backlogData';
 
 const sprintServiceSpies = {
   newSprint: jest.spyOn(sprintService, 'newSprint'),
@@ -13,6 +15,10 @@ const sprintServiceSpies = {
   listActiveSprint: jest.spyOn(sprintService, 'listActiveSprint'),
   updateSprint: jest.spyOn(sprintService, 'updateSprint'),
   deleteSprint: jest.spyOn(sprintService, 'deleteSprint'),
+};
+
+const backlogServiceSpies = {
+  listUnassignedBacklogs: jest.spyOn(backlogService, 'listUnassignedBacklogs'),
 };
 
 describe('sprintController tests', () => {
@@ -101,19 +107,24 @@ describe('sprintController tests', () => {
     });
 
     it('should return array of sprints and status 200 when called with valid projectId', async () => {
-      const expectedSprints: Sprint[] = [
-        mockSprintData,
-        {
-          ...mockSprintData,
-          id: 2,
-          name: 'Sprint 2',
-        },
-      ];
-      sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints);
+      const expectedSprints: { sprints: Sprint[]; unassignedBacklogs: Backlog[] } = {
+        sprints: [
+          mockSprintData,
+          {
+            ...mockSprintData,
+            id: 2,
+            name: 'Sprint 2',
+          },
+        ],
+        unassignedBacklogs: [mockBacklogData],
+      };
+      sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints.sprints);
+      backlogServiceSpies.listUnassignedBacklogs.mockResolvedValueOnce(expectedSprints.unassignedBacklogs);
       const mockResponse = createResponse();
 
       await sprintController.listSprints(mockRequest, mockResponse);
       expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(backlogServiceSpies.listUnassignedBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedSprints));
     });

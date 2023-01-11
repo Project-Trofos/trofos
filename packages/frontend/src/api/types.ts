@@ -155,5 +155,6 @@ export type Backlog = {
 export type BacklogUpdatePayload = {
   projectId: number;
   backlogId: number;
+  srcSprintId?: number | null;
   fieldToUpdate: Partial<Backlog>;
 };
