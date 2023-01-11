@@ -30,17 +30,15 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
     }
   }, [removeProject, project.id]);
 
-  const menu = (
-    <Menu
-      onClick={handleOnClick}
-      items={[
-        {
-          label: 'delete',
-          key: '0',
-        },
-      ]}
-    />
-  );
+  const menu = {
+    onClick: handleOnClick,
+    items: [
+      {
+        label: 'delete',
+        key: '0',
+      },
+    ],
+  };
 
   return (
     <Card
@@ -49,7 +47,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
         <Link to={`/project/${project.id}/settings`}>
           <SettingOutlined key="setting" />
         </Link>,
-        <Dropdown overlay={menu} trigger={['click']}>
+        <Dropdown menu={menu} trigger={['click']}>
           <EllipsisOutlined key="more" />
         </Dropdown>,
       ]}

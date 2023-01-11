@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react';
-import { Form, message } from 'antd';
+import { Form, message, DatePicker } from 'antd';
 import { Dayjs } from 'dayjs';
 import { useCreateMilestoneMutation } from '../../api/course';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
 import StringFormItem from '../forms/StringFormItem';
-import { DatePicker } from '../datetime';
 
 /**
  * Modal for creating milestone

@@ -11,6 +11,7 @@ exports[`BacklogCard test renders backlog card with correct details 1`] = `
     </div>
     <textarea
       class="ant-input backlog-card-summary"
+      style="height: 2px; resize: none; min-height: 2px;"
     >
       A Test Summary
     </textarea>
@@ -220,5 +221,21 @@ exports[`BacklogCard test renders backlog card with correct details 1`] = `
       </div>
     </div>
   </div>
+  <textarea
+    aria-hidden="true"
+    style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important;
+  pointer-events: none !important;
+"
+    tab-index="-1"
+  />
 </body>
 `;

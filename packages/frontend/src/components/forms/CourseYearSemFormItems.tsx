@@ -1,6 +1,5 @@
 import React from 'react';
-import { Form, Select } from 'antd';
-import { DatePicker } from '../datetime';
+import { Form, Select, DatePicker } from 'antd';
 
 type CourseYearSemFormItemsProps = {
   yearLabel?: string;
