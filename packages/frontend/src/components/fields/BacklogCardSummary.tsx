@@ -7,12 +7,14 @@ import './BacklogCardSummary.css';
 export default function BacklogCardSummary(props: { backlogId: number; currentSummary: string }) {
   const { backlogId, currentSummary } = props;
 
+  const { TextArea } = Input;
+
   const params = useParams();
   const projectId = Number(params.projectId);
   const [updateBacklog] = useUpdateBacklogMutation();
   const [isError, setIsError] = useState(false);
 
-  const handleSummaryChange = async (event: React.FocusEvent<HTMLInputElement, Element>) => {
+  const handleSummaryChange = async (event: React.FocusEvent<HTMLTextAreaElement, Element>) => {
     const updatedSummary = event.target.value;
     if (!updatedSummary) {
       setIsError(true);
@@ -44,12 +46,13 @@ export default function BacklogCardSummary(props: { backlogId: number; currentSu
   };
 
   return (
-    <Input
+    <TextArea
       className="backlog-card-summary"
       defaultValue={currentSummary}
       onBlur={handleSummaryChange}
       onClick={(e) => e.stopPropagation()}
       status={isError ? 'error' : undefined}
+      autoSize={{ minRows: 1 }}
     />
   );
 }

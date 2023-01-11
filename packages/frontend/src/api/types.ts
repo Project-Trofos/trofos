@@ -67,6 +67,13 @@ export type UserData = {
   };
 };
 
+export type ScrumBoardUserData = {
+  user: {
+    user_id: number | null;
+    user_email: string;
+  };
+};
+
 export type Milestone = {
   id: number;
   name: string;
@@ -121,4 +128,32 @@ export type CommentFieldsType = {
   backlogId: number;
   commenterId: number;
   content: string;
+};
+
+export type Backlog = {
+  backlog_id: number;
+  summary: string;
+  type: 'story' | 'task' | 'bug';
+  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  reporter_id: number;
+  assignee_id: number | null;
+  sprint_id: number | null;
+  points: number | null;
+  description: string | null;
+  project_id: number;
+  status: string;
+  assignee: {
+    created_at: string;
+    project_id: number;
+    user_id: number;
+    user: {
+      user_email: string;
+    };
+  };
+};
+
+export type BacklogUpdatePayload = {
+  projectId: number;
+  backlogId: number;
+  fieldToUpdate: Partial<Backlog>;
 };

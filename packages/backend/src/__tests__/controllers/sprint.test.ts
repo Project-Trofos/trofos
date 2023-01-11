@@ -1,6 +1,6 @@
 import StatusCodes from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { Sprint } from '@prisma/client';
+import { Sprint, SprintStatus } from '@prisma/client';
 import { PrismaClientValidationError } from '@prisma/client/runtime';
 import sprintController from '../../controllers/sprint';
 import sprintService from '../../services/sprint.service';
@@ -10,6 +10,7 @@ import { mockSprintData, mockSprintFields, mockSprintToUpdate } from '../mocks/s
 const sprintServiceSpies = {
   newSprint: jest.spyOn(sprintService, 'newSprint'),
   listSprints: jest.spyOn(sprintService, 'listSprints'),
+  listActiveSprint: jest.spyOn(sprintService, 'listActiveSprint'),
   updateSprint: jest.spyOn(sprintService, 'updateSprint'),
   deleteSprint: jest.spyOn(sprintService, 'deleteSprint'),
 };
@@ -99,8 +100,6 @@ describe('sprintController tests', () => {
       params: mockProjectId,
     });
 
-    const mockResponse = createResponse();
-
     it('should return array of sprints and status 200 when called with valid projectId', async () => {
       const expectedSprints: Sprint[] = [
         mockSprintData,
@@ -111,6 +110,7 @@ describe('sprintController tests', () => {
         },
       ];
       sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints);
+      const mockResponse = createResponse();
 
       await sprintController.listSprints(mockRequest, mockResponse);
       expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(mockProjectId.projectId);
@@ -122,6 +122,7 @@ describe('sprintController tests', () => {
       const mockMissingProjectIdRequest = createRequest({
         body: {},
       });
+      const mockResponse = createResponse();
 
       await sprintController.listSprints(mockMissingProjectIdRequest, mockResponse);
       expect(sprintServiceSpies.listSprints).not.toHaveBeenCalled();
@@ -130,10 +131,36 @@ describe('sprintController tests', () => {
 
     it('should throw an error and return status 500 when sprints failed to be retrieved', async () => {
       sprintServiceSpies.listSprints.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+      const mockResponse = createResponse();
 
       await sprintController.listSprints(mockRequest, mockResponse);
       expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+
+    it('should return active sprint and status 200 when called with valid projectId', async () => {
+      const expectedSprint: Sprint = {
+        ...mockSprintData,
+        status: SprintStatus.current,
+      };
+      sprintServiceSpies.listActiveSprint.mockResolvedValueOnce(expectedSprint);
+      const mockResponse = createResponse();
+
+      await sprintController.listActiveSprint(mockRequest, mockResponse);
+      expect(sprintServiceSpies.listActiveSprint).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedSprint));
+    });
+
+    it('should throw an error and return status 400 when projectId is missing', async () => {
+      const mockMissingProjectIdRequest = createRequest({
+        body: {},
+      });
+      const mockResponse = createResponse();
+
+      await sprintController.listActiveSprint(mockMissingProjectIdRequest, mockResponse);
+      expect(sprintServiceSpies.listActiveSprint).not.toHaveBeenCalled();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });
 

@@ -1,0 +1,46 @@
+.scrum-board-drag-drop-context {
+  background: #fff;
+  overflow-x: auto;
+}
+
+.scrum-board-status-container {
+  display: flex;
+}
+
+.scrum-board-droppable {
+  display: flex;
+}
+
+.scrum-board-droppable > div,
+.scrum-board-status {
+  width: 270px;
+  min-width: 270px;
+  background: #f4f5f7;
+  border-radius: 6px;
+  margin: 10px;
+  padding: 5px;
+}
+
+.scrum-board-droppable > div {
+  min-height: 90px;
+}
+
+.scrum-board-droppable > div > div {
+  margin: 2px 0;
+}
+
+.scrum-board-status .ant-typography {
+  margin: 0 5px;
+}
+
+.scrum-board-user-container {
+  margin-top: 10px;
+}
+
+h5.ant-typography.scrum-board-user-title {
+  margin: 0 10px;
+}
+
+.scrum-board-warning.ant-alert {
+  margin: 10px 10px 20px;
+}

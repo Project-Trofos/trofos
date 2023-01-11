@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import { UserData } from '../../api/types';
 import BacklogCardStatus from '../dropdowns/BacklogCardStatus';
 import BacklogCardType from '../dropdowns/BacklogCardType';

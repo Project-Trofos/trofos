@@ -177,7 +177,6 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatusesProp
                         >
                           <Input onBlur={handleBacklogStatusUpdate} />
                         </Form.Item>
-                        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                         <div
                           className="project-backlog-status-delete-button"
                           onClick={() => handleDeleteStatus(status.name)}

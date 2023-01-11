@@ -2,7 +2,7 @@
  * Sort backlog according to assignee & id
  */
 
-import { Backlog } from '../api/backlog';
+import type { Backlog } from '../api/types';
 
 const backlogCompareFunc = (b1: Backlog, b2: Backlog): -1 | 0 | 1 => {
   if (b1.assignee_id === b2.assignee_id) {

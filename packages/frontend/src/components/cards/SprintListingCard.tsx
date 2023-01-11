@@ -71,7 +71,6 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                 'DD/MM/YYYY',
               )}`}</div>
             )}
-            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
             <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
               <SprintMenu sprintId={sprint.id} handleSprintOnClick={handleSprintOnClick} />
             </div>
