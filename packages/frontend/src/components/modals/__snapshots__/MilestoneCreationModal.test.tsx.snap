@@ -4,7 +4,6 @@ exports[`test course creation modal should render modal with correct fields 1`] 
 <body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
       aria-label="open-form"
       class="ant-btn ant-btn-default"
       type="button"
