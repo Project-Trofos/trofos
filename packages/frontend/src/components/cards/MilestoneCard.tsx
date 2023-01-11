@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, Card, Input, Steps } from 'antd';
+import { Button, Card, Input, Steps, DatePicker } from 'antd';
 import { useCourse } from '../../api/hooks';
 import { Subheading } from '../typography';
 import MilestoneCreationModal from '../modals/MilestoneCreationModal';
 import { useMilestone } from './useMilestone';
-import { DatePicker } from '../datetime';
 import { CourseData } from '../../api/types';
 
 import './CommonCard.css';

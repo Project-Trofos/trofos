@@ -22,6 +22,7 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                 class="ant-form-item-control-input-content"
               >
                 <input
+                  aria-required="true"
                   class="ant-input"
                   id="To do"
                   type="text"
@@ -137,6 +138,7 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                 class="ant-form-item-control-input-content"
               >
                 <input
+                  aria-required="true"
                   class="ant-input"
                   id="Done"
                   type="text"

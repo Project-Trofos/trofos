@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test announcement update modal should render modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
       ant-click-animating-without-extra-node="false"
@@ -133,6 +130,7 @@ exports[`test announcement update modal should render modal with correct fields 
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="multi-step-modal-form_announcementTitle"
                             type="text"
@@ -170,6 +168,7 @@ exports[`test announcement update modal should render modal with correct fields 
                           class="ant-form-item-control-input-content"
                         >
                           <textarea
+                            aria-required="true"
                             class="ant-input"
                             id="multi-step-modal-form_announcementContent"
                             rows="4"

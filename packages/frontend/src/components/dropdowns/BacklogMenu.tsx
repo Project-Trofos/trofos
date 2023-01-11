@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, Menu, message, Modal, Space } from 'antd';
+import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteBacklogMutation } from '../../api/backlog';
@@ -31,28 +31,26 @@ function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Eleme
     setIsDeleteModalOpen(false);
   };
 
-  const menuItems = (
-    <Menu
-      items={[
-        {
-          key: '1',
-          danger: true,
-          label: <div onClick={openDeleteConfirmationModal}>Delete backlog</div>,
-        },
-      ]}
-    />
-  );
+  const menuItems = {
+    items: [
+      {
+        key: '1',
+        danger: true,
+        label: <div onClick={openDeleteConfirmationModal}>Delete backlog</div>,
+      },
+    ],
+  };
 
   return (
     <>
-      <Dropdown className="backlog-menu-dropdown" overlay={menuItems} trigger={['click']} placement="bottomRight">
+      <Dropdown className="backlog-menu-dropdown" menu={menuItems} trigger={['click']} placement="bottomRight">
         <Space>
           <SettingOutlined style={{ fontSize: '18px' }} />
         </Space>
       </Dropdown>
       <Modal
         title="DELETE BACKLOG"
-        visible={isDeleteModalOpen}
+        open={isDeleteModalOpen}
         onOk={handleDeleteBacklog}
         onCancel={closeDeleteConfirmationModal}
         okText="Delete"

@@ -132,7 +132,7 @@ function BacklogCreationModal(): JSX.Element {
       </Button>
       <Modal
         title="New Backlog"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={renderFooter()}

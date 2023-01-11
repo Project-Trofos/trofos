@@ -14,3 +14,12 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: () => {},
   }),
 });
+
+// https://github.com/ant-design/ant-design/blob/master/tests/setupAfterEnv.ts#L5-L26
+// Disable antd V5 `css-dev-only-do-not-override` hashing
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd');
+  antd.theme.defaultConfig.hashed = false;
+
+  return antd;
+});
