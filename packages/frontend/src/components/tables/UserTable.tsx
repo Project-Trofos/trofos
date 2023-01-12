@@ -13,7 +13,7 @@ type UserTableProps = {
   control?: React.ReactNode;
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
-  handleUpdateUserRole? : (userEmail: string, roleId: number) => void;
+  handleUpdateUserRole? : (userEmail: string, roleId: number, userId: number) => void;
 };
 
 /**
@@ -77,6 +77,7 @@ export default function UserTable({ users, userRoles, isLoading, heading, contro
                       userRoles?.filter(userRole => userRole.user_email === record.user.user_email)[0].role.role_name
                     }
                     userEmail = {record.user.user_email}
+                    userId = {record.user.user_id}
                     roles={actionsOnRoles}
                     handleRoleChange={handleUpdateUserRole}
                   />

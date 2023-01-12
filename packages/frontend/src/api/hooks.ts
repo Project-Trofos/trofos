@@ -119,11 +119,11 @@ export const useProject = (projectId: number) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number) => {
+    async (userEmail: string, roleId: number, userId: number) => {
       
       try {
         if (project) {
-          await updateUserProjectRole({id: projectId, userEmail: userEmail, userRole: roleId}).unwrap();
+          await updateUserProjectRole({id: projectId, userEmail: userEmail, userRole: roleId, userId: userId}).unwrap();
           message.success('User role changed!');
         }
       } catch (e) {
@@ -221,11 +221,11 @@ export const useCourse = (courseId?: string) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number) => {
+    async (userEmail: string, roleId: number, userId: number) => {
 
       try {
         if (course) {
-          await updateUserCourseRole({id: course?.id, userEmail: userEmail, userRole: roleId}).unwrap();
+          await updateUserCourseRole({id: course?.id, userEmail: userEmail, userRole: roleId, userId: userId}).unwrap();
           message.success('User role changed!');
         }
       } catch (e) {

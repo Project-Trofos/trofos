@@ -1,8 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 
 import { UserData } from '../../api/types';
 import UserTable from './UserTable';
+import store from '../../app/store';
 
 describe('test UserTable', () => {
   const mockUsers: UserData[] = [
@@ -21,7 +23,11 @@ describe('test UserTable', () => {
   ];
 
   const setup = () => {
-    const { baseElement, debug } = render(<UserTable users={mockUsers} userRoles={undefined} isLoading={false} />);
+    const { baseElement, debug } = render(
+    <Provider store={store}>
+          <UserTable users={mockUsers} userRoles={undefined} isLoading={false} />
+    </Provider>
+);
     return { baseElement, debug };
   };
 

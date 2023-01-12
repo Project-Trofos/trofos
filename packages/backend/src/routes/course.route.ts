@@ -9,7 +9,7 @@ import projectPolicy from '../policies/project.policy';
 const router = express.Router();
 
 // Get all courses
-router.get('/', hasAuth(Action.read_course, coursePolicy.POLICY_NAME), course.getAll);
+router.get('/', hasAuth(null, coursePolicy.POLICY_NAME), course.getAll);
 
 // Create course
 router.post('/', hasAuth(Action.create_course, coursePolicy.POLICY_NAME), course.create);

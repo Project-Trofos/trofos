@@ -1,5 +1,4 @@
 import express from 'express';
-import { Stats } from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import { assertInputIsNotEmpty, assertStringIsNumberOrThrow, getDefaultErrorRes } from '../helpers/error';
 import roleService from '../services/role.service';
@@ -49,7 +48,7 @@ async function removeActionFromRole(req: express.Request, res: express.Response)
 async function getUserRoleActionsForCourse(req: express.Request, res: express.Response) {
   try {
     const { userEmail, courseId } = req.body;
-    assertStringIsNumberOrThrow(courseId, 'Course id must be a number');
+    assertInputIsNotEmpty(courseId, 'Course Id');
     assertInputIsNotEmpty(userEmail, 'User email');
     const userRolesForCourse = await roleService.getUserRoleActionsForCourse(userEmail, courseId);
     return res.status(StatusCodes.OK).json(userRolesForCourse);
@@ -61,7 +60,7 @@ async function getUserRoleActionsForCourse(req: express.Request, res: express.Re
 async function getUserRoleActionsForProject(req: express.Request, res: express.Response) {
   try {
     const { userEmail, projectId } = req.body;
-    assertStringIsNumberOrThrow(projectId, 'Project id must be a number');
+    assertInputIsNotEmpty(projectId, 'Project Id');
     assertInputIsNotEmpty(userEmail, 'User email');
     const userRolesForProject = await roleService.getUserRoleActionsForProject(userEmail, projectId);
     return res.status(StatusCodes.OK).json(userRolesForProject);
@@ -95,10 +94,12 @@ async function getUserRolesForProject(req: express.Request, res: express.Respons
 async function updateUserRoleForCourse(req: express.Request, res: express.Response) {
   try {
     const { courseId } = req.params;
-    const { userEmail, userRole } = req.body;
+    const { userEmail, userRole, userId } = req.body;
+    assertInputIsNotEmpty(userId, 'User Id');
+    assertInputIsNotEmpty(userRole, 'User Role Id');
+    assertInputIsNotEmpty(userEmail, 'User Email');
     assertStringIsNumberOrThrow(courseId, 'Course id must be a number');
-    assertStringIsNumberOrThrow(userRole, 'User role id must be a number');
-    await roleService.updateUserRoleForCourse(Number(courseId), userEmail, Number(userRole));
+    await roleService.updateUserRoleForCourse(Number(courseId), userEmail, Number(userRole), Number(userId));
     return res.status(StatusCodes.OK).json();
   } catch (error: any) {
     return getDefaultErrorRes(error, res);
@@ -108,10 +109,12 @@ async function updateUserRoleForCourse(req: express.Request, res: express.Respon
 async function updateUserRoleForProject(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const { userEmail, userRole } = req.body;
+    const { userEmail, userRole, userId } = req.body;
+    assertInputIsNotEmpty(userId, 'User Id');
+    assertInputIsNotEmpty(userRole, 'User Role Id');
+    assertInputIsNotEmpty(userEmail, 'User Email');
     assertStringIsNumberOrThrow(projectId, 'Project id must be a number');
-    assertStringIsNumberOrThrow(userRole, 'User role id must be a number');
-    await roleService.updateUserRoleForProject(Number(projectId), userEmail, Number(userRole));
+    await roleService.updateUserRoleForProject(Number(projectId), userEmail, Number(userRole), Number(userId));
     return res.status(StatusCodes.OK).json();
   } catch (error: any) {
     return getDefaultErrorRes(error, res);

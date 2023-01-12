@@ -41,6 +41,7 @@ export type UserCourseRoleRequest = {
   id : number;
   userEmail: string;
   userRole: number;
+  userId: number
 }
 
 export type Action = {

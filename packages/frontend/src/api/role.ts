@@ -62,6 +62,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: {
           userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
+          userId: userCourseRole.userId
         },
         credentials: 'include'
       }),
@@ -74,6 +75,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: {
           userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
+          userId: userCourseRole.userId
         },
         credentials: 'include'
       }),

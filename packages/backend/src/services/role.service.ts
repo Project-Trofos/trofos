@@ -1,7 +1,7 @@
-import { Action, ActionsOnRoles } from '@prisma/client';
+import { Action, ActionsOnRoles, Prisma } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { RoleInformation, UserRolesForCourse, UserRoleActionsForCourse } from './types/role.service.types';
-import { ADMIN_ROLE_ID } from '../helpers/constants';
+import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 
 async function getUserRoleInformation(userEmail: string): Promise<RoleInformation> {
   const basicRoleQueryResult = await prisma.usersOnRoles.findFirstOrThrow({
@@ -184,7 +184,7 @@ async function getUserRolesForProject(projectId: number) : Promise<UserRolesForC
   return userRoleForProject;
 }
 
-async function updateUserRoleForCourse(courseId: number, userEmail: string, userRole: number) {
+async function updateUserRoleForCourse(courseId: number, userEmail: string, userRole: number, userId: number) {
   await prisma.usersOnRolesOnCourses.update({
     where : {
       user_email_course_id : {
@@ -196,9 +196,11 @@ async function updateUserRoleForCourse(courseId: number, userEmail: string, user
       role_id : userRole
     }
   })
+
+  await updateUserOnCoursePermissions(userId, courseId, userRole);
 }
 
-async function updateUserRoleForProject(projectId: number, userEmail: string, userRole: number) {
+async function updateUserRoleForProject(projectId: number, userEmail: string, userRole: number, userId: number) {
   const projectInformation = await prisma.project.findFirstOrThrow({
     where : {
       id : projectId
@@ -215,7 +217,34 @@ async function updateUserRoleForProject(projectId: number, userEmail: string, us
     data : {
       role_id : userRole
     }
-  })
+  });
+
+  await updateUserOnCoursePermissions(userId, Number(projectInformation.course_id), userRole);
+  
+}
+
+async function updateUserOnCoursePermissions(userId : number, courseId : number, roleId: number) {
+  try {
+    if (roleId === STUDENT_ROLE_ID) {
+      await prisma.usersOnCourses.delete({
+        where : {
+          course_id_user_id : {
+            course_id : courseId,
+            user_id : userId
+          }
+        }
+      })
+    } else {
+      await prisma.usersOnCourses.create({
+        data : {
+          user_id : userId,
+          course_id : courseId,
+        }
+      })
+    }
+  } catch (e : any) {
+    console.error(e);
+  }
 }
 
 export default {
