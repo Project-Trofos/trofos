@@ -1,6 +1,6 @@
 import express from 'express';
 import { Action } from '@prisma/client';
-import { hasAuth } from '../middleware/auth.middleware';
+import { hasAuth, hasAuthForCourse, hasAuthForProject } from '../middleware/auth.middleware';
 import role from '../controllers/role';
 
 const router = express.Router();
@@ -22,5 +22,17 @@ router.get('/userCourseRoles', hasAuth(null, null), role.getUserRoleActionsForCo
 
 // Get role and their actions for a specific project
 router.get('/userProjectRoles', hasAuth(null, null), role.getUserRoleActionsForProject);
+
+// Get users and their role for a specific course
+router.get('/courseUserRoles/:courseId', hasAuthForCourse(Action.read_course, null), role.getUserRolesForCourse);
+
+// Get users and their role for a specific project
+router.get('/projectUserRoles/:projectId', hasAuthForProject(Action.read_project, null), role.getUserRolesForProject);
+
+// Update user role for a specific course
+router.post('/courseUserRoles/:courseId', hasAuthForCourse(Action.update_course, null), role.updateUserRoleForCourse);
+
+// Update user role for a specific project
+router.post('/projectUserRoles/:projectId', hasAuthForProject(Action.update_course, null), role.updateUserRoleForProject);
 
 export default router;

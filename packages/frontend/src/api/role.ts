@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole } from './types';
+import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, UserOnRolesOnCourse} from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -41,6 +41,44 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    getCourseUserRoles: builder.query<UserOnRolesOnCourse[], number | undefined>({
+      query: (id) => ({
+        url : `role/courseUserRoles/${id}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, id) => [{ type: 'CourseRoles', id }],
+    }),
+    getProjectUserRoles: builder.query<UserOnRolesOnCourse[], number>({
+      query: (id) => ({
+        url : `role/projectUserRoles/${id}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, id) => [{ type: 'ProjectRoles', id }],
+    }),
+    updateCourseUserRole: builder.mutation<void, UserCourseRoleRequest>({
+      query: (userCourseRole) => ({
+        url : `role/courseUserRoles/${userCourseRole.id}`,
+        method: 'POST',
+        body: {
+          userEmail: userCourseRole.userEmail,
+          userRole: userCourseRole.userRole,
+        },
+        credentials: 'include'
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'CourseRoles', id }],
+    }),
+    updateProjectUserRole: builder.mutation<void, UserCourseRoleRequest>({
+      query: (userCourseRole) => ({
+        url : `role/projectUserRoles/${userCourseRole.id}`,
+        method: 'POST',
+        body: {
+          userEmail: userCourseRole.userEmail,
+          userRole: userCourseRole.userRole,
+        },
+        credentials: 'include'
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'ProjectRoles', id }],
+    })
   }),
   overrideExisting: false,
 });
@@ -50,4 +88,8 @@ export const {
   useGetActionsQuery,
   useAddActionToRoleMutation,
   useRemoveActionFromRoleMutation,
+  useGetCourseUserRolesQuery,
+  useGetProjectUserRolesQuery,
+  useUpdateCourseUserRoleMutation,
+  useUpdateProjectUserRoleMutation,
 } = extendedApi;

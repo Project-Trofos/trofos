@@ -6,8 +6,12 @@ export type RoleInformation = {
   isAdmin: boolean;
 };
 
-export type UserRolesForCourse = UsersOnRolesOnCourses & {
+export type UserRoleActionsForCourse = UsersOnRolesOnCourses & {
   role: Role & {
       actions: ActionsOnRoles[];
   };
+}
+
+export type UserRolesForCourse = UsersOnRolesOnCourses & {
+  role: Role
 }

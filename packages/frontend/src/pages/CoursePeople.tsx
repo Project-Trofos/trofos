@@ -9,7 +9,7 @@ import UserTable from '../components/tables/UserTable';
 
 export default function CoursePeople(): JSX.Element {
   const params = useParams();
-  const { course, handleAddUser, handleRemoveUser, isLoading } = useCourse(params.courseId);
+  const { course, courseUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useCourse(params.courseId);
   const { data: userInfo } = useGetUserInfoQuery();
 
   return (
@@ -17,6 +17,7 @@ export default function CoursePeople(): JSX.Element {
       <Space direction="vertical" style={{ width: '100%' }}>
         <UserTable
           users={course?.users}
+          userRoles={courseUserRoles}
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={
@@ -27,6 +28,7 @@ export default function CoursePeople(): JSX.Element {
             />
           }
           handleRemoveUser={handleRemoveUser}
+          handleUpdateUserRole={handleUpdateUserRole}
         />
       </Space>
     </Container>

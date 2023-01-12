@@ -9,7 +9,7 @@ import UserTable from '../components/tables/UserTable';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
-  const { project, handleAddUser, handleRemoveUser, isLoading } = useProject(
+  const { project, projectUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
@@ -19,6 +19,7 @@ export default function ProjectPeople(): JSX.Element {
       <Space direction="vertical" style={{ width: '100%' }}>
         <UserTable
           users={project?.users}
+          userRoles={projectUserRoles}
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={
@@ -29,6 +30,7 @@ export default function ProjectPeople(): JSX.Element {
             />
           }
           handleRemoveUser={handleRemoveUser}
+          handleUpdateUserRole={handleUpdateUserRole}
         />
       </Space>
     </Container>

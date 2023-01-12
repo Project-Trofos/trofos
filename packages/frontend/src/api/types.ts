@@ -37,6 +37,12 @@ export type CreateUserRequest = {
   newPassword: string;
 };
 
+export type UserCourseRoleRequest = {
+  id : number;
+  userEmail: string;
+  userRole: number;
+}
+
 export type Action = {
   action: string;
 };
@@ -65,6 +71,12 @@ export type UserData = {
   user: {
     user_id: number;
     user_email: string;
+    courseRoles : [{
+      id: number;
+      user_email: string;
+      role_id: number,
+      course_id: number
+    }]
   };
 };
 
@@ -80,6 +92,17 @@ export type Milestone = {
 export type CourseData = Course & {
   users: UserData[];
 };
+
+export type UserOnRolesOnCourse = {
+  id: number;
+  user_email: string;
+  role_id: number;
+  course_id: number;
+  role: {
+    id: number;
+    role_name: string
+  };
+}
 
 export type BacklogStatusData = {
   name: string;

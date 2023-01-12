@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 import { message } from 'antd';
 import { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -16,6 +17,12 @@ import {
   useGetProjectQuery,
   useRemoveProjectUserMutation,
 } from './project';
+import {
+  useGetCourseUserRolesQuery,
+  useGetProjectUserRolesQuery,
+  useUpdateCourseUserRoleMutation,
+  useUpdateProjectUserRoleMutation,
+} from './role'
 import { Project, Course } from './types';
 
 // Filter projects by current and past
@@ -67,9 +74,11 @@ export const useCurrentAndPastCourses = () => {
 // Get project information by id
 export const useProject = (projectId: number) => {
   const { data: project, isLoading: isProjectsLoading } = useGetProjectQuery({ id: projectId });
+  const { data : userRoles } = useGetProjectUserRolesQuery(projectId);
 
   const [addUser] = useAddProjectUserMutation();
   const [removeUser] = useRemoveProjectUserMutation();
+  const [updateUserProjectRole] = useUpdateProjectUserRoleMutation();
 
   const handleRemoveUser = useCallback(
     async (userId: number) => {
@@ -109,7 +118,35 @@ export const useProject = (projectId: number) => {
     [addUser, project],
   );
 
-  return { project, course: project?.course, handleAddUser, handleRemoveUser, isLoading: isProjectsLoading };
+  const handleUpdateUserRole = useCallback(
+    async (userEmail: string, roleId: number) => {
+      
+      try {
+        if (project) {
+          await updateUserProjectRole({id: projectId, userEmail: userEmail, userRole: roleId}).unwrap();
+          message.success('User role changed!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to modify user role');
+      }
+    },
+    [updateUserProjectRole, project]
+  )
+
+  const projectUserRoles = useMemo(() => {
+    if (!project) {
+      return undefined;
+    }
+
+    console.log("inside projectUserRoles")
+    console.log(userRoles)
+
+    return userRoles;
+
+  }, [handleUpdateUserRole, project, userRoles, projectId]);
+
+  return { project, projectUserRoles, course: project?.course, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading: isProjectsLoading };
 };
 
 // Get course information by id
@@ -120,8 +157,10 @@ export const useCourse = (courseId?: string) => {
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
+  const [updateUserCourseRole]  = useUpdateCourseUserRoleMutation();
   const [deleteMilestone] = useDeleteMilestoneMutation();
   const [updateMilestone] = useUpdateMilestoneMutation();
+  const { data : userRoles } = useGetCourseUserRolesQuery(courseIdNumber);
 
   const course = useMemo(() => {
     if (!courses || courses.length === 0 || !courseIdNumber) {
@@ -132,6 +171,7 @@ export const useCourse = (courseId?: string) => {
     if (possibleCourses.length === 0) {
       return undefined;
     }
+
     return possibleCourses[0];
   }, [courses, courseIdNumber]);
 
@@ -179,6 +219,31 @@ export const useCourse = (courseId?: string) => {
     },
     [addUser, course],
   );
+
+  const handleUpdateUserRole = useCallback(
+    async (userEmail: string, roleId: number) => {
+
+      try {
+        if (course) {
+          await updateUserCourseRole({id: course?.id, userEmail: userEmail, userRole: roleId}).unwrap();
+          message.success('User role changed!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to modify user role');
+      }
+    },
+    [addUser, course]
+  )
+
+  const courseUserRoles = useMemo(() => {
+    if (!courses || courses.length === 0 || !courseIdNumber) {
+      return undefined;
+    }
+
+    return userRoles;
+
+  }, [handleUpdateUserRole, courses, userRoles, courseIdNumber]);
 
   const handleDeleteMilestone = useCallback(
     async (milestoneId: number) => {
@@ -229,10 +294,12 @@ export const useCourse = (courseId?: string) => {
   return {
     course,
     filteredProjects,
+    courseUserRoles,
     handleAddUser,
     handleRemoveUser,
     handleDeleteMilestone,
     handleUpdateMilestone,
+    handleUpdateUserRole,
     isLoading: isCoursesLoading,
   };
 };
