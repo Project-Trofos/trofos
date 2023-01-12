@@ -85,8 +85,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                           >
                             <tr>
                               <th
-                                aria-label="this column's title is ID,this column is sortable"
+                                aria-label="ID"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -146,8 +147,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is Code,this column is sortable"
+                                aria-label="Code"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -207,8 +209,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is Start Year,this column is sortable"
+                                aria-label="Start Year"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -268,8 +271,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is Start Semester,this column is sortable"
+                                aria-label="Start Semester"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -329,8 +333,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is End Year,this column is sortable"
+                                aria-label="End Year"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -390,8 +395,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is End Semester,this column is sortable"
+                                aria-label="End Semester"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -451,8 +457,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
-                                aria-label="this column's title is Name,this column is sortable"
+                                aria-label="Name"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -546,6 +553,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                scope="col"
                               >
                                 Action
                               </th>

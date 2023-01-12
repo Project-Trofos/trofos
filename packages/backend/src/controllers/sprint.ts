@@ -1,7 +1,8 @@
-import { Sprint } from '@prisma/client';
+import { Backlog, Sprint } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import sprintService from '../services/sprint.service';
+import backlogService from '../services/backlog.service';
 import { assertProjectIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertSprintDatesAreValid,
@@ -26,7 +27,8 @@ const listSprints = async (req: express.Request, res: express.Response) => {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
     const sprints: Sprint[] = await sprintService.listSprints(Number(projectId));
-    return res.status(StatusCodes.OK).json(sprints);
+    const unassignedBacklogs: Backlog[] = await backlogService.listUnassignedBacklogs(Number(projectId));
+    return res.status(StatusCodes.OK).json({ sprints, unassignedBacklogs });
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }

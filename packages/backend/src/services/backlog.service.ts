@@ -111,11 +111,21 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   return backlog;
 }
 
-async function listBacklogs(projectId: number, shouldListUnassignedBacklogs: boolean): Promise<Backlog[]> {
+async function listBacklogs(projectId: number): Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
-      ...(shouldListUnassignedBacklogs ? { sprint_id: null } : {}),
+    },
+  });
+
+  return backlogs;
+}
+
+async function listUnassignedBacklogs(projectId: number): Promise<Backlog[]> {
+  const backlogs = await prisma.backlog.findMany({
+    where: {
+      project_id: projectId,
+      sprint_id: null,
     },
   });
 
@@ -228,6 +238,7 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
 export default {
   newBacklog,
   listBacklogs,
+  listUnassignedBacklogs,
   getBacklog,
   updateBacklog,
   deleteBacklog,
