@@ -110,6 +110,7 @@ const hasAuthForCourse =
   };
 
 const checkPolicyOutcome = async (req: express.Request, res: express.Response, sessionInformation: UserSession, policyName: string | null) : Promise<PolicyOutcome> => {
+
   const policyOutcome = await policyEngine.execute(req, sessionInformation, policyName);
 
   if (policyOutcome.isPolicyValid) {

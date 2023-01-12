@@ -1,21 +1,28 @@
 import { Action } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { isAuthorizedRequest } from '../../middleware/auth.middleware';
+import { hasAuth, hasAuthForCourse, hasAuthForProject } from '../../middleware/auth.middleware';
 import roleService from '../../services/role.service';
 import sessionService from '../../services/session.service';
 import policyEngine from '../../policies/policyEngine';
 import { PolicyOutcome } from '../../policies/policyTypes';
+import {UserRoleActionsForCourse } from '../../services/types/role.service.types'
+import { createRequest, createResponse } from 'node-mocks-http';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
 const roleServiceIsActionAllowed = jest.spyOn(roleService, 'isActionAllowed');
+const roleServiceGetUserRoleActionsForCourse =  jest.spyOn(roleService, 'getUserRoleActionsForCourse')
+const roleServiceGetUserRoleActionsForProject =  jest.spyOn(roleService, 'getUserRoleActionsForProject')
 const policyEngineSpy = jest.spyOn(policyEngine, 'execute');
 
 beforeEach(() => {
   sessionServiceGetUserSessionSpy.mockReset();
   roleServiceIsActionAllowed.mockReset();
+  roleServiceGetUserRoleActionsForCourse.mockReset();
+  roleServiceGetUserRoleActionsForProject.mockReset();
+  policyEngineSpy.mockReset();
 });
 
 describe('auth.middleware tests', () => {
@@ -32,7 +39,7 @@ describe('auth.middleware tests', () => {
         },
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(Action.read_course, null)(mockRequest, mockResponse, mockNext);
+      await hasAuth(Action.read_course, null)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toBeCalledTimes(0);
       expect(roleServiceIsActionAllowed).toBeCalledTimes(0);
       expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
@@ -55,7 +62,7 @@ describe('auth.middleware tests', () => {
         },
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(Action.read_course, null)(mockRequest, mockResponse, mockNext);
+      await hasAuth(Action.read_course, null)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
       expect(roleServiceIsActionAllowed).toBeCalledTimes(0);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -91,7 +98,7 @@ describe('auth.middleware tests', () => {
         },
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(Action.read_course, null)(mockRequest, mockResponse, mockNext);
+      await hasAuth(Action.read_course, null)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
       expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, Action.read_course);
       expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
@@ -107,8 +114,12 @@ describe('auth.middleware tests', () => {
         user_id: 1,
       };
       const roleServiceResponseObject = true;
+      const policyEngineResponseObject = { 
+        isPolicyValid : true 
+      } as PolicyOutcome
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
       roleServiceIsActionAllowed.mockResolvedValueOnce(roleServiceResponseObject);
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject)
       const testCookie = 'testCookie';
       const mockRequest = {
         cookies: {
@@ -128,7 +139,7 @@ describe('auth.middleware tests', () => {
         locals: {},
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(null, null)(mockRequest, mockResponse, mockNext);
+      await hasAuth(null, null)(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
       expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, null);
       expect(mockNext).toHaveBeenCalled();
@@ -169,7 +180,7 @@ describe('auth.middleware tests', () => {
         locals: {},
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      await hasAuth(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
       expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, Action.read_course);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
@@ -211,11 +222,179 @@ describe('auth.middleware tests', () => {
         locals: {},
       } as express.Response;
       const mockNext = jest.fn() as express.NextFunction;
-      await isAuthorizedRequest(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      await hasAuth(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
       expect(roleServiceIsActionAllowed).toHaveBeenCalledWith(1, Action.read_course);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
       expect(mockNext).toHaveBeenCalled();
     });
   });
+
+  describe("when an api request is made for a particular course", () => {
+    it('should reject the request if the user does not have permission to perform actions on this course', async () => {
+      const sessionServiceResponseObject = {
+        session_id: 'testSessionId',
+        user_email: 'testUser@test.com',
+        session_expiry: new Date('2022-08-31T15:19:39.104Z'),
+        user_role_id: 1,
+        user_is_admin: false,
+        user_id: 1,
+      };
+      const roleServiceResponseObject : UserRoleActionsForCourse = {
+        id: 1,
+        user_email: 'testUser@test.com',
+        role_id: 1,
+        course_id: 1,
+        role : {
+          id : 1,
+          role_name : 'TEST_ROLE',
+          actions : []
+        }
+      };
+
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+
+      const testCookie = 'testCookie';
+      const mockRequest = createRequest();
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = testCookie;
+      mockRequest.params.courseId = '1';
+      const mockResponse = createResponse();
+
+      const mockNext = jest.fn() as express.NextFunction;
+      await hasAuthForCourse(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
+      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(policyEngineSpy).not.toHaveBeenCalled();
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should call the next function if the session is valid and the user has permissions to perform actions on this course', async () => {
+      const sessionServiceResponseObject = {
+        session_id: 'testSessionId',
+        user_email: 'testUser@test.com',
+        session_expiry: new Date('2022-08-31T15:19:39.104Z'),
+        user_role_id: 1,
+        user_is_admin: false,
+        user_id: 1,
+      };
+      const roleServiceResponseObject : UserRoleActionsForCourse = {
+        id: 1,
+        user_email: 'testUser@test.com',
+        role_id: 1,
+        course_id: 1,
+        role : {
+          id : 1,
+          role_name : 'TEST_ROLE',
+          actions : [{ 
+            role_id : 1, 
+            action : Action.read_course 
+          }]
+        }
+      };
+      const policyEngineResponseObject = {
+        isPolicyValid: true,
+      } as PolicyOutcome;
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
+      const testCookie = 'testCookie';
+      const mockRequest = createRequest();
+
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = testCookie;
+      mockRequest.params.courseId = '1';
+      const mockResponse = createResponse();
+
+      const mockNext = jest.fn() as express.NextFunction;
+      await hasAuthForCourse(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
+      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
+      expect(mockNext).toHaveBeenCalled();
+    })
+  })
+
+  describe("when an api request is made for a particular project", () => {
+    it('should reject the request if the user does not have permission to perform actions on this project', async () => {
+      const sessionServiceResponseObject = {
+        session_id: 'testSessionId',
+        user_email: 'testUser@test.com',
+        session_expiry: new Date('2022-08-31T15:19:39.104Z'),
+        user_role_id: 1,
+        user_is_admin: false,
+        user_id: 1,
+      };
+      const roleServiceResponseObject : UserRoleActionsForCourse = {
+        id: 1,
+        user_email: 'testUser@test.com',
+        role_id: 1,
+        course_id: 1,
+        role : {
+          id : 1,
+          role_name : 'TEST_ROLE',
+          actions : []
+        }
+      };
+
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceResponseObject);
+
+      const testCookie = 'testCookie';
+      const mockRequest = createRequest();
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = testCookie;
+      mockRequest.params.projectId = '1';
+      const mockResponse = createResponse();
+
+      const mockNext = jest.fn() as express.NextFunction;
+      await hasAuthForProject(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
+      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(policyEngineSpy).not.toHaveBeenCalled();
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should call the next function if the session is valid and the user has permissions to perform actions on this project', async () => {
+      const sessionServiceResponseObject = {
+        session_id: 'testSessionId',
+        user_email: 'testUser@test.com',
+        session_expiry: new Date('2022-08-31T15:19:39.104Z'),
+        user_role_id: 1,
+        user_is_admin: false,
+        user_id: 1,
+      };
+      const roleServiceResponseObject : UserRoleActionsForCourse = {
+        id: 1,
+        user_email: 'testUser@test.com',
+        role_id: 1,
+        course_id: 1,
+        role : {
+          id : 1,
+          role_name : 'TEST_ROLE',
+          actions : [{ 
+            role_id : 1, 
+            action : Action.read_course 
+          }]
+        }
+      };
+      const policyEngineResponseObject = {
+        isPolicyValid: true,
+      } as PolicyOutcome;
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceResponseObject);
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
+      const testCookie = 'testCookie';
+      const mockRequest = createRequest();
+
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = testCookie;
+      mockRequest.params.projectId = '1';
+      const mockResponse = createResponse();
+
+      const mockNext = jest.fn() as express.NextFunction;
+      await hasAuthForProject(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
+      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
+      expect(mockNext).toHaveBeenCalled();
+    })
+  })
 });

@@ -1,4 +1,4 @@
-import { ActionsOnRoles, Prisma, UsersOnRoles, Action, Role } from '@prisma/client';
+import { ActionsOnRoles, Prisma, UsersOnRoles, Action, Role, UsersOnRolesOnCourses } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import roleService from '../../services/role.service';
 import { RoleInformation } from '../../services/types/role.service.types';
@@ -57,13 +57,19 @@ describe('role.service tests', () => {
 
   describe('getUserRoleInformation', () => {
     it('should return a role id if it exists', async () => {
-      type Responsetype = UsersOnRoles & {
+      type BasicRoles = UsersOnRoles & {
         role: Role & {
           actions: ActionsOnRoles[];
         };
       };
 
-      const prismaResponseObject: Responsetype = {
+      type CourseRoles = UsersOnRolesOnCourses & {
+        role: Role & {
+          actions: ActionsOnRoles[];
+        };
+      };
+
+      const basicRolesResponseObject: BasicRoles = {
         user_email: 'testUser@test.com',
         role_id: 1,
         role: {
@@ -78,12 +84,15 @@ describe('role.service tests', () => {
         },
       };
 
+      const courseRolesResponseObject : CourseRoles[] = [];
+
       const expectedResponse: RoleInformation = {
         isAdmin: false,
         roleId: 1,
         roleActions: ['test_action'],
       };
-      prismaMock.usersOnRoles.findFirstOrThrow.mockResolvedValueOnce(prismaResponseObject);
+      prismaMock.usersOnRoles.findFirstOrThrow.mockResolvedValueOnce(basicRolesResponseObject);
+      prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce(courseRolesResponseObject);
       await expect(roleService.getUserRoleInformation('testUser@test.com')).resolves.toEqual(expectedResponse);
     });
 
