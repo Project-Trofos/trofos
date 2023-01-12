@@ -62,7 +62,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime|d3-(interpolate|color)).+(js|jsx)$"
     ]
   }
 }

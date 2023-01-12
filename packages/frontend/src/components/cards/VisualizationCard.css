@@ -1,0 +1,9 @@
+/* TODO (Luoyi): The arrow in select is misaligned for some reason */
+.ant-select-arrow {
+  transform: translateY(-12px);
+}
+
+.visualization-card .visualization-card-header {
+  display: flex;
+  justify-content: space-between;
+}

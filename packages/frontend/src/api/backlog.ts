@@ -3,6 +3,11 @@ import { extendedApi as sprintApi } from './sprint';
 import type { BacklogFormFields } from '../helpers/BacklogModal.types';
 import type { Backlog, BacklogUpdatePayload } from './types';
 
+export type BacklogHistory = {
+  history_type: 'create' | 'update' | 'delete';
+  date: string;
+} & Omit<Backlog, 'assignee'>;
+
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBacklogs: builder.query<Backlog[], number>({
@@ -26,7 +31,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: backlog,
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog', 'Sprint'],
+      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory'],
     }),
     updateBacklog: builder.mutation<Backlog, BacklogUpdatePayload>({
       query: (backlogToUpdate) => ({
@@ -109,7 +114,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           }
         }
       },
-      invalidatesTags: ['Backlog', 'Sprint'],
+      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory'],
     }),
     deleteBacklog: builder.mutation<Backlog, { projectId: number; backlogId: number }>({
       query: ({ projectId, backlogId }) => ({
@@ -117,7 +122,25 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog', 'Sprint'],
+      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory'],
+    }),
+
+    // Backlog history related queries
+    getSprintBacklogHistory: builder.query<BacklogHistory[], { sprintId: number }>({
+      query: ({ sprintId }) => ({
+        url: `backlog/getHistory/sprint/${sprintId}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['BacklogHistory'],
+    }),
+    getProjectBacklogHistory: builder.query<BacklogHistory[], { projectId: number }>({
+      query: ({ projectId }) => ({
+        url: `backlog/getHistory/project/${projectId}`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['BacklogHistory'],
     }),
   }),
   overrideExisting: false,
@@ -129,4 +152,6 @@ export const {
   useAddBacklogMutation,
   useUpdateBacklogMutation,
   useDeleteBacklogMutation,
+  useGetProjectBacklogHistoryQuery,
+  useGetSprintBacklogHistoryQuery,
 } = extendedApi;
