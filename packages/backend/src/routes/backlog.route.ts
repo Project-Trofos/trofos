@@ -25,7 +25,7 @@ router.get(
   backlogHistory.getProjectBacklogHistory,
 );
 router.get(
-  '/getHistory/sprint/:sprintID',
+  '/getHistory/sprint/:sprintId',
   isAuthorizedRequest(Action.read_project, null),
   backlogHistory.getSprintBacklogHistory,
 );
