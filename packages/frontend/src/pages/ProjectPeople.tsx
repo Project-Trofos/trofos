@@ -2,6 +2,7 @@ import React from 'react';
 import { Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
+import { useGetActionsOnRolesQuery } from '../api/role';
 import { useProject } from '../api/hooks';
 import InputWithButton from '../components/fields/InputWithButton';
 import Container from '../components/layouts/Container';
@@ -13,6 +14,7 @@ export default function ProjectPeople(): JSX.Element {
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
+  const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
 
   return (
     <Container>
@@ -20,6 +22,7 @@ export default function ProjectPeople(): JSX.Element {
         <UserTable
           users={project?.users}
           userRoles={projectUserRoles}
+          actionsOnRoles={actionsOnRoles}
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={

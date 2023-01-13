@@ -2,6 +2,7 @@ import React from 'react';
 import { Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
+import { useGetActionsOnRolesQuery } from '../api/role';
 import { useCourse } from '../api/hooks';
 import InputWithButton from '../components/fields/InputWithButton';
 import Container from '../components/layouts/Container';
@@ -11,6 +12,7 @@ export default function CoursePeople(): JSX.Element {
   const params = useParams();
   const { course, courseUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useCourse(params.courseId);
   const { data: userInfo } = useGetUserInfoQuery();
+  const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
 
   return (
     <Container>
@@ -18,6 +20,7 @@ export default function CoursePeople(): JSX.Element {
         <UserTable
           users={course?.users}
           userRoles={courseUserRoles}
+          actionsOnRoles={actionsOnRoles}
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={
