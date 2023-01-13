@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card, Space, Table, Tag } from 'antd';
-import { CourseData, UserData, UserOnRolesOnCourse } from '../../api/types';
+import { CourseData, UserData, UserOnRolesOnCourse, ActionsOnRoles } from '../../api/types';
 import { useGetActionsOnRolesQuery } from '../../api/role';
 import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
@@ -8,6 +8,7 @@ import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal
 type UserTableProps = {
   users: CourseData['users'] | undefined;
   userRoles: UserOnRolesOnCourse[] | undefined;
+  actionsOnRoles: ActionsOnRoles[] | undefined;
   isLoading: boolean;
   heading?: string;
   control?: React.ReactNode;
@@ -22,6 +23,7 @@ type UserTableProps = {
 export default function UserTable({
   users,
   userRoles,
+  actionsOnRoles,
   isLoading,
   heading,
   control,
@@ -29,7 +31,6 @@ export default function UserTable({
   handleRemoveUser,
   handleUpdateUserRole,
 }: UserTableProps) {
-  const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
 
   return (
     <Card className="table-card">

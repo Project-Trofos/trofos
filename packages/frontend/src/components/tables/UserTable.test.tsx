@@ -12,22 +12,22 @@ describe('test UserTable', () => {
       user: {
         user_email: 'email',
         user_id: 999,
-        courseRoles : [{
-          id: 1,
-          user_email: "email",
-          role_id: 1,
-          course_id: 1
-        }]
+        courseRoles: [
+          {
+            id: 1,
+            user_email: 'email',
+            role_id: 1,
+            course_id: 1,
+          },
+        ],
       },
     },
   ];
 
   const setup = () => {
     const { baseElement, debug } = render(
-    <Provider store={store}>
-          <UserTable users={mockUsers} userRoles={undefined} isLoading={false} />
-    </Provider>
-);
+        <UserTable users={mockUsers} userRoles={undefined} actionsOnRoles={undefined} isLoading={false} />
+    );
     return { baseElement, debug };
   };
 
