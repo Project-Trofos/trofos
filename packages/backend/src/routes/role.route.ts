@@ -33,6 +33,10 @@ router.get('/projectUserRoles/:projectId', hasAuthForProject(Action.read_project
 router.post('/courseUserRoles/:courseId', hasAuthForCourse(Action.update_course, null), role.updateUserRoleForCourse);
 
 // Update user role for a specific project
-router.post('/projectUserRoles/:projectId', hasAuthForProject(Action.update_course, null), role.updateUserRoleForProject);
+router.post(
+  '/projectUserRoles/:projectId',
+  hasAuthForProject(Action.update_course, null),
+  role.updateUserRoleForProject,
+);
 
 export default router;

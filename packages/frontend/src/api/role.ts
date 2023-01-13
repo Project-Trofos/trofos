@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, UserOnRolesOnCourse} from './types';
+import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, UserOnRolesOnCourse } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -43,44 +43,44 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
     getCourseUserRoles: builder.query<UserOnRolesOnCourse[], number | undefined>({
       query: (id) => ({
-        url : `role/courseUserRoles/${id}`,
+        url: `role/courseUserRoles/${id}`,
         credentials: 'include',
       }),
       providesTags: (result, error, id) => [{ type: 'CourseRoles', id }],
     }),
     getProjectUserRoles: builder.query<UserOnRolesOnCourse[], number>({
       query: (id) => ({
-        url : `role/projectUserRoles/${id}`,
+        url: `role/projectUserRoles/${id}`,
         credentials: 'include',
       }),
       providesTags: (result, error, id) => [{ type: 'ProjectRoles', id }],
     }),
     updateCourseUserRole: builder.mutation<void, UserCourseRoleRequest>({
       query: (userCourseRole) => ({
-        url : `role/courseUserRoles/${userCourseRole.id}`,
+        url: `role/courseUserRoles/${userCourseRole.id}`,
         method: 'POST',
         body: {
           userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
-          userId: userCourseRole.userId
+          userId: userCourseRole.userId,
         },
-        credentials: 'include'
+        credentials: 'include',
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'CourseRoles', id }],
     }),
     updateProjectUserRole: builder.mutation<void, UserCourseRoleRequest>({
       query: (userCourseRole) => ({
-        url : `role/projectUserRoles/${userCourseRole.id}`,
+        url: `role/projectUserRoles/${userCourseRole.id}`,
         method: 'POST',
         body: {
           userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
-          userId: userCourseRole.userId
+          userId: userCourseRole.userId,
         },
-        credentials: 'include'
+        credentials: 'include',
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'ProjectRoles', id }],
-    })
+    }),
   }),
   overrideExisting: false,
 });

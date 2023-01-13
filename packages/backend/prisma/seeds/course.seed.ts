@@ -54,18 +54,18 @@ async function createCourseSeed(prisma: PrismaClient) {
   console.log('created usersOnCourses %s', usersOnCourses);
 
   const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.createMany({
-    data : [
+    data: [
       {
         user_email: 'testFaculty@test.com',
         course_id: 1,
-        role_id: FACULTY_ROLE_ID
+        role_id: FACULTY_ROLE_ID,
       },
       {
         user_email: 'testFaculty@test.com',
         course_id: 3,
-        role_id: FACULTY_ROLE_ID
-      }
-    ]
+        role_id: FACULTY_ROLE_ID,
+      },
+    ],
   });
 
   console.log('create usersOnRolesOnCourses %s', usersOnRolesOnCourses);

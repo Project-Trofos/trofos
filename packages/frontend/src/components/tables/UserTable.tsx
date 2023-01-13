@@ -31,7 +31,6 @@ export default function UserTable({
   handleRemoveUser,
   handleUpdateUserRole,
 }: UserTableProps) {
-
   return (
     <Card className="table-card">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -68,27 +67,25 @@ export default function UserTable({
             title="Action"
             dataIndex="action"
             render={(_, record: UserData) => (
-                <Space size="middle">
-                  {handleRemoveUser && (
-                    <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
-                      Remove
-                    </Button>
-                  )}
-                  {handleUpdateUserRole && (
-                    <UserTableRoleManagementModal
-                      userRoleId={
-                        userRoles?.find(userRole => userRole.user_email === record.user.user_email)?.role.id
-                      }
-                      userRoleName={
-                        userRoles?.find(userRole => userRole.user_email === record.user.user_email)?.role.role_name
-                      }
-                      userEmail={record.user.user_email}
-                      userId={record.user.user_id}
-                      roles={actionsOnRoles}
-                      handleRoleChange={handleUpdateUserRole}
-                    />
-                  )}
-                </Space>
+              <Space size="middle">
+                {handleRemoveUser && (
+                  <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
+                    Remove
+                  </Button>
+                )}
+                {handleUpdateUserRole && (
+                  <UserTableRoleManagementModal
+                    userRoleId={userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.id}
+                    userRoleName={
+                      userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.role_name
+                    }
+                    userEmail={record.user.user_email}
+                    userId={record.user.user_id}
+                    roles={actionsOnRoles}
+                    handleRoleChange={handleUpdateUserRole}
+                  />
+                )}
+              </Space>
             )}
           />
         </Table>

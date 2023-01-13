@@ -26,7 +26,7 @@ describe('test UserTable', () => {
 
   const setup = () => {
     const { baseElement, debug } = render(
-        <UserTable users={mockUsers} userRoles={undefined} actionsOnRoles={undefined} isLoading={false} />
+      <UserTable users={mockUsers} userRoles={undefined} actionsOnRoles={undefined} isLoading={false} />,
     );
     return { baseElement, debug };
   };

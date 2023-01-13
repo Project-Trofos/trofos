@@ -51,25 +51,13 @@ router.get('/:courseId/user', hasAuthForCourse(Action.read_course, coursePolicy.
 router.post('/:courseId/user', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), course.addUser);
 
 // Remove a user from a course
-router.delete(
-  '/:courseId/user',
-  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
-  course.removeUser,
-);
+router.delete('/:courseId/user', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), course.removeUser);
 
 // Get all projects of a course
-router.get(
-  '/:courseId/project',
-  hasAuthForCourse(Action.read_course, projectPolicy.POLICY_NAME),
-  course.getProjects,
-);
+router.get('/:courseId/project', hasAuthForCourse(Action.read_course, projectPolicy.POLICY_NAME), course.getProjects);
 
 // Add a project to a course
-router.post(
-  '/:courseId/project',
-  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
-  course.addProject,
-);
+router.post('/:courseId/project', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), course.addProject);
 
 // Remove a project from a course
 router.delete(

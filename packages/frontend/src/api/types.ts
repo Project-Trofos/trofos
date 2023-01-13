@@ -38,11 +38,11 @@ export type CreateUserRequest = {
 };
 
 export type UserCourseRoleRequest = {
-  id : number;
+  id: number;
   userEmail: string;
   userRole: number;
-  userId: number
-}
+  userId: number;
+};
 
 export type Action = {
   action: string;
@@ -72,12 +72,14 @@ export type UserData = {
   user: {
     user_id: number;
     user_email: string;
-    courseRoles : [{
-      id: number;
-      user_email: string;
-      role_id: number,
-      course_id: number
-    }]
+    courseRoles: [
+      {
+        id: number;
+        user_email: string;
+        role_id: number;
+        course_id: number;
+      },
+    ];
   };
 };
 
@@ -101,9 +103,9 @@ export type UserOnRolesOnCourse = {
   course_id: number;
   role: {
     id: number;
-    role_name: string
+    role_name: string;
   };
-}
+};
 
 export type BacklogStatusData = {
   name: string;

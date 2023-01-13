@@ -22,7 +22,7 @@ import {
   useGetProjectUserRolesQuery,
   useUpdateCourseUserRoleMutation,
   useUpdateProjectUserRoleMutation,
-} from './role'
+} from './role';
 import { Project, Course } from './types';
 
 // Filter projects by current and past
@@ -74,7 +74,7 @@ export const useCurrentAndPastCourses = () => {
 // Get project information by id
 export const useProject = (projectId: number) => {
   const { data: project, isLoading: isProjectsLoading } = useGetProjectQuery({ id: projectId });
-  const { data : userRoles } = useGetProjectUserRolesQuery(projectId);
+  const { data: userRoles } = useGetProjectUserRolesQuery(projectId);
 
   const [addUser] = useAddProjectUserMutation();
   const [removeUser] = useRemoveProjectUserMutation();
@@ -120,10 +120,14 @@ export const useProject = (projectId: number) => {
 
   const handleUpdateUserRole = useCallback(
     async (userEmail: string, roleId: number, userId: number) => {
-      
       try {
         if (project) {
-          await updateUserProjectRole({id: projectId, userEmail: userEmail, userRole: roleId, userId: userId}).unwrap();
+          await updateUserProjectRole({
+            id: projectId,
+            userEmail: userEmail,
+            userRole: roleId,
+            userId: userId,
+          }).unwrap();
           message.success('User role changed!');
         }
       } catch (e) {
@@ -131,22 +135,29 @@ export const useProject = (projectId: number) => {
         message.error('Failed to modify user role');
       }
     },
-    [updateUserProjectRole, project]
-  )
+    [updateUserProjectRole, project],
+  );
 
   const projectUserRoles = useMemo(() => {
     if (!project) {
       return undefined;
     }
 
-    console.log("inside projectUserRoles")
-    console.log(userRoles)
+    console.log('inside projectUserRoles');
+    console.log(userRoles);
 
     return userRoles;
-
   }, [handleUpdateUserRole, project, userRoles, projectId]);
 
-  return { project, projectUserRoles, course: project?.course, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading: isProjectsLoading };
+  return {
+    project,
+    projectUserRoles,
+    course: project?.course,
+    handleAddUser,
+    handleRemoveUser,
+    handleUpdateUserRole,
+    isLoading: isProjectsLoading,
+  };
 };
 
 // Get course information by id
@@ -157,10 +168,10 @@ export const useCourse = (courseId?: string) => {
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
-  const [updateUserCourseRole]  = useUpdateCourseUserRoleMutation();
+  const [updateUserCourseRole] = useUpdateCourseUserRoleMutation();
   const [deleteMilestone] = useDeleteMilestoneMutation();
   const [updateMilestone] = useUpdateMilestoneMutation();
-  const { data : userRoles } = useGetCourseUserRolesQuery(courseIdNumber);
+  const { data: userRoles } = useGetCourseUserRolesQuery(courseIdNumber);
 
   const course = useMemo(() => {
     if (!courses || courses.length === 0 || !courseIdNumber) {
@@ -222,10 +233,14 @@ export const useCourse = (courseId?: string) => {
 
   const handleUpdateUserRole = useCallback(
     async (userEmail: string, roleId: number, userId: number) => {
-
       try {
         if (course) {
-          await updateUserCourseRole({id: course?.id, userEmail: userEmail, userRole: roleId, userId: userId}).unwrap();
+          await updateUserCourseRole({
+            id: course?.id,
+            userEmail: userEmail,
+            userRole: roleId,
+            userId: userId,
+          }).unwrap();
           message.success('User role changed!');
         }
       } catch (e) {
@@ -233,8 +248,8 @@ export const useCourse = (courseId?: string) => {
         message.error('Failed to modify user role');
       }
     },
-    [addUser, course]
-  )
+    [addUser, course],
+  );
 
   const courseUserRoles = useMemo(() => {
     if (!courses || courses.length === 0 || !courseIdNumber) {
@@ -242,7 +257,6 @@ export const useCourse = (courseId?: string) => {
     }
 
     return userRoles;
-
   }, [handleUpdateUserRole, courses, userRoles, courseIdNumber]);
 
   const handleDeleteMilestone = useCallback(

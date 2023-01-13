@@ -84,7 +84,7 @@ describe('role.service tests', () => {
         },
       };
 
-      const courseRolesResponseObject : CourseRoles[] = [];
+      const courseRolesResponseObject: CourseRoles[] = [];
 
       const expectedResponse: RoleInformation = {
         isAdmin: false,
@@ -176,99 +176,103 @@ describe('role.service tests', () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return the users role actions for a course if the query was successful', async () => {
       const prismaResponseObject = {
-        id : 1,
-        user_email : 'testUser@test.com',
-        course_id : 1,
-        role_id : 1,
-        role : {
-          role_name : 'TEST_ROLE',
-          actions : []
-        }
-      }
+        id: 1,
+        user_email: 'testUser@test.com',
+        course_id: 1,
+        role_id: 1,
+        role: {
+          role_name: 'TEST_ROLE',
+          actions: [],
+        },
+      };
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockResolvedValueOnce(prismaResponseObject);
-      await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).resolves.toEqual(prismaResponseObject);
-    })
-  })
+      await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).resolves.toEqual(
+        prismaResponseObject,
+      );
+    });
+  });
 
   describe('getUserRoleActionsForProject', () => {
     it('should return an error if the query was unsuccessful while retrieving project info', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while retrieving course info', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while retrieving course info', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return the users role actions for a course if the query was successful', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const userOnRolesOnCoursesResponseObject = {
-        id : 1,
-        user_email : 'testUser@test.com',
-        course_id : 1,
-        role_id : 1,
-        role : {
-          role_name : 'TEST_ROLE',
-          actions : []
-        }
-      }
+        id: 1,
+        user_email: 'testUser@test.com',
+        course_id: 1,
+        role_id: 1,
+        role: {
+          role_name: 'TEST_ROLE',
+          actions: [],
+        },
+      };
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockResolvedValueOnce(userOnRolesOnCoursesResponseObject);
-      await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).resolves.toEqual(userOnRolesOnCoursesResponseObject);
-    })
+      await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).resolves.toEqual(
+        userOnRolesOnCoursesResponseObject,
+      );
+    });
   });
 
   describe('getUserRolesForCourse', () => {
@@ -276,192 +280,196 @@ describe('role.service tests', () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.usersOnRolesOnCourses.findMany.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForCourse(1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return the list of users and their roles for the course', async () => {
-      const prismaResponseObject = [{
-        id : 1,
-        user_email : 'testUser@test.com',
-        role_id : 1,
-        course_id : 1
-      }];
+      const prismaResponseObject = [
+        {
+          id: 1,
+          user_email: 'testUser@test.com',
+          role_id: 1,
+          course_id: 1,
+        },
+      ];
       prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce(prismaResponseObject);
       await expect(roleService.getUserRolesForCourse(1)).resolves.toEqual(prismaResponseObject);
-    })
-  })
+    });
+  });
 
   describe('getUserRolesForProject', () => {
     it('should return an error if the query was unsuccessful while retrieving project info', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForProject(1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while retrieving course info', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findMany.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForProject(1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return the list of users and their roles for the course', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
-      const courseRolesResponseObject = [{
-        id : 1,
-        user_email : 'testUser@test.com',
-        role_id : 1,
-        course_id : 1
-      }];
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
+      const courseRolesResponseObject = [
+        {
+          id: 1,
+          user_email: 'testUser@test.com',
+          role_id: 1,
+          course_id: 1,
+        },
+      ];
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce(courseRolesResponseObject);
       await expect(roleService.getUserRolesForProject(1)).resolves.toEqual(courseRolesResponseObject);
-    })
-  })
+    });
+  });
 
-  describe("updateUserRoleForCourse", () => {
+  describe('updateUserRoleForCourse', () => {
     it('should return an error if the query was unsuccessful while updating role info', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while updating the userOnCourse info', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       const usersOnCoursesResponseObject = {
-        user_id : 1,
-        course_id : 1,
-        created_at : new Date('2022-08-31T15:19:39.104Z')
-      }
+        user_id: 1,
+        course_id: 1,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+      };
       prismaMock.usersOnCourses.create.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
       const usersOnCoursesResponseObject = {
-        user_id : 1,
-        course_id : 1,
-        created_at : new Date('2022-08-31T15:19:39.104Z')
-      }
+        user_id: 1,
+        course_id: 1,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+      };
       const usersOnRolesOnCoursesResponseObject = {
-        id : 1,
-        user_email : 'testUser@test.com',
-        course_id : 1,
-        role_id : 2
-      }
+        id: 1,
+        user_email: 'testUser@test.com',
+        course_id: 1,
+        role_id: 2,
+      };
       prismaMock.usersOnCourses.delete.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 2, 1));
-    })
+    });
   });
 
-  describe("updateUserRoleForProject", () => {
+  describe('updateUserRoleForProject', () => {
     it('should return an error if the query was unsuccessful while fetching project info', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while updating role info', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should return an error if the query was unsuccessful while updating the userOnCourse info', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
       const usersOnCoursesResponseObject = {
-        user_id : 1,
-        course_id : 1,
-        created_at : new Date('2022-08-31T15:19:39.104Z')
-      }
+        user_id: 1,
+        course_id: 1,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+      };
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnCourses.create.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
-    })
+    });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
       const projectResponseObject = {
-        id : 1,
-        pname : 'testProject',
-        course_id : 1,
-        public : false,
-        created_at : new Date('2022-08-31T15:19:39.104Z'),
-        backlog_counter : 0,
-        pkey : "",
-        description : "",
-        users : [],
-        sprints : [],
-        backlogStatuses : []
-      }
+        id: 1,
+        pname: 'testProject',
+        course_id: 1,
+        public: false,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+        backlog_counter: 0,
+        pkey: '',
+        description: '',
+        users: [],
+        sprints: [],
+        backlogStatuses: [],
+      };
       const usersOnCoursesResponseObject = {
-        user_id : 1,
-        course_id : 1,
-        created_at : new Date('2022-08-31T15:19:39.104Z')
-      }
+        user_id: 1,
+        course_id: 1,
+        created_at: new Date('2022-08-31T15:19:39.104Z'),
+      };
       const usersOnRolesOnCoursesResponseObject = {
-        id : 1,
-        user_email : 'testUser@test.com',
-        course_id : 1,
-        role_id : 1
-      }
+        id: 1,
+        user_email: 'testUser@test.com',
+        course_id: 1,
+        role_id: 1,
+      };
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnCourses.delete.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 1, 1));
-    })
-  })
+    });
+  });
 });

@@ -21,12 +21,22 @@ describe('test course creation modal', () => {
     public: false,
     created_at: '2022-09-15T01:58:01.735Z',
     milestones: [],
-    users: [{ user: { user_id: 1, user_email: 'email', courseRoles : [{
-      id: 1,
-      user_email: "email",
-      role_id: 1,
-      course_id: 1
-    }] } }],
+    users: [
+      {
+        user: {
+          user_id: 1,
+          user_email: 'email',
+          courseRoles: [
+            {
+              id: 1,
+              user_email: 'email',
+              role_id: 1,
+              course_id: 1,
+            },
+          ],
+        },
+      },
+    ],
   };
 
   const mockProjectData: ProjectData[] = [];

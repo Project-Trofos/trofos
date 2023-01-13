@@ -1,4 +1,4 @@
-import {UsersOnRolesOnCourses, Role, ActionsOnRoles} from '@prisma/client'
+import { UsersOnRolesOnCourses, Role, ActionsOnRoles } from '@prisma/client';
 
 export type RoleInformation = {
   roleId: number;
@@ -8,10 +8,10 @@ export type RoleInformation = {
 
 export type UserRoleActionsForCourse = UsersOnRolesOnCourses & {
   role: Role & {
-      actions: ActionsOnRoles[];
+    actions: ActionsOnRoles[];
   };
-}
+};
 
 export type UserRolesForCourse = UsersOnRolesOnCourses & {
-  role: Role
-}
+  role: Role;
+};

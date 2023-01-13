@@ -1,20 +1,20 @@
 import { Action } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { createRequest, createResponse } from 'node-mocks-http';
 import { hasAuth, hasAuthForCourse, hasAuthForProject } from '../../middleware/auth.middleware';
 import roleService from '../../services/role.service';
 import sessionService from '../../services/session.service';
 import policyEngine from '../../policies/policyEngine';
 import { PolicyOutcome } from '../../policies/policyTypes';
-import {UserRoleActionsForCourse } from '../../services/types/role.service.types'
-import { createRequest, createResponse } from 'node-mocks-http';
+import { UserRoleActionsForCourse } from '../../services/types/role.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
 const sessionServiceGetUserSessionSpy = jest.spyOn(sessionService, 'getUserSession');
 const roleServiceIsActionAllowed = jest.spyOn(roleService, 'isActionAllowed');
-const roleServiceGetUserRoleActionsForCourse =  jest.spyOn(roleService, 'getUserRoleActionsForCourse')
-const roleServiceGetUserRoleActionsForProject =  jest.spyOn(roleService, 'getUserRoleActionsForProject')
+const roleServiceGetUserRoleActionsForCourse = jest.spyOn(roleService, 'getUserRoleActionsForCourse');
+const roleServiceGetUserRoleActionsForProject = jest.spyOn(roleService, 'getUserRoleActionsForProject');
 const policyEngineSpy = jest.spyOn(policyEngine, 'execute');
 
 beforeEach(() => {
@@ -114,12 +114,12 @@ describe('auth.middleware tests', () => {
         user_id: 1,
       };
       const roleServiceResponseObject = true;
-      const policyEngineResponseObject = { 
-        isPolicyValid : true 
-      } as PolicyOutcome
+      const policyEngineResponseObject = {
+        isPolicyValid: true,
+      } as PolicyOutcome;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObjecet);
       roleServiceIsActionAllowed.mockResolvedValueOnce(roleServiceResponseObject);
-      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject)
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = {
         cookies: {
@@ -230,7 +230,7 @@ describe('auth.middleware tests', () => {
     });
   });
 
-  describe("when an api request is made for a particular course", () => {
+  describe('when an api request is made for a particular course', () => {
     it('should reject the request if the user does not have permission to perform actions on this course', async () => {
       const sessionServiceResponseObject = {
         session_id: 'testSessionId',
@@ -240,16 +240,16 @@ describe('auth.middleware tests', () => {
         user_is_admin: false,
         user_id: 1,
       };
-      const roleServiceResponseObject : UserRoleActionsForCourse = {
+      const roleServiceResponseObject: UserRoleActionsForCourse = {
         id: 1,
         user_email: 'testUser@test.com',
         role_id: 1,
         course_id: 1,
-        role : {
-          id : 1,
-          role_name : 'TEST_ROLE',
-          actions : []
-        }
+        role: {
+          id: 1,
+          role_name: 'TEST_ROLE',
+          actions: [],
+        },
       };
 
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
@@ -278,19 +278,21 @@ describe('auth.middleware tests', () => {
         user_is_admin: false,
         user_id: 1,
       };
-      const roleServiceResponseObject : UserRoleActionsForCourse = {
+      const roleServiceResponseObject: UserRoleActionsForCourse = {
         id: 1,
         user_email: 'testUser@test.com',
         role_id: 1,
         course_id: 1,
-        role : {
-          id : 1,
-          role_name : 'TEST_ROLE',
-          actions : [{ 
-            role_id : 1, 
-            action : Action.read_course 
-          }]
-        }
+        role: {
+          id: 1,
+          role_name: 'TEST_ROLE',
+          actions: [
+            {
+              role_id: 1,
+              action: Action.read_course,
+            },
+          ],
+        },
       };
       const policyEngineResponseObject = {
         isPolicyValid: true,
@@ -311,10 +313,10 @@ describe('auth.middleware tests', () => {
       expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith('testUser@test.com', 1);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
       expect(mockNext).toHaveBeenCalled();
-    })
-  })
+    });
+  });
 
-  describe("when an api request is made for a particular project", () => {
+  describe('when an api request is made for a particular project', () => {
     it('should reject the request if the user does not have permission to perform actions on this project', async () => {
       const sessionServiceResponseObject = {
         session_id: 'testSessionId',
@@ -324,16 +326,16 @@ describe('auth.middleware tests', () => {
         user_is_admin: false,
         user_id: 1,
       };
-      const roleServiceResponseObject : UserRoleActionsForCourse = {
+      const roleServiceResponseObject: UserRoleActionsForCourse = {
         id: 1,
         user_email: 'testUser@test.com',
         role_id: 1,
         course_id: 1,
-        role : {
-          id : 1,
-          role_name : 'TEST_ROLE',
-          actions : []
-        }
+        role: {
+          id: 1,
+          role_name: 'TEST_ROLE',
+          actions: [],
+        },
       };
 
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
@@ -362,19 +364,21 @@ describe('auth.middleware tests', () => {
         user_is_admin: false,
         user_id: 1,
       };
-      const roleServiceResponseObject : UserRoleActionsForCourse = {
+      const roleServiceResponseObject: UserRoleActionsForCourse = {
         id: 1,
         user_email: 'testUser@test.com',
         role_id: 1,
         course_id: 1,
-        role : {
-          id : 1,
-          role_name : 'TEST_ROLE',
-          actions : [{ 
-            role_id : 1, 
-            action : Action.read_course 
-          }]
-        }
+        role: {
+          id: 1,
+          role_name: 'TEST_ROLE',
+          actions: [
+            {
+              role_id: 1,
+              action: Action.read_course,
+            },
+          ],
+        },
       };
       const policyEngineResponseObject = {
         isPolicyValid: true,
@@ -395,6 +399,6 @@ describe('auth.middleware tests', () => {
       expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith('testUser@test.com', 1);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
       expect(mockNext).toHaveBeenCalled();
-    })
-  })
+    });
+  });
 });
