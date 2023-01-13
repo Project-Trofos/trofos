@@ -13,14 +13,22 @@ type UserTableProps = {
   control?: React.ReactNode;
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
-  handleUpdateUserRole? : (userEmail: string, roleId: number, userId: number) => void;
+  handleUpdateUserRole?: (userEmail: string, roleId: number, userId: number) => void;
 };
 
 /**
  * Table for listing users
  */
-export default function UserTable({ users, userRoles, isLoading, heading, control, myUserId, handleRemoveUser, handleUpdateUserRole }: UserTableProps) {
-
+export default function UserTable({
+  users,
+  userRoles,
+  isLoading,
+  heading,
+  control,
+  myUserId,
+  handleRemoveUser,
+  handleUpdateUserRole,
+}: UserTableProps) {
   const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
 
   return (
@@ -68,22 +76,22 @@ export default function UserTable({ users, userRoles, isLoading, heading, contro
                   )}
                 </Space>
                 <Space size="middle">
-                {handleUpdateUserRole && (
-                  <UserTableRoleManagementModal
-                    userRoleId = {
-                      userRoles?.filter(userRole => userRole.user_email === record.user.user_email)[0].role.id
-                    }
-                    userRoleName = { 
-                      userRoles?.filter(userRole => userRole.user_email === record.user.user_email)[0].role.role_name
-                    }
-                    userEmail = {record.user.user_email}
-                    userId = {record.user.user_id}
-                    roles={actionsOnRoles}
-                    handleRoleChange={handleUpdateUserRole}
-                  />
-                )}
-              </Space>
-            </>
+                  {handleUpdateUserRole && (
+                    <UserTableRoleManagementModal
+                      userRoleId={
+                        userRoles?.find(userRole => userRole.user_email === record.user.user_email)?.role.id
+                      }
+                      userRoleName={
+                        userRoles?.find(userRole => userRole.user_email === record.user.user_email)?.role.role_name
+                      }
+                      userEmail={record.user.user_email}
+                      userId={record.user.user_id}
+                      roles={actionsOnRoles}
+                      handleRoleChange={handleUpdateUserRole}
+                    />
+                  )}
+                </Space>
+              </>
             )}
           />
         </Table>
