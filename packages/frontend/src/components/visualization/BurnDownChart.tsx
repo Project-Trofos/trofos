@@ -1,6 +1,6 @@
 import React from 'react';
 import { Line } from '@ant-design/plots';
-import { BacklogHistory } from '../../api/backlog';
+import { BacklogHistory } from '../../api/types';
 import { Sprint } from '../../api/sprint';
 import { useBurndownChart } from './useBurndownChart';
 

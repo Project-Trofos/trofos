@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BacklogHistory } from '../../api/backlog';
+import { BacklogHistory, BacklogHistoryType, BacklogStatus } from '../../api/types';
 
 export type StoryPointData = {
   date: Date;
@@ -28,7 +28,7 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
       for (let i = 1; i < group.length; i += 1) {
         if (group[i - 1].sprint_id !== group[i].sprint_id) {
           // A backlog has been moved to another sprint
-          newHistory.push({ ...group[i], sprint_id: group[i - 1].sprint_id, history_type: 'delete' });
+          newHistory.push({ ...group[i], sprint_id: group[i - 1].sprint_id, history_type: BacklogHistoryType.DELETE });
         }
       }
     }
@@ -72,18 +72,18 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
       const prevBacklog = prevIndex === -1 ? undefined : backlogGrouped[backlog.backlog_id][prevIndex];
       let message = '';
 
-      if (backlog.history_type === 'create' && backlog.status !== 'Done') {
+      if (backlog.history_type === BacklogHistoryType.CREATE && backlog.status !== BacklogStatus.DONE) {
         // backlog created
         const delta = backlog.points ?? 0;
         currentPoint += delta;
         message = `Issue ${backlog.backlog_id} created. Story point +${delta}.`;
-      } else if (backlog.history_type === 'update' && backlog.status !== 'Done') {
+      } else if (backlog.history_type === BacklogHistoryType.UPDATE && backlog.status !== BacklogStatus.DONE) {
         if (!prevBacklog) {
           // Moved in from another sprint
           const delta = backlog.points ?? 0;
           currentPoint += delta;
           message = `Issue ${backlog.backlog_id} moved in. Story point +${delta}.`;
-        } else if (prevBacklog.status === 'Done') {
+        } else if (prevBacklog.status === BacklogStatus.DONE) {
           // done => not done
           const delta = backlog.points ?? 0;
           currentPoint += delta;
@@ -98,17 +98,17 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
         } else {
           message = `Issue ${backlog.backlog_id} updated from [${prevBacklog.status}] to [${backlog.status}]`;
         }
-      } else if (backlog.history_type === 'update' && backlog.status === 'Done') {
+      } else if (backlog.history_type === BacklogHistoryType.UPDATE && backlog.status === BacklogStatus.DONE) {
         if (!prevBacklog) {
           // Moved in from another sprint
           message = `Issue ${backlog.backlog_id} moved in. Story point +0.`;
-        } else if (prevBacklog.status !== 'Done') {
+        } else if (prevBacklog.status !== BacklogStatus.DONE) {
           // not done => done
           const delta = backlog.points ?? 0;
           currentPoint -= delta;
           message = `Issue ${backlog.backlog_id} marked as done. Story point -${Math.abs(delta)}.`;
         }
-      } else if (backlog.history_type === 'delete') {
+      } else if (backlog.history_type === BacklogHistoryType.DELETE) {
         // backlog deleted
         currentPoint -= backlog.points ?? 0;
         message = `Issue ${backlog.backlog_id} marked deleted.`;
@@ -121,7 +121,7 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
       // This prevents too many meaningless data points due to trivial change
       // such as change in backlog name
       if (
-        backlog.history_type !== 'update' ||
+        backlog.history_type !== BacklogHistoryType.UPDATE ||
         backlog.status !== prevBacklog?.status ||
         backlog.points !== prevBacklog?.points
       ) {

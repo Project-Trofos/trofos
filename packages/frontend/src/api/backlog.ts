@@ -1,12 +1,7 @@
 import trofosApiSlice from '.';
 import { extendedApi as sprintApi } from './sprint';
 import type { BacklogFormFields } from '../helpers/BacklogModal.types';
-import type { Backlog, BacklogUpdatePayload } from './types';
-
-export type BacklogHistory = {
-  history_type: 'create' | 'update' | 'delete';
-  date: string;
-} & Omit<Backlog, 'assignee'>;
+import type { Backlog, BacklogHistory, BacklogUpdatePayload } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({

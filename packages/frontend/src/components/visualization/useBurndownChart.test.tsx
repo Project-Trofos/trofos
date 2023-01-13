@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import dayjs from 'dayjs';
-import { BacklogHistory } from '../../api/backlog';
+import { BacklogHistory, BacklogHistoryType, BacklogStatus } from '../../api/types';
 import { useBurndownChart } from './useBurndownChart';
 
 describe('useBurndownChart hook test', () => {
@@ -10,7 +10,7 @@ describe('useBurndownChart hook test', () => {
       project_id: 903,
       backlog_id: 2,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'story',
       priority: 'high',
       summary: 'Test Story Backlog 2',
@@ -18,14 +18,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 902,
       points: 2,
       description: 'Test desc 2',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-10T07:03:56.000Z',
     },
     {
       project_id: 903,
       backlog_id: 1,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'story',
       priority: 'very_high',
       summary: 'Test Story Backlog 1',
@@ -33,14 +33,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 902,
       points: 2,
       description: 'Test desc',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-09T07:03:56.000Z',
     },
     {
       project_id: 903,
       backlog_id: 5,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'bug',
       priority: 'very_low',
       summary: 'Test Bug Backlog 2',
@@ -48,14 +48,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 2,
       description: 'Test desc 5',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-13T07:03:56.000Z',
     },
     {
       project_id: 903,
       backlog_id: 4,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'bug',
       priority: 'low',
       summary: 'Test Bug Backlog 1',
@@ -63,14 +63,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 902,
       points: 3,
       description: 'Test desc 4',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-12T07:03:56.000Z',
     },
     {
       project_id: 903,
       backlog_id: 3,
       sprint_id: mockSprintId,
-      history_type: 'update',
+      history_type: BacklogHistoryType.UPDATE,
       type: 'task',
       priority: 'medium',
       summary: 'Test Task Backlog 1',
@@ -78,14 +78,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 20,
       description: 'Test desc 3',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2023-01-12T10:51:45.418Z',
     },
     {
       project_id: 903,
       backlog_id: 5,
       sprint_id: mockSprintId,
-      history_type: 'update',
+      history_type: BacklogHistoryType.UPDATE,
       type: 'bug',
       priority: 'very_low',
       summary: 'Test Bug Backlog 2',
@@ -93,14 +93,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 66,
       description: 'Test desc 5',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2023-01-12T10:56:28.107Z',
     },
     {
       project_id: 903,
       backlog_id: 5,
       sprint_id: mockSprintId,
-      history_type: 'update',
+      history_type: BacklogHistoryType.UPDATE,
       type: 'bug',
       priority: 'very_low',
       summary: 'Test Bug Backlog 2',
@@ -108,14 +108,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 2,
       description: 'Test desc 5',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2023-01-12T10:58:41.798Z',
     },
     {
       project_id: 903,
       backlog_id: 3,
       sprint_id: mockSprintId,
-      history_type: 'update',
+      history_type: BacklogHistoryType.UPDATE,
       type: 'task',
       priority: 'medium',
       summary: 'Test Task Backlog 1',
@@ -123,14 +123,14 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 2,
       description: 'Test desc 3',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2023-01-12T10:58:48.355Z',
     },
     {
       project_id: 903,
       backlog_id: 3,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'task',
       priority: 'medium',
       summary: 'Test Task Backlog 1',
@@ -138,7 +138,7 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 1,
       description: 'Test desc 3',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-11T07:03:56.000Z',
     },
   ];
@@ -185,7 +185,7 @@ describe('useBurndownChart hook test', () => {
       project_id: 903,
       backlog_id: 3,
       sprint_id: mockSprintId,
-      history_type: 'create',
+      history_type: BacklogHistoryType.CREATE,
       type: 'task',
       priority: 'medium',
       summary: 'Test Task Backlog 1',
@@ -193,7 +193,7 @@ describe('useBurndownChart hook test', () => {
       assignee_id: 901,
       points: 1,
       description: 'Test desc 3',
-      status: 'To do',
+      status: BacklogStatus.TODO,
       date: '2022-10-11T07:03:56.000Z',
     };
 
@@ -206,7 +206,7 @@ describe('useBurndownChart hook test', () => {
 
       expect(result.current.storyPointData[0].point).toBe(baseHistory.points);
       expect(result.current.storyPointData[0].date).toStrictEqual(new Date(baseHistory.date));
-      expect(result.current.storyPointData[0].type).toStrictEqual('create');
+      expect(result.current.storyPointData[0].type).toStrictEqual(BacklogHistoryType.CREATE);
     });
 
     it('returns the correct story point array for update backlog (no change)', () => {
@@ -215,7 +215,7 @@ describe('useBurndownChart hook test', () => {
         // These updates do not affect story point
         {
           ...baseHistory,
-          history_type: 'update',
+          history_type: BacklogHistoryType.UPDATE,
           date: nextDay,
           assignee_id: 111,
           description: 'haha',
@@ -236,8 +236,8 @@ describe('useBurndownChart hook test', () => {
         baseHistory,
         {
           ...baseHistory,
-          history_type: 'update',
-          status: 'Done',
+          history_type: BacklogHistoryType.UPDATE,
+          status: BacklogStatus.DONE,
           date: nextDay,
         },
       ];
@@ -252,8 +252,8 @@ describe('useBurndownChart hook test', () => {
     it('returns the correct story point array for update backlog (To do => Done => To do)', () => {
       const history: BacklogHistory[] = [
         { ...baseHistory, date: prevDay },
-        { ...baseHistory, history_type: 'update', status: 'Done' },
-        { ...baseHistory, history_type: 'update', date: nextDay },
+        { ...baseHistory, history_type: BacklogHistoryType.UPDATE, status: BacklogStatus.DONE },
+        { ...baseHistory, history_type: BacklogHistoryType.UPDATE, date: nextDay },
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
@@ -267,7 +267,7 @@ describe('useBurndownChart hook test', () => {
     it('returns the correct story point array for update backlog (To do => In progress)', () => {
       const history: BacklogHistory[] = [
         baseHistory,
-        { ...baseHistory, history_type: 'update', status: 'In progress', date: nextDay },
+        { ...baseHistory, history_type: BacklogHistoryType.UPDATE, status: 'In progress', date: nextDay },
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
@@ -280,7 +280,12 @@ describe('useBurndownChart hook test', () => {
     it('returns the correct story point array for update backlog (Increase point)', () => {
       const history: BacklogHistory[] = [
         baseHistory,
-        { ...baseHistory, history_type: 'update', points: (baseHistory.points as number) + 1, date: nextDay },
+        {
+          ...baseHistory,
+          history_type: BacklogHistoryType.UPDATE,
+          points: (baseHistory.points as number) + 1,
+          date: nextDay,
+        },
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
@@ -293,13 +298,30 @@ describe('useBurndownChart hook test', () => {
     it('returns the correct story point array for update backlog (Decrease point)', () => {
       const history: BacklogHistory[] = [
         baseHistory,
-        { ...baseHistory, history_type: 'update', points: (baseHistory.points as number) - 1, date: nextDay },
+        {
+          ...baseHistory,
+          history_type: BacklogHistoryType.UPDATE,
+          points: (baseHistory.points as number) - 1,
+          date: nextDay,
+        },
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
       expect(result.current.storyPointData.length).toBe(2);
       expect(result.current.storyPointData[0].point).toBe(1);
       // Minus one point
+      expect(result.current.storyPointData[1].point).toBe(0);
+    });
+
+    it('returns the correct story point array for delete backlog', () => {
+      const history: BacklogHistory[] = [
+        baseHistory,
+        { ...baseHistory, history_type: BacklogHistoryType.DELETE, date: nextDay },
+      ];
+      const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
+
+      expect(result.current.storyPointData.length).toBe(2);
+      expect(result.current.storyPointData[0].point).toBe(1);
       expect(result.current.storyPointData[1].point).toBe(0);
     });
   });
