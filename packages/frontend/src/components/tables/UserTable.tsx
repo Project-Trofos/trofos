@@ -68,15 +68,12 @@ export default function UserTable({
             title="Action"
             dataIndex="action"
             render={(_, record: UserData) => (
-              <>
                 <Space size="middle">
                   {handleRemoveUser && (
                     <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
                       Remove
                     </Button>
                   )}
-                </Space>
-                <Space size="middle">
                   {handleUpdateUserRole && (
                     <UserTableRoleManagementModal
                       userRoleId={
@@ -92,7 +89,6 @@ export default function UserTable({
                     />
                   )}
                 </Space>
-              </>
             )}
           />
         </Table>
