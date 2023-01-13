@@ -46,7 +46,7 @@ export default function UserTableRoleManagementModal(props : UserRoleManagement)
 
       return (
           <>
-            <Button onClick={showModal}>{userRoleName}</Button>
+            <Button size="small" onClick={showModal}>{userRoleName}</Button>
             <Modal title="Modify User's Role" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <Select 
                     defaultValue={userRoleName} 
