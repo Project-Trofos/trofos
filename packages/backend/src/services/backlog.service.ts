@@ -79,7 +79,6 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
       history_type: HistoryType.create,
       reporter_id: reporterId,
       backlog_id: backlogCounter.backlog_counter + 1,
-      summary,
       type,
       ...(sprintId && {
         sprint: {
@@ -89,7 +88,6 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
       priority: priority || null,
       assignee_id: assigneeId,
       points: points || null,
-      description: description || null,
       backlogStatus: {
         connect: {
           project_id_name: {
@@ -168,7 +166,6 @@ async function updateBacklog(backlogToUpdate: {
       history_type: HistoryType.update,
       reporter_id: updatedBacklog.reporter_id,
       backlog_id: updatedBacklog.backlog_id,
-      summary: updatedBacklog.summary,
       type: updatedBacklog.type,
       ...(updatedBacklog.sprint_id && {
         sprint: {
@@ -178,7 +175,6 @@ async function updateBacklog(backlogToUpdate: {
       priority: updatedBacklog.priority,
       assignee_id: updatedBacklog.assignee_id,
       points: updatedBacklog.points,
-      description: updatedBacklog.description,
       backlogStatus: {
         connect: {
           project_id_name: {
@@ -210,7 +206,6 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
       history_type: HistoryType.delete,
       reporter_id: backlog.reporter_id,
       backlog_id: backlog.backlog_id,
-      summary: backlog.summary,
       type: backlog.type,
       ...(backlog.sprint_id && {
         sprint: {
@@ -220,7 +215,6 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
       priority: backlog.priority,
       assignee_id: backlog.assignee_id,
       points: backlog.points,
-      description: backlog.description,
       backlogStatus: {
         connect: {
           project_id_name: {

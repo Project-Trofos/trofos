@@ -12,11 +12,9 @@ CREATE TABLE "BacklogHistory" (
     "history_type" "HistoryType" NOT NULL,
     "type" "BacklogType",
     "priority" "BacklogPriority",
-    "summary" TEXT NOT NULL,
     "reporter_id" INTEGER NOT NULL,
     "assignee_id" INTEGER,
     "points" INTEGER,
-    "description" TEXT,
     "status" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

@@ -9,6 +9,7 @@ import {
   BacklogPriority,
   BacklogType,
   HistoryType,
+  BacklogHistory,
 } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
@@ -357,12 +358,10 @@ async function createBacklogsSeed(prisma: PrismaClient) {
 
   await Promise.all(
     backlogsToAdd.map(async (backlogToAdd, index) => {
-      const backlogHistory: Backlog = await prisma.backlogHistory.create({
+      const backlogHistory: BacklogHistory = await prisma.backlogHistory.create({
         data: {
           backlog_id: backlogToAdd.backlog_id,
-          summary: backlogToAdd.summary,
           assignee_id: backlogToAdd.assignee?.connect.project_id_user_id.user_id,
-          description: backlogToAdd.description,
           points: backlogToAdd.points,
           priority: backlogToAdd.priority,
           project_id: backlogToAdd.backlogStatus.connect.project_id_name.project_id,

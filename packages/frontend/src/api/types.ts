@@ -173,4 +173,4 @@ export enum BacklogHistoryType {
 export type BacklogHistory = {
   history_type: BacklogHistoryType;
   date: string;
-} & Omit<Backlog, 'assignee'>;
+} & Omit<Backlog, 'assignee' | 'summary' | 'description'>;

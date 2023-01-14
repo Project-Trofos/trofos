@@ -152,11 +152,9 @@ model BacklogHistory {
   // Data in a Backlog
   type          BacklogType?
   priority      BacklogPriority?
-  summary       String
   reporter_id   Int
   assignee_id   Int?
   points        Int?
-  description   String?
   status        String
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name], onDelete: Cascade)
 
