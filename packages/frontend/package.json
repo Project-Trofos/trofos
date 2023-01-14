@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@ant-design/plots": "^1.2.3",
     "@reduxjs/toolkit": "^1.8.5",
     "antd": "^5.1.4",
     "axios": "^0.27.2",
@@ -61,7 +62,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime|d3-(interpolate|color)).+(js|jsx)$"
     ]
   }
 }

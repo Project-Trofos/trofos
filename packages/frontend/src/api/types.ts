@@ -130,6 +130,11 @@ export type CommentFieldsType = {
   content: string;
 };
 
+export enum BacklogStatus {
+  TODO = 'To do',
+  DONE = 'Done',
+}
+
 export type Backlog = {
   backlog_id: number;
   summary: string;
@@ -141,7 +146,7 @@ export type Backlog = {
   points: number | null;
   description: string | null;
   project_id: number;
-  status: string;
+  status: BacklogStatus | string;
   assignee: {
     created_at: string;
     project_id: number;
@@ -158,3 +163,14 @@ export type BacklogUpdatePayload = {
   srcSprintId?: number | null;
   fieldToUpdate: Partial<Backlog>;
 };
+
+export enum BacklogHistoryType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+export type BacklogHistory = {
+  history_type: BacklogHistoryType;
+  date: string;
+} & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
