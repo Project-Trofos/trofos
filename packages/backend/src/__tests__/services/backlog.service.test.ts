@@ -21,7 +21,7 @@ describe('backlog.service tests', () => {
       prismaMock.project.findUniqueOrThrow.mockResolvedValue(mockReturnedProject);
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
-      prismaMock.$transaction.mockResolvedValue([mockReturnedBacklog, 2]);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
       await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
 
@@ -46,7 +46,7 @@ describe('backlog.service tests', () => {
       prismaMock.project.findUniqueOrThrow.mockResolvedValue(mockReturnedProject);
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
-      prismaMock.$transaction.mockResolvedValue([mockReturnedBacklog, 2]);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
       await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
 
@@ -65,7 +65,7 @@ describe('backlog.service tests', () => {
       prismaMock.backlogStatus.findFirst.mockResolvedValue(mockDefaultStatus);
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
-      prismaMock.$transaction.mockResolvedValue([mockReturnedBacklog, 2]);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
       await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
   });
@@ -128,6 +128,7 @@ describe('backlog.service tests', () => {
         },
       };
       prismaMock.backlog.update.mockResolvedValue(mockReturnedBacklog);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
       await expect(backlogService.updateBacklog(backlogToUpdate)).resolves.toEqual(mockReturnedBacklog);
     });
   });
@@ -138,6 +139,7 @@ describe('backlog.service tests', () => {
       const mockProjectId = 123;
       const mockBacklogId = 1;
       prismaMock.backlog.delete.mockResolvedValue(mockReturnedBacklog);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
       await expect(backlogService.deleteBacklog(mockProjectId, mockBacklogId)).resolves.toEqual(mockReturnedBacklog);
     });
   });

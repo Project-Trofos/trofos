@@ -5,6 +5,7 @@ import { RoleInformation } from '../../services/types/role.service.types';
 
 const PRISMA_UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
 const PRISMA_RECORD_NOT_FOUND = 'P2025';
+const PRISMA_TEST_ERR_CODE = 'testErrorCode';
 
 describe('session.service.createUserSession tests', () => {
   test('NoUniqueConstraintViolation_SessionCreatedAfterOneTry', async () => {
@@ -27,11 +28,10 @@ describe('session.service.createUserSession tests', () => {
   });
 
   test('UniqueConstraintViolation_SessionCreatedAfterOneTry', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError(
-      'unique constraint violation',
-      PRISMA_UNIQUE_CONSTRAINT_VIOLATION,
-      'testVersion',
-    );
+    const prismaError = new Prisma.PrismaClientKnownRequestError('unique constraint violation', {
+      code: PRISMA_UNIQUE_CONSTRAINT_VIOLATION,
+      clientVersion: 'testVersion',
+    });
     const prismaResponseObject: UserSession = {
       session_id: 'testSessionId',
       user_email: 'testUser@test.com',
@@ -52,11 +52,10 @@ describe('session.service.createUserSession tests', () => {
   });
 
   test('NonUniqueConstraintPrismaError_SessionCreatedAfterOneTry', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError(
-      'unique constraint violation',
-      'testErrorCode',
-      'testVersion',
-    );
+    const prismaError = new Prisma.PrismaClientKnownRequestError('unique constraint violation', {
+      code: PRISMA_TEST_ERR_CODE,
+      clientVersion: 'testVersion',
+    });
     const roleInformation: RoleInformation = {
       roleId: 1,
       roleActions: [],
@@ -100,11 +99,10 @@ describe('session.service.deleteUserSession tests', () => {
   });
 
   test('InvalidSessionId_ThrowsError', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError(
-      'Record to delete does not exist.',
-      PRISMA_RECORD_NOT_FOUND,
-      'testVersion',
-    );
+    const prismaError = new Prisma.PrismaClientKnownRequestError('Record to delete does not exist.', {
+      code: PRISMA_RECORD_NOT_FOUND,
+      clientVersion: 'testVersion',
+    });
     prismaMock.userSession.delete.mockRejectedValueOnce(prismaError);
     await expect(sessionService.deleteUserSession('testSessionId')).rejects.toThrow(prismaError);
     expect(prismaMock.userSession.delete).toHaveBeenCalledTimes(1);
@@ -127,11 +125,10 @@ describe('session.service.getUserSession tests', () => {
   });
 
   test('InvalidSessionId_ThrowsError', async () => {
-    const prismaError = new Prisma.PrismaClientKnownRequestError(
-      'Record to fetch does not exist.',
-      PRISMA_RECORD_NOT_FOUND,
-      'testVersion',
-    );
+    const prismaError = new Prisma.PrismaClientKnownRequestError('Record to fetch does not exist.', {
+      code: PRISMA_RECORD_NOT_FOUND,
+      clientVersion: 'testVersion',
+    });
     prismaMock.userSession.findFirstOrThrow.mockRejectedValueOnce(prismaError);
     await expect(sessionService.getUserSession('testSessionId')).rejects.toThrow(prismaError);
     expect(prismaMock.userSession.findFirstOrThrow).toHaveBeenCalledTimes(1);
