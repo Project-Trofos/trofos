@@ -21,7 +21,7 @@ async function main() {
   await createRoleTableSeed(prisma);
   await createActionsOnRolesTableSeed(prisma);
   await createUsersOnRolesTableSeed(prisma);
-  await createCourseTableSeed(prisma)
+  await createCourseTableSeed(prisma);
   await createUsersOnCoursesTableSeed(prisma);
   await createMilestoneTableSeed(prisma);
   await createProjectTableSeed(prisma);
