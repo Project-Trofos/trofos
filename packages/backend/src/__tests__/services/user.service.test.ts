@@ -7,11 +7,10 @@ const PRISMA_RECORD_NOT_FOUND = 'P2025';
 describe('user.service tests', () => {
   describe('getAll', () => {
     it('should throw an error if something went wrong during the operation', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Prisma error',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Prisma error', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.user.findMany.mockRejectedValueOnce(prismaError);
       await expect(userService.getAll()).rejects.toThrow(prismaError);
     });
@@ -33,11 +32,10 @@ describe('user.service tests', () => {
 
   describe('create', () => {
     it('should throw an error if something went wrong during the operation', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Prisma error',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Prisma error', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.user.create.mockRejectedValueOnce(prismaError);
       await expect(userService.create('testUser@test.com', 'testPassword')).rejects.toThrow(prismaError);
     });

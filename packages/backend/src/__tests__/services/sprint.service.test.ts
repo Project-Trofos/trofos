@@ -3,6 +3,9 @@ import { prismaMock } from '../../models/mock/mockPrismaClient';
 import sprintService from '../../services/sprint.service';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
 import { mockSprintData, mockSprintFields, mockSprintToUpdate } from '../mocks/sprintData';
+import { BadRequestError } from '../../helpers/error';
+
+const SPRINT_EXIST_ERR_MSG = 'An active sprint already exists';
 
 describe('sprint.service tests', () => {
   describe('create sprint', () => {
@@ -105,7 +108,7 @@ describe('sprint.service tests', () => {
       prismaMock.sprint.findFirst.mockResolvedValueOnce(null);
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
       prismaMock.sprint.updateMany.mockResolvedValue({ count: 0 });
-      prismaMock.$transaction.mockResolvedValue([mockReturnedSprint, 0]);
+      prismaMock.$transaction.mockResolvedValue(mockReturnedSprint);
       await expect(sprintService.updateSprintStatus(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
     });
 
@@ -129,11 +132,6 @@ describe('sprint.service tests', () => {
     });
 
     it('should throw a BadRequestError if there is already an active sprint', async () => {
-      const mockReturnedSprint: Sprint = {
-        ...mockSprintData,
-        status: 'current',
-      };
-
       const sprintToUpdate: {
         sprintId: number;
         status: 'upcoming' | 'current' | 'completed' | 'closed';
@@ -143,8 +141,8 @@ describe('sprint.service tests', () => {
         status: 'current',
         projectId: 123,
       };
-      prismaMock.sprint.findFirst.mockResolvedValueOnce(mockReturnedSprint);
-      await expect(sprintService.updateSprintStatus(sprintToUpdate)).rejects.toThrow('An active sprint already exists');
+      prismaMock.$transaction.mockRejectedValueOnce(new BadRequestError(SPRINT_EXIST_ERR_MSG));
+      await expect(sprintService.updateSprintStatus(sprintToUpdate)).rejects.toThrow(SPRINT_EXIST_ERR_MSG);
     });
   });
 

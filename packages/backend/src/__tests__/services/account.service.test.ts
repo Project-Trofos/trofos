@@ -28,11 +28,10 @@ describe('account.service tests', () => {
     });
 
     it('should throw an error if an invalid userId is supplied', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Record does not exist',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Record does not exist', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.user.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(accountService.changePassword(1, 'oldUserPassword', 'newUserPassword')).rejects.toThrow(prismaError);
     });
