@@ -58,13 +58,13 @@ export const backlogsToAdd: BacklogDataType[] = [
   {
     backlog_id: BACKLOG_1_ID,
     summary: 'Test Story Backlog 1',
-    type: 'story',
+    type: BacklogType.story,
     sprint: {
       connect: {
         id: SPRINT_1_ID,
       },
     },
-    priority: 'very_high',
+    priority: BacklogPriority.very_high,
     reporter: {
       connect: {
         project_id_user_id: {
@@ -95,13 +95,13 @@ export const backlogsToAdd: BacklogDataType[] = [
   {
     backlog_id: BACKLOG_2_ID,
     summary: 'Test Story Backlog 2',
-    type: 'story',
+    type: BacklogType.story,
     sprint: {
       connect: {
         id: SPRINT_1_ID,
       },
     },
-    priority: 'high',
+    priority: BacklogPriority.high,
     reporter: {
       connect: {
         project_id_user_id: {
@@ -132,13 +132,13 @@ export const backlogsToAdd: BacklogDataType[] = [
   {
     backlog_id: BACKLOG_3_ID,
     summary: 'Test Task Backlog 1',
-    type: 'task',
+    type: BacklogType.task,
     sprint: {
       connect: {
         id: SPRINT_1_ID,
       },
     },
-    priority: 'medium',
+    priority: BacklogPriority.medium,
     reporter: {
       connect: {
         project_id_user_id: {
@@ -169,13 +169,13 @@ export const backlogsToAdd: BacklogDataType[] = [
   {
     backlog_id: BACKLOG_4_ID,
     summary: 'Test Bug Backlog 1',
-    type: 'bug',
+    type: BacklogType.bug,
     sprint: {
       connect: {
         id: SPRINT_1_ID,
       },
     },
-    priority: 'low',
+    priority: BacklogPriority.low,
     reporter: {
       connect: {
         project_id_user_id: {
@@ -206,13 +206,13 @@ export const backlogsToAdd: BacklogDataType[] = [
   {
     backlog_id: BACKLOG_5_ID,
     summary: 'Test Bug Backlog 2',
-    type: 'bug',
+    type: BacklogType.bug,
     sprint: {
       connect: {
         id: SPRINT_1_ID,
       },
     },
-    priority: 'very_low',
+    priority: BacklogPriority.very_low,
     reporter: {
       connect: {
         project_id_user_id: {
