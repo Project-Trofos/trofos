@@ -1,13 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test course creation modal should render modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
+      aria-label="open-form"
       class="ant-btn ant-btn-primary"
       type="button"
     >
@@ -112,7 +109,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -121,6 +118,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="multi-step-modal-form_courseName"
                             type="text"
@@ -172,7 +170,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -181,6 +179,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="multi-step-modal-form_courseCode"
                             type="text"
@@ -209,7 +208,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"
@@ -244,7 +243,7 @@ exports[`test course creation modal should render modal with correct fields 1`] 
                       </label>
                     </div>
                     <div
-                      class="ant-col ant-col-20 ant-form-item-control"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
                         class="ant-form-item-control-input"

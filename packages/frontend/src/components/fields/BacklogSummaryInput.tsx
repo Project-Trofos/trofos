@@ -4,22 +4,24 @@ import './BacklogSummaryInput.css';
 
 type BacklogSummaryInputPropsTypes = {
   value?: string;
-  onChange?(e: React.ChangeEvent<HTMLInputElement>): void;
-  onBlur?(e: React.FocusEvent<HTMLInputElement, Element>): void;
+  onChange?(e: React.ChangeEvent<HTMLTextAreaElement>): void;
+  onBlur?(e: React.FocusEvent<HTMLTextAreaElement, Element>): void;
   placeholder?: string;
   className?: string;
 };
 
 function BacklogSummaryInput(props: BacklogSummaryInputPropsTypes): JSX.Element {
+  const { TextArea } = Input;
   const { value, onBlur, onChange, placeholder, className } = props;
 
   return (
-    <Input
+    <TextArea
       className={`summary-input ${className}`}
       placeholder={placeholder}
       value={value}
       onBlur={onBlur}
       onChange={onChange}
+      autoSize={{ minRows: 1 }}
     />
   );
 }

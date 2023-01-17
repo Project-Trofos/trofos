@@ -1,18 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import {
-  Breadcrumb,
-  Button,
-  Dropdown,
-  DropdownProps,
-  Menu,
-  message,
-  PageHeader,
-  Spin,
-  Tabs,
-  Tag,
-  Typography,
-} from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../api/project';
 import { useRemoveProjectFromCourseMutation } from '../api/course';
@@ -21,12 +9,13 @@ import ProjectAttachModal from '../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
 import './Project.css';
+import PageHeader from '../components/pageheader/PageHeader';
 
 const { Paragraph } = Typography;
 
-function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['overlay'] }) {
+function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['menu'] }) {
   return (
-    <Dropdown key="more" overlay={projectMenu} placement="bottomRight">
+    <Dropdown key="more" menu={projectMenu} placement="bottomRight">
       <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
@@ -82,27 +71,25 @@ export default function ProjectPage(): JSX.Element {
     return <Typography.Title>This project does not exist!</Typography.Title>;
   }
 
-  const projectMenu = (
-    <Menu
-      onClick={(e) => handleMenuClick(e.key)}
-      items={[
-        {
-          key: 'delete',
-          label: 'Delete project',
-          danger: true,
-        },
-        course
-          ? {
-              key: 'detach',
-              label: 'Detach from course',
-            }
-          : {
-              key: 'attach',
-              label: <ProjectAttachModal project={project} key="attach" />,
-            },
-      ]}
-    />
-  );
+  const projectMenu = {
+    onClick: (e: any) => handleMenuClick(e.key),
+    items: [
+      {
+        key: 'delete',
+        label: 'Delete project',
+        danger: true,
+      },
+      course
+        ? {
+            key: 'detach',
+            label: 'Detach from course',
+          }
+        : {
+            key: 'attach',
+            label: <ProjectAttachModal project={project} key="attach" />,
+          },
+    ],
+  };
 
   const breadCrumbs = (
     <Breadcrumb>
@@ -131,7 +118,7 @@ export default function ProjectPage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab}>
+          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
             <Tabs.TabPane
               tab={
                 <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
@@ -158,11 +145,11 @@ export default function ProjectPage(): JSX.Element {
             />
             <Tabs.TabPane
               tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/kanban`}>
-                  Kanban
+                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/board`}>
+                  Board
                 </Link>
               }
-              key="kanban"
+              key="Board"
             />
             <Tabs.TabPane
               tab={

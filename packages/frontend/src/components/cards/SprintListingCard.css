@@ -1,7 +1,9 @@
-li.sprint-card-container {
+li.sprint-card-container.ant-list-item {
   background: #fff;
   border: 1px solid #eee;
+  border-radius: 8px;
   padding: 0;
+  margin: 3px 0;
 }
 
 .sprint-card-container .ant-collapse > .ant-collapse-item > .ant-collapse-header {

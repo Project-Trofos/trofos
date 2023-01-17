@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@ant-design/plots": "^1.2.3",
     "@reduxjs/toolkit": "^1.8.5",
-    "antd": "^4.22.6",
+    "antd": "^5.1.4",
     "axios": "^0.27.2",
     "dayjs": "^1.11.5",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -20,6 +22,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^16.11.51",
     "@types/react": "^18.0.17",
     "@types/react-beautiful-dnd": "^13.1.2",
@@ -59,7 +62,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime|d3-(interpolate|color)).+(js|jsx)$"
     ]
   }
 }

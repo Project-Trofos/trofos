@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { DragDropContext } from 'react-beautiful-dnd';
 import SprintListingCard from './SprintListingCard';
 import store from '../../app/store';
 import type { Sprint } from '../../api/sprint';
@@ -25,11 +26,13 @@ describe('SprintCard test', () => {
 
   const { baseElement } = render(
     <Provider store={store}>
-      <SprintListingCard
-        sprint={mockSprint}
-        setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
-        setSprint={mockSprintListingCardProps.setSprint}
-      />
+      <DragDropContext onDragEnd={jest.fn()}>
+        <SprintListingCard
+          sprint={mockSprint}
+          setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
+          setSprint={mockSprintListingCardProps.setSprint}
+        />
+      </DragDropContext>
     </Provider>,
   );
 

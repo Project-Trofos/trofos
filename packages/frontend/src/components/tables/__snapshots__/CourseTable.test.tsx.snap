@@ -85,7 +85,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                           >
                             <tr>
                               <th
+                                aria-label="ID"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -105,7 +107,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -124,7 +126,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -145,7 +147,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="Code"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -165,7 +169,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -184,7 +188,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -205,7 +209,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="Start Year"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -225,7 +231,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -244,7 +250,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -265,7 +271,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="Start Semester"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -285,7 +293,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -304,7 +312,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -325,7 +333,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="End Year"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -345,7 +355,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -364,7 +374,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -385,7 +395,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="End Semester"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -405,7 +417,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -424,7 +436,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="img"
+                                        role="presentation"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -445,7 +457,9 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                 </div>
                               </th>
                               <th
+                                aria-label="Name"
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                scope="col"
                                 tabindex="0"
                               >
                                 <div
@@ -471,7 +485,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                           <span
                                             aria-label="caret-up"
                                             class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                            role="img"
+                                            role="presentation"
                                           >
                                             <svg
                                               aria-hidden="true"
@@ -490,7 +504,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                                           <span
                                             aria-label="caret-down"
                                             class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                            role="img"
+                                            role="presentation"
                                           >
                                             <svg
                                               aria-hidden="true"
@@ -539,6 +553,7 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                scope="col"
                               >
                                 Action
                               </th>
@@ -611,7 +626,6 @@ exports[`test CourseTable should render table with correct fields 1`] = `
                   </div>
                   <ul
                     class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
-                    unselectable="unselectable"
                   >
                     <li
                       aria-disabled="true"

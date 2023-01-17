@@ -1,5 +1,6 @@
 import { Action } from '@prisma/client';
 import express from 'express';
+import announcement from '../controllers/announcement';
 import course from '../controllers/course';
 import milestone from '../controllers/milestone';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
@@ -34,6 +35,29 @@ router.put('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_c
 
 // Delete milestone
 router.delete('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_course, null), milestone.remove);
+
+// Get announcement
+router.get('/:courseId/announcement/:announcementId', isAuthorizedRequest(Action.read_course, null), announcement.get);
+
+// List announcement
+router.get('/:courseId/announcement', isAuthorizedRequest(Action.read_course, null), announcement.list);
+
+// Create announcement
+router.post('/:courseId/announcement', isAuthorizedRequest(Action.create_course, null), announcement.create);
+
+// Update announcement
+router.put(
+  '/:courseId/announcement/:announcementId',
+  isAuthorizedRequest(Action.create_course, null),
+  announcement.update,
+);
+
+// Delete announcement
+router.delete(
+  '/:courseId/announcement/:announcementId',
+  isAuthorizedRequest(Action.create_course, null),
+  announcement.remove,
+);
 
 // Get course
 router.get('/:courseId', hasAuthForCourse(Action.read_course, coursePolicy.POLICY_NAME), course.get);

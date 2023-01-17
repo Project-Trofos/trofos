@@ -38,16 +38,19 @@ exports[`test UserTable should render table with correct fields 1`] = `
                     <tr>
                       <th
                         class="ant-table-cell"
+                        scope="col"
                       >
                         User ID
                       </th>
                       <th
                         class="ant-table-cell"
+                        scope="col"
                       >
                         Email
                       </th>
                       <th
                         class="ant-table-cell"
+                        scope="col"
                       >
                         Actions
                       </th>
@@ -90,7 +93,6 @@ exports[`test UserTable should render table with correct fields 1`] = `
           </div>
           <ul
             class="ant-pagination ant-table-pagination ant-table-pagination-right"
-            unselectable="unselectable"
           >
             <li
               aria-disabled="true"

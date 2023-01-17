@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import type { SprintFormFields, SprintUpdatePayload } from '../helpers/SprintModal.types';
-import { Backlog } from './backlog';
+import type { Backlog } from './types';
 
 export type Sprint = {
   id: number;
@@ -14,11 +14,18 @@ export type Sprint = {
   backlogs: Backlog[];
 };
 
-const extendedApi = trofosApiSlice.injectEndpoints({
+export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSprints: builder.query<Sprint[], number>({
+    getSprints: builder.query<{ sprints: Sprint[]; unassignedBacklogs: Backlog[] }, number>({
       query: (projectId) => ({
         url: `sprint/listSprints/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Sprint'],
+    }),
+    getActiveSprint: builder.query<Sprint, number>({
+      query: (projectId) => ({
+        url: `sprint/listActiveSprint/${projectId}`,
         credentials: 'include',
       }),
       providesTags: ['Sprint'],
@@ -53,5 +60,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetSprintsQuery, useAddSprintMutation, useUpdateSprintMutation, useDeleteSprintMutation } =
-  extendedApi;
+export const {
+  useGetSprintsQuery,
+  useGetActiveSprintQuery,
+  useAddSprintMutation,
+  useUpdateSprintMutation,
+  useDeleteSprintMutation,
+} = extendedApi;

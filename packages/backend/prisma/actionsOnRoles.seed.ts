@@ -1,29 +1,8 @@
 /* eslint-disable import/prefer-default-export */
-import { PrismaClient, Action } from '@prisma/client';
-import { FACULTY_ROLE_ID, STUDENT_ROLE_ID, ADMIN_ROLE_ID } from '../../src/helpers/constants';
+import { Action, PrismaClient } from '@prisma/client';
+import { ADMIN_ROLE_ID, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from './constants';
 
-async function createRoleSeed(prisma: PrismaClient) {
-  // Create Roles
-  const roles = await prisma.role.createMany({
-    data: [
-      {
-        id: FACULTY_ROLE_ID,
-        role_name: 'FACULTY',
-      },
-      {
-        id: STUDENT_ROLE_ID,
-        role_name: 'STUDENT',
-      },
-      {
-        id: ADMIN_ROLE_ID,
-        role_name: 'ADMIN',
-      },
-    ],
-  });
-
-  console.log('created roles %s', roles);
-
-  // Create ActionsOnRoles
+async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
   const actionsOnRoles = await prisma.actionsOnRoles.createMany({
     data: [
       {
@@ -85,27 +64,7 @@ async function createRoleSeed(prisma: PrismaClient) {
     ],
   });
 
-  console.log('created actionsOnRoles %s', actionsOnRoles);
-
-  // Create UsersOnRole
-  const usersOnRoles = await prisma.usersOnRoles.createMany({
-    data: [
-      {
-        user_email: 'testFaculty@test.com',
-        role_id: FACULTY_ROLE_ID,
-      },
-      {
-        user_email: 'testUser@test.com',
-        role_id: STUDENT_ROLE_ID,
-      },
-      {
-        user_email: 'testAdmin@test.com',
-        role_id: ADMIN_ROLE_ID,
-      },
-    ],
-  });
-
-  console.log('created usersOnRoles %s', usersOnRoles);
+  console.log('created actionsOnRoles table seed %s', actionsOnRoles);
 }
 
-export { createRoleSeed };
+export { createActionsOnRolesTableSeed };

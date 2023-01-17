@@ -20,7 +20,7 @@ export default function BacklogCardPoints(props: { backlogId: number; currentPoi
       return;
     }
 
-    if (updatedPoints === currentPoints) {
+    if (updatedPoints === currentPoints || (currentPoints === null && updatedPoints === 0)) {
       setIsError(false);
       return;
     }
@@ -45,7 +45,7 @@ export default function BacklogCardPoints(props: { backlogId: number; currentPoi
 
   return (
     <InputNumber
-      className="backlog-card-points"
+      className={`backlog-card-points ${currentPoints ? 'points-active' : ''}`}
       defaultValue={currentPoints || undefined}
       onClick={(e) => e.stopPropagation()}
       onBlur={handlePointsChange}

@@ -4,13 +4,13 @@ exports[`test milestone creation modal when rendering should render correct fiel
 <body>
   <div>
     <div
-      class="ant-card ant-card-bordered milestone-card"
+      class="ant-card ant-card-bordered common-card"
     >
       <div
         class="ant-card-body"
       >
         <div
-          class="milestone-card-header"
+          class="common-card-header"
         >
           <h4
             class="ant-typography"

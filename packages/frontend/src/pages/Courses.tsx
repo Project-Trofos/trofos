@@ -5,7 +5,6 @@ import CourseCreationModal from '../components/modals/CourseCreationModal';
 import { useCurrentAndPastCourses } from '../api/hooks';
 import CourseCard from '../components/cards/CourseCard';
 
-import './Courses.css';
 import Container from '../components/layouts/Container';
 import { Course } from '../api/types';
 
@@ -21,7 +20,7 @@ export default function CoursesPage(): JSX.Element {
   return (
     <Container>
       <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-        <Title style={{ margin: 0 }}>Courses</Title>
+        <Title>Courses</Title>
         <CourseCreationModal />
       </Space>
       <Tabs>

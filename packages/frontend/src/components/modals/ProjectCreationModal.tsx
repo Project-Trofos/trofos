@@ -84,7 +84,7 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
   return (
     <MultistepFormModal
       title="Create Project"
-      buttonName="Create Project"
+      buttonChildren="Create Project"
       form={form}
       formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
       onSubmit={onFinish}
@@ -131,7 +131,14 @@ function FormStep2({
   return (
     <>
       <p>You can attach this project to a course.</p>
-      <Segmented options={segmentOptions} style={{ marginBottom: '10px' }} onChange={(t) => setType(t.toString())} />
+      <Segmented
+        options={segmentOptions}
+        style={{ marginBottom: '10px' }}
+        onChange={(t) => setType(t.toString())}
+        // TODO (Luoyi): These two props are required for some reason
+        onResize={() => {}}
+        onResizeCapture={() => {}}
+      />
 
       {type === 'Independent' && <Typography>This project will be an independent project.</Typography>}
 

@@ -44,7 +44,7 @@ export default function AddUserModal(): JSX.Element {
       <Button onClick={showModal}>Create User</Button>
       <Modal
         title="User Information"
-        visible={isModalOpen}
+        open={isModalOpen}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>

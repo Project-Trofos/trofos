@@ -1,9 +1,15 @@
-li.backlog-card-container {
+li.backlog-card-container.ant-list-item {
   background: #fff;
-  border: 1px solid #eee;
-  padding: 12px;
+  padding: 0;
+  border-block-end: none;
 }
 
-.backlog-card-container div {
+.backlog-card-container > div > div {
   margin-right: 8px;
+}
+
+.backlog-card-id {
+  word-break: break-all;
+  width: 60px;
+  margin-top: 4px;
 }

@@ -8,7 +8,7 @@ import BacklogSummaryInput from '../components/fields/BacklogSummaryInput';
 import BacklogTextArea from '../components/fields/BacklogTextArea';
 import BacklogUserSelect from '../components/fields/BacklogUserSelect';
 import { BacklogSelectTypes } from '../helpers/BacklogModal.types';
-import type { Backlog as BacklogType } from '../api/backlog';
+import type { Backlog as BacklogType } from '../api/types';
 import BacklogMenu from '../components/dropdowns/BacklogMenu';
 import { useGetProjectQuery } from '../api/project';
 import BacklogStatusSelect from '../components/fields/BacklogStatusSelect';

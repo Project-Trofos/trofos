@@ -44,6 +44,7 @@ model Course {
   users         UsersOnCourses[]
   projects      Project[]
   milestones    Milestone[]
+  announcements Announcement[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
   courseRoles UsersOnRolesOnCourses[]
@@ -51,11 +52,13 @@ model Course {
 }
 
 model UsersOnCourses {
-  course_id     Int
-  course        Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  user_id       Int
-  user          User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at    DateTime          @default(now())
+  course_id               Int
+  course                  Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  user_id                 Int
+  user                    User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at              DateTime          @default(now())
+
+  created_announcements   Announcement[]
   @@id([course_id, user_id])
 }
 
@@ -78,6 +81,20 @@ model Project {
   sprints         Sprint[]
 
   backlogStatuses BacklogStatus[]
+}
+
+model Announcement {
+  id             Int              @id @default(autoincrement())
+  title          String
+  content        String
+  course_id      Int
+  course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+
+  user_id        Int?
+  user           UsersOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
+
+  created_at     DateTime         @default(now())
+  updated_at     DateTime?
 }
 
 model Milestone {
@@ -120,16 +137,41 @@ model Backlog {
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
   status        String
   comments      Comment[]
+
   @@id([project_id, backlog_id])
 }
 
-model BacklogStatus {
-  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+// Track history of backlog for analysis
+model BacklogHistory {
   project_id    Int
-  name          String
-  type          BacklogStatusType @default(in_progress)
-  backlogs      Backlog[]
-  order         Int
+  backlog_id    Int
+
+  sprint_id     Int?
+  sprint        Sprint?          @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+
+  history_type  HistoryType
+
+  // Data in a Backlog
+  type          BacklogType?
+  priority      BacklogPriority?
+  reporter_id   Int
+  assignee_id   Int?
+  points        Int?
+  status        String
+  backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name], onDelete: Cascade)
+
+  date          DateTime          @default(now())
+  @@id([project_id, backlog_id, date])
+}
+
+model BacklogStatus {
+  project           Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id        Int
+  name              String
+  type              BacklogStatusType @default(in_progress)
+  backlogs          Backlog[]
+  order             Int
+  backlog_histories BacklogHistory[]
   @@id([project_id, name])
 }
 
@@ -156,6 +198,7 @@ model Sprint {
   goals         String?
   status        SprintStatus      @default(upcoming)
   backlogs      Backlog[]
+  backlog_history BacklogHistory[]
 }
 
 model Role {
@@ -235,4 +278,10 @@ enum SprintStatus {
   current
   completed
   closed
+}
+
+enum HistoryType {
+  create
+  update
+  delete
 }
