@@ -15,9 +15,9 @@ export default function VisualizationCard({ projectId }: { projectId: number | u
   return (
     <Card className="visualization-card">
       <div className="visualization-card-header">
-        <Subheading style={{ marginBottom: '30px' }}>Burn Down Chart</Subheading>
+        <Subheading className="visualization-card-header-text">Burn Down Chart</Subheading>
         <Select
-          style={{ width: '140px' }}
+          className="visualization-card-selector"
           placeholder="Select a sprint"
           options={
             sprintsData?.sprints.map((s) => {
