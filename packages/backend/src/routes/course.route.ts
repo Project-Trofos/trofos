@@ -37,25 +37,25 @@ router.put('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_c
 router.delete('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_course, null), milestone.remove);
 
 // Get announcement
-router.get('/:courseId/announcement/:announcementId', isAuthorizedRequest(Action.read_course, null), announcement.get);
+router.get('/:courseId/announcement/:announcementId', hasAuthForCourse(Action.read_course, null), announcement.get);
 
 // List announcement
-router.get('/:courseId/announcement', isAuthorizedRequest(Action.read_course, null), announcement.list);
+router.get('/:courseId/announcement', hasAuthForCourse(Action.read_course, null), announcement.list);
 
 // Create announcement
-router.post('/:courseId/announcement', isAuthorizedRequest(Action.create_course, null), announcement.create);
+router.post('/:courseId/announcement', hasAuthForCourse(Action.create_course, null), announcement.create);
 
 // Update announcement
 router.put(
   '/:courseId/announcement/:announcementId',
-  isAuthorizedRequest(Action.create_course, null),
+  hasAuthForCourse(Action.create_course, null),
   announcement.update,
 );
 
 // Delete announcement
 router.delete(
   '/:courseId/announcement/:announcementId',
-  isAuthorizedRequest(Action.create_course, null),
+  hasAuthForCourse(Action.create_course, null),
   announcement.remove,
 );
 
