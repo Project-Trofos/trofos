@@ -46,7 +46,8 @@ async function getAll(
                 ],
               },
               {
-                course_id: null,
+                course_id: 0, //TODO (kishen) : Change this. Currently, this fetches independent courses.
+                              //Possibly can just use the shadow course flag
               },
             ],
           },
@@ -202,6 +203,7 @@ async function create(
 ): Promise<Project> {
   const result = await prisma.project.create({
     data: {
+      course_id : 0, //TODO (kishen) : This has to be the course_id of the shadow course
       pname: name,
       pkey: key,
       public: isPublic,

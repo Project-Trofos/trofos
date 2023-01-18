@@ -11,6 +11,7 @@ import { BadRequestError } from '../helpers/error';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
+
   if (option === 'current') {
     // startYear <= currentYear <= endYear
     // AND
@@ -20,33 +21,42 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
         AND: [
           accessibleBy(policyConstraint).Course,
           {
-            AND: [
-              {
-                AND: [
-                  {
-                    startYear: {
-                      lte: CURRENT_YEAR,
-                    },
-                    endYear: {
-                      gte: CURRENT_YEAR,
-                    },
-                  },
-                ],
+            AND : [
+              { 
+                shadow_course : {
+                  equals : false
+                  }
               },
               {
                 AND: [
                   {
-                    startSem: {
-                      lte: CURRENT_SEM,
-                    },
-                    endSem: {
-                      gte: CURRENT_SEM,
-                    },
+                    AND: [
+                      {
+                        startYear: {
+                          lte: CURRENT_YEAR,
+                        },
+                        endYear: {
+                          gte: CURRENT_YEAR,
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    AND: [
+                      {
+                        startSem: {
+                          lte: CURRENT_SEM,
+                        },
+                        endSem: {
+                          gte: CURRENT_SEM,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
+            ]
+          }
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
@@ -59,27 +69,36 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
       where: {
         AND: [
           accessibleBy(policyConstraint).Course,
-          {
-            OR: [
-              {
-                endYear: {
-                  lt: CURRENT_YEAR,
-                },
+          { 
+            AND : [
+              { 
+                shadow_course : {
+                  equals : false
+                  }
               },
               {
-                AND: [
+                OR: [
                   {
-                    endYear: CURRENT_YEAR,
+                    endYear: {
+                      lt: CURRENT_YEAR,
+                    },
                   },
                   {
-                    endSem: {
-                      lt: CURRENT_SEM,
-                    },
+                    AND: [
+                      {
+                        endYear: CURRENT_YEAR,
+                      },
+                      {
+                        endSem: {
+                          lt: CURRENT_SEM,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
+            ]
+        }
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
@@ -93,33 +112,51 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
         AND: [
           accessibleBy(policyConstraint).Course,
           {
-            OR: [
-              {
-                startYear: {
-                  gt: CURRENT_YEAR,
-                },
+            AND : [
+              { 
+                shadow_course : {
+                  equals : false
+                  }
               },
               {
-                AND: [
+                OR: [
                   {
-                    startYear: CURRENT_YEAR,
+                    startYear: {
+                      gt: CURRENT_YEAR,
+                    },
                   },
                   {
-                    startSem: {
-                      gt: CURRENT_SEM,
-                    },
+                    AND: [
+                      {
+                        startYear: CURRENT_YEAR,
+                      },
+                      {
+                        startSem: {
+                          gt: CURRENT_SEM,
+                        },
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
+            ]
+          }
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
   } else {
     result = await prisma.course.findMany({
-      where: accessibleBy(policyConstraint).Course,
+      where: {
+        AND : [
+          accessibleBy(policyConstraint).Course,
+          { 
+            shadow_course : {
+              equals : false
+              }
+          }
+        ]
+      },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
   }
@@ -438,7 +475,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
       id: projectId,
     },
     data: {
-      course_id: null,
+      course_id: 0, //TODO (kishen) : Change implementation to create a new shadow course and detach it
     },
   });
 

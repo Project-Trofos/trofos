@@ -146,9 +146,6 @@ export const useProject = (projectId: number) => {
       return undefined;
     }
 
-    console.log('inside projectUserRoles');
-    console.log(userRoles);
-
     return userRoles;
   }, [handleUpdateUserRole, project, userRoles, projectId]);
 
