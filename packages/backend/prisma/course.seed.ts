@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
 import { CURRENT_YEAR, CURRENT_SEM } from '../src/helpers/currentTime';
-import { COURSE_1_ID, COURSE_2_ID, COURSE_3_ID, SHADOW_COURSE_1_ID, SHADOW_COURSE_2_ID } from './constants';
+import { COURSE_1_ID, COURSE_2_ID, COURSE_3_ID, SHADOW_COURSE_1_ID, SHADOW_COURSE_2_ID, SHADOW_COURSE_DATA } from './constants';
 
 async function createCourseTableSeed(prisma: PrismaClient) {
   const course = await prisma.course.createMany({
@@ -38,23 +38,11 @@ async function createCourseTableSeed(prisma: PrismaClient) {
       },
       {
         id: SHADOW_COURSE_1_ID,
-        cname: 'Independent course',
-        startYear: 0,
-        startSem: 0,
-        endYear: 0,
-        endSem: 0,
-        description: 'Independent course',
-        shadow_course: true,
+        ...SHADOW_COURSE_DATA
       },
       {
         id: SHADOW_COURSE_2_ID,
-        cname: 'Independent course',
-        startYear: 0,
-        startSem: 0,
-        endYear: 0,
-        endSem: 0,
-        description: 'Independent course',
-        shadow_course: true,
+        ...SHADOW_COURSE_DATA
       },
     ],
   });

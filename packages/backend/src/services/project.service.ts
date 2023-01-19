@@ -5,6 +5,7 @@ import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
+import { SHADOW_COURSE_DATA } from '../../prisma/constants';
 
 async function getAll(
   policyConstraint: AppAbility,
@@ -205,15 +206,7 @@ async function create(
   })
 
   const course = prisma.course.create({
-    data : {
-      cname: 'Independent course',
-      startYear: 0,
-      startSem: 0,
-      endYear: 0,
-      endSem: 0,
-      description: 'Independent course',
-      shadow_course: true,
-    },
+    data : SHADOW_COURSE_DATA,
   })
 
 

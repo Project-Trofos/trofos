@@ -8,6 +8,7 @@ import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 import { BadRequestError } from '../helpers/error';
+import { SHADOW_COURSE_DATA } from '../../prisma/constants';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
@@ -532,15 +533,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
   }
 
   const course = await prisma.course.create({
-    data : {
-      cname: 'Independent course',
-      startYear: 0,
-      startSem: 0,
-      endYear: 0,
-      endSem: 0,
-      description: 'Independent course',
-      shadow_course: true,
-    },
+    data : SHADOW_COURSE_DATA,
   })
 
   const result = await prisma.project.update({
