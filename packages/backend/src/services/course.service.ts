@@ -5,7 +5,7 @@ import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS } from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
-import { defaultBacklogStatus } from '../helpers/constants';
+import { defaultBacklogStatus, STUDENT_ROLE_ID } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 import { BadRequestError } from '../helpers/error';
 
@@ -342,18 +342,44 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 }
 
 async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  const result = await prisma.usersOnCourses.create({
+
+  const userInfo = await prisma.user.findFirstOrThrow({
+    where : {
+      user_id : userId
+    }
+  })
+
+  const userOnCourses = prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
       user_id: userId,
     },
   });
 
-  return result;
+  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.create({
+    data : {
+      course_id : courseId,
+      user_email : userInfo.user_email,
+      role_id : STUDENT_ROLE_ID
+    }
+  });
+
+  const [coursePermission, courseRole] = await prisma.$transaction([
+    userOnCourses, userOnRolesOnCourses
+  ])
+
+  return coursePermission;
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  const result = await prisma.usersOnCourses.delete({
+
+  const userInfo = await prisma.user.findFirstOrThrow({
+    where : {
+      user_id : userId
+    }
+  })
+
+  const userOnCourses = prisma.usersOnCourses.delete({
     where: {
       course_id_user_id: {
         course_id: courseId,
@@ -362,7 +388,21 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
     },
   });
 
-  return result;
+  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.delete({
+    where : {
+      user_email_course_id : {
+        course_id : courseId,
+        user_email : userInfo.user_email,
+      }
+    }
+  });
+
+  const [coursePermission, courseRole] = await prisma.$transaction([
+    userOnCourses, userOnRolesOnCourses
+  ])
+
+
+  return coursePermission;
 }
 
 // Get project by course id
