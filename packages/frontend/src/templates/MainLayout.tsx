@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
-import {
-  BellOutlined,
-  BookOutlined,
-  HomeOutlined,
-  ProjectOutlined,
-  QuestionCircleOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
@@ -17,6 +10,7 @@ import trofosApiSlice from '../api/index';
 import GlobalSearch from '../components/search/GlobalSearch';
 import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
+import AvatarButton from '../components/button/AvatarButton';
 
 const { Header, Sider, Content } = Layout;
 
@@ -88,16 +82,17 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
       <Col>
         <GlobalSearch />
       </Col>
-      <Col>
+      {/* TODO: To be implemented */}
+      {/* <Col>
         <QuestionCircleOutlined />
       </Col>
       <Col>
         <BellOutlined />
-      </Col>
+      </Col> */}
       <Col>
-        <Dropdown menu={{ items: accountMenuItems }}>
+        <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
           <div className="avatar-group">
-            <Avatar>{userInfo?.userEmail[0]}</Avatar>
+            <AvatarButton userInfo={userInfo} />
           </div>
         </Dropdown>
       </Col>
@@ -221,8 +216,8 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
-          <Row justify="end" align="middle" gutter={16}>
-            {!userInfo ? <LoggedOutHeader /> : <LoggedInHeader userInfo={userInfo} />}
+          <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
+            {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
           </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
