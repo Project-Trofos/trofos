@@ -1,11 +1,11 @@
-import { Course, Prisma, Project, User, UsersOnCourses } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnCourses, UsersOnRolesOnCourses } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS } from './helper';
 import { BulkCreateProjectBody } from '../controllers/requestTypes';
-import { defaultBacklogStatus, STUDENT_ROLE_ID } from '../helpers/constants';
+import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 import { BadRequestError } from '../helpers/error';
 
@@ -188,7 +188,14 @@ async function create(
   assertStartAndEndIsValid(startYear, startSem, endYear ?? startYear, endSem ?? startSem);
 
   try {
-    const result = await prisma.course.create({
+
+    const userInfo = await prisma.user.findFirstOrThrow({
+      where : {
+        user_id : userId
+      }
+    })
+
+    const course = await prisma.course.create({
       data: {
         code,
         startYear,
@@ -206,7 +213,15 @@ async function create(
       },
     });
 
-    return result;
+    const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
+      data : {
+        user_email : userInfo.user_email,
+        course_id : course.id,
+        role_id : FACULTY_ROLE_ID
+      }
+    })
+
+    return course;
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2002') {
@@ -349,14 +364,14 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
     }
   })
 
-  const userOnCourses = prisma.usersOnCourses.create({
+  const userOnCourses = await prisma.usersOnCourses.create({
     data: {
       course_id: courseId,
       user_id: userId,
     },
   });
 
-  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.create({
+  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
     data : {
       course_id : courseId,
       user_email : userInfo.user_email,
@@ -364,11 +379,7 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
     }
   });
 
-  const [coursePermission, courseRole] = await prisma.$transaction([
-    userOnCourses, userOnRolesOnCourses
-  ])
-
-  return coursePermission;
+  return userOnCourses;
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
@@ -379,7 +390,7 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
     }
   })
 
-  const userOnCourses = prisma.usersOnCourses.delete({
+  const userOnCourses = await prisma.usersOnCourses.delete({
     where: {
       course_id_user_id: {
         course_id: courseId,
@@ -388,7 +399,7 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
     },
   });
 
-  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.delete({
+  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.delete({
     where : {
       user_email_course_id : {
         course_id : courseId,
@@ -397,12 +408,7 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
     }
   });
 
-  const [coursePermission, courseRole] = await prisma.$transaction([
-    userOnCourses, userOnRolesOnCourses
-  ])
-
-
-  return coursePermission;
+  return userOnCourses;
 }
 
 // Get project by course id
@@ -486,7 +492,7 @@ async function addProjectAndCourse(
 
 // Add project to course
 async function addProject(courseId: number, projectId: number): Promise<Project> {
-  const result = await prisma.project.update({
+  const project = prisma.project.update({
     where: {
       id: projectId,
     },
@@ -495,7 +501,19 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     },
   });
 
-  return result;
+  // Remove dangling shadow courses
+  const shadowCourses = prisma.course.deleteMany({
+    where : {
+      shadow_course : true,
+      projects : {
+        none : {}
+      }
+    }
+  });
+
+  const [updatedProject, createdShadowCourses] = await prisma.$transaction([project, shadowCourses]);
+
+  return updatedProject;
 }
 
 // Remove project from course
@@ -504,20 +522,57 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     where: {
       id: projectId,
     },
+    include : {
+      users : true
+    }
   });
 
   if (project.course_id !== courseId) {
     throw Error('This project does not belong to the course specified!');
   }
 
+  const course = await prisma.course.create({
+    data : {
+      cname: 'Independent course',
+      startYear: 0,
+      startSem: 0,
+      endYear: 0,
+      endSem: 0,
+      description: 'Independent course',
+      shadow_course: true,
+    },
+  })
+
   const result = await prisma.project.update({
     where: {
       id: projectId,
     },
     data: {
-      course_id: 0, //TODO (kishen) : Change implementation to create a new shadow course and detach it
+      course_id: course.id, //TODO (kishen) : Change implementation to create a new shadow course and detach it
     },
   });
+
+  const userIds = project.users.map(user => user.user_id);
+
+  const userInfo = await prisma.user.findMany({
+    where : {
+      user_id : {
+        in : userIds
+      }
+    }
+  })
+
+  const queries = userInfo.map(user => {
+    return {
+      user_email : user.user_email,
+      course_id : course.id,
+      role_id : STUDENT_ROLE_ID
+    } as UsersOnRolesOnCourses
+  })
+
+  const userRoles = await prisma.usersOnRolesOnCourses.createMany({
+    data : queries
+  })
 
   return result;
 }

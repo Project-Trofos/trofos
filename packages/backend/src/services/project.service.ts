@@ -4,7 +4,7 @@ import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
-import { defaultBacklogStatus, STUDENT_ROLE_ID } from '../helpers/constants';
+import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 
 async function getAll(
   policyConstraint: AppAbility,
@@ -197,9 +197,29 @@ async function create(
   isPublic?: boolean,
   description?: string,
 ): Promise<Project> {
-  const result = await prisma.project.create({
+
+  const userInfo = await prisma.user.findFirstOrThrow({
+    where : {
+      user_id : userId
+    }
+  })
+
+  const course = prisma.course.create({
+    data : {
+      cname: 'Independent course',
+      startYear: 0,
+      startSem: 0,
+      endYear: 0,
+      endSem: 0,
+      description: 'Independent course',
+      shadow_course: true,
+    },
+  })
+
+
+  const project = prisma.project.create({
     data: {
-      course_id : 0, //TODO (kishen) : This has to be the course_id of the shadow course
+      course_id : (await course).id, //TODO (kishen) : This has to be the course_id of the shadow course
       pname: name,
       pkey: key,
       public: isPublic,
@@ -217,7 +237,17 @@ async function create(
     },
   });
 
-  return result;
+  const userCourseRoles = prisma.usersOnRolesOnCourses.create({
+    data : {
+      user_email : userInfo.user_email,
+      course_id : (await course).id,
+      role_id : FACULTY_ROLE_ID
+    }
+  })
+  
+  const [createdShadowCourse, createdProject, createdUserCourseRole] = await prisma.$transaction([course, project, userCourseRoles]);
+
+  return createdProject;
 }
 
 async function update(id: number, name?: string, isPublic?: boolean, description?: string): Promise<Project> {
@@ -236,13 +266,25 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 }
 
 async function remove(id: number): Promise<Project> {
-  const result = await prisma.project.delete({
+  const project = prisma.project.delete({
     where: {
       id,
     },
   });
 
-  return result;
+  // Remove dangling shadow courses
+  const shadowCourses = prisma.course.deleteMany({
+    where : {
+      shadow_course : true,
+      projects : {
+        none : {}
+      }
+    }
+  })
+
+  const [deletedProject, deletedShadowCourses] = await prisma.$transaction([project, shadowCourses]);
+
+  return deletedProject;
 }
 
 async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
@@ -277,14 +319,14 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
     }
   });
 
-  const userOnProjects = prisma.usersOnProjects.create({
+  const userOnProjects = await prisma.usersOnProjects.create({
     data: {
       project_id: projectId,
       user_id: userId,
     },
   });
 
-  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.create({
+  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
     data : {
       course_id : projectInfo.course_id,
       user_email : userInfo.user_email,
@@ -292,11 +334,7 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
     }
   })
 
-  const [projectPermission, projectRole] = await prisma.$transaction([
-    userOnProjects, userOnRolesOnCourses
-  ])
-
-  return projectPermission;
+  return userOnProjects;
 }
 
 async function removeUser(projectId: number, userId: number): Promise<UsersOnProjects> {
@@ -312,7 +350,7 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
     }
   });
 
-  const userOnProjects = prisma.usersOnProjects.delete({
+  const userOnProjects = await prisma.usersOnProjects.delete({
     where: {
       project_id_user_id: {
         project_id: projectId,
@@ -321,7 +359,7 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
     },
   });
 
-  const userOnRolesOnCourses = prisma.usersOnRolesOnCourses.delete({
+  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.delete({
     where : {
       user_email_course_id : {
         course_id : projectInfo.course_id,
@@ -329,12 +367,8 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       }
     }
   });
-
-  const [projectPermission, projectRole] = await prisma.$transaction([
-    userOnProjects, userOnRolesOnCourses
-  ])
-
-  return projectPermission;
+  
+  return userOnProjects;
 }
 
 async function createBacklogStatus(projectId: number, name: string): Promise<BacklogStatus> {

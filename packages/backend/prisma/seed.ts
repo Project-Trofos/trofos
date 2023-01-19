@@ -22,6 +22,7 @@ async function main() {
   await createRoleTableSeed(prisma);
   await createActionsOnRolesTableSeed(prisma);
   await createUsersOnRolesTableSeed(prisma);
+  await createSettingsTableSeed(prisma);
   await createCourseTableSeed(prisma);
   await createUsersOnCoursesTableSeed(prisma);
   await createMilestoneTableSeed(prisma);
@@ -31,7 +32,6 @@ async function main() {
   await createBacklogStatusTableSeed(prisma);
   await createBacklogTableSeed(prisma);
   await createBacklogHistoryTableSeed(prisma);
-  await createSettingsTableSeed(prisma);
   await createUsersOnRolesOnCoursesTableSeed(prisma);
 }
 
