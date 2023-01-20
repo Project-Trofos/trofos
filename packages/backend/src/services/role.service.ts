@@ -1,4 +1,4 @@
-import { Action, ActionsOnRoles } from '@prisma/client';
+import { Action, ActionsOnRoles, UsersOnRoles, Role } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { RoleInformation } from './types/role.service.types';
 import { ADMIN_ROLE_ID } from '../helpers/constants';
@@ -51,6 +51,17 @@ async function isActionAllowed(roleId: number, action: Action | null): Promise<b
   return roleActions.length !== 0;
 }
 
+async function getAllRoles() : Promise<Role[]> {
+  const roles = await prisma.role.findMany({
+    select : {
+      role_name : true,
+      id : true
+    }
+  });
+  
+  return roles;
+}
+
 function getAllActions(): string[] {
   return Object.values(Action);
 }
@@ -93,12 +104,27 @@ async function removeActionFromRole(roleId: number, action: Action): Promise<Act
   return actionOnRole;
 }
 
+async function updateUserRole(roleId: number, userEmail: string) : Promise<UsersOnRoles> {
+  const userOnRole = await prisma.usersOnRoles.update({
+    where : {
+      user_email : userEmail
+    },
+    data : {
+      role_id : roleId
+    }
+  });
+
+  return userOnRole
+}
+
 export default {
   getUserRoleId,
   isActionAllowed,
   getUserRoleInformation,
   getAllActions,
+  getAllRoles,
   getRoleActions,
   addActionToRole,
   removeActionFromRole,
+  updateUserRole,
 };

@@ -36,6 +36,11 @@ export type CreateUserRequest = {
   newPassword: string;
 };
 
+export type Role = {
+  role_name : string;
+  id : number;
+}
+
 export type Action = {
   action: string;
 };
@@ -174,3 +179,8 @@ export type BacklogHistory = {
   history_type: BacklogHistoryType;
   date: string;
 } & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
+
+export type UpdateUserRole = {
+  userEmail : string,
+  newRoleId : number
+}

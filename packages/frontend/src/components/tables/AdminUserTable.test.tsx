@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AdminUserTable from './AdminUserTable';
 import store from '../../app/store';
 import server from '../../mocks/server';
-import { User } from '../../api/types';
+import { Role, User } from '../../api/types';
 
 describe('test UserTable', () => {
   beforeAll(() => server.listen());
@@ -23,11 +23,18 @@ describe('test UserTable', () => {
     },
   ];
 
+  const roles : Role[] = [
+    {
+      role_name : 'TEST_ROLE',
+      id: 1
+    }
+  ]
+
   const setup = () => {
     const { baseElement, debug } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <AdminUserTable users={users} />
+          <AdminUserTable users={users} roles={roles}/>
         </Provider>
       </BrowserRouter>,
     );

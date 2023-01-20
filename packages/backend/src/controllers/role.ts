@@ -1,7 +1,20 @@
 import express from 'express';
+import { STATUS_CODES } from 'http';
 import { StatusCodes } from 'http-status-codes';
+import { ADMIN_ROLE_ID } from '../helpers/constants';
 import { assertInputIsNotEmpty, assertStringIsNumberOrThrow, getDefaultErrorRes } from '../helpers/error';
 import roleService from '../services/role.service';
+import user from './user';
+
+
+async function getAllRoles(req: express.Request, res: express.Response) {
+  try {
+    const roles = await roleService.getAllRoles();
+    return res.status(StatusCodes.OK).json(roles);
+  } catch (error : any) {
+    return getDefaultErrorRes(error, res);
+  }
+}
 
 async function getAllActions(req: express.Request, res: express.Response) {
   try {
@@ -45,9 +58,28 @@ async function removeActionFromRole(req: express.Request, res: express.Response)
   }
 }
 
+async function updateUserRole(req: express.Request, res: express.Response) {
+  try {
+    const { newRoleId, userEmail } = req.body;
+    assertInputIsNotEmpty(newRoleId, 'Role id');
+    assertInputIsNotEmpty(userEmail, 'User email');
+
+    const requestorEmail = res.locals.userSession.user_email;
+    if (requestorEmail === userEmail) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Admin cannot modify their own role"});
+    }
+    const updatedRole = await roleService.updateUserRole(newRoleId, userEmail);
+    return res.status(StatusCodes.OK).json({ message: 'Successfully updated', data: updatedRole});
+  } catch (error : any) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
+  getAllRoles,
   getAllActions,
   getRoleActions,
   addActionToRole,
   removeActionFromRole,
+  updateUserRole,
 };
