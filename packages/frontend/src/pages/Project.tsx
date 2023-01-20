@@ -11,7 +11,7 @@ import { useProject } from '../api/hooks';
 import './Project.css';
 import PageHeader from '../components/pageheader/PageHeader';
 
-const { Paragraph } = Typography;
+const { Text } = Typography;
 
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['menu'] }) {
   return (
@@ -162,7 +162,7 @@ export default function ProjectPage(): JSX.Element {
           </Tabs>
         }
       >
-        <Paragraph>{project.description}</Paragraph>
+        <Text>{project.description}</Text>
       </PageHeader>
       <section className="project-section-container">
         <Outlet />
