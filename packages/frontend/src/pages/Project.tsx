@@ -149,7 +149,7 @@ export default function ProjectPage(): JSX.Element {
                   Board
                 </Link>
               }
-              key="Board"
+              key="board"
             />
             <Tabs.TabPane
               tab={
