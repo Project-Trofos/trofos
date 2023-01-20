@@ -438,7 +438,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
       id: projectId,
     },
     data: {
-      course_id: null,
+      course_id: 0,
     },
   });
 

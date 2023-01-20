@@ -3,7 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
-import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
+import { INCLUDE_USERS_ID_EMAIL } from './helper';
 import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(
@@ -46,7 +46,7 @@ async function getAll(
                 ],
               },
               {
-                course_id: null,
+                course_id: 0,
               },
             ],
           },
@@ -58,7 +58,7 @@ async function getAll(
             milestones: true,
           },
         },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else if (option === 'past') {
@@ -100,7 +100,7 @@ async function getAll(
             milestones: true,
           },
         },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else if (option === 'future') {
@@ -142,7 +142,7 @@ async function getAll(
             milestones: true,
           },
         },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   } else {
@@ -154,7 +154,7 @@ async function getAll(
             milestones: true,
           },
         },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+        ...INCLUDE_USERS_ID_EMAIL,
       },
     });
   }
@@ -186,7 +186,7 @@ async function getById(id: number): Promise<Project> {
           order: true,
         },
       },
-      ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+      ...INCLUDE_USERS_ID_EMAIL,
     },
   });
 
@@ -202,6 +202,7 @@ async function create(
 ): Promise<Project> {
   const result = await prisma.project.create({
     data: {
+      course_id: 0,
       pname: name,
       pkey: key,
       public: isPublic,

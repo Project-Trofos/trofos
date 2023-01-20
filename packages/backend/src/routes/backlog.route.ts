@@ -8,34 +8,22 @@ import { hasAuth } from '../middleware/auth.middleware';
 const router = express.Router();
 
 // Routes for backlog
-<<<<<<< HEAD
 router.post('/newBacklog', hasAuth(Action.update_project, null), backlog.newBacklog);
 router.get('/listBacklogs/:projectId', hasAuth(Action.read_project, null), backlog.listBacklogs);
 router.get('/listUnassignedBacklogs/:projectId', hasAuth(Action.read_project, null), backlog.listBacklogs);
 router.get('/getBacklog/:projectId/:backlogId', hasAuth(Action.read_project, null), backlog.getBacklog);
 router.put('/updateBacklog', hasAuth(Action.update_project, null), backlog.updateBacklog);
 router.delete('/deleteBacklog/:projectId/:backlogId', hasAuth(Action.update_project, null), backlog.deleteBacklog);
-=======
-router.post('/newBacklog', isAuthorizedRequest(Action.update_project, null), backlog.newBacklog);
-router.get('/listBacklogs/:projectId', isAuthorizedRequest(Action.read_project, null), backlog.listBacklogs);
-router.get('/getBacklog/:projectId/:backlogId', isAuthorizedRequest(Action.read_project, null), backlog.getBacklog);
-router.put('/updateBacklog', isAuthorizedRequest(Action.update_project, null), backlog.updateBacklog);
-router.delete(
-  '/deleteBacklog/:projectId/:backlogId',
-  isAuthorizedRequest(Action.update_project, null),
-  backlog.deleteBacklog,
-);
->>>>>>> 731ff68f8dea97c16b8284448897e554bf8d9751
 
 // Routes for backlog history
 router.get(
   '/getHistory/project/:projectId',
-  isAuthorizedRequest(Action.read_project, null),
+  hasAuth(Action.read_project, null),
   backlogHistory.getProjectBacklogHistory,
 );
 router.get(
   '/getHistory/sprint/:sprintId',
-  isAuthorizedRequest(Action.read_project, null),
+  hasAuth(Action.read_project, null),
   backlogHistory.getSprintBacklogHistory,
 );
 
