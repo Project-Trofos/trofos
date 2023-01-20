@@ -13,6 +13,7 @@ const coursesData: Course[] = [
     created_at: new Date(Date.now()),
     description: 'd1',
     public: false,
+    shadow_course : false
   },
   {
     id: 2,
@@ -25,6 +26,7 @@ const coursesData: Course[] = [
     created_at: new Date(Date.now()),
     description: 'd2',
     public: true,
+    shadow_course : false
   },
   {
     id: 3,
@@ -37,6 +39,7 @@ const coursesData: Course[] = [
     created_at: new Date(Date.now()),
     description: 'd3',
     public: false,
+    shadow_course : false
   },
   {
     id: 4,
@@ -49,7 +52,34 @@ const coursesData: Course[] = [
     created_at: new Date(Date.now()),
     description: 'd4',
     public: false,
+    shadow_course: false
   },
+  {
+    id: 5,
+    code: '5',
+    startYear: 2024,
+    startSem: 2,
+    endYear: 2024,
+    endSem: 2,
+    cname: 'c5',
+    created_at: new Date(Date.now()),
+    description: 'd5',
+    public: false,
+    shadow_course: true
+  },
+  {
+    id: 6,
+    code: '6',
+    startYear: 2024,
+    startSem: 2,
+    endYear: 2024,
+    endSem: 2,
+    cname: 'c6',
+    created_at: new Date(Date.now()),
+    description: 'd6',
+    public: false,
+    shadow_course: true
+  }
 ];
 
 export default coursesData;

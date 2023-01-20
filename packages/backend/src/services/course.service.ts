@@ -564,7 +564,6 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
 // Remove project from course
 async function removeProject(courseId: number, projectId: number): Promise<Project> {
 
-
   return prisma.$transaction<Project>(async (tx: any) => {
   
     const project = await tx.project.findFirstOrThrow({
