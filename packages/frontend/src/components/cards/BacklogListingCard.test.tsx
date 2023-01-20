@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import BacklogListingCard from './BacklogListingCard';
-import type { Backlog } from '../../api/backlog';
+import type { Backlog } from '../../api/types';
 import store from '../../app/store';
 
 describe('BacklogCard test', () => {
@@ -18,6 +18,14 @@ describe('BacklogCard test', () => {
     description: 'A test description here',
     project_id: 123,
     status: 'todo',
+    assignee: {
+      created_at: '2022-12-26T04:19:07.531Z',
+      project_id: 903,
+      user_id: 2,
+      user: {
+        user_email: 'testBacklogUser2@test.com',
+      },
+    },
   };
   const { baseElement } = render(
     <Provider store={store}>

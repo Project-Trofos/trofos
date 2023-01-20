@@ -1,13 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test AddUserModal should render modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
       class="ant-btn ant-btn-default"
       type="button"
     >
@@ -114,6 +110,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="userEmail"
                             type="text"
@@ -151,6 +148,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="newPassword"
                             type="password"
@@ -188,6 +186,7 @@ exports[`test AddUserModal should render modal with correct fields 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <input
+                            aria-required="true"
                             class="ant-input"
                             id="confirmNewPassword"
                             type="password"

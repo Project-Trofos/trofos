@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test Timestamp when rendering should render edited timestamp correctly 1`] = `
+<body>
+  <div>
+    <div>
+      <div>
+        02/01/2023 00:00
+         
+        <span
+          class="ant-tag"
+        >
+          Edited
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`test Timestamp when rendering should render normal timestamp correctly 1`] = `
+<body>
+  <div>
+    <div>
+      <div>
+        01/01/2023 00:00
+      </div>
+    </div>
+  </div>
+</body>
+`;

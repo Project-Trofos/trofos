@@ -1,18 +1,20 @@
-import { Sprint } from '@prisma/client';
+import { Backlog, Sprint } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import sprintService from '../services/sprint.service';
-import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import backlogService from '../services/backlog.service';
+import { assertProjectIdIsValid, getDefaultErrorRes } from '../helpers/error';
+import {
+  assertSprintDatesAreValid,
+  assertSprintDurationIsValid,
+  assertSprintIdIsValid,
+} from '../helpers/error/assertions';
 
 const newSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { dates, duration } = req.body;
-    if (duration && (duration < 0 || duration > 4)) {
-      throw new BadRequestError('Duration is invalid');
-    }
-    if (dates && dates.length !== 2) {
-      throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
-    }
+    assertSprintDurationIsValid(duration);
+    assertSprintDatesAreValid(dates);
     const sprint: Sprint = await sprintService.newSprint(req.body);
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {
@@ -23,11 +25,21 @@ const newSprint = async (req: express.Request, res: express.Response) => {
 const listSprints = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId } = req.params;
-    if (!projectId) {
-      throw new BadRequestError('projectId cannot be empty');
-    }
+    assertProjectIdIsValid(projectId);
     const sprints: Sprint[] = await sprintService.listSprints(Number(projectId));
-    return res.status(StatusCodes.OK).json(sprints);
+    const unassignedBacklogs: Backlog[] = await backlogService.listUnassignedBacklogs(Number(projectId));
+    return res.status(StatusCodes.OK).json({ sprints, unassignedBacklogs });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const listActiveSprint = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId } = req.params;
+    assertProjectIdIsValid(projectId);
+    const sprint: Sprint | null = await sprintService.listActiveSprint(Number(projectId));
+    return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -36,15 +48,9 @@ const listSprints = async (req: express.Request, res: express.Response) => {
 const updateSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { sprintId, dates, duration, status } = req.body;
-    if (!sprintId) {
-      throw new BadRequestError('sprintId cannot be empty');
-    }
-    if (duration && (duration < 0 || duration > 4)) {
-      throw new BadRequestError('Duration is invalid');
-    }
-    if (dates && dates.length !== 2) {
-      throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
-    }
+    assertSprintIdIsValid(sprintId);
+    assertSprintDurationIsValid(duration);
+    assertSprintDatesAreValid(dates);
     const sprint: Sprint = await (status
       ? sprintService.updateSprintStatus(req.body)
       : sprintService.updateSprint(req.body));
@@ -57,9 +63,7 @@ const updateSprint = async (req: express.Request, res: express.Response) => {
 const deleteSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { sprintId } = req.params;
-    if (!sprintId) {
-      throw new BadRequestError('sprintId cannot be empty');
-    }
+    assertSprintIdIsValid(sprintId);
     const sprint: Sprint = await sprintService.deleteSprint(Number(sprintId));
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error: any) {
@@ -70,6 +74,7 @@ const deleteSprint = async (req: express.Request, res: express.Response) => {
 export default {
   newSprint,
   listSprints,
+  listActiveSprint,
   updateSprint,
   deleteSprint,
 };

@@ -1,13 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
       class="ant-btn ant-btn-primary new-backlog-btn"
       type="button"
     >
@@ -103,11 +99,10 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                         <div
                           class="ant-form-item-control-input-content"
                         >
-                          <input
+                          <textarea
                             class="ant-input summary-input "
                             placeholder="* Type summary here..."
-                            type="text"
-                            value=""
+                            style="height: 2px; resize: none; min-height: 2px;"
                           />
                         </div>
                       </div>
@@ -700,6 +695,7 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
                           <textarea
                             class="ant-input backlog-textarea "
                             placeholder="Description..."
+                            style="height: -54px; resize: none; min-height: -30px; max-height: -54px;"
                           />
                         </div>
                       </div>
@@ -731,5 +727,21 @@ exports[`BacklogModal tests renders new backlog modal with correct fields 1`] = 
       </div>
     </div>
   </div>
+  <textarea
+    aria-hidden="true"
+    style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important;
+  pointer-events: none !important;
+"
+    tab-index="-1"
+  />
 </body>
 `;

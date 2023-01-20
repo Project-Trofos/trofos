@@ -2,8 +2,11 @@ import React from 'react';
 import { Select as AntdSelect, DatePicker as AntdDatePicker } from 'antd';
 import mockDayjs from 'dayjs';
 
-// Mock dayjs datepicker
-jest.mock('../components/datetime/DatePicker', () => {
+// Mock certain antd component to simplify testing in React Testing Library
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd');
+  antd.theme.defaultConfig.hashed = false;
+
   function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
     const { defaultValue, placeholder, disabled, id, onChange } = props;
     return (
@@ -14,16 +17,14 @@ jest.mock('../components/datetime/DatePicker', () => {
         disabled={disabled}
         onChange={(e) => {
           if (onChange) {
-            // Returns the value as year
-            onChange({ year: () => e.target.value } as unknown as Parameters<typeof onChange>['0'], e.target.value);
+            onChange(mockDayjs(e.target.value) as unknown as Parameters<typeof onChange>['0'], e.target.value);
           }
         }}
       />
     );
   }
 
-  // eslint-disable-next-line func-names
-  DatePicker.RangePicker = function (props: React.ComponentProps<typeof AntdDatePicker.RangePicker>) {
+  function RangePicker(props: React.ComponentProps<typeof AntdDatePicker.RangePicker>) {
     const { defaultValue, id, onChange } = props;
     return (
       <input
@@ -39,30 +40,9 @@ jest.mock('../components/datetime/DatePicker', () => {
         }}
       />
     );
-  };
-  return DatePicker;
-});
-
-// Mock certain antd component to simplify testing in React Testing Library
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd');
-
-  function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
-    const { defaultValue, placeholder, disabled, id, onChange } = props;
-    return (
-      <input
-        id={id}
-        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLInputElement>['defaultValue']}
-        placeholder={placeholder}
-        disabled={disabled}
-        onChange={(e) => {
-          if (onChange) {
-            onChange(jest.fn() as unknown as Parameters<typeof onChange>['0'], e.target.value);
-          }
-        }}
-      />
-    );
   }
+
+  DatePicker.RangePicker = RangePicker;
 
   function Select(props: React.ComponentProps<typeof AntdSelect>) {
     const { mode, value, defaultValue, className, onChange, disabled, children, id } = props;

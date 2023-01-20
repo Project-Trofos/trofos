@@ -1,4 +1,4 @@
-import { Sprint } from '@prisma/client';
+import { Sprint, SprintStatus } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
@@ -49,6 +49,32 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
   return sprints;
 }
 
+async function listActiveSprint(projectId: number): Promise<Sprint | null> {
+  const sprint = await prisma.sprint.findFirst({
+    where: {
+      project_id: projectId,
+      status: SprintStatus.current,
+    },
+    include: {
+      backlogs: {
+        include: {
+          assignee: {
+            include: {
+              user: {
+                select: {
+                  user_email: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return sprint;
+}
+
 async function updateSprint(
   sprintToUpdate: Partial<Omit<SprintFields, 'projectId' | 'status'>> & { sprintId: number },
 ): Promise<Sprint> {
@@ -81,44 +107,44 @@ async function updateSprintStatus(
   if (status === 'current') {
     assertProjectIdIsValid(projectId);
 
-    // ensure there are no other active sprint for the project
-    const isCurrentPresent = await prisma.sprint.findFirst({
-      where: {
-        project_id: projectId,
-        status: 'current',
-      },
+    return prisma.$transaction<Sprint>(async (tx) => {
+      // ensure there are no other active sprint for the project
+      const isCurrentPresent = await tx.sprint.findFirst({
+        where: {
+          project_id: projectId,
+          status: 'current',
+        },
+      });
+
+      if (isCurrentPresent) {
+        throw new BadRequestError('An active sprint already exists');
+      }
+
+      const updatedCurrentSprint = await tx.sprint.update({
+        where: {
+          id: sprintId,
+        },
+        data: {
+          status,
+        },
+      });
+
+      // ensures that completed sprints cannot be reopened after another
+      // sprint has started
+      await tx.sprint.updateMany({
+        where: {
+          project_id: projectId,
+          status: 'completed',
+        },
+        data: {
+          status: 'closed',
+        },
+      });
+
+      return updatedCurrentSprint;
     });
-
-    if (isCurrentPresent) {
-      throw new BadRequestError('An active sprint already exists');
-    }
-
-    const updateCurrentSprint = prisma.sprint.update({
-      where: {
-        id: sprintId,
-      },
-      data: {
-        status,
-      },
-    });
-
-    // ensures that completed sprints cannot be reopened after another
-    // sprint has started
-    const updateCompletedSprints = prisma.sprint.updateMany({
-      where: {
-        project_id: projectId,
-        status: 'completed',
-      },
-      data: {
-        status: 'closed',
-      },
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [sprint, counter] = await prisma.$transaction([updateCurrentSprint, updateCompletedSprints]);
-
-    return sprint;
   }
+
   const updatedSprint = await prisma.sprint.update({
     where: {
       id: sprintId,
@@ -144,6 +170,7 @@ async function deleteSprint(sprintId: number): Promise<Sprint> {
 export default {
   newSprint,
   listSprints,
+  listActiveSprint,
   updateSprint,
   updateSprintStatus,
   deleteSprint,

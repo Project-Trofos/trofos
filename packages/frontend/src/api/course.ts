@@ -254,6 +254,64 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
     }),
+
+    createAnnouncement: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        payload: {
+          announcementTitle: string;
+          announcementContent: string;
+        };
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/announcement`,
+        method: 'POST',
+        body: {
+          ...params.payload,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
+
+    deleteAnnouncement: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        announcementId: number;
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/announcement/${params.announcementId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
+
+    updateAnnouncement: builder.mutation<
+      Course,
+      {
+        courseId: string;
+        announcementId: number;
+        payload: {
+          announcementTitle?: string;
+          announcementContent?: string;
+        };
+      }
+    >({
+      query: (params) => ({
+        url: `course/${params.courseId}/announcement/${params.announcementId}`,
+        method: 'PUT',
+        body: {
+          ...params.payload,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -273,4 +331,7 @@ export const {
   useCreateMilestoneMutation,
   useDeleteMilestoneMutation,
   useUpdateMilestoneMutation,
+  useCreateAnnouncementMutation,
+  useDeleteAnnouncementMutation,
+  useUpdateAnnouncementMutation,
 } = extendedApi;

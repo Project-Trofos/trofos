@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/newSprint', hasAuth(Action.update_project, null), sprint.newSprint);
 router.get('/listSprints/:projectId', hasAuth(Action.read_project, null), sprint.listSprints);
+router.get('/listActiveSprint/:projectId', hasAuth(Action.read_project, null), sprint.listActiveSprint);
 router.put('/updateSprint', hasAuth(Action.update_project, null), sprint.updateSprint);
 router.delete('/deleteSprint/:sprintId', hasAuth(Action.update_project, null), sprint.deleteSprint);
 

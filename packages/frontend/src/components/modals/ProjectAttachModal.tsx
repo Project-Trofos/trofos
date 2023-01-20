@@ -41,7 +41,7 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
   return (
     <MultistepFormModal
       title="Attach to course"
-      buttonName="Attach to course"
+      buttonChildren="buttonChildren"
       form={form}
       formSteps={[<FormStep />]}
       onSubmit={onFinish}

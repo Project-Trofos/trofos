@@ -9,6 +9,7 @@ const trofosApiSlice = createApi({
     'UserInfo',
     'Course',
     'Backlog',
+    'BacklogHistory',
     'User',
     'Sprint',
     'ActionsOnRoles',

@@ -41,7 +41,7 @@ describe('test course creation modal', () => {
     const { baseElement } = setup();
 
     // Open modal
-    const button = screen.getByText(/create milestone/i);
+    const button = screen.getByText(/new/i);
     fireEvent.click(button);
 
     // Ensure fields are present
@@ -55,7 +55,7 @@ describe('test course creation modal', () => {
   it('should require milestone name', async () => {
     setup();
 
-    const button = screen.getByText(/create milestone/i);
+    const button = screen.getByText(/new/i);
     fireEvent.click(button);
 
     const finishButton = await screen.findByText(/finish/i);
@@ -67,7 +67,7 @@ describe('test course creation modal', () => {
   it('should require start and end dates', async () => {
     setup();
 
-    const button = screen.getByText(/create milestone/i);
+    const button = screen.getByText(/new/i);
     fireEvent.click(button);
 
     const milestone = screen.getByLabelText(/milestone name/i);
@@ -82,7 +82,7 @@ describe('test course creation modal', () => {
   it('should submit correctly if fields are typed in', async () => {
     const { baseElement } = setup();
 
-    const button = screen.getByText(/create milestone/i);
+    const button = screen.getByText(/new/i);
     fireEvent.click(button);
 
     const finishButton = await screen.findByText(/finish/i);

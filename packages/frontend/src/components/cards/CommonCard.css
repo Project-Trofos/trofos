@@ -1,0 +1,11 @@
+.common-card .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description {
+  max-width: 220px;
+  white-space: normal;
+}
+
+.common-card .common-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+}

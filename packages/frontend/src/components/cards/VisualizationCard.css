@@ -1,0 +1,13 @@
+.visualization-card .visualization-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.visualization-card .visualization-card-header .visualization-card-header-text {
+  margin-bottom: 30px;
+}
+
+.visualization-card .visualization-card-header .visualization-card-selector {
+  width: 140px;
+  height: 32px;
+}

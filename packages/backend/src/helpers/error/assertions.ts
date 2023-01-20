@@ -16,6 +16,12 @@ function getFieldNotNumberErrorMessage(fieldName: string) {
   return `Please provide a valid ${fieldName}! ${fieldName} must be a number.`;
 }
 
+export function assertFieldIsDefined(field: string | undefined, fieldName: string): asserts field is string {
+  if (!field) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage(fieldName));
+  }
+}
+
 export function assertCourseYearIsNumber(year: string | undefined): asserts year is string {
   assertStringIsNumberOrThrow(year, getFieldNotNumberErrorMessage('year'));
 }
@@ -149,6 +155,12 @@ export function assertMilestoneIdIsValid(milestoneId: string | undefined): asser
   }
 }
 
+export function assertAnnouncementIdIsValid(announcementId: string | undefined): asserts announcementId is string {
+  if (!announcementId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('announcementId'));
+  }
+}
+
 export function assertMilestoneNameIsValid(milestoneName: string | undefined): asserts milestoneName is string {
   if (!milestoneName) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneName'));
@@ -159,5 +171,29 @@ export function assertMilestoneNameIsValid(milestoneName: string | undefined): a
 export function assertDateIsBefore(dateA: Date, dateB: Date): void {
   if (dateA > dateB) {
     throw new BadRequestError(`Date Error: ${dateA.toISOString()} is not before ${dateB.toISOString()}!`);
+  }
+}
+
+// Assert sprintId is not undefined and it is a number
+export function assertSprintIdIsValid(sprintId: string | number | undefined): asserts sprintId is string | number {
+  if (!sprintId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('sprintId'));
+  }
+  if (typeof sprintId !== 'number') {
+    assertStringIsNumberOrThrow(sprintId, getFieldNotNumberErrorMessage('sprintId'));
+  }
+}
+
+// Assert duration for sprint is a number between 0-4 if present
+export function assertSprintDurationIsValid(duration: number | undefined): asserts duration is number | undefined {
+  if (duration && (duration < 0 || duration > 4)) {
+    throw new BadRequestError('Duration is invalid');
+  }
+}
+
+// Assert both start and end dates for sprint are present or both are empty
+export function assertSprintDatesAreValid(dates: string[] | undefined): asserts dates is string[] | undefined {
+  if (dates && dates.length !== 2) {
+    throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
   }
 }

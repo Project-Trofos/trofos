@@ -1,9 +1,14 @@
 .backlog-card-points.ant-input-number {
   width: 72px;
-  background: #ededed;
+  height: 32px;
   border-radius: 8px;
   min-width: 28px;
   border: none;
+}
+
+.backlog-card-points.points-active.ant-input-number,
+.backlog-card-points.ant-input-number:hover {
+  background: #ededed;
 }
 
 .backlog-card-points input {

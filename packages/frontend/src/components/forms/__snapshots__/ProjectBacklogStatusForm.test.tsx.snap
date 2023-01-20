@@ -22,6 +22,7 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                 class="ant-form-item-control-input-content"
               >
                 <input
+                  aria-required="true"
                   class="ant-input"
                   id="To do"
                   type="text"
@@ -29,6 +30,96 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div
+        data-rbd-droppable-context-id="0"
+        data-rbd-droppable-id="backlogStatusList"
+      >
+        <div
+          aria-describedby="rbd-hidden-text-0-hidden-text-0"
+          class="project-backlog-status-draggable"
+          data-rbd-drag-handle-context-id="0"
+          data-rbd-drag-handle-draggable-id="In progress"
+          data-rbd-draggable-context-id="0"
+          data-rbd-draggable-id="In progress"
+          draggable="false"
+          role="button"
+          tabindex="0"
+        >
+          <div
+            class="ant-form-item"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <input
+                      aria-required="true"
+                      class="ant-input"
+                      id="In progress"
+                      type="text"
+                      value="In progress"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="project-backlog-status-delete-button"
+          >
+            <span
+              aria-label="close"
+              class="anticon anticon-close"
+              role="img"
+            >
+              <svg
+                aria-hidden="true"
+                data-icon="close"
+                fill="currentColor"
+                focusable="false"
+                height="1em"
+                viewBox="64 64 896 896"
+                width="1em"
+              >
+                <path
+                  d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+                />
+              </svg>
+            </span>
+          </div>
+          <div
+            class="project-backlog-status-move-button"
+          >
+            <span
+              aria-label="drag"
+              class="anticon anticon-drag"
+              role="img"
+            >
+              <svg
+                aria-hidden="true"
+                data-icon="drag"
+                fill="currentColor"
+                focusable="false"
+                height="1em"
+                viewBox="64 64 896 896"
+                width="1em"
+              >
+                <path
+                  d="M909.3 506.3L781.7 405.6a7.23 7.23 0 00-11.7 5.7V476H548V254h64.8c6 0 9.4-7 5.7-11.7L517.7 114.7a7.14 7.14 0 00-11.3 0L405.6 242.3a7.23 7.23 0 005.7 11.7H476v222H254v-64.8c0-6-7-9.4-11.7-5.7L114.7 506.3a7.14 7.14 0 000 11.3l127.5 100.8c4.7 3.7 11.7.4 11.7-5.7V548h222v222h-64.8c-6 0-9.4 7-5.7 11.7l100.8 127.5c2.9 3.7 8.5 3.7 11.3 0l100.8-127.5c3.7-4.7.4-11.7-5.7-11.7H548V548h222v64.8c0 6 7 9.4 11.7 5.7l127.5-100.8a7.3 7.3 0 00.1-11.4z"
+                />
+              </svg>
+            </span>
           </div>
         </div>
       </div>
@@ -48,6 +139,7 @@ exports[`ProjectBacklogStatusForm test when rendering should render according to
                 class="ant-form-item-control-input-content"
               >
                 <input
+                  aria-required="true"
                   class="ant-input"
                   id="Done"
                   type="text"

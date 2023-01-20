@@ -1,20 +1,36 @@
 import { PrismaClient } from '@prisma/client';
-import { createUserSeed } from './seeds/authentication.seed';
-import { setupBacklogSeed } from './seeds/backlog.seed';
-import { createCourseSeed } from './seeds/course.seed';
-import { createProjectSeed } from './seeds/project.seed';
-import { createRoleSeed } from './seeds/roles.seed';
-import { createSettingsSeed } from './seeds/settings.seed';
+import { createBacklogTableSeed } from './backlog.seed';
+import { createBacklogStatusTableSeed } from './backlogStatus.seed';
+import { createProjectTableSeed } from './projects.seed';
+import { createSprintTableSeed } from './sprint.seed';
+import { createUserTableSeed } from './user.seed';
+import { createUsersOnProjectsTableSeed } from './usersOnProjects.seed';
+import { createUsersOnRolesTableSeed } from './usersOnRoles.seed';
+import { createBacklogHistoryTableSeed } from './backlogHistory.seed';
+import { createRoleTableSeed } from './role.seed';
+import { createActionsOnRolesTableSeed } from './actionsOnRoles.seed';
+import { createCourseTableSeed } from './course.seed';
+import { createUsersOnCoursesTableSeed } from './usersOnCourses.seed';
+import { createMilestoneTableSeed } from './milestone.seed';
+import { createSettingsTableSeed } from './setting.seed';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await createSettingsSeed(prisma);
-  await createUserSeed(prisma);
-  await createRoleSeed(prisma);
-  await createCourseSeed(prisma);
-  await createProjectSeed(prisma);
-  await setupBacklogSeed(prisma);
+  await createUserTableSeed(prisma);
+  await createRoleTableSeed(prisma);
+  await createActionsOnRolesTableSeed(prisma);
+  await createUsersOnRolesTableSeed(prisma);
+  await createCourseTableSeed(prisma);
+  await createUsersOnCoursesTableSeed(prisma);
+  await createMilestoneTableSeed(prisma);
+  await createProjectTableSeed(prisma);
+  await createUsersOnProjectsTableSeed(prisma);
+  await createSprintTableSeed(prisma);
+  await createBacklogStatusTableSeed(prisma);
+  await createBacklogTableSeed(prisma);
+  await createBacklogHistoryTableSeed(prisma);
+  await createSettingsTableSeed(prisma);
 }
 
 main()

@@ -1,7 +1,9 @@
-@import '~antd/dist/antd.css';
-
 :root {
   --default-box-shadow: 0 2px 2px rgb(0 0 0 / 5%);
+}
+
+body {
+  margin: 0;
 }
 
 .centralize-content {
@@ -9,4 +11,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* Style is added due to antd V5 adding margin on top of Title component. 
+https://github.com/ant-design/ant-design/issues/40021 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
 }

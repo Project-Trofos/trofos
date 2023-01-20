@@ -17,11 +17,10 @@ describe('role.service tests', () => {
     });
 
     it('should throw an error if there is no role entry', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Record does not exist',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Record does not exist', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.usersOnRoles.findUniqueOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleId('testUser@test.com')).rejects.toThrow(prismaError);
     });
@@ -97,11 +96,10 @@ describe('role.service tests', () => {
     });
 
     it('should throw an error if there is no role entry', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Record does not exist',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Record does not exist', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.usersOnRoles.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleInformation('testUser@test.com')).rejects.toThrow(prismaError);
     });
@@ -115,11 +113,10 @@ describe('role.service tests', () => {
 
   describe('getRoleActions', () => {
     it('should return an error if the prisma query was unsuccessful', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Record does not exist',
-        PRISMA_RECORD_NOT_FOUND,
-        'testVersion',
-      );
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Record does not exist', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
       prismaMock.role.findMany.mockRejectedValueOnce(prismaError);
       await expect(roleService.getRoleActions()).rejects.toThrow(prismaError);
     });
@@ -139,7 +136,10 @@ describe('role.service tests', () => {
 
   describe('addActionToRole', () => {
     it('should return an error if the creation query was unsuccessful', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during creation', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during creation', {
+        code: 'testError',
+        clientVersion: 'testVersion',
+      });
       prismaMock.actionsOnRoles.create.mockRejectedValueOnce(prismaError);
       await expect(roleService.addActionToRole(1, 'admin')).rejects.toThrow(prismaError);
     });
@@ -156,7 +156,10 @@ describe('role.service tests', () => {
 
   describe('removeActionFromRole', () => {
     it('should return an error if the creation query was unsuccessful', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during deletion', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during deletion', {
+        code: 'testError',
+        clientVersion: 'testVersion',
+      });
       prismaMock.actionsOnRoles.delete.mockRejectedValueOnce(prismaError);
       await expect(roleService.removeActionFromRole(1, 'admin')).rejects.toThrow(prismaError);
     });

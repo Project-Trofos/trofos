@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Spin } from 'antd';
+import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import {
   BellOutlined,
   BookOutlined,
@@ -190,7 +190,7 @@ export default function MainLayout() {
         <BellOutlined />
       </Col>
       <Col>
-        <Dropdown overlay={<Menu items={accountMenuItems} />}>
+        <Dropdown menu={{ items: accountMenuItems }}>
           <div className="avatar-group">
             <Avatar>{userInfo?.userEmail[0]}</Avatar>
           </div>

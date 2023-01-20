@@ -1,13 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test course creation modal should render fields if there are users without project 1`] = `
-<body
-  class="ant-scrolling-effect"
-  style="overflow: hidden; overflow-x: hidden; overflow-y: hidden;"
->
+<body>
   <div>
     <button
-      ant-click-animating-without-extra-node="false"
       class="ant-btn ant-btn-default"
       type="button"
     >

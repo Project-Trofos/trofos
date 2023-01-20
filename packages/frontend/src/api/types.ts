@@ -20,7 +20,6 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
-  milestones: Milestone[];
 };
 
 export type User = {
@@ -83,6 +82,13 @@ export type UserData = {
   };
 };
 
+export type ScrumBoardUserData = {
+  user: {
+    user_id: number | null;
+    user_email: string;
+  };
+};
+
 export type Milestone = {
   id: number;
   name: string;
@@ -92,7 +98,18 @@ export type Milestone = {
   created_at: string;
 };
 
+export type Announcement = {
+  id: number;
+  title: string;
+  content: string;
+  user_id: number;
+  created_at: string;
+  updated_at?: string;
+};
+
 export type CourseData = Course & {
+  milestones: Milestone[];
+  announcements: Announcement[];
   users: UserData[];
 };
 
@@ -138,3 +155,48 @@ export type CommentFieldsType = {
   commenterId: number;
   content: string;
 };
+
+export enum BacklogStatus {
+  TODO = 'To do',
+  DONE = 'Done',
+}
+
+export type Backlog = {
+  backlog_id: number;
+  summary: string;
+  type: 'story' | 'task' | 'bug';
+  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  reporter_id: number;
+  assignee_id: number | null;
+  sprint_id: number | null;
+  points: number | null;
+  description: string | null;
+  project_id: number;
+  status: BacklogStatus | string;
+  assignee: {
+    created_at: string;
+    project_id: number;
+    user_id: number;
+    user: {
+      user_email: string;
+    };
+  };
+};
+
+export type BacklogUpdatePayload = {
+  projectId: number;
+  backlogId: number;
+  srcSprintId?: number | null;
+  fieldToUpdate: Partial<Backlog>;
+};
+
+export enum BacklogHistoryType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+export type BacklogHistory = {
+  history_type: BacklogHistoryType;
+  date: string;
+} & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
