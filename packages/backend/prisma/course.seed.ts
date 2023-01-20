@@ -1,13 +1,14 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
 import { CURRENT_YEAR, CURRENT_SEM } from '../src/helpers/currentTime';
-import { COURSE_1_ID, COURSE_2_ID, COURSE_3_ID, SHADOW_COURSE_1_ID, SHADOW_COURSE_2_ID, SHADOW_COURSE_DATA } from './constants';
+import { SHADOW_COURSE_DATA } from './constants';
 
 async function createCourseTableSeed(prisma: PrismaClient) {
+  // Courses Ids are for reference. We refrain from setting them as it clashes with Prisma's internal counter
   const course = await prisma.course.createMany({
     data: [
       {
-        id: COURSE_1_ID,
+        // id: COURSE_1_ID,
         code: 'course1_id',
         cname: 'course1',
         startYear: CURRENT_YEAR,
@@ -17,7 +18,7 @@ async function createCourseTableSeed(prisma: PrismaClient) {
         description: 'course1_description',
       },
       {
-        id: COURSE_2_ID,
+        // id: COURSE_2_ID,
         code: 'course2_id',
         cname: 'course2',
         startYear: CURRENT_YEAR,
@@ -27,7 +28,7 @@ async function createCourseTableSeed(prisma: PrismaClient) {
         description: 'course2_description',
       },
       {
-        id: COURSE_3_ID,
+        // id: COURSE_3_ID,
         code: 'course3_id',
         cname: 'course3',
         startYear: CURRENT_YEAR - 1,
@@ -37,11 +38,11 @@ async function createCourseTableSeed(prisma: PrismaClient) {
         description: 'course3_description',
       },
       {
-        id: SHADOW_COURSE_1_ID,
+        // id: SHADOW_COURSE_1_ID,
         ...SHADOW_COURSE_DATA
       },
       {
-        id: SHADOW_COURSE_2_ID,
+        // id: SHADOW_COURSE_2_ID,
         ...SHADOW_COURSE_DATA
       },
     ],
