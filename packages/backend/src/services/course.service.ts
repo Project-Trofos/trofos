@@ -190,39 +190,44 @@ async function create(
 
   try {
 
-    const userInfo = await prisma.user.findFirstOrThrow({
-      where : {
-        user_id : userId
-      }
-    })
+    return prisma.$transaction<Course>(async (tx: any) => {
 
-    const course = await prisma.course.create({
-      data: {
-        code,
-        startYear,
-        startSem,
-        endYear: endYear ?? startYear, // defaults to start year
-        endSem: endSem ?? startSem, // defaults to start sem
-        cname: name,
-        public: isPublic,
-        description,
-        users: {
-          create: {
-            user_id: userId,
+      // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
+      // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
+      const userInfo = await tx.user.findFirstOrThrow({
+        where : {
+          user_id : userId
+        }
+      });
+
+      const course = await tx.course.create({
+        data: {
+          code,
+          startYear,
+          startSem,
+          endYear: endYear ?? startYear, // defaults to start year
+          endSem: endSem ?? startSem, // defaults to start sem
+          cname: name,
+          public: isPublic,
+          description,
+          users: {
+            create: {
+              user_id: userId,
+            },
           },
         },
-      },
+      });
+
+      const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+        data : {
+          user_email : userInfo.user_email,
+          course_id : course.id,
+          role_id : FACULTY_ROLE_ID
+        }
+      });
+
+      return course;
     });
-
-    const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
-      data : {
-        user_email : userInfo.user_email,
-        course_id : course.id,
-        role_id : FACULTY_ROLE_ID
-      }
-    })
-
-    return course;
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2002') {
@@ -359,57 +364,67 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 
 async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
 
-  const userInfo = await prisma.user.findFirstOrThrow({
-    where : {
-      user_id : userId
-    }
-  })
+  return prisma.$transaction<UsersOnCourses>(async (tx: any) => {
 
-  const userOnCourses = await prisma.usersOnCourses.create({
-    data: {
-      course_id: courseId,
-      user_id: userId,
-    },
+    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
+    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
+    const userInfo = await tx.user.findFirstOrThrow({
+      where : {
+        user_id : userId
+      }
+    })
+  
+    const userOnCourses = await tx.usersOnCourses.create({
+      data: {
+        course_id: courseId,
+        user_id: userId,
+      },
+    });
+  
+    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+      data : {
+        course_id : courseId,
+        user_email : userInfo.user_email,
+        role_id : STUDENT_ROLE_ID
+      }
+    });
+  
+    return userOnCourses;
   });
-
-  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
-    data : {
-      course_id : courseId,
-      user_email : userInfo.user_email,
-      role_id : STUDENT_ROLE_ID
-    }
-  });
-
-  return userOnCourses;
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
 
-  const userInfo = await prisma.user.findFirstOrThrow({
-    where : {
-      user_id : userId
-    }
-  })
+  return prisma.$transaction<UsersOnCourses>(async (tx: any) => {
 
-  const userOnCourses = await prisma.usersOnCourses.delete({
-    where: {
-      course_id_user_id: {
-        course_id: courseId,
-        user_id: userId,
-      },
-    },
-  });
-
-  const userOnRolesOnCourses = await prisma.usersOnRolesOnCourses.delete({
-    where : {
-      user_email_course_id : {
-        course_id : courseId,
-        user_email : userInfo.user_email,
+    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
+    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
+    const userInfo = await tx.user.findFirstOrThrow({
+      where : {
+        user_id : userId
       }
-    }
+    })
+  
+    const userOnCourses = await tx.usersOnCourses.delete({
+      where: {
+        course_id_user_id: {
+          course_id: courseId,
+          user_id: userId,
+        },
+      },
+    });
+  
+    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.delete({
+      where : {
+        user_email_course_id : {
+          course_id : courseId,
+          user_email : userInfo.user_email,
+        }
+      }
+    });
+  
+    return userOnCourses;
   });
-
-  return userOnCourses;
 }
 
 // Get project by course id
@@ -493,81 +508,118 @@ async function addProjectAndCourse(
 
 // Add project to course
 async function addProject(courseId: number, projectId: number): Promise<Project> {
-  const project = prisma.project.update({
-    where: {
-      id: projectId,
-    },
-    data: {
-      course_id: courseId,
-    },
-  });
 
-  // Remove dangling shadow courses
-  const shadowCourses = prisma.course.deleteMany({
-    where : {
-      shadow_course : true,
-      projects : {
-        none : {}
+  return prisma.$transaction<Project>(async (tx: any) => {
+    const project = await tx.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        course_id: courseId,
+      },
+      include : {
+        users: true
       }
-    }
+    });
+  
+    // Remove dangling shadow courses
+    const shadowCourses = await tx.course.deleteMany({
+      where : {
+        shadow_course : true,
+        projects : {
+          none : {}
+        }
+      }
+    });
+
+      // Get user ids and fetch their emails.    
+      const userIds = project.users.map((user : any) => user.user_id);
+
+      const userInfo = await tx.user.findMany({
+        where : {
+          user_id : {
+            in : userIds
+          }
+        }
+      });
+  
+      // For each user in usersOnProjects, we create a role for them in the new attached course
+      const queries = userInfo.map((user : any) => {
+        return {
+          user_email : user.user_email,
+          course_id : courseId,
+          role_id : STUDENT_ROLE_ID
+        } as UsersOnRolesOnCourses
+      });
+  
+      const userRoles = await tx.usersOnRolesOnCourses.createMany({
+        data : queries
+      });
+
+    return project;
   });
 
-  const [updatedProject, createdShadowCourses] = await prisma.$transaction([project, shadowCourses]);
-
-  return updatedProject;
 }
 
 // Remove project from course
 async function removeProject(courseId: number, projectId: number): Promise<Project> {
-  const project = await prisma.project.findFirstOrThrow({
-    where: {
-      id: projectId,
-    },
-    include : {
-      users : true
-    }
-  });
 
-  if (project.course_id !== courseId) {
-    throw Error('This project does not belong to the course specified!');
-  }
 
-  const course = await prisma.course.create({
-    data : SHADOW_COURSE_DATA,
-  })
-
-  const result = await prisma.project.update({
-    where: {
-      id: projectId,
-    },
-    data: {
-      course_id: course.id, //TODO (kishen) : Change implementation to create a new shadow course and detach it
-    },
-  });
-
-  const userIds = project.users.map(user => user.user_id);
-
-  const userInfo = await prisma.user.findMany({
-    where : {
-      user_id : {
-        in : userIds
+  return prisma.$transaction<Project>(async (tx: any) => {
+  
+    const project = await tx.project.findFirstOrThrow({
+      where: {
+        id: projectId,
+      },
+      include : {
+        users : true
       }
+    });
+
+    if (project.course_id !== courseId) {
+      throw Error('This project does not belong to the course specified!');
     }
-  })
 
-  const queries = userInfo.map(user => {
-    return {
-      user_email : user.user_email,
-      course_id : course.id,
-      role_id : STUDENT_ROLE_ID
-    } as UsersOnRolesOnCourses
-  })
+    // Create a shadow course for the newly independent project
+    const course = await tx.course.create({
+      data : SHADOW_COURSE_DATA,
+    });
 
-  const userRoles = await prisma.usersOnRolesOnCourses.createMany({
-    data : queries
-  })
+    const result = await tx.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        course_id: course.id,
+      },
+    });
 
-  return result;
+    // Get user ids and fetch their emails.    
+    const userIds = project.users.map((user : any) => user.user_id);
+
+    const userInfo = await tx.user.findMany({
+      where : {
+        user_id : {
+          in : userIds
+        }
+      }
+    });
+
+    // For each user in usersOnProjects, we create a role for them in the new independent project
+    const queries = userInfo.map((user : any) => {
+      return {
+        user_email : user.user_email,
+        course_id : course.id,
+        role_id : STUDENT_ROLE_ID
+      } as UsersOnRolesOnCourses
+    });
+
+    const userRoles = await tx.usersOnRolesOnCourses.createMany({
+      data : queries
+    });
+
+    return result;
+  });
 }
 
 export default {
