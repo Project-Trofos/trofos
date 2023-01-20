@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -84,11 +84,11 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
       </Col>
       {/* TODO: To be implemented */}
       {/* <Col>
-        <QuestionCircleOutlined />
-      </Col>
-      <Col>
-        <BellOutlined />
-      </Col> */}
+          <QuestionCircleOutlined />
+        </Col>
+        <Col>
+          <BellOutlined />
+        </Col> */}
       <Col>
         <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
           <div className="avatar-group">
@@ -106,19 +106,16 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
 export default function MainLayout() {
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
+  const { data: userInfo, isLoading } = useGetUserInfoQuery();
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  const { data: userInfo, isLoading } = useGetUserInfoQuery();
 
   useEffect(() => {
     if (!isLoading && !userInfo && location.pathname !== '/') {
       navigate('/');
     }
   }, [userInfo, location, navigate, isLoading]);
-
-  // End of temporary section
 
   const selectedKeys = useMemo(() => {
     // Check if a course is selected
