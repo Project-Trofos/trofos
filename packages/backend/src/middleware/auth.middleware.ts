@@ -27,6 +27,34 @@ const checkPolicyOutcome = async (
   return policyOutcome;
 };
 
+async function canUserPerformActionForProject(sessionInformation : UserSession, projectId : number, routeAction : Action | null) : Promise<boolean> {
+
+  // User is admin or the route is not protected
+  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
+    return true
+  }
+
+  const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
+
+  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+
+  return matchingAction.length !== 0;
+}
+
+async function canUserPerformActionForCourse(sessionInformation : UserSession, courseId : number, routeAction : Action | null) : Promise<boolean> {
+
+  // User is admin or the route is not protected
+  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
+    return true
+  }
+
+  const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);
+
+  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+
+  return matchingAction.length !== 0;
+}
+
 // Authorises user against basic role
 const hasAuth =
   (routeAction: Action | null, policyName: string | null) =>
@@ -121,33 +149,5 @@ const hasAuthForCourse =
 
     return next();
   };
-
-async function canUserPerformActionForProject(sessionInformation : UserSession, projectId : number, routeAction : Action | null) : Promise<boolean> {
-
-  // User is admin or the route is not protected
-  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
-    return true
-  }
-
-  const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
-
-  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
-
-  return matchingAction.length !== 0;
-}
-
-async function canUserPerformActionForCourse(sessionInformation : UserSession, courseId : number, routeAction : Action | null) : Promise<boolean> {
-
-  // User is admin or the route is not protected
-  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
-    return true
-  }
-
-  const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);
-
-  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
-
-  return matchingAction.length !== 0;
-}
 
 export { hasAuth, hasAuthForProject, hasAuthForCourse };

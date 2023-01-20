@@ -237,7 +237,7 @@ async function create(
     });
 
     // User who creates the project will have a FACULTY role.
-    const userCourseRoles = await tx.usersOnRolesOnCourses.create({
+    await tx.usersOnRolesOnCourses.create({
       data : {
         user_email : userInfo.user_email,
         course_id : shadowCourse.id,
@@ -276,7 +276,7 @@ async function remove(id: number): Promise<Project> {
     });
 
     // Remove dangling shadow courses
-    const shadowCourses = await tx.course.deleteMany({
+    await tx.course.deleteMany({
       where : {
         shadow_course : true,
         projects : {
@@ -333,7 +333,7 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
       },
     });
 
-    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+    await tx.usersOnRolesOnCourses.create({
       data : {
         course_id : projectInfo.course_id,
         user_email : userInfo.user_email,
@@ -372,7 +372,7 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       },
     });
   
-    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.delete({
+    await tx.usersOnRolesOnCourses.delete({
       where : {
         user_email_course_id : {
           course_id : projectInfo.course_id,

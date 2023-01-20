@@ -218,7 +218,7 @@ async function create(
         },
       });
 
-      const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+      await tx.usersOnRolesOnCourses.create({
         data : {
           user_email : userInfo.user_email,
           course_id : course.id,
@@ -381,7 +381,7 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
       },
     });
   
-    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+    await tx.usersOnRolesOnCourses.create({
       data : {
         course_id : courseId,
         user_email : userInfo.user_email,
@@ -414,7 +414,7 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
       },
     });
   
-    const userOnRolesOnCourses = await tx.usersOnRolesOnCourses.delete({
+    await tx.usersOnRolesOnCourses.delete({
       where : {
         user_email_course_id : {
           course_id : courseId,
@@ -523,7 +523,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     });
   
     // Remove dangling shadow courses
-    const shadowCourses = await tx.course.deleteMany({
+    await tx.course.deleteMany({
       where : {
         shadow_course : true,
         projects : {
@@ -552,7 +552,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
         } as UsersOnRolesOnCourses
       });
   
-      const userRoles = await tx.usersOnRolesOnCourses.createMany({
+      await tx.usersOnRolesOnCourses.createMany({
         data : queries
       });
 
@@ -613,7 +613,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
       } as UsersOnRolesOnCourses
     });
 
-    const userRoles = await tx.usersOnRolesOnCourses.createMany({
+    await tx.usersOnRolesOnCourses.createMany({
       data : queries
     });
 
