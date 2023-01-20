@@ -176,7 +176,7 @@ describe('role.service tests', () => {
 
   describe('getUserRoleActionsForCourse', () => {
     it('should return an error if the query was unsuccessful', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForCourse('testUser@test.com', 1)).rejects.toThrow(prismaError);
     });
@@ -201,7 +201,7 @@ describe('role.service tests', () => {
 
   describe('getUserRoleActionsForProject', () => {
     it('should return an error if the query was unsuccessful while retrieving project info', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
     });
@@ -220,7 +220,7 @@ describe('role.service tests', () => {
         sprints: [],
         backlogStatuses: [],
       };
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
@@ -240,7 +240,7 @@ describe('role.service tests', () => {
         sprints: [],
         backlogStatuses: [],
       };
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRoleActionsForProject('testUser@test.com', 1)).rejects.toThrow(prismaError);
@@ -280,7 +280,7 @@ describe('role.service tests', () => {
 
   describe('getUserRolesForCourse', () => {
     it('should return an error if the query was unsuccessful', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.usersOnRolesOnCourses.findMany.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForCourse(1)).rejects.toThrow(prismaError);
     });
@@ -301,7 +301,7 @@ describe('role.service tests', () => {
 
   describe('getUserRolesForProject', () => {
     it('should return an error if the query was unsuccessful while retrieving project info', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForProject(1)).rejects.toThrow(prismaError);
     });
@@ -320,7 +320,7 @@ describe('role.service tests', () => {
         sprints: [],
         backlogStatuses: [],
       };
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findMany.mockRejectedValueOnce(prismaError);
       await expect(roleService.getUserRolesForProject(1)).rejects.toThrow(prismaError);
@@ -356,13 +356,13 @@ describe('role.service tests', () => {
 
   describe('updateUserRoleForCourse', () => {
     it('should return an error if the query was unsuccessful while updating role info', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
     });
 
     it('should return an error if the query was unsuccessful while updating the userOnCourse info', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       const usersOnCoursesResponseObject = {
         user_id: 1,
         course_id: 1,
@@ -393,7 +393,7 @@ describe('role.service tests', () => {
 
   describe('updateUserRoleForProject', () => {
     it('should return an error if the query was unsuccessful while fetching project info', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
     });
@@ -412,7 +412,7 @@ describe('role.service tests', () => {
         sprints: [],
         backlogStatuses: [],
       };
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 'testUser@test.com', 1, 1)).rejects.toThrow(prismaError);
@@ -432,7 +432,7 @@ describe('role.service tests', () => {
         sprints: [],
         backlogStatuses: [],
       };
-      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', 'testError', 'testVersion');
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Error during read', { code : 'testError', clientVersion : 'testVersion' });
       const usersOnCoursesResponseObject = {
         user_id: 1,
         course_id: 1,
