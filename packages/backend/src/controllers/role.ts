@@ -1,10 +1,7 @@
 import express from 'express';
-import { STATUS_CODES } from 'http';
 import { StatusCodes } from 'http-status-codes';
-import { ADMIN_ROLE_ID } from '../helpers/constants';
 import { assertInputIsNotEmpty, assertStringIsNumberOrThrow, getDefaultErrorRes } from '../helpers/error';
 import roleService from '../services/role.service';
-import user from './user';
 
 
 async function getAllRoles(req: express.Request, res: express.Response) {

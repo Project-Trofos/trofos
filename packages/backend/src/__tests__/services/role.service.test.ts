@@ -1,5 +1,4 @@
 import { ActionsOnRoles, Prisma, UsersOnRoles, Action, Role } from '@prisma/client';
-import role from '../../controllers/role';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import roleService from '../../services/role.service';
 import { RoleInformation } from '../../services/types/role.service.types';
