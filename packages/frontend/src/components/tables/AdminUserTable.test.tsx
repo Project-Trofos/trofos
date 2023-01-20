@@ -19,7 +19,10 @@ describe('test UserTable', () => {
       user_id: 1,
       projects: [],
       courses: [],
-      roles: [],
+      roles: [{
+        role_name : 'TEST_ROLE',
+        role_id : 1,
+      }],
     },
   ];
 
