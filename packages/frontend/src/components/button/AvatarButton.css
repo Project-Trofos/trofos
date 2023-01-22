@@ -1,0 +1,5 @@
+.avatar-button:hover {
+  outline: 4px solid #d4d4d49b;
+  transition: 0.1s;
+  cursor: pointer;
+}

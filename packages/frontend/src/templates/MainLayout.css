@@ -20,3 +20,8 @@
   color: inherit;
   text-decoration: none;
 }
+
+/* Move the sider trigger for mobile up a little, so it doesn't block anything */
+.ant-layout .ant-layout-sider-zero-width-trigger {
+  top: 12px;
+}

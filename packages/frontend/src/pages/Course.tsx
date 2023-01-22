@@ -8,7 +8,7 @@ import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCourse } from '../api/hooks';
 import PageHeader from '../components/pageheader/PageHeader';
 
-const { Paragraph } = Typography;
+const { Text } = Typography;
 
 function DropdownMenu({ courseMenu }: { courseMenu: DropdownProps['menu'] }) {
   return (
@@ -111,7 +111,7 @@ export default function CoursePage(): JSX.Element {
           </Tabs>
         }
       >
-        <Paragraph>{course.description}</Paragraph>
+        <Text>{course.description}</Text>
       </PageHeader>
       {/* TODO: make this responsive */}
       <Outlet />
