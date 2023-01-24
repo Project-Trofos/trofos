@@ -6,6 +6,18 @@ import { RoleInformation } from '../../services/types/role.service.types';
 const PRISMA_RECORD_NOT_FOUND = 'P2025';
 
 describe('role.service tests', () => {
+  describe('getAllRoles', () => {
+    it('should return all roles if there is no error', async () => {
+      const prismaResponseObject: Role[] = [
+        {
+          role_name: 'TEST_ROLE',
+          id: 1,
+        },
+      ];
+      prismaMock.role.findMany.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.getAllRoles()).resolves.toEqual(prismaResponseObject);
+    });
+  });
   describe('getUserRoleId', () => {
     it('should return a role id if it exists', async () => {
       const prismaResponseObject: UsersOnRoles = {
@@ -162,6 +174,25 @@ describe('role.service tests', () => {
       };
       prismaMock.actionsOnRoles.delete.mockResolvedValueOnce(prismaResponseObject);
       await expect(roleService.removeActionFromRole(1, 'admin')).resolves.toEqual(prismaResponseObject);
+    });
+  });
+  describe('updateUserRole', () => {
+    it('should successfully update the users role if it exists', async () => {
+      const prismaResponseObject: UsersOnRoles = {
+        user_email: 'testUser@test.com',
+        role_id: 2,
+      };
+      prismaMock.usersOnRoles.update.mockResolvedValueOnce(prismaResponseObject);
+      await expect(roleService.updateUserRole(2, 'testUser@test.com')).resolves.toEqual(prismaResponseObject);
+    });
+
+    it('should return an error if there is no such user', async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Record does not exist', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
+      prismaMock.usersOnRoles.update.mockRejectedValueOnce(prismaError);
+      await expect(roleService.updateUserRole(2, 'testUser@test.com')).rejects.toThrow(prismaError);
     });
   });
 });

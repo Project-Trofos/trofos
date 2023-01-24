@@ -1,9 +1,15 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole } from './types';
+import { ActionsOnRoles, ActionOnRole, UpdateUserRolePayload, Role } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getRoles: builder.query<Role[], void>({
+      query: () => ({
+        url: '/role/',
+        credentials: 'include',
+      }),
+    }),
     getActionsOnRoles: builder.query<ActionsOnRoles[], void>({
       query: () => ({
         url: '/role/actionsOnRoles',
@@ -41,13 +47,27 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    updateUserRole: builder.mutation<void, UpdateUserRolePayload>({
+      query: (userRole) => ({
+        url: 'role/userRole',
+        credentials: 'include',
+        method: 'POST',
+        body: {
+          userEmail: userRole.userEmail,
+          newRoleId: userRole.newRoleId,
+        },
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
   overrideExisting: false,
 });
 
 export const {
   useGetActionsOnRolesQuery,
+  useGetRolesQuery,
   useGetActionsQuery,
   useAddActionToRoleMutation,
   useRemoveActionFromRoleMutation,
+  useUpdateUserRoleMutation,
 } = extendedApi;
