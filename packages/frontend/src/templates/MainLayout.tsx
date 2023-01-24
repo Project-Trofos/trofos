@@ -1,22 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
-import {
-  BellOutlined,
-  BookOutlined,
-  HomeOutlined,
-  ProjectOutlined,
-  QuestionCircleOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
+import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import './MainLayout.css';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
-import { useLogoutUserMutation, useGetUserInfoQuery } from '../api/auth';
+import { useLogoutUserMutation, useGetUserInfoQuery, UserInfo } from '../api/auth';
 import trofosApiSlice from '../api/index';
 import GlobalSearch from '../components/search/GlobalSearch';
 import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
+import AvatarButton from '../components/button/AvatarButton';
 
 const { Header, Sider, Content } = Layout;
 
@@ -34,30 +28,13 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
   };
 }
 
-/**
- * Main layout of the application.
- */
-export default function MainLayout() {
-  const { currentProjects: projects } = useCurrentAndPastProjects();
-  const { currentCourses: courses } = useCurrentAndPastCourses();
-
-  const location = useLocation();
+// Temporary until we implement a proper user auth/info flow
+function LogoutText() {
+  const [logoutUser] = useLogoutUserMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Temporary until we implement a proper user auth/info flow
-
-  const dispatch = useDispatch();
-
-  const { data: userInfo, isLoading } = useGetUserInfoQuery();
-  const [logoutUser] = useLogoutUserMutation();
-
-  useEffect(() => {
-    if (!isLoading && !userInfo && location.pathname !== '/') {
-      navigate('/');
-    }
-  }, [userInfo, location, navigate, isLoading]);
-
-  const LogoutComponent = (
+  return (
     <Typography.Link
       onClick={() => {
         logoutUser();
@@ -68,8 +45,77 @@ export default function MainLayout() {
       Log Out
     </Typography.Link>
   );
+}
 
-  // End of temporary section
+function LoggedOutHeader() {
+  return (
+    <Col>
+      <Link to="/login">Log in</Link>
+    </Col>
+  );
+}
+
+function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
+  const navigate = useNavigate();
+
+  const accountMenuItems = [
+    {
+      key: 'account',
+      label: (
+        <Typography.Link
+          onClick={() => {
+            navigate('/account');
+          }}
+        >
+          Account
+        </Typography.Link>
+      ),
+    },
+    {
+      key: 'logout',
+      label: <LogoutText />,
+    },
+  ];
+
+  return (
+    <>
+      <Col>
+        <GlobalSearch />
+      </Col>
+      {/* TODO: To be implemented */}
+      {/* <Col>
+          <QuestionCircleOutlined />
+        </Col>
+        <Col>
+          <BellOutlined />
+        </Col> */}
+      <Col>
+        <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
+          <div className="avatar-group">
+            <AvatarButton userInfo={userInfo} />
+          </div>
+        </Dropdown>
+      </Col>
+    </>
+  );
+}
+
+/**
+ * Main layout of the application.
+ */
+export default function MainLayout() {
+  const { currentProjects: projects } = useCurrentAndPastProjects();
+  const { currentCourses: courses } = useCurrentAndPastCourses();
+  const { data: userInfo, isLoading } = useGetUserInfoQuery();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !userInfo && location.pathname !== '/') {
+      navigate('/');
+    }
+  }, [userInfo, location, navigate, isLoading]);
 
   const selectedKeys = useMemo(() => {
     // Check if a course is selected
@@ -102,25 +148,6 @@ export default function MainLayout() {
       setIsClosingSubMenu(true);
     }
   };
-
-  const accountMenuItems = [
-    {
-      key: 'account',
-      label: (
-        <Typography.Link
-          onClick={() => {
-            navigate('/account');
-          }}
-        >
-          Account
-        </Typography.Link>
-      ),
-    },
-    {
-      key: 'logout',
-      label: LogoutComponent,
-    },
-  ];
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -172,39 +199,6 @@ export default function MainLayout() {
     [projects, courses, userInfo],
   );
 
-  const LoggedOutHeader = (
-    <Col>
-      <Link to="/login">Log in</Link>
-    </Col>
-  );
-
-  const LoggedInHeader = (
-    <>
-      <Col>
-        <GlobalSearch />
-      </Col>
-      <Col>
-        <QuestionCircleOutlined />
-      </Col>
-      <Col>
-        <BellOutlined />
-      </Col>
-      <Col>
-        <Dropdown menu={{ items: accountMenuItems }}>
-          <div className="avatar-group">
-            <Avatar>{userInfo?.userEmail[0]}</Avatar>
-          </div>
-        </Dropdown>
-      </Col>
-    </>
-  );
-
-  const renderHeader = () => (
-    <Row justify="end" align="middle" gutter={16}>
-      {!userInfo ? LoggedOutHeader : LoggedInHeader}
-    </Row>
-  );
-
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint="lg" collapsedWidth="0" className="main-layout-sider">
@@ -219,7 +213,9 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
-          {renderHeader()}
+          <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
+            {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
+          </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
           <Outlet />
