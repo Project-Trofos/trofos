@@ -19,25 +19,27 @@ describe('test UserTable', () => {
       user_id: 1,
       projects: [],
       courses: [],
-      roles: [{
-        role_name : 'TEST_ROLE',
-        role_id : 1,
-      }],
+      roles: [
+        {
+          user_email: 'testEmail@test.com',
+          role_id: 1,
+        },
+      ],
     },
   ];
 
-  const roles : Role[] = [
+  const roles: Role[] = [
     {
-      role_name : 'TEST_ROLE',
-      id: 1
-    }
-  ]
+      role_name: 'testEmail@test.com',
+      id: 1,
+    },
+  ];
 
   const setup = () => {
     const { baseElement, debug } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <AdminUserTable users={users} roles={roles}/>
+          <AdminUserTable users={users} roles={roles} />
         </Provider>
       </BrowserRouter>,
     );

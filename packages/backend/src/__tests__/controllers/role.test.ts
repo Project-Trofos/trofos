@@ -20,10 +20,12 @@ describe('role.controller tests', () => {
 
   describe('getAllRoles', () => {
     it('should return all roles in the application if the query was successful', async () => {
-      const roleServiceResponseObject : Role[] = [{
-        role_name : 'TEST_ROLE',
-        id : 1
-      }];
+      const roleServiceResponseObject: Role[] = [
+        {
+          role_name: 'TEST_ROLE',
+          id: 1,
+        },
+      ];
       const mockReq = createRequest();
       const mockRes = createResponse();
       spies.roleServiceGetAllRoles.mockResolvedValue(roleServiceResponseObject);
@@ -193,13 +195,13 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        user_email : "testUser@test.com"
+        user_email: 'testUser@test.com',
       };
       await role.updateUserRole(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(mockRes._getJSONData()).toEqual({ 
+      expect(mockRes._getJSONData()).toEqual({
         error: 'Please provide a valid Role id! Role id cannot be undefined.',
-       });
+      });
     });
 
     it('should return status 400 BAD REQUEST if the userEmail was not supplied', async () => {
@@ -216,45 +218,45 @@ describe('role.controller tests', () => {
     });
 
     it('should return status 401 UNAUTHORISED if the user tries to modify their own role', async () => {
-      const userSessionInformation : UserSession = {
-        user_email : "testUser@test.com",
-        user_id : 1,
-        user_is_admin : true,
+      const userSessionInformation: UserSession = {
+        user_email: 'testUser@test.com',
+        user_id: 1,
+        user_is_admin: true,
         session_id: 'testSessionId',
         user_role_id: 1,
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
-      }
+      };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         newRoleId: 1,
-        userEmail: "testUser@test.com",
+        userEmail: 'testUser@test.com',
       };
       mockRes.locals.userSession = userSessionInformation;
       await role.updateUserRole(mockReq, mockRes);
       const jsonData = mockRes._getJSONData();
-      expect(jsonData.error).toEqual("Admin cannot modify their own role");
+      expect(jsonData.error).toEqual('Admin cannot modify their own role');
       expect(mockRes.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
     });
 
     it('should update the uers role if the query was successful', async () => {
-      const userSessionInformation : UserSession = {
-        user_email : "testAdmin@test.com",
-        user_id : 1,
-        user_is_admin : true,
+      const userSessionInformation: UserSession = {
+        user_email: 'testAdmin@test.com',
+        user_id: 1,
+        user_is_admin: true,
         session_id: 'testSessionId',
         user_role_id: 1,
         session_expiry: new Date('2022-08-31T15:19:39.104Z'),
-      }
+      };
       const roleServiceResponseObject: UsersOnRoles = {
         role_id: 1,
-        user_email: "testUser@test.com",
+        user_email: 'testUser@test.com',
       };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         newRoleId: 1,
-        userEmail: "testUser@test.com",
+        userEmail: 'testUser@test.com',
       };
       mockRes.locals.userSession = userSessionInformation;
       spies.roleServiceUpdateUserRole.mockResolvedValueOnce(roleServiceResponseObject);

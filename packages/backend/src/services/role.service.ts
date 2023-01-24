@@ -51,14 +51,14 @@ async function isActionAllowed(roleId: number, action: Action | null): Promise<b
   return roleActions.length !== 0;
 }
 
-async function getAllRoles() : Promise<Role[]> {
+async function getAllRoles(): Promise<Role[]> {
   const roles = await prisma.role.findMany({
-    select : {
-      role_name : true,
-      id : true
-    }
+    select: {
+      role_name: true,
+      id: true,
+    },
   });
-  
+
   return roles;
 }
 
@@ -104,17 +104,17 @@ async function removeActionFromRole(roleId: number, action: Action): Promise<Act
   return actionOnRole;
 }
 
-async function updateUserRole(roleId: number, userEmail: string) : Promise<UsersOnRoles> {
+async function updateUserRole(roleId: number, userEmail: string): Promise<UsersOnRoles> {
   const userOnRole = await prisma.usersOnRoles.update({
-    where : {
-      user_email : userEmail
+    where: {
+      user_email: userEmail,
     },
-    data : {
-      role_id : roleId
-    }
+    data: {
+      role_id: roleId,
+    },
   });
 
-  return userOnRole
+  return userOnRole;
 }
 
 export default {

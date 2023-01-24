@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole, UpdateUserRole, Role } from './types';
+import { ActionsOnRoles, ActionOnRole, UpdateUserRolePayload, Role } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getRoles : builder.query<Role[], void>({
+    getRoles: builder.query<Role[], void>({
       query: () => ({
         url: '/role/',
         credentials: 'include',
@@ -47,18 +47,18 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
-    updateUserRole: builder.mutation<void, UpdateUserRole>({
+    updateUserRole: builder.mutation<void, UpdateUserRolePayload>({
       query: (userRole) => ({
         url: 'role/userRole',
         credentials: 'include',
         method: 'POST',
         body: {
-          userEmail : userRole.userEmail,
-          newRoleId : userRole.newRoleId,
-        }
+          userEmail: userRole.userEmail,
+          newRoleId: userRole.newRoleId,
+        },
       }),
-      invalidatesTags: ['User'], 
-    })
+      invalidatesTags: ['User'],
+    }),
   }),
   overrideExisting: false,
 });

@@ -10,16 +10,14 @@ import { useGetRolesQuery } from '../../api/role';
  */
 export default function UserManagement(): JSX.Element {
   const { data: getUsers } = useGetUsersQuery();
-  const { data : getRoles } = useGetRolesQuery();
-
-  console.log(getRoles);
+  const { data: getRoles } = useGetRolesQuery();
 
   return (
     <Row>
       <Col offset={6} span={12}>
         <AddUserModal />
         <Divider />
-        <AdminUserTable users={getUsers} roles={getRoles}/>
+        <AdminUserTable users={getUsers} roles={getRoles} />
       </Col>
     </Row>
   );
