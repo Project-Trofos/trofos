@@ -20,10 +20,15 @@ import {
   useRemoveProjectUserMutation,
 } from './project';
 import { Project, Course } from './types';
+import { useGetSettingsQuery } from './settings';
 
 // Filter projects by current and past
 export const useCurrentAndPastProjects = () => {
   const projectsData = useGetAllProjectsQuery();
+  const { data: getSettings } = useGetSettingsQuery();
+
+  const CURRENT_YEAR = getSettings?.current_year ?? 2022;
+  const CURRENT_SEM = getSettings?.current_sem ?? 1;
 
   const filteredProjects = useMemo(() => {
     if (projectsData.isError || projectsData.isLoading) {
@@ -31,13 +36,27 @@ export const useCurrentAndPastProjects = () => {
     }
     return {
       pastProjects: (projectsData.data as Project[]).filter((p) =>
-        isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+        isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
       currentProjects: (projectsData.data as Project[]).filter((p) =>
-        isCurrent(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+        isCurrent(
+          p.course?.startYear,
+          p.course?.startSem,
+          p.course?.endYear,
+          p.course?.endSem,
+          CURRENT_YEAR,
+          CURRENT_SEM,
+        ),
       ),
       futureProjects: (projectsData.data as Project[]).filter((p) =>
-        isFuture(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
+        isFuture(
+          p.course?.startYear,
+          p.course?.startSem,
+          p.course?.endYear,
+          p.course?.endSem,
+          CURRENT_YEAR,
+          CURRENT_SEM,
+        ),
       ),
     };
   }, [projectsData]);
@@ -48,18 +67,24 @@ export const useCurrentAndPastProjects = () => {
 // Filter courses by current and past
 export const useCurrentAndPastCourses = () => {
   const coursesData = useGetAllCoursesQuery();
+  const { data: getSettings } = useGetSettingsQuery();
+
+  const CURRENT_YEAR = getSettings?.current_year ?? 2022;
+  const CURRENT_SEM = getSettings?.current_sem ?? 1;
 
   const filteredCourses = useMemo(() => {
     if (coursesData.isError || coursesData.isLoading) {
       return undefined;
     }
     return {
-      pastCourses: (coursesData.data as Course[]).filter((c) => isPast(c.startYear, c.startSem, c.endYear, c.endSem)),
+      pastCourses: (coursesData.data as Course[]).filter((c) =>
+        isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
+      ),
       currentCourses: (coursesData.data as Course[]).filter((c) =>
-        isCurrent(c.startYear, c.startSem, c.endYear, c.endSem),
+        isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
       futureCourses: (coursesData.data as Course[]).filter((c) =>
-        isFuture(c.startYear, c.startSem, c.endYear, c.endSem),
+        isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
   }, [coursesData]);

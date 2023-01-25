@@ -1,4 +1,4 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Settings } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { projectsData } from '../mocks/projectData';
@@ -8,13 +8,19 @@ describe('project.service tests', () => {
   // Mock data for users
   const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
+  // Mock data for settings
+  const settingsData = {
+    current_year: 2022,
+    current_sem: 1,
+  } as Settings;
+
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
 
   describe('getAll', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll(projectPolicyConstraint, 'all');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'all');
       expect(result).toEqual<Project[]>(projectsData);
     });
 
@@ -22,7 +28,7 @@ describe('project.service tests', () => {
       const pastProjects = [projectsData[2]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'past');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'past');
       expect(result).toEqual<Project[]>(pastProjects);
     });
 
@@ -30,7 +36,7 @@ describe('project.service tests', () => {
       const currentProjects = [projectsData[0], projectsData[1]];
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'current');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'current');
       expect(result).toEqual<Project[]>(currentProjects);
     });
 
@@ -38,7 +44,7 @@ describe('project.service tests', () => {
       const pastProjects = [projectsData[3]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'future');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'future');
       expect(result).toEqual<Project[]>(pastProjects);
     });
   });

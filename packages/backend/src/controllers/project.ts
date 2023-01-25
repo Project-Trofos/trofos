@@ -10,6 +10,7 @@ import {
 } from '../helpers/error/assertions';
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
+import settings from '../services/settings.service';
 import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
@@ -19,7 +20,8 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
     assertGetAllOptionIsValid(body.option);
 
     // default to all
-    const result = await project.getAll(res.locals.policyConstraint, body.option ?? 'all');
+    const setting = await settings.get();
+    const result = await project.getAll(res.locals.policyConstraint, setting, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
