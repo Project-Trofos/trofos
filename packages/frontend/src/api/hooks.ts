@@ -70,7 +70,6 @@ export const useCurrentAndPastCourses = () => {
   const { data: getSettings } = useGetSettingsQuery();
 
   const filteredCourses = useMemo(() => {
-
     const CURRENT_YEAR = getSettings?.current_year ?? 2022;
     const CURRENT_SEM = getSettings?.current_sem ?? 1;
 
