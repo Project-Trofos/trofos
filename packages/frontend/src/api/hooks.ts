@@ -27,10 +27,10 @@ export const useCurrentAndPastProjects = () => {
   const projectsData = useGetAllProjectsQuery();
   const { data: getSettings } = useGetSettingsQuery();
 
-  const CURRENT_YEAR = getSettings?.current_year ?? 2022;
-  const CURRENT_SEM = getSettings?.current_sem ?? 1;
-
   const filteredProjects = useMemo(() => {
+    const CURRENT_YEAR = getSettings?.current_year ?? 2022;
+    const CURRENT_SEM = getSettings?.current_sem ?? 1;
+
     if (projectsData.isError || projectsData.isLoading) {
       return undefined;
     }
@@ -59,7 +59,7 @@ export const useCurrentAndPastProjects = () => {
         ),
       ),
     };
-  }, [projectsData]);
+  }, [projectsData, getSettings]);
 
   return { ...projectsData, ...filteredProjects };
 };
@@ -69,10 +69,11 @@ export const useCurrentAndPastCourses = () => {
   const coursesData = useGetAllCoursesQuery();
   const { data: getSettings } = useGetSettingsQuery();
 
-  const CURRENT_YEAR = getSettings?.current_year ?? 2022;
-  const CURRENT_SEM = getSettings?.current_sem ?? 1;
-
   const filteredCourses = useMemo(() => {
+
+    const CURRENT_YEAR = getSettings?.current_year ?? 2022;
+    const CURRENT_SEM = getSettings?.current_sem ?? 1;
+
     if (coursesData.isError || coursesData.isLoading) {
       return undefined;
     }
@@ -87,7 +88,7 @@ export const useCurrentAndPastCourses = () => {
         isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
-  }, [coursesData]);
+  }, [coursesData, getSettings]);
 
   return { ...coursesData, ...filteredCourses };
 };
