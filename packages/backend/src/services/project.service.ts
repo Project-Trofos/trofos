@@ -1,4 +1,4 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Prisma } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -200,7 +200,7 @@ async function create(
 ): Promise<Project> {
 
 
-  return prisma.$transaction<Project>(async (tx : any) => {
+  return prisma.$transaction<Project>(async (tx : Prisma.TransactionClient) => {
 
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
@@ -268,7 +268,7 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 
 async function remove(id: number): Promise<Project> {
 
-  return prisma.$transaction<Project>(async (tx : any) => {
+  return prisma.$transaction<Project>(async (tx : Prisma.TransactionClient) => {
     const project = await tx.project.delete({
       where: {
         id,
@@ -310,7 +310,7 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 
 async function addUser(projectId: number, userId: number): Promise<UsersOnProjects> {
 
-  return prisma.$transaction<UsersOnProjects>(async (tx : any) => {
+  return prisma.$transaction<UsersOnProjects>(async (tx : Prisma.TransactionClient) => {
 
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
@@ -350,7 +350,7 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
 
   // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
   // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-  return prisma.$transaction<UsersOnProjects>(async (tx: any) => {
+  return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     const userInfo = await tx.user.findFirstOrThrow({
       where : {
         user_id : userId
