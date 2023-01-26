@@ -22,11 +22,11 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
         AND: [
           accessibleBy(policyConstraint).Course,
           {
-            AND : [
-              { 
-                shadow_course : {
-                  equals : false
-                  }
+            AND: [
+              {
+                shadow_course: {
+                  equals: false,
+                },
               },
               {
                 AND: [
@@ -56,8 +56,8 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                   },
                 ],
               },
-            ]
-          }
+            ],
+          },
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
@@ -70,12 +70,12 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
       where: {
         AND: [
           accessibleBy(policyConstraint).Course,
-          { 
-            AND : [
-              { 
-                shadow_course : {
-                  equals : false
-                  }
+          {
+            AND: [
+              {
+                shadow_course: {
+                  equals: false,
+                },
               },
               {
                 OR: [
@@ -98,8 +98,8 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                   },
                 ],
               },
-            ]
-        }
+            ],
+          },
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
@@ -113,11 +113,11 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
         AND: [
           accessibleBy(policyConstraint).Course,
           {
-            AND : [
-              { 
-                shadow_course : {
-                  equals : false
-                  }
+            AND: [
+              {
+                shadow_course: {
+                  equals: false,
+                },
               },
               {
                 OR: [
@@ -140,8 +140,8 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                   },
                 ],
               },
-            ]
-          }
+            ],
+          },
         ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
@@ -149,14 +149,14 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
   } else {
     result = await prisma.course.findMany({
       where: {
-        AND : [
+        AND: [
           accessibleBy(policyConstraint).Course,
-          { 
-            shadow_course : {
-              equals : false
-              }
-          }
-        ]
+          {
+            shadow_course: {
+              equals: false,
+            },
+          },
+        ],
       },
       include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
     });
@@ -189,15 +189,13 @@ async function create(
   assertStartAndEndIsValid(startYear, startSem, endYear ?? startYear, endSem ?? startSem);
 
   try {
-
-    return prisma.$transaction<Course>(async (tx: Prisma.TransactionClient) => {
-
+    return await prisma.$transaction<Course>(async (tx: Prisma.TransactionClient) => {
       // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
       // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
       const userInfo = await tx.user.findFirstOrThrow({
-        where : {
-          user_id : userId
-        }
+        where: {
+          user_id: userId,
+        },
       });
 
       const course = await tx.course.create({
@@ -219,11 +217,11 @@ async function create(
       });
 
       await tx.usersOnRolesOnCourses.create({
-        data : {
-          user_email : userInfo.user_email,
-          course_id : course.id,
-          role_id : FACULTY_ROLE_ID
-        }
+        data: {
+          user_email: userInfo.user_email,
+          course_id: course.id,
+          role_id: FACULTY_ROLE_ID,
+        },
       });
 
       return course;
@@ -363,48 +361,44 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 }
 
 async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-
   return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
-      where : {
-        user_id : userId
-      }
-    })
-  
+      where: {
+        user_id: userId,
+      },
+    });
+
     const userOnCourses = await tx.usersOnCourses.create({
       data: {
         course_id: courseId,
         user_id: userId,
       },
     });
-  
+
     await tx.usersOnRolesOnCourses.create({
-      data : {
-        course_id : courseId,
-        user_email : userInfo.user_email,
-        role_id : STUDENT_ROLE_ID
-      }
+      data: {
+        course_id: courseId,
+        user_email: userInfo.user_email,
+        role_id: STUDENT_ROLE_ID,
+      },
     });
-  
+
     return userOnCourses;
   });
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-
   return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
-      where : {
-        user_id : userId
-      }
-    })
-  
+      where: {
+        user_id: userId,
+      },
+    });
+
     const userOnCourses = await tx.usersOnCourses.delete({
       where: {
         course_id_user_id: {
@@ -413,16 +407,16 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
         },
       },
     });
-  
+
     await tx.usersOnRolesOnCourses.delete({
-      where : {
-        user_email_course_id : {
-          course_id : courseId,
-          user_email : userInfo.user_email,
-        }
-      }
+      where: {
+        user_email_course_id: {
+          course_id: courseId,
+          user_email: userInfo.user_email,
+        },
+      },
     });
-  
+
     return userOnCourses;
   });
 }
@@ -508,7 +502,6 @@ async function addProjectAndCourse(
 
 // Add project to course
 async function addProject(courseId: number, projectId: number): Promise<Project> {
-
   return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.update({
       where: {
@@ -517,62 +510,59 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
       data: {
         course_id: courseId,
       },
-      include : {
-        users: true
-      }
+      include: {
+        users: true,
+      },
     });
-  
+
     // Remove dangling shadow courses
     await tx.course.deleteMany({
-      where : {
-        shadow_course : true,
-        projects : {
-          none : {}
-        }
-      }
+      where: {
+        shadow_course: true,
+        projects: {
+          none: {},
+        },
+      },
     });
 
-      // Get user ids and fetch their emails.    
-      const userIds = project.users.map((user : UsersOnProjects) => user.user_id);
+    // Get user ids and fetch their emails.
+    const userIds = project.users.map((user: UsersOnProjects) => user.user_id);
 
-      const userInfo = await tx.user.findMany({
-        where : {
-          user_id : {
-            in : userIds
-          }
-        }
-      });
-  
-      // For each user in usersOnProjects, we create a role for them in the new attached course
-      const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user : User) => {
-        return {
-          user_email : user.user_email,
-          course_id : courseId,
-          role_id : STUDENT_ROLE_ID
-        }
-      });
-  
-      await tx.usersOnRolesOnCourses.createMany({
-        data : queries
-      });
+    const userInfo = await tx.user.findMany({
+      where: {
+        user_id: {
+          in: userIds,
+        },
+      },
+    });
+
+    // For each user in usersOnProjects, we create a role for them in the new attached course
+    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
+      return {
+        user_email: user.user_email,
+        course_id: courseId,
+        role_id: STUDENT_ROLE_ID,
+      };
+    });
+
+    await tx.usersOnRolesOnCourses.createMany({
+      data: queries,
+    });
 
     return project;
   });
-
 }
 
 // Remove project from course
 async function removeProject(courseId: number, projectId: number): Promise<Project> {
-
   return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
-  
     const project = await tx.project.findFirstOrThrow({
       where: {
         id: projectId,
       },
-      include : {
-        users : true
-      }
+      include: {
+        users: true,
+      },
     });
 
     if (project.course_id !== courseId) {
@@ -581,7 +571,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
 
     // Create a shadow course for the newly independent project
     const course = await tx.course.create({
-      data : SHADOW_COURSE_DATA,
+      data: SHADOW_COURSE_DATA,
     });
 
     const result = await tx.project.update({
@@ -593,28 +583,28 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
       },
     });
 
-    // Get user ids and fetch their emails.    
-    const userIds = project.users.map((user : UsersOnProjects) => user.user_id);
+    // Get user ids and fetch their emails.
+    const userIds = project.users.map((user: UsersOnProjects) => user.user_id);
 
     const userInfo = await tx.user.findMany({
-      where : {
-        user_id : {
-          in : userIds
-        }
-      }
+      where: {
+        user_id: {
+          in: userIds,
+        },
+      },
     });
 
     // For each user in usersOnProjects, we create a role for them in the new independent project
-    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user : User) => {
+    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
       return {
-        user_email : user.user_email,
-        course_id : course.id,
-        role_id : STUDENT_ROLE_ID
-      }
+        user_email: user.user_email,
+        course_id: course.id,
+        role_id: STUDENT_ROLE_ID,
+      };
     });
 
     await tx.usersOnRolesOnCourses.createMany({
-      data : queries
+      data: queries,
     });
 
     return result;

@@ -342,7 +342,7 @@ describe('course.service tests', () => {
       const INVALID_ID = 999;
       const resultMock: Project = projectData[0];
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
-      prismaMock.$transaction.mockRejectedValueOnce(new Error("test"));
+      prismaMock.$transaction.mockRejectedValueOnce(new Error('test'));
       expect(course.removeProject(INVALID_ID, 2022)).rejects.toThrow();
     });
   });
@@ -356,14 +356,7 @@ describe('course.service tests', () => {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.addProjectAndCourse(
-        1,
-        '1',
-        2022,
-        1,
-        'c1',
-        projectData[0].pname,
-      );
+      const result = await course.addProjectAndCourse(1, '1', 2022, 1, 'c1', projectData[0].pname);
       expect(result).toEqual<Project>(resultMock);
     });
   });

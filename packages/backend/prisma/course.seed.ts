@@ -39,11 +39,11 @@ async function createCourseTableSeed(prisma: PrismaClient) {
       },
       {
         // id: SHADOW_COURSE_1_ID,
-        ...SHADOW_COURSE_DATA
+        ...SHADOW_COURSE_DATA,
       },
       {
         // id: SHADOW_COURSE_2_ID,
-        ...SHADOW_COURSE_DATA
+        ...SHADOW_COURSE_DATA,
       },
     ],
   });

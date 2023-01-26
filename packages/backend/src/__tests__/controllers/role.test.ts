@@ -18,7 +18,7 @@ const spies = {
   roleServiceUpdateUserRoleForProject: jest.spyOn(roleService, 'updateUserRoleForProject'),
 };
 
-//Mock role service data
+// Mock role service data
 const roleServiceUserRolesForCourseObject: UserRolesForCourse[] = [
   {
     id: 1,

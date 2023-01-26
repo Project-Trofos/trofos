@@ -41,12 +41,12 @@ export const SHADOW_COURSE_1_ID = 4;
 export const SHADOW_COURSE_2_ID = 5;
 
 // Shadow course data (For independent projects)
-export const SHADOW_COURSE_DATA = {        
-    cname: 'Independent course',
-    startYear: 0,
-    startSem: 0,
-    endYear: 0,
-    endSem: 0,
-    description: 'Independent course',
-    shadow_course: true
-}
+export const SHADOW_COURSE_DATA = {
+  cname: 'Independent course',
+  startYear: 0,
+  startSem: 0,
+  endYear: 0,
+  endSem: 0,
+  description: 'Independent course',
+  shadow_course: true,
+};

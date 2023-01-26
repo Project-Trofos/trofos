@@ -65,7 +65,7 @@ describe('project.service tests', () => {
     it('should return created project', async () => {
       const INDEX = 0;
       const newProject = projectsData[INDEX];
-      prismaMock.user.findFirstOrThrow.mockRejectedValueOnce(userData[INDEX])
+      prismaMock.user.findFirstOrThrow.mockRejectedValueOnce(userData[INDEX]);
       prismaMock.project.create.mockResolvedValueOnce(newProject);
       prismaMock.$transaction.mockResolvedValueOnce(newProject);
 

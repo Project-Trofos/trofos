@@ -34,7 +34,7 @@ const sessionServiceResponseObject = {
   user_is_admin: false,
   user_id: 1,
 };
-const roleServiceResponseObject: UserRoleActionsForCourse = {
+const roleServiceUserRoleActionsForCourseObject: UserRoleActionsForCourse = {
   id: 1,
   user_email: 'testUser@test.com',
   role_id: 1,
@@ -227,7 +227,7 @@ describe('auth.middleware tests', () => {
   describe('when an api request is made for a particular course', () => {
     it('should reject the request if the user does not have permission to perform actions on this course', async () => {
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
-      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
 
       const testCookie = 'testCookie';
       const mockRequest = createRequest();
@@ -248,7 +248,7 @@ describe('auth.middleware tests', () => {
         isPolicyValid: true,
       } as PolicyOutcome;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
-      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = createRequest();
@@ -269,7 +269,7 @@ describe('auth.middleware tests', () => {
   describe('when an api request is made for a particular project', () => {
     it('should reject the request if the user does not have permission to perform actions on this project', async () => {
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
-      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
 
       const testCookie = 'testCookie';
       const mockRequest = createRequest();
@@ -290,7 +290,7 @@ describe('auth.middleware tests', () => {
         isPolicyValid: true,
       } as PolicyOutcome;
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
-      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceResponseObject);
+      roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
       const testCookie = 'testCookie';
       const mockRequest = createRequest();

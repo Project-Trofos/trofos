@@ -27,11 +27,14 @@ const checkPolicyOutcome = async (
   return policyOutcome;
 };
 
-async function canUserPerformActionForProject(sessionInformation : UserSession, projectId : number, routeAction : Action | null) : Promise<boolean> {
-
+async function canUserPerformActionForProject(
+  sessionInformation: UserSession,
+  projectId: number,
+  routeAction: Action | null,
+): Promise<boolean> {
   // User is admin or the route is not protected
   if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
-    return true
+    return true;
   }
 
   const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
@@ -41,11 +44,14 @@ async function canUserPerformActionForProject(sessionInformation : UserSession, 
   return matchingAction.length !== 0;
 }
 
-async function canUserPerformActionForCourse(sessionInformation : UserSession, courseId : number, routeAction : Action | null) : Promise<boolean> {
-
+async function canUserPerformActionForCourse(
+  sessionInformation: UserSession,
+  courseId: number,
+  routeAction: Action | null,
+): Promise<boolean> {
   // User is admin or the route is not protected
   if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
-    return true
+    return true;
   }
 
   const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);

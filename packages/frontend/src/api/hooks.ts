@@ -37,9 +37,9 @@ export const useCurrentAndPastProjects = () => {
       return undefined;
     }
 
-    const projects = (projectsData.data as Project[]).map(project => {
+    const projects = (projectsData.data as Project[]).map((project) => {
       if (project.course?.shadow_course) {
-        return {...project, course : undefined, course_id : null}
+        return { ...project, course: undefined, course_id: null };
       }
       return project;
     });

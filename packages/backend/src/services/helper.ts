@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from '@prisma/client';
 
 export const INCLUDE_USERS_ID_EMAIL_COURSEROLE = {
   users: {

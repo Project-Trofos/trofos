@@ -191,7 +191,7 @@ async function getUserRolesForProject(projectId: number): Promise<UserRolesForCo
 async function updateUserOnCoursePermissions(userId: number, courseId: number, roleId: number) {
   try {
     if (roleId === STUDENT_ROLE_ID) {
-      const userOnCourse = await prisma.usersOnCourses.delete({
+      await prisma.usersOnCourses.delete({
         where: {
           course_id_user_id: {
             course_id: courseId,
@@ -200,7 +200,7 @@ async function updateUserOnCoursePermissions(userId: number, courseId: number, r
         },
       });
     } else {
-      const userOnCourse = await prisma.usersOnCourses.create({
+      await prisma.usersOnCourses.create({
         data: {
           user_id: userId,
           course_id: courseId,
