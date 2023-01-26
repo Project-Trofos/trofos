@@ -1,4 +1,4 @@
-import { Course, Prisma, Project, User, UsersOnCourses, UsersOnRolesOnCourses } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnCourses, UsersOnRolesOnCourses, UsersOnProjects } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
@@ -533,7 +533,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     });
 
       // Get user ids and fetch their emails.    
-      const userIds = project.users.map((user : any) => user.user_id);
+      const userIds = project.users.map((user : UsersOnProjects) => user.user_id);
 
       const userInfo = await tx.user.findMany({
         where : {
@@ -544,12 +544,12 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
       });
   
       // For each user in usersOnProjects, we create a role for them in the new attached course
-      const queries = userInfo.map((user : any) => {
+      const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user : User) => {
         return {
           user_email : user.user_email,
           course_id : courseId,
           role_id : STUDENT_ROLE_ID
-        } as UsersOnRolesOnCourses
+        }
       });
   
       await tx.usersOnRolesOnCourses.createMany({
@@ -594,7 +594,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     });
 
     // Get user ids and fetch their emails.    
-    const userIds = project.users.map((user : any) => user.user_id);
+    const userIds = project.users.map((user : UsersOnProjects) => user.user_id);
 
     const userInfo = await tx.user.findMany({
       where : {
@@ -605,12 +605,12 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     });
 
     // For each user in usersOnProjects, we create a role for them in the new independent project
-    const queries = userInfo.map((user : any) => {
+    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user : User) => {
       return {
         user_email : user.user_email,
         course_id : course.id,
         role_id : STUDENT_ROLE_ID
-      } as UsersOnRolesOnCourses
+      }
     });
 
     await tx.usersOnRolesOnCourses.createMany({

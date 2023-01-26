@@ -249,7 +249,7 @@ export const useCourse = (courseId?: string) => {
       try {
         if (course) {
           await updateUserCourseRole({
-            id: course?.id,
+            id: course.id,
             userEmail: userEmail,
             userRole: roleId,
             userId: userId,

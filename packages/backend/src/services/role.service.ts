@@ -178,7 +178,7 @@ async function getUserRolesForProject(projectId: number): Promise<UserRolesForCo
 
   const userRoleForProject = await prisma.usersOnRolesOnCourses.findMany({
     where: {
-      course_id: projectInformation?.course_id as number,
+      course_id: projectInformation.course_id,
     },
     include: {
       role: true,
