@@ -6,7 +6,7 @@ describe('settings.service tests', () => {
   describe('get', () => {
     it('should return an error if no settings were found', async () => {
       const expectedError = new Error('Settings table is empty!');
-      prismaMock.settings.findMany.mockResolvedValueOnce([]);
+      prismaMock.settings.findFirstOrThrow.mockRejectedValueOnce(expectedError);
       await expect(settingsService.get()).rejects.toThrow(expectedError);
     });
 
@@ -16,7 +16,7 @@ describe('settings.service tests', () => {
         current_sem: 1,
         current_year: 2022,
       };
-      prismaMock.settings.findMany.mockResolvedValueOnce([settingsObject]);
+      prismaMock.settings.findFirstOrThrow.mockResolvedValueOnce(settingsObject);
       await expect(settingsService.get()).resolves.toEqual(settingsObject);
     });
   });

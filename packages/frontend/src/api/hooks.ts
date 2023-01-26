@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { confirmDeleteAnnouncement } from '../components/modals/confirm';
 import { getErrorMessage } from '../helpers/error';
@@ -28,7 +28,7 @@ export const useCurrentAndPastProjects = () => {
   const { data: settings } = useGetSettingsQuery();
 
   const filteredProjects = useMemo(() => {
-    const CURRENT_YEAR = settings?.current_year ?? 2022;
+    const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
     const CURRENT_SEM = settings?.current_sem ?? 1;
 
     if (projectsData.isError || projectsData.isLoading) {
@@ -70,7 +70,7 @@ export const useCurrentAndPastCourses = () => {
   const { data: settings } = useGetSettingsQuery();
 
   const filteredCourses = useMemo(() => {
-    const CURRENT_YEAR = settings?.current_year ?? 2022;
+    const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
     const CURRENT_SEM = settings?.current_sem ?? 1;
 
     if (coursesData.isError || coursesData.isLoading) {

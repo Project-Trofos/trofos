@@ -2,13 +2,9 @@ import { Settings } from '@prisma/client';
 import prisma from '../models/prismaClient';
 
 async function get(): Promise<Settings> {
-  const settings = await prisma.settings.findMany();
+  const settings = await prisma.settings.findFirstOrThrow();
 
-  if (settings.length === 0) {
-    throw new Error('Settings table is empty!');
-  }
-
-  return settings[0];
+  return settings;
 }
 
 async function update(settings: Settings): Promise<Settings> {
