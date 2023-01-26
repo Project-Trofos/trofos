@@ -25,11 +25,11 @@ import { useGetSettingsQuery } from './settings';
 // Filter projects by current and past
 export const useCurrentAndPastProjects = () => {
   const projectsData = useGetAllProjectsQuery();
-  const { data: getSettings } = useGetSettingsQuery();
+  const { data: settings } = useGetSettingsQuery();
 
   const filteredProjects = useMemo(() => {
-    const CURRENT_YEAR = getSettings?.current_year ?? 2022;
-    const CURRENT_SEM = getSettings?.current_sem ?? 1;
+    const CURRENT_YEAR = settings?.current_year ?? 2022;
+    const CURRENT_SEM = settings?.current_sem ?? 1;
 
     if (projectsData.isError || projectsData.isLoading) {
       return undefined;
@@ -59,7 +59,7 @@ export const useCurrentAndPastProjects = () => {
         ),
       ),
     };
-  }, [projectsData, getSettings]);
+  }, [projectsData, settings]);
 
   return { ...projectsData, ...filteredProjects };
 };
@@ -67,11 +67,11 @@ export const useCurrentAndPastProjects = () => {
 // Filter courses by current and past
 export const useCurrentAndPastCourses = () => {
   const coursesData = useGetAllCoursesQuery();
-  const { data: getSettings } = useGetSettingsQuery();
+  const { data: settings } = useGetSettingsQuery();
 
   const filteredCourses = useMemo(() => {
-    const CURRENT_YEAR = getSettings?.current_year ?? 2022;
-    const CURRENT_SEM = getSettings?.current_sem ?? 1;
+    const CURRENT_YEAR = settings?.current_year ?? 2022;
+    const CURRENT_SEM = settings?.current_sem ?? 1;
 
     if (coursesData.isError || coursesData.isLoading) {
       return undefined;
@@ -87,7 +87,7 @@ export const useCurrentAndPastCourses = () => {
         isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
-  }, [coursesData, getSettings]);
+  }, [coursesData, settings]);
 
   return { ...coursesData, ...filteredCourses };
 };
