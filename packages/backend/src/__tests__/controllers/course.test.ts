@@ -1,10 +1,11 @@
 import StatusCodes from 'http-status-codes';
-import { User, UsersOnCourses, Settings } from '@prisma/client';
+import { User, UsersOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
 import settings from '../../services/settings.service';
 import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
+import { settingsData } from '../mocks/settingsData';
 import { projectsData } from '../mocks/projectData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
@@ -35,12 +36,6 @@ describe('course controller tests', () => {
 
   // Mock data for users
   const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
-
-  // Mock data for settings
-  const settingsData = {
-    current_year: 2022,
-    current_sem: 1,
-  } as Settings;
 
   // Mock data for users on courses
   const usersCourseData: UsersOnCourses[] = [{ course_id: 1, user_id: 1, created_at: new Date(Date.now()) }];

@@ -5,6 +5,7 @@ import project from '../../services/project.service';
 import settings from '../../services/settings.service';
 import projectController from '../../controllers/project';
 import { projectsData } from '../mocks/projectData';
+import { settingsData } from '../mocks/settingsData';
 
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
@@ -30,12 +31,6 @@ describe('project controller tests', () => {
 
   // Mock data for users
   const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
-
-  // Mock data for settings
-  const settingsData = {
-    current_year: 2022,
-    current_sem: 1,
-  } as Settings;
 
   // Mock data for users on projects
   const usersProjectData: UsersOnProjects[] = [{ project_id: 1, user_id: 1, created_at: new Date(Date.now()) }];

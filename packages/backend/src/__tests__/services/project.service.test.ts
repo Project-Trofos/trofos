@@ -2,17 +2,12 @@ import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Setti
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { projectsData } from '../mocks/projectData';
+import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 
 describe('project.service tests', () => {
   // Mock data for users
   const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
-
-  // Mock data for settings
-  const settingsData = {
-    current_year: 2022,
-    current_sem: 1,
-  } as Settings;
 
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
 

@@ -2,6 +2,7 @@ import { Course, Project, User, UsersOnCourses, Settings } from '@prisma/client'
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
+import { settingsData } from '../mocks/settingsData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
@@ -24,12 +25,6 @@ describe('course.service tests', () => {
 
   // Mock data for users
   const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
-
-  // Mock data for settings
-  const settingsData = {
-    current_year: 2022,
-    current_sem: 1,
-  } as Settings;
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
