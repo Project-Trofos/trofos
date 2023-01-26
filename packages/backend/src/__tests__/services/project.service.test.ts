@@ -100,6 +100,7 @@ describe('project.service tests', () => {
     it('should return removed project', async () => {
       const INDEX = 0;
       const deletedProject = projectsData[INDEX];
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce(deletedProject);
       prismaMock.project.delete.mockResolvedValueOnce(deletedProject);
       prismaMock.$transaction.mockResolvedValueOnce(deletedProject);
 

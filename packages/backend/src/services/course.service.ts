@@ -503,7 +503,14 @@ async function addProjectAndCourse(
 // Add project to course
 async function addProject(courseId: number, projectId: number): Promise<Project> {
   return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
-    const project = await tx.project.update({
+
+    const project = await tx.project.findUniqueOrThrow({
+      where: {
+        id: projectId,
+      }
+    });
+
+    const updatedProject = await tx.project.update({
       where: {
         id: projectId,
       },
@@ -516,17 +523,14 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     });
 
     // Remove dangling shadow courses
-    await tx.course.deleteMany({
+    await tx.course.delete({
       where: {
-        shadow_course: true,
-        projects: {
-          none: {},
-        },
+        id: project.course_id
       },
     });
 
     // Get user ids and fetch their emails.
-    const userIds = project.users.map((user: UsersOnProjects) => user.user_id);
+    const userIds = updatedProject.users.map((user: UsersOnProjects) => user.user_id);
 
     const userInfo = await tx.user.findMany({
       where: {

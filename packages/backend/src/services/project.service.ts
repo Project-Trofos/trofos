@@ -263,23 +263,27 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 
 async function remove(id: number): Promise<Project> {
   return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
-    const project = await tx.project.delete({
+
+    const project = await tx.project.findUniqueOrThrow({
+      where: {
+        id,
+      }
+    })
+
+    const deletedProject = await tx.project.delete({
       where: {
         id,
       },
     });
 
     // Remove dangling shadow courses
-    await tx.course.deleteMany({
+    await tx.course.delete({
       where: {
-        shadow_course: true,
-        projects: {
-          none: {},
-        },
+        id : project.course_id
       },
     });
 
-    return project;
+    return deletedProject;
   });
 }
 

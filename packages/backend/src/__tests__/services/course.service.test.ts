@@ -307,6 +307,7 @@ describe('course.service tests', () => {
   describe('addProject', () => {
     it('should return added project', async () => {
       const resultMock: Project = projectData[0];
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
       prismaMock.user.findMany.mockResolvedValueOnce(userData);
       prismaMock.$transaction.mockResolvedValueOnce(resultMock);
