@@ -199,8 +199,6 @@ async function updateUserOnCoursePermissions(userId: number, courseId: number, r
           },
         },
       });
-
-      console.log("deleted userOnCourse entry %s", userOnCourse)
     } else {
       const userOnCourse = await prisma.usersOnCourses.create({
         data: {
@@ -208,8 +206,6 @@ async function updateUserOnCoursePermissions(userId: number, courseId: number, r
           course_id: courseId,
         },
       });
-
-      console.log("created userOnCourse entry %s", userOnCourse)
     }
   } catch (e: any) {
     console.error(e);
