@@ -361,7 +361,7 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 }
 
 async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
+  return await prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
@@ -390,7 +390,7 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
+  return await prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
@@ -502,7 +502,7 @@ async function addProjectAndCourse(
 
 // Add project to course
 async function addProject(courseId: number, projectId: number): Promise<Project> {
-  return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
+  return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.update({
       where: {
         id: projectId,
@@ -555,7 +555,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
 
 // Remove project from course
 async function removeProject(courseId: number, projectId: number): Promise<Project> {
-  return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
+  return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.findFirstOrThrow({
       where: {
         id: projectId,
