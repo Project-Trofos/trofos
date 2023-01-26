@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Typography, Row, Col, Tabs, Space } from 'antd';
 
 import ProjectCard from '../components/cards/ProjectCard';
@@ -12,6 +12,21 @@ const { Title } = Typography;
 export default function ProjectsPage(): JSX.Element {
   const { currentProjects, pastProjects, futureProjects, isLoading } = useCurrentAndPastProjects();
 
+  const currentProjectTabPane = useMemo(
+    () => getProjectsPane(currentProjects, 'Current Projects', 'There are no current projects.'),
+    [currentProjects],
+  );
+
+  const pastProjectTabPane = useMemo(
+    () => getProjectsPane(pastProjects, 'Past Projects', 'There are no past projects.'),
+    [pastProjects],
+  );
+
+  const futureProjectTabPane = useMemo(
+    () => getProjectsPane(futureProjects, 'Future Projects', 'There are no future projects.'),
+    [futureProjects],
+  );
+
   if (isLoading) {
     return <main style={{ margin: '48px' }}>Loading...</main>;
   }
@@ -23,19 +38,21 @@ export default function ProjectsPage(): JSX.Element {
         <ProjectCreationModal />
       </Space>
 
-      <Tabs>
-        {renderProjectsPane(currentProjects, 'Current Projects', 'There are no current projects.')}
-        {renderProjectsPane(pastProjects, 'Past Projects', 'There are no past projects.')}
-        {renderProjectsPane(futureProjects, 'Future Projects', 'There are no future projects.')}
-      </Tabs>
+      <Tabs items={[currentProjectTabPane, pastProjectTabPane, futureProjectTabPane]} />
     </Container>
   );
 }
 
-function renderProjectsPane(projects: Project[] | undefined, tabName: string, emptyPrompt: string) {
-  return (
-    <Tabs.TabPane tab={tabName} key={tabName}>
-      {!projects || projects.length === 0 ? (
+function getProjectsPane(
+  projects: Project[] | undefined,
+  tabName: string,
+  emptyPrompt: string,
+): NonNullable<React.ComponentProps<typeof Tabs>['items']>[number] {
+  return {
+    label: tabName,
+    key: tabName,
+    children:
+      !projects || projects.length === 0 ? (
         emptyPrompt
       ) : (
         <Row gutter={[16, 16]} wrap>
@@ -45,7 +62,6 @@ function renderProjectsPane(projects: Project[] | undefined, tabName: string, em
             </Col>
           ))}
         </Row>
-      )}
-    </Tabs.TabPane>
-  );
+      ),
+  };
 }

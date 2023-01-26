@@ -118,48 +118,18 @@ export default function ProjectPage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
-                  Overview
-                </Link>
-              }
-              key="overview"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
-                  People
-                </Link>
-              }
-              key="users"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
-                  Sprint
-                </Link>
-              }
-              key="sprint"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/board`}>
-                  Board
-                </Link>
-              }
-              key="board"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
-                  Settings
-                </Link>
-              }
-              key="settings"
-            />
-          </Tabs>
+          <Tabs
+            items={[
+              { key: 'overview', label: 'Overview' },
+              { key: 'users', label: 'Users' },
+              { key: 'sprint', label: 'Sprint' },
+              { key: 'board', label: 'Board' },
+              { key: 'settings', label: 'Settings' },
+            ]}
+            activeKey={selectedTab}
+            className="footer-tabs"
+            onChange={(key) => navigate(`/project/${project.id}/${key}`)}
+          />
         }
       >
         <Text>{project.description}</Text>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Typography, Row, Col, Space, Tabs } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
@@ -13,6 +13,21 @@ const { Title } = Typography;
 export default function CoursesPage(): JSX.Element {
   const { currentCourses, pastCourses, futureCourses, isLoading } = useCurrentAndPastCourses();
 
+  const currentCoursesTabPane = useMemo(
+    () => getCoursesPane(currentCourses, 'Current Projects', 'There are no current projects.'),
+    [currentCourses],
+  );
+
+  const pastCoursesTabPane = useMemo(
+    () => getCoursesPane(pastCourses, 'Past Projects', 'There are no past projects.'),
+    [pastCourses],
+  );
+
+  const futureCoursesTabPane = useMemo(
+    () => getCoursesPane(futureCourses, 'Future Projects', 'There are no future projects.'),
+    [futureCourses],
+  );
+
   if (isLoading) {
     return <main style={{ margin: '48px' }}>Loading...</main>;
   }
@@ -23,19 +38,21 @@ export default function CoursesPage(): JSX.Element {
         <Title>Courses</Title>
         <CourseCreationModal />
       </Space>
-      <Tabs>
-        {renderCoursesPane(currentCourses, 'Current Courses', 'There are no current courses.')}
-        {renderCoursesPane(pastCourses, 'Past Courses', 'There are no past courses.')}
-        {renderCoursesPane(futureCourses, 'Future Courses', 'There are no future courses.')}
-      </Tabs>
+      <Tabs items={[currentCoursesTabPane, pastCoursesTabPane, futureCoursesTabPane]} />
     </Container>
   );
 }
 
-function renderCoursesPane(courses: Course[] | undefined, tabName: string, emptyPrompt: string) {
-  return (
-    <Tabs.TabPane tab={tabName} key={tabName}>
-      {!courses || courses.length === 0 ? (
+function getCoursesPane(
+  courses: Course[] | undefined,
+  tabName: string,
+  emptyPrompt: string,
+): NonNullable<React.ComponentProps<typeof Tabs>['items']>[number] {
+  return {
+    label: tabName,
+    key: tabName,
+    children:
+      !courses || courses.length === 0 ? (
         emptyPrompt
       ) : (
         <Row gutter={[16, 16]} wrap>
@@ -45,7 +62,6 @@ function renderCoursesPane(courses: Course[] | undefined, tabName: string, empty
             </Col>
           ))}
         </Row>
-      )}
-    </Tabs.TabPane>
-  );
+      ),
+  };
 }
