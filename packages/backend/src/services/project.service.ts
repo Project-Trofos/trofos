@@ -1,6 +1,5 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Settings } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
-import { CURRENT_SEM, CURRENT_YEAR } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL } from './helper';
@@ -8,6 +7,7 @@ import { defaultBacklogStatus } from '../helpers/constants';
 
 async function getAll(
   policyConstraint: AppAbility,
+  settings: Settings,
   option?: 'all' | 'current' | 'past' | 'future',
 ): Promise<Project[]> {
   let result;
@@ -26,20 +26,20 @@ async function getAll(
                   {
                     course: {
                       startYear: {
-                        lte: CURRENT_YEAR,
+                        lte: settings.current_year,
                       },
                       endYear: {
-                        gte: CURRENT_YEAR,
+                        gte: settings.current_year,
                       },
                     },
                   },
                   {
                     course: {
                       startSem: {
-                        lte: CURRENT_SEM,
+                        lte: settings.current_sem,
                       },
                       endSem: {
-                        gte: CURRENT_SEM,
+                        gte: settings.current_sem,
                       },
                     },
                   },
@@ -74,17 +74,17 @@ async function getAll(
               OR: [
                 {
                   endYear: {
-                    lt: CURRENT_YEAR,
+                    lt: settings.current_year,
                   },
                 },
                 {
                   AND: [
                     {
-                      endYear: CURRENT_YEAR,
+                      endYear: settings.current_year,
                     },
                     {
                       endSem: {
-                        lt: CURRENT_SEM,
+                        lt: settings.current_sem,
                       },
                     },
                   ],
@@ -116,17 +116,17 @@ async function getAll(
               OR: [
                 {
                   startYear: {
-                    gt: CURRENT_YEAR,
+                    gt: settings.current_year,
                   },
                 },
                 {
                   AND: [
                     {
-                      startYear: CURRENT_YEAR,
+                      startYear: settings.current_year,
                     },
                     {
                       startSem: {
-                        gt: CURRENT_SEM,
+                        gt: settings.current_sem,
                       },
                     },
                   ],

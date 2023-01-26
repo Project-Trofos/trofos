@@ -1,9 +1,11 @@
 import StatusCodes from 'http-status-codes';
-import { BacklogStatus, BacklogStatusType, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, User, UsersOnProjects, Settings } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
+import settings from '../../services/settings.service';
 import projectController from '../../controllers/project';
 import { projectsData } from '../mocks/projectData';
+import { settingsData } from '../mocks/settingsData';
 
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
@@ -19,6 +21,7 @@ const spies = {
   updateBacklogStatusOrder: jest.spyOn(project, 'updateBacklogStatusOrder'),
   getBacklogStatus: jest.spyOn(project, 'getBacklogStatus'),
   deleteBacklogStatus: jest.spyOn(project, 'deleteBacklogStatus'),
+  getSettings: jest.spyOn(settings, 'get'),
 };
 
 describe('project controller tests', () => {
@@ -39,6 +42,7 @@ describe('project controller tests', () => {
 
   describe('getAll', () => {
     it('should return all projects', async () => {
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(projectsData);
 
       const mockReq = createRequest();
@@ -53,6 +57,7 @@ describe('project controller tests', () => {
 
     it('should return all past projects', async () => {
       const pastProjects = [projectsData[2]];
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(pastProjects);
       const mockReq = createRequest({
         body: {
@@ -70,6 +75,7 @@ describe('project controller tests', () => {
 
     it('should return all current projects', async () => {
       const currentProjects = [projectsData[0], projectsData[1]];
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(currentProjects);
       const mockReq = createRequest({
         body: {
@@ -87,6 +93,7 @@ describe('project controller tests', () => {
 
     it('should return all future projects', async () => {
       const futureProjects = [projectsData[3]];
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(futureProjects);
       const mockReq = createRequest({
         body: {

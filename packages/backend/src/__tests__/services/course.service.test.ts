@@ -1,8 +1,8 @@
-import { Course, Project, User, UsersOnCourses } from '@prisma/client';
-import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
+import { Course, Project, User, UsersOnCourses, Settings } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
+import { settingsData } from '../mocks/settingsData';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
@@ -33,35 +33,41 @@ describe('course.service tests', () => {
     it('should return all courses', async () => {
       prismaMock.course.findMany.mockResolvedValueOnce(coursesData);
 
-      const result = await course.getAll(coursePolicyConstraint, 'all');
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'all');
       expect(result).toEqual<Course[]>(coursesData);
     });
 
     it('should return past courses', async () => {
       const pastCourses = coursesData.filter(
-        (p) => p.startYear < CURRENT_YEAR || (p.startYear === CURRENT_YEAR && p.startSem < CURRENT_SEM),
+        (p) =>
+          p.startYear < settingsData.current_year ||
+          (p.startYear === settingsData.current_year && p.startSem < settingsData.current_sem),
       );
       prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, 'past');
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'past');
       expect(result).toEqual<Course[]>(pastCourses);
     });
 
     it('should return current courses', async () => {
-      const currentCourses = coursesData.filter((c) => c.startSem === CURRENT_SEM && c.startYear === CURRENT_YEAR);
+      const currentCourses = coursesData.filter(
+        (c) => c.startSem === settingsData.current_sem && c.startYear === settingsData.current_year,
+      );
       prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, 'current');
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'current');
       expect(result).toEqual<Course[]>(currentCourses);
     });
 
     it('should return future courses', async () => {
       const futureCourses = coursesData.filter(
-        (p) => p.startYear > CURRENT_YEAR || (p.startYear === CURRENT_YEAR && p.startSem > CURRENT_SEM),
+        (p) =>
+          p.startYear > settingsData.current_year ||
+          (p.startYear === settingsData.current_year && p.startSem > settingsData.current_sem),
       );
       prismaMock.course.findMany.mockResolvedValueOnce(futureCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, 'future');
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'future');
       expect(result).toEqual<Course[]>(futureCourses);
     });
   });

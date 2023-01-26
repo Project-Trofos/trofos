@@ -1,6 +1,3 @@
-export const CURRENT_YEAR = Number(process.env.REACT_APP_CURRENT_YEAR ?? '2022');
-export const CURRENT_SEM = Number(process.env.REACT_APP_CURRENT_SEM ?? '1');
-
 type InputType = number | null | undefined;
 
 // Checks if a particular year/sem is current
@@ -9,6 +6,8 @@ export const isCurrent = (
   startSem: InputType,
   endYear: InputType,
   endSem: InputType,
+  CURRENT_YEAR: number,
+  CURRENT_SEM: number,
 ): boolean => {
   // If year/sem is unknown, consider it to be current
   if (!startYear || !endYear || !startSem || !endSem) {
@@ -18,7 +17,14 @@ export const isCurrent = (
 };
 
 // Checks if a particular year/sem is in the past
-export const isPast = (startYear: InputType, startSem: InputType, endYear: InputType, endSem: InputType): boolean => {
+export const isPast = (
+  startYear: InputType,
+  startSem: InputType,
+  endYear: InputType,
+  endSem: InputType,
+  CURRENT_YEAR: number,
+  CURRENT_SEM: number,
+): boolean => {
   // If year/sem is unknown, consider it to be current
   if (!startYear || !endYear || !startSem || !endSem) {
     return false;
@@ -27,7 +33,14 @@ export const isPast = (startYear: InputType, startSem: InputType, endYear: Input
 };
 
 // Checks if a particular year/sem is in the future
-export const isFuture = (startYear: InputType, startSem: InputType, endYear: InputType, endSem: InputType): boolean => {
+export const isFuture = (
+  startYear: InputType,
+  startSem: InputType,
+  endYear: InputType,
+  endSem: InputType,
+  CURRENT_YEAR: number,
+  CURRENT_SEM: number,
+): boolean => {
   // If year/sem is unknown, consider it to be current
   if (!startYear || !endYear || !startSem || !endSem) {
     return false;

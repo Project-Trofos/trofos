@@ -188,3 +188,8 @@ export type UpdateUserRolePayload = {
   userEmail: string;
   newRoleId: number;
 };
+
+export type Settings = {
+  current_year: number;
+  current_sem: number;
+};
