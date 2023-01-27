@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
-import { Typography, Row, Col, Space, Tabs } from 'antd';
+import { Typography, Space, Tabs } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
 import { useCurrentAndPastCourses } from '../api/hooks';
-import CourseCard from '../components/cards/CourseCard';
 
 import Container from '../components/layouts/Container';
-import { Course } from '../api/types';
+import getPane from '../helpers/getPane';
 
 const { Title } = Typography;
 
@@ -14,17 +13,17 @@ export default function CoursesPage(): JSX.Element {
   const { currentCourses, pastCourses, futureCourses, isLoading } = useCurrentAndPastCourses();
 
   const currentCoursesTabPane = useMemo(
-    () => getCoursesPane(currentCourses, 'Current Projects', 'There are no current projects.'),
+    () => getPane(currentCourses, 'Current Courses', 'There are no current courses.'),
     [currentCourses],
   );
 
   const pastCoursesTabPane = useMemo(
-    () => getCoursesPane(pastCourses, 'Past Projects', 'There are no past projects.'),
+    () => getPane(pastCourses, 'Past Courses', 'There are no past courses.'),
     [pastCourses],
   );
 
   const futureCoursesTabPane = useMemo(
-    () => getCoursesPane(futureCourses, 'Future Projects', 'There are no future projects.'),
+    () => getPane(futureCourses, 'Future Courses', 'There are no future courses.'),
     [futureCourses],
   );
 
@@ -41,27 +40,4 @@ export default function CoursesPage(): JSX.Element {
       <Tabs items={[currentCoursesTabPane, pastCoursesTabPane, futureCoursesTabPane]} />
     </Container>
   );
-}
-
-function getCoursesPane(
-  courses: Course[] | undefined,
-  tabName: string,
-  emptyPrompt: string,
-): NonNullable<React.ComponentProps<typeof Tabs>['items']>[number] {
-  return {
-    label: tabName,
-    key: tabName,
-    children:
-      !courses || courses.length === 0 ? (
-        emptyPrompt
-      ) : (
-        <Row gutter={[16, 16]} wrap>
-          {courses.map((course) => (
-            <Col key={course.id}>
-              <CourseCard course={course} />
-            </Col>
-          ))}
-        </Row>
-      ),
-  };
 }
