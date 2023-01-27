@@ -30,6 +30,7 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
       </div>
       {milestones && milestones?.length > 0 ? (
         <Steps
+          // Use -1 here to disable the default of first item being in progress
           current={-1}
           items={milestones.map((milestone, index) => ({
             key: milestone.id,

@@ -33,6 +33,7 @@ export default function ProjectPage(): JSX.Element {
   const { project, course, isLoading } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
 
   const selectedTab = useMemo(() => {
+    // Current location split [project, :projectId, :tabName]
     const split = location.pathname.split('/');
     return split[3];
   }, [location.pathname]);

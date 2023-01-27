@@ -26,6 +26,7 @@ export default function CoursePage(): JSX.Element {
   const [removeCourse] = useRemoveCourseMutation();
 
   const selectedTab = useMemo(() => {
+    // Current location split [course, :courseId, :tabName]
     const split = location.pathname.split('/');
     return split[3];
   }, [location.pathname]);
