@@ -5,7 +5,7 @@ import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
-import { SHADOW_COURSE_DATA } from '../../prisma/constants';
+import { SHADOW_COURSE_DATA } from '../helpers/constants';
 
 async function getAll(
   policyConstraint: AppAbility,

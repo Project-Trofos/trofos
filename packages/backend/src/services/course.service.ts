@@ -8,7 +8,7 @@ import { BulkCreateProjectBody } from '../controllers/requestTypes';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 import { BadRequestError } from '../helpers/error';
-import { SHADOW_COURSE_DATA } from '../../prisma/constants';
+import { SHADOW_COURSE_DATA } from '../helpers/constants';
 
 async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
   let result;
