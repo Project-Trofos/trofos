@@ -188,3 +188,13 @@ export type UpdateUserRolePayload = {
   userEmail: string;
   newRoleId: number;
 };
+
+export type ProjectGitLink = {
+  project_id: number;
+  repo: string;
+};
+
+export type ProjectGitLinkData = {
+  projectId: number;
+  repoLink: string;
+};

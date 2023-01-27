@@ -10,6 +10,7 @@ import Container from '../components/layouts/Container';
 import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 import ProjectBacklogStatusForm from '../components/forms/ProjectBacklogStatusForm';
+import ProjectGitLinkForm from '../components/forms/ProjectGitLinkForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
@@ -60,6 +61,10 @@ export default function ProjectSettings(): JSX.Element {
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>Backlog Statuses</Subheading>
         <ProjectBacklogStatusForm statuses={project?.backlogStatuses || []} />
+      </Space>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>GitHub Linkage</Subheading>
+        <ProjectGitLinkForm />
       </Space>
     </Container>
   );

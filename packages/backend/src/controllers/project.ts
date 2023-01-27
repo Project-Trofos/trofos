@@ -5,6 +5,7 @@ import { assertProjectIdIsValid, assertUserIdIsValid, getDefaultErrorRes } from 
 import {
   assertGetAllOptionIsValid,
   assertProjectNameIsValid,
+  assertRepoLinkIsValid,
   assertStatusNameIsValid,
   assertUserSessionIsValid,
 } from '../helpers/error/assertions';
@@ -210,6 +211,66 @@ async function deleteBacklogStatus(req: express.Request, res: express.Response) 
   }
 }
 
+async function getGitLink(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.getGitUrl(Number(projectId));
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function addGitLink(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { repoLink } = req.body;
+
+    assertProjectIdIsValid(projectId);
+    assertRepoLinkIsValid(repoLink);
+
+    const result = await project.addGitUrl(Number(projectId), repoLink);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function updateGitLink(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { repoLink } = req.body;
+
+    assertProjectIdIsValid(projectId);
+    assertRepoLinkIsValid(repoLink);
+
+    const result = await project.updateGitUrl(Number(projectId), repoLink);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function deleteGitLink(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.deleteGitUrl(Number(projectId));
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -223,4 +284,8 @@ export default {
   getBacklogStatus,
   updateBacklogStatus,
   deleteBacklogStatus,
+  getGitLink,
+  addGitLink,
+  updateGitLink,
+  deleteGitLink,
 };

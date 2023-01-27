@@ -79,6 +79,8 @@ model Project {
   sprints         Sprint[]
 
   backlogStatuses BacklogStatus[]
+
+  projectGitLink  ProjectGitLink?
 }
 
 model Announcement {
@@ -218,6 +220,12 @@ model UsersOnRoles {
   user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+}
+
+model ProjectGitLink {
+  project       Project   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id    Int       @id
+  repo          String
 }
 
 enum Action {

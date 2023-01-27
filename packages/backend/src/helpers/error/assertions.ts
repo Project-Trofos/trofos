@@ -197,3 +197,17 @@ export function assertSprintDatesAreValid(dates: string[] | undefined): asserts 
     throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
   }
 }
+
+export function assertRepoLinkIsValid(repoLink: string | undefined): asserts repoLink is string {
+  if (!repoLink) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('repoLink'));
+  }
+}
+
+export function assertGithubPayloadIsValid(
+  payload: { [key: string]: any } | undefined,
+): asserts payload is { [key: string]: any } {
+  if (!payload) {
+    throw new BadRequestError('Invalid payload in webhook');
+  }
+}
