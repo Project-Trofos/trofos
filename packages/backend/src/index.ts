@@ -9,6 +9,7 @@ import userRouter from './routes/user.route';
 import sprintRouter from './routes/sprint.route';
 import roleRouter from './routes/role.route';
 import githubRouter from './routes/github.route';
+import settingsRouter from './routes/settings.route';
 
 const app = express();
 const port = 3001;
@@ -48,6 +49,9 @@ app.use('/role', roleRouter);
 
 // Routes for github app
 app.use('/github', githubRouter);
+
+// Routes for settings
+app.use('/settings', settingsRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

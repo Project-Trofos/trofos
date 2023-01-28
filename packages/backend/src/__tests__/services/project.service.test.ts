@@ -1,7 +1,8 @@
-import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects, Settings } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
+import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 
 describe('project.service tests', () => {
@@ -14,7 +15,7 @@ describe('project.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll(projectPolicyConstraint, 'all');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'all');
       expect(result).toEqual<Project[]>(projectsData);
     });
 
@@ -22,7 +23,7 @@ describe('project.service tests', () => {
       const pastProjects = [projectsData[2]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'past');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'past');
       expect(result).toEqual<Project[]>(pastProjects);
     });
 
@@ -30,7 +31,7 @@ describe('project.service tests', () => {
       const currentProjects = [projectsData[0], projectsData[1]];
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'current');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'current');
       expect(result).toEqual<Project[]>(currentProjects);
     });
 
@@ -38,7 +39,7 @@ describe('project.service tests', () => {
       const pastProjects = [projectsData[3]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, 'future');
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'future');
       expect(result).toEqual<Project[]>(pastProjects);
     });
   });

@@ -197,4 +197,9 @@ export type ProjectGitLink = {
 export type ProjectGitLinkData = {
   projectId: number;
   repoLink: string;
+}
+
+export type Settings = {
+  current_year: number;
+  current_sem: number;
 };

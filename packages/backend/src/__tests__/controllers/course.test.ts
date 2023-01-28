@@ -2,10 +2,11 @@ import StatusCodes from 'http-status-codes';
 import { User, UsersOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
+import settings from '../../services/settings.service';
 import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
+import { settingsData } from '../mocks/settingsData';
 import { projectsData } from '../mocks/projectData';
-import { CURRENT_SEM, CURRENT_YEAR } from '../../helpers/currentTime';
 import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
@@ -25,6 +26,7 @@ const spies = {
   addProject: jest.spyOn(course, 'addProject'),
   removeProject: jest.spyOn(course, 'removeProject'),
   addProjectAndCourse: jest.spyOn(course, 'addProjectAndCourse'),
+  getSettings: jest.spyOn(settings, 'get'),
 };
 
 describe('course controller tests', () => {
@@ -54,6 +56,7 @@ describe('course controller tests', () => {
 
   describe('getAll', () => {
     it('should return all courses', async () => {
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(coursesData);
       const mockReq = createRequest();
       const mockRes = createResponse();
@@ -68,8 +71,11 @@ describe('course controller tests', () => {
 
     it('should return all past courses', async () => {
       const pastCourses = coursesData.filter(
-        (c) => c.startYear < CURRENT_YEAR || (c.startYear === CURRENT_YEAR && c.startSem < CURRENT_SEM),
+        (c) =>
+          c.startYear < settingsData.current_year ||
+          (c.startYear === settingsData.current_year && c.startSem < settingsData.current_sem),
       );
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(pastCourses);
       const mockReq = createRequest({
         body: {
@@ -87,7 +93,10 @@ describe('course controller tests', () => {
     });
 
     it('should return all current courses', async () => {
-      const currentCourses = coursesData.filter((c) => c.startYear === CURRENT_YEAR && c.startSem === CURRENT_SEM);
+      const currentCourses = coursesData.filter(
+        (c) => c.startYear === settingsData.current_year && c.startSem === settingsData.current_sem,
+      );
+      spies.getSettings.mockResolvedValue(settingsData);
       spies.getAll.mockResolvedValueOnce(currentCourses);
       const mockReq = createRequest({
         body: {
