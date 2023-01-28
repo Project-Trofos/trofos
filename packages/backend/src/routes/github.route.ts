@@ -4,7 +4,7 @@ import githubController from '../controllers/github';
 const router = express.Router();
 
 router.get('/', (req: express.Request, res: express.Response) => {
-  res.send('Hello World!');
+  res.json({ status: 'ok' });
 });
 
 router.post('/', githubController.handleWebhook);
