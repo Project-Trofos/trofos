@@ -8,6 +8,7 @@ async function createProjectTableSeed(prisma: PrismaClient) {
       {
         id: BACKLOG_PROJECT_ID,
         pname: 'Backlog Test Project',
+        pkey: 'KEY',
         backlog_counter: 5,
       },
       {
