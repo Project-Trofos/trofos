@@ -2,7 +2,7 @@ import { Backlog, BacklogStatus, BacklogStatusType, Prisma, ProjectGitLink } fro
 import prisma from '../models/prismaClient';
 
 async function handleWebhook(repoLink: string, backlogId: number, status: BacklogStatusType): Promise<Backlog[]> {
-  return await prisma.$transaction<Backlog[]>(async (tx: Prisma.TransactionClient) => {
+  return prisma.$transaction<Backlog[]>(async (tx: Prisma.TransactionClient) => {
     const projectGitLinks = await tx.projectGitLink.findMany({
       where: {
         repo: repoLink,
@@ -33,7 +33,7 @@ async function handleWebhook(repoLink: string, backlogId: number, status: Backlo
       return backlog;
     });
 
-    return await Promise.all(promises);
+    return Promise.all(promises);
   });
 }
 

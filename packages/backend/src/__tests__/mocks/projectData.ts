@@ -1,4 +1,4 @@
-import { Project } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink } from '@prisma/client';
 
 // Mock data for projects
 export const projectsData: Project[] = [
@@ -53,4 +53,23 @@ export const mockBacklogReturnedProject: Project = {
   description: 'd1',
   public: false,
   backlog_counter: 1,
+};
+
+export const mockInProgressBacklogStatus: BacklogStatus = {
+  project_id: 1,
+  name: 'In progress',
+  type: BacklogStatusType.in_progress,
+  order: 1,
+};
+
+export const mockDoneBacklogStatus: BacklogStatus = {
+  project_id: 1,
+  name: 'Done',
+  type: BacklogStatusType.done,
+  order: 1,
+};
+
+export const mockReturnedProjectGitLink: ProjectGitLink = {
+  project_id: 1,
+  repo: 'https://github.com/Project-Trofos/trofos.git',
 };

@@ -4,11 +4,13 @@ import { getDefaultErrorRes } from '../helpers/error';
 import { assertGithubPayloadIsValid } from '../helpers/error/assertions';
 import githubService from '../services/github.service';
 
-function extractBacklogId(title: string): string | null {
-  const matches = title.match(/\[(.*?)\]/);
-  if (matches) {
-    return matches[1];
+// Get backlog id from the commit title
+function extractBacklogId(title: string): number | null {
+  const matches = title.match(/\[(.*-)?(.*?)\]/);
+  if (matches && matches.length === 3) {
+    return Number(matches[2]) || null;
   }
+
   return null;
 }
 
@@ -20,17 +22,17 @@ async function handleWebhook(req: express.Request, res: express.Response) {
     if (payload.action === 'opened' || (payload.action === 'closed' && payload.pull_request.merged)) {
       const backlogId = extractBacklogId(payload.pull_request.title);
       if (!backlogId) {
-        res.json({ status: 'ok', message: 'No backlog id detected in PR title.' });
+        res.json({ message: 'No backlog id detected in PR title.' });
         return;
       }
 
       const status = payload.action === 'opened' ? BacklogStatusType.in_progress : BacklogStatusType.done;
-      githubService.handleWebhook(payload.repository.clone_url, Number(backlogId), status);
+      githubService.handleWebhook(payload.repository.clone_url, backlogId, status);
     }
 
-    res.json({ status: 'ok', message: 'Backlog updated' });
+    res.json({ message: 'Webhook processed' });
   } catch (error) {
-    return getDefaultErrorRes(error, res);
+    getDefaultErrorRes(error, res);
   }
 }
 
