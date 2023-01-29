@@ -10,6 +10,9 @@ import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
 import './Project.css';
 import PageHeader from '../components/pageheader/PageHeader';
+import useSocket, { UpdateType } from '../api/socket/useSocket';
+import trofosApiSlice from '../api';
+import store from '../app/store';
 
 const { Text } = Typography;
 
@@ -30,7 +33,15 @@ export default function ProjectPage(): JSX.Element {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
-  const { project, course, isLoading } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
+  const projectId = Number(params.projectId) ? Number(params.projectId) : -1;
+
+  const { project, course, isLoading } = useProject(projectId);
+
+  // Refetch active sprint data upon update
+  const handleReset = useCallback(() => {
+    store.dispatch(trofosApiSlice.util.invalidateTags(['Backlog', 'BacklogHistory', 'Sprint']));
+  }, []);
+  useSocket(UpdateType.BACKLOG, projectId.toString(), handleReset);
 
   const selectedTab = useMemo(() => {
     const split = location.pathname.split('/');

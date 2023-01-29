@@ -31,7 +31,7 @@ export default function useSocket(updateType: UpdateType, roomId: string | undef
     });
 
     if (roomId) {
-      socket.volatile.emit('subscribeToUpdate', updateType, roomId);
+      socket.emit('subscribeToUpdate', updateType, roomId);
     }
 
     socket.on('disconnect', () => {
@@ -44,7 +44,7 @@ export default function useSocket(updateType: UpdateType, roomId: string | undef
 
     return () => {
       if (roomId) {
-        socket.volatile.emit('unsubscribeToUpdate', updateType, roomId);
+        socket.emit('unsubscribeToUpdate', updateType, roomId);
       }
       socket.off('updated');
       socket.off('connect');
