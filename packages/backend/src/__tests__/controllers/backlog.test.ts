@@ -20,6 +20,8 @@ describe('backlogController tests', () => {
     jest.clearAllMocks();
   });
 
+  const mockUserId = 1;
+
   describe('create backlog', () => {
     const mockBacklog: BacklogFields = mockBacklogFields;
 
@@ -29,13 +31,13 @@ describe('backlogController tests', () => {
       body: mockBacklog,
     });
 
-    const mockResponse = createResponse();
+    const mockResponse = createResponse({ locals: { userSession: { user_id: 1 } } });
 
     it('should return new backlog and status 200 when new backlog is successfully created', async () => {
       backlogServiceSpies.newBacklog.mockResolvedValueOnce(expectedBacklog);
 
       await backlogController.newBacklog(mockRequest, mockResponse);
-      expect(backlogServiceSpies.newBacklog).toHaveBeenCalledWith(mockBacklog);
+      expect(backlogServiceSpies.newBacklog).toHaveBeenCalledWith(mockBacklog, mockUserId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
@@ -44,7 +46,7 @@ describe('backlogController tests', () => {
       backlogServiceSpies.newBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
 
       await backlogController.newBacklog(mockRequest, mockResponse);
-      expect(backlogServiceSpies.newBacklog).toHaveBeenCalledWith(mockBacklog);
+      expect(backlogServiceSpies.newBacklog).toHaveBeenCalledWith(mockBacklog, mockUserId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
@@ -188,7 +190,7 @@ describe('backlogController tests', () => {
       body: mockBacklogToUpdate,
     });
 
-    const mockResponse = createResponse();
+    const mockResponse = createResponse({ locals: { userSession: { user_id: mockUserId } } });
 
     it('should return updated backlog and status 200 when called with valid fields', async () => {
       const expectedBacklog: Backlog = {
@@ -198,7 +200,7 @@ describe('backlogController tests', () => {
       backlogServiceSpies.updateBacklog.mockResolvedValueOnce(expectedBacklog);
 
       await backlogController.updateBacklog(mockRequest, mockResponse);
-      expect(backlogServiceSpies.updateBacklog).toHaveBeenCalledWith(mockBacklogToUpdate);
+      expect(backlogServiceSpies.updateBacklog).toHaveBeenCalledWith(mockBacklogToUpdate, mockUserId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
     });
@@ -231,7 +233,7 @@ describe('backlogController tests', () => {
       backlogServiceSpies.updateBacklog.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
 
       await backlogController.updateBacklog(mockRequest, mockResponse);
-      expect(backlogServiceSpies.updateBacklog).toHaveBeenCalledWith(mockBacklogToUpdate);
+      expect(backlogServiceSpies.updateBacklog).toHaveBeenCalledWith(mockBacklogToUpdate, mockUserId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
@@ -246,7 +248,7 @@ describe('backlogController tests', () => {
       params: mockBacklogToDelete,
     });
 
-    const mockResponse = createResponse();
+    const mockResponse = createResponse({ locals: { userSession: { user_id: mockUserId } } });
 
     it('should return backlog and status 200 when called with valid fields', async () => {
       const expectedBacklog: Backlog = mockBacklogData;
@@ -256,6 +258,7 @@ describe('backlogController tests', () => {
       expect(backlogServiceSpies.deleteBacklog).toHaveBeenCalledWith(
         mockBacklogToDelete.projectId,
         mockBacklogToDelete.backlogId,
+        mockUserId,
       );
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklog));
@@ -292,6 +295,7 @@ describe('backlogController tests', () => {
       expect(backlogServiceSpies.deleteBacklog).toHaveBeenCalledWith(
         mockBacklogToDelete.projectId,
         mockBacklogToDelete.backlogId,
+        mockUserId,
       );
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });

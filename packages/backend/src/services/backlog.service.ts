@@ -1,11 +1,12 @@
 import { Backlog, BacklogStatusType, HistoryType } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
+import { getSocket, UpdateType } from './socket.service';
 
-async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
+async function newBacklog(backlogFields: BacklogFields, userId: number): Promise<Backlog> {
   const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
 
-  return prisma.$transaction<Backlog>(async (tx) => {
+  const result = prisma.$transaction<Backlog>(async (tx) => {
     const backlogCounter = await tx.project.findUniqueOrThrow({
       where: { id: projectId },
       select: { backlog_counter: true },
@@ -101,6 +102,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
 
     return createdBacklog;
   });
+
+  // Send update event to each listener
+  getSocket(userId)?.volatile.to(`${UpdateType.BACKLOG}/${projectId.toString()}`).emit('updated');
+
+  return result;
 }
 
 async function listBacklogs(projectId: number): Promise<Backlog[]> {
@@ -137,14 +143,17 @@ async function getBacklog(projectId: number, backlogId: number): Promise<Backlog
   return backlog;
 }
 
-async function updateBacklog(backlogToUpdate: {
-  projectId: number;
-  backlogId: number;
-  fieldToUpdate: Partial<BacklogFields>;
-}): Promise<Backlog> {
+async function updateBacklog(
+  backlogToUpdate: {
+    projectId: number;
+    backlogId: number;
+    fieldToUpdate: Partial<BacklogFields>;
+  },
+  userId: number,
+): Promise<Backlog> {
   const { projectId, backlogId, fieldToUpdate } = backlogToUpdate;
 
-  return prisma.$transaction<Backlog>(async (tx) => {
+  const result = await prisma.$transaction<Backlog>(async (tx) => {
     const updatedBacklog = await tx.backlog.update({
       where: {
         project_id_backlog_id: {
@@ -183,10 +192,15 @@ async function updateBacklog(backlogToUpdate: {
 
     return updatedBacklog;
   });
+
+  // Send update event to each listener
+  getSocket(userId)?.volatile.to(`${UpdateType.BACKLOG}/${projectId.toString()}`).emit('updated');
+
+  return result;
 }
 
-async function deleteBacklog(projectId: number, backlogId: number): Promise<Backlog> {
-  return prisma.$transaction<Backlog>(async (tx) => {
+async function deleteBacklog(projectId: number, backlogId: number, userId: number): Promise<Backlog> {
+  const result = await prisma.$transaction<Backlog>(async (tx) => {
     const backlog = await tx.backlog.delete({
       where: {
         project_id_backlog_id: {
@@ -224,6 +238,11 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
 
     return backlog;
   });
+
+  // Send update event to each listener
+  getSocket(userId)?.volatile.to(`${UpdateType.BACKLOG}/${projectId.toString()}`).emit('updated');
+
+  return result;
 }
 
 export default {
