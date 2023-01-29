@@ -9,15 +9,19 @@ import type { Backlog, ScrumBoardUserData } from '../api/types';
 import ScrumBoardCard from '../components/cards/ScrumBoardCard';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import './ScrumBoard.css';
+import useSocket, { UpdateType } from '../api/socket/useSocket';
 
 const { Title } = Typography;
 
 export default function ScrumBoard(): JSX.Element {
   const params = useParams();
   const projectId = Number(params.projectId);
-  const { data: activeSprint } = useGetActiveSprintQuery(projectId);
+  const { data: activeSprint, refetch: refetchActiveSprint } = useGetActiveSprintQuery(projectId);
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const { data: projectData } = useGetProjectQuery({ id: projectId });
+
+  // Refetch active sprint data upon update
+  useSocket(UpdateType.BACKLOG, projectData ? projectData.id.toString() : undefined, refetchActiveSprint);
 
   const [updateBacklog] = useUpdateBacklogMutation();
 
