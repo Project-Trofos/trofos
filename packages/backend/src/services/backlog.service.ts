@@ -6,7 +6,7 @@ import { getSocket, UpdateType } from './socket.service';
 async function newBacklog(backlogFields: BacklogFields, userId: number): Promise<Backlog> {
   const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
 
-  const result = prisma.$transaction<Backlog>(async (tx) => {
+  const result = await prisma.$transaction<Backlog>(async (tx) => {
     const backlogCounter = await tx.project.findUniqueOrThrow({
       where: { id: projectId },
       select: { backlog_counter: true },
