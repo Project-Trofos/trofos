@@ -5,7 +5,7 @@ import { hasAuth } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-router.get('/', hasAuth(Action.admin, null), settings.getSettings);
+router.get('/', hasAuth(null, null), settings.getSettings);
 router.post('/', hasAuth(Action.admin, null), settings.updateSettings);
 
 export default router;
