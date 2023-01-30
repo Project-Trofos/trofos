@@ -20,6 +20,7 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
+  shadow_course: boolean;
 };
 
 export type User = {

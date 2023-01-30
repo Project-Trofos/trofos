@@ -48,6 +48,7 @@ model Course {
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
   courseRoles UsersOnRolesOnCourses[]
+  shadow_course Boolean           @default(false)
   @@unique([code, startYear, startSem])
 }
 
@@ -69,8 +70,8 @@ model Project {
   description     String?
 
   // A project might not belong to a course (open project)
-  course_id       Int?
-  course          Course?           @relation(fields: [course_id], references: [id], onDelete: SetNull)
+  course_id       Int
+  course          Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   users           UsersOnProjects[]
   public          Boolean           @default(false)

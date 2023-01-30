@@ -36,14 +36,22 @@ export const useCurrentAndPastProjects = () => {
     if (projectsData.isError || projectsData.isLoading) {
       return undefined;
     }
+
+    const projects = (projectsData.data as Project[]).map((project) => {
+      if (project.course?.shadow_course) {
+        return { ...project, course: undefined, course_id: null };
+      }
+      return project;
+    });
+
     return {
-      pastProjects: (projectsData.data as Project[]).filter((p) =>
+      pastProjects: projects.filter((p) =>
         isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
       ),
-      currentProjects: (projectsData.data as Project[]).filter((p) =>
+      currentProjects: projects.filter((p) =>
         isCurrent(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
       ),
-      futureProjects: (projectsData.data as Project[]).filter((p) =>
+      futureProjects: projects.filter((p) =>
         isFuture(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem),
       ),
     };
@@ -82,6 +90,8 @@ export const useProject = (projectId: number) => {
   const [addUser] = useAddProjectUserMutation();
   const [removeUser] = useRemoveProjectUserMutation();
   const [updateUserProjectRole] = useUpdateProjectUserRoleMutation();
+
+  const projectCourseData = project?.course.shadow_course ? undefined : project?.course;
 
   const handleRemoveUser = useCallback(
     async (userId: number) => {
@@ -146,16 +156,13 @@ export const useProject = (projectId: number) => {
       return undefined;
     }
 
-    console.log('inside projectUserRoles');
-    console.log(userRoles);
-
     return userRoles;
   }, [handleUpdateUserRole, project, userRoles, projectId]);
 
   return {
     project,
     projectUserRoles,
-    course: project?.course,
+    course: projectCourseData,
     handleAddUser,
     handleRemoveUser,
     handleUpdateUserRole,
@@ -242,7 +249,7 @@ export const useCourse = (courseId?: string) => {
       try {
         if (course) {
           await updateUserCourseRole({
-            id: course?.id,
+            id: course.id,
             userEmail: userEmail,
             userRole: roleId,
             userId: userId,

@@ -18,6 +18,37 @@ const spies = {
   roleServiceUpdateUserRoleForProject: jest.spyOn(roleService, 'updateUserRoleForProject'),
 };
 
+// Mock role service data
+const roleServiceUserRolesForCourseObject: UserRolesForCourse[] = [
+  {
+    id: 1,
+    user_email: 'testUser@test.com',
+    role_id: 1,
+    course_id: 1,
+    role: {
+      id: 1,
+      role_name: 'TEST_ROLE',
+    },
+  },
+];
+
+const roleServiceActionsOnRolesObject: ActionsOnRoles = {
+  role_id: 1,
+  action: Action.admin,
+};
+
+const roleServiceUserRoleActionsForCourseObject: UserRoleActionsForCourse = {
+  id: 1,
+  user_email: 'testEmail@test.com',
+  course_id: 1,
+  role_id: 1,
+  role: {
+    id: 1,
+    role_name: 'TEST_ROLE',
+    actions: [],
+  },
+};
+
 describe('role.controller tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -102,21 +133,17 @@ describe('role.controller tests', () => {
     });
 
     it('should return all roles and their actions in the application if the query was successful', async () => {
-      const roleServiceResponseObject: ActionsOnRoles = {
-        role_id: 1,
-        action: Action.admin,
-      };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         roleId: 1,
         action: Action.admin,
       };
-      spies.roleServiceAddActionToRole.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceAddActionToRole.mockResolvedValueOnce(roleServiceActionsOnRolesObject);
       await role.addActionToRole(mockReq, mockRes);
       const jsonData = mockRes._getJSONData();
       expect(jsonData.message).toEqual('Successfully added');
-      expect(jsonData.data).toEqual(roleServiceResponseObject);
+      expect(jsonData.data).toEqual(roleServiceActionsOnRolesObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });
@@ -147,21 +174,17 @@ describe('role.controller tests', () => {
     });
 
     it('should return all roles and their actions in the application if the query was successful', async () => {
-      const roleServiceResponseObject: ActionsOnRoles = {
-        role_id: 1,
-        action: Action.admin,
-      };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         roleId: 1,
         action: Action.admin,
       };
-      spies.roleServiceRemoveActionFromRole.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceRemoveActionFromRole.mockResolvedValueOnce(roleServiceActionsOnRolesObject);
       await role.removeActionFromRole(mockReq, mockRes);
       const jsonData = mockRes._getJSONData();
       expect(jsonData.message).toEqual('Successfully removed');
-      expect(jsonData.data).toEqual(roleServiceResponseObject);
+      expect(jsonData.data).toEqual(roleServiceActionsOnRolesObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });
@@ -194,27 +217,16 @@ describe('role.controller tests', () => {
     });
 
     it('should return all of the users role actions for a course if the query is successful', async () => {
-      const roleServiceResponseObject: UserRoleActionsForCourse = {
-        id: 1,
-        user_email: 'testEmail@test.com',
-        course_id: 1,
-        role_id: 1,
-        role: {
-          id: 1,
-          role_name: 'TEST_ROLE',
-          actions: [],
-        },
-      };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         courseId: 1,
         userEmail: 'testEmail@test.com',
       };
-      spies.roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       await role.getUserRoleActionsForCourse(mockReq, mockRes);
       const jsonData = mockRes._getJSONData();
-      expect(jsonData).toEqual(roleServiceResponseObject);
+      expect(jsonData).toEqual(roleServiceUserRoleActionsForCourseObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });
@@ -247,26 +259,15 @@ describe('role.controller tests', () => {
     });
 
     it('should return all of the users role actions for a project if the query is successful', async () => {
-      const roleServiceResponseObject: UserRoleActionsForCourse = {
-        id: 1,
-        user_email: 'testEmail@test.com',
-        course_id: 1,
-        role_id: 1,
-        role: {
-          id: 1,
-          role_name: 'TEST_ROLE',
-          actions: [],
-        },
-      };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         projectId: 1,
         userEmail: 'testEmail@test.com',
       };
-      spies.roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       await role.getUserRoleActionsForProject(mockReq, mockRes);
-      expect(mockRes._getJSONData()).toEqual(roleServiceResponseObject);
+      expect(mockRes._getJSONData()).toEqual(roleServiceUserRoleActionsForCourseObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });
@@ -282,26 +283,13 @@ describe('role.controller tests', () => {
     });
 
     it('should return all of the user roles for a course if the query is successful', async () => {
-      const roleServiceResponseObject: UserRolesForCourse[] = [
-        {
-          id: 1,
-          user_email: 'testUser@test.com',
-          role_id: 1,
-          course_id: 1,
-          role: {
-            id: 1,
-            role_name: 'TEST_ROLE',
-          },
-        },
-      ];
-
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.params.courseId = '1';
 
-      spies.roleServiceGetUserRolesForCourse.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceGetUserRolesForCourse.mockResolvedValueOnce(roleServiceUserRolesForCourseObject);
       await role.getUserRolesForCourse(mockReq, mockRes);
-      expect(mockRes._getJSONData()).toEqual(roleServiceResponseObject);
+      expect(mockRes._getJSONData()).toEqual(roleServiceUserRolesForCourseObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });
@@ -317,26 +305,13 @@ describe('role.controller tests', () => {
     });
 
     it('should return all of the user roles for a course if the query is successful', async () => {
-      const roleServiceResponseObject: UserRolesForCourse[] = [
-        {
-          id: 1,
-          user_email: 'testUser@test.com',
-          role_id: 1,
-          course_id: 1,
-          role: {
-            id: 1,
-            role_name: 'TEST_ROLE',
-          },
-        },
-      ];
-
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.params.projectId = '1';
 
-      spies.roleServiceGetUserRolesForProject.mockResolvedValueOnce(roleServiceResponseObject);
+      spies.roleServiceGetUserRolesForProject.mockResolvedValueOnce(roleServiceUserRolesForCourseObject);
       await role.getUserRolesForProject(mockReq, mockRes);
-      expect(mockRes._getJSONData()).toEqual(roleServiceResponseObject);
+      expect(mockRes._getJSONData()).toEqual(roleServiceUserRolesForCourseObject);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
     });
   });

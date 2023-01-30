@@ -10,7 +10,6 @@ const router = express.Router();
 // Routes for backlog
 router.post('/newBacklog', hasAuth(Action.update_project, null), backlog.newBacklog);
 router.get('/listBacklogs/:projectId', hasAuth(Action.read_project, null), backlog.listBacklogs);
-router.get('/listUnassignedBacklogs/:projectId', hasAuth(Action.read_project, null), backlog.listBacklogs);
 router.get('/getBacklog/:projectId/:backlogId', hasAuth(Action.read_project, null), backlog.getBacklog);
 router.put('/updateBacklog', hasAuth(Action.update_project, null), backlog.updateBacklog);
 router.delete('/deleteBacklog/:projectId/:backlogId', hasAuth(Action.update_project, null), backlog.deleteBacklog);

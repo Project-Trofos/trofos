@@ -6,6 +6,7 @@ import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
 import policyEngine from '../policies/policyEngine';
 import { PolicyOutcome } from '../policies/policyTypes';
+import { ADMIN_ROLE_ID } from '../helpers/constants';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -25,6 +26,40 @@ const checkPolicyOutcome = async (
 
   return policyOutcome;
 };
+
+async function canUserPerformActionForProject(
+  sessionInformation: UserSession,
+  projectId: number,
+  routeAction: Action | null,
+): Promise<boolean> {
+  // User is admin or the route is not protected
+  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
+    return true;
+  }
+
+  const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
+
+  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+
+  return matchingAction.length !== 0;
+}
+
+async function canUserPerformActionForCourse(
+  sessionInformation: UserSession,
+  courseId: number,
+  routeAction: Action | null,
+): Promise<boolean> {
+  // User is admin or the route is not protected
+  if (sessionInformation.user_role_id === ADMIN_ROLE_ID || !routeAction) {
+    return true;
+  }
+
+  const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);
+
+  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+
+  return matchingAction.length !== 0;
+}
 
 // Authorises user against basic role
 const hasAuth =
@@ -69,11 +104,10 @@ const hasAuthForProject =
       const projectId = Number(req.params.projectId);
 
       const sessionInformation = await sessionService.getUserSession(sessionId);
-      const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
 
-      const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+      const isValidAction = await canUserPerformActionForProject(sessionInformation, projectId, routeAction);
 
-      if (routeAction && matchingAction.length === 0) {
+      if (!isValidAction) {
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
 
@@ -102,11 +136,10 @@ const hasAuthForCourse =
     try {
       const courseId = Number(req.params.courseId);
       const sessionInformation = await sessionService.getUserSession(sessionId);
-      const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);
 
-      const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+      const isValidAction = await canUserPerformActionForCourse(sessionInformation, courseId, routeAction);
 
-      if (routeAction && matchingAction.length === 0) {
+      if (!isValidAction) {
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
 
