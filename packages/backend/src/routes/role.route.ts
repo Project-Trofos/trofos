@@ -5,7 +5,7 @@ import role from '../controllers/role';
 
 const router = express.Router();
 
-router.get('/', isAuthorizedRequest(null, null), role.getAllRoles);
+router.get('/', hasAuth(null, null), role.getAllRoles);
 
 // Get all actions
 router.get('/actions', hasAuth(null, null), role.getAllActions);
@@ -42,6 +42,6 @@ router.post(
 );
 
 // Update user role
-router.post('/userRole', isAuthorizedRequest(Action.admin, null), role.updateUserRole);
+router.post('/userRole', hasAuth(Action.admin, null), role.updateUserRole);
 
 export default router;
