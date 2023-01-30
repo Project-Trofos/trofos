@@ -41,9 +41,6 @@ export function init(socketServer: Server) {
       return;
     }
 
-    // By default, each user joins a room with his user id
-    socket.join(`user/${sessionInformation.user_id.toString()}`);
-
     // Store user's socket
     userSocketMap.set(sessionInformation.user_id, socket);
 

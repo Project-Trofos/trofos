@@ -33,7 +33,7 @@ export default function ProjectPage(): JSX.Element {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
-  const projectId = Number(params.projectId) ? Number(params.projectId) : -1;
+  const projectId = Number(params.projectId) || -1;
 
   const { project, course, isLoading } = useProject(projectId);
 

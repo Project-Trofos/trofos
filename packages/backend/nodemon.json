@@ -1,5 +1,5 @@
 {
-  "ignore": [".git", "node_modules", "dist", "coverage"],
+  "ignore": [".git", "node_modules", "dist", "coverage", "src/__tests__"],
   "watch": ["./src"],
   "exec": "npm start",
   "ext": "ts"
