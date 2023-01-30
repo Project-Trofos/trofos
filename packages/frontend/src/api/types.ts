@@ -28,13 +28,21 @@ export type User = {
   user_id: number;
   projects: Project[];
   courses: Course[];
-  roles: UsersOnRoles[];
+  basicRoles: BasicRoles[];
+  courseRoles: CourseRoles[];
 };
 
-export type UsersOnRoles = {
+export type BasicRoles = {
   user_email: string;
   role_id: number;
-};
+}
+
+export type CourseRoles = {
+  id: number;
+  user_email: string;
+  role_id: number;
+  course_id: number;
+}
 
 export type CreateUserRequest = {
   userEmail: string;
@@ -81,14 +89,7 @@ export type UserData = {
   user: {
     user_id: number;
     user_email: string;
-    courseRoles: [
-      {
-        id: number;
-        user_email: string;
-        role_id: number;
-        course_id: number;
-      },
-    ];
+    courseRoles: CourseRoles[];
   };
 };
 
