@@ -29,27 +29,23 @@ export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
         {course && showEdit && <MilestoneCreationModal courseId={course.id.toString()} />}
       </div>
       {milestones && milestones?.length > 0 ? (
-        <Steps current={-1}>
-          {milestones.map((milestone, index) => {
-            return (
-              <Step
-                key={milestone.id}
-                title={
-                  <Title showEdit={showEdit} milestone={milestone} handleUpdateMilestone={handleUpdateMilestone} />
-                }
-                status={statuses[index]}
-                description={
-                  <Description
-                    showEdit={showEdit}
-                    milestone={milestone}
-                    handleUpdateMilestone={handleUpdateMilestone}
-                    handleDeleteMilestone={handleDeleteMilestone}
-                  />
-                }
+        <Steps
+          // Use -1 here to disable the default of first item being in progress
+          current={-1}
+          items={milestones.map((milestone, index) => ({
+            key: milestone.id,
+            title: <Title showEdit={showEdit} milestone={milestone} handleUpdateMilestone={handleUpdateMilestone} />,
+            status: statuses[index],
+            description: (
+              <Description
+                showEdit={showEdit}
+                milestone={milestone}
+                handleUpdateMilestone={handleUpdateMilestone}
+                handleDeleteMilestone={handleDeleteMilestone}
               />
-            );
-          })}
-        </Steps>
+            ),
+          }))}
+        />
       ) : (
         <div>No milestones.</div>
       )}

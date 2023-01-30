@@ -19,8 +19,8 @@ export default function UserAccessTab(): JSX.Element {
   const [removeUserFromProject] = useRemoveProjectUserMutation();
 
   const courseEntry = (course: CourseData, userInfo: UserInfo | undefined) => (
-    <Row className="entry">
-      <h1>{course.cname}</h1>
+    <Row className="entry" key={course.id}>
+      <strong>{course.cname}</strong>
       <Tag color="green">{course.id}</Tag>
       <Tag>{`${course.startYear} Semester ${course.startSem}`}</Tag>
       <Button
@@ -38,8 +38,8 @@ export default function UserAccessTab(): JSX.Element {
   );
 
   const projectEntry = (project: ProjectData, userInfo: UserInfo | undefined) => (
-    <Row className="entry">
-      <h1>{project.pname}</h1>
+    <Row className="entry" key={project.id}>
+      <strong>{project.pname}</strong>
       <Button
         danger
         onClick={() =>
