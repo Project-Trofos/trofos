@@ -20,7 +20,11 @@ router.get(
   hasAuth(Action.read_project, null),
   backlogHistory.getProjectBacklogHistory,
 );
-router.get('/getHistory/sprint/:sprintId', hasAuth(Action.read_project, null), backlogHistory.getSprintBacklogHistory);
+router.get(
+  '/getHistory/sprint/:sprintId',
+  hasAuth(Action.read_project, null),
+  backlogHistory.getSprintBacklogHistory,
+);
 
 // Routes for comment system
 router.post('/createComment', hasAuth(Action.update_project, null), comment.create);
