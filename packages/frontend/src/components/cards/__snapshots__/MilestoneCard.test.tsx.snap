@@ -73,11 +73,11 @@ exports[`test milestone creation modal when rendering should render correct fiel
                   <div>
                     <div>
                       Start Date: 
-                      10/01/2023
+                      10/01/2022
                     </div>
                     <div>
                       Deadline: 
-                      19/01/2023
+                      19/01/2022
                     </div>
                   </div>
                 </div>
@@ -136,11 +136,11 @@ exports[`test milestone creation modal when rendering should render correct fiel
                   <div>
                     <div>
                       Start Date: 
-                      20/01/2023
+                      20/01/2022
                     </div>
                     <div>
                       Deadline: 
-                      30/01/2023
+                      30/01/2022
                     </div>
                   </div>
                 </div>
@@ -199,11 +199,11 @@ exports[`test milestone creation modal when rendering should render correct fiel
                   <div>
                     <div>
                       Start Date: 
-                      31/12/2023
+                      31/12/2022
                     </div>
                     <div>
                       Deadline: 
-                      09/01/2023
+                      09/01/2022
                     </div>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Action, ActionsOnRoles } from '@prisma/client';
+import { Action, ActionsOnRoles, UsersOnRoles, Role } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { RoleInformation, UserRolesForCourse, UserRoleActionsForCourse } from './types/role.service.types';
 import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
@@ -71,6 +71,17 @@ async function isActionAllowed(roleId: number, action: Action | null): Promise<b
   });
 
   return roleActions.length !== 0;
+}
+
+async function getAllRoles(): Promise<Role[]> {
+  const roles = await prisma.role.findMany({
+    select: {
+      role_name: true,
+      id: true,
+    },
+  });
+
+  return roles;
 }
 
 function getAllActions(): string[] {
@@ -250,11 +261,25 @@ async function updateUserRoleForProject(projectId: number, userEmail: string, us
   await updateUserOnCoursePermissions(userId, Number(projectInformation.course_id), userRole);
 }
 
+async function updateUserRole(roleId: number, userEmail: string): Promise<UsersOnRoles> {
+  const userOnRole = await prisma.usersOnRoles.update({
+    where: {
+      user_email: userEmail,
+    },
+    data: {
+      role_id: roleId,
+    },
+  });
+
+  return userOnRole;
+}
+
 export default {
   getUserRoleId,
   isActionAllowed,
   getUserRoleInformation,
   getAllActions,
+  getAllRoles,
   getRoleActions,
   addActionToRole,
   removeActionFromRole,
@@ -264,4 +289,5 @@ export default {
   getUserRolesForProject,
   updateUserRoleForCourse,
   updateUserRoleForProject,
+  updateUserRole,
 };

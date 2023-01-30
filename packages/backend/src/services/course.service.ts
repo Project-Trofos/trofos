@@ -1,6 +1,5 @@
-import { Course, Prisma, Project, User, UsersOnCourses, UsersOnRolesOnCourses, UsersOnProjects } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnCourses, UsersOnRolesOnCourses, UsersOnProjects, Settings } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
-import { CURRENT_YEAR, CURRENT_SEM } from '../helpers/currentTime';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS } from './helper';
@@ -10,7 +9,11 @@ import { assertStartAndEndIsValid } from '../helpers/error/assertions';
 import { BadRequestError } from '../helpers/error';
 import { SHADOW_COURSE_DATA } from '../helpers/constants';
 
-async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' | 'all' | 'future'): Promise<Course[]> {
+async function getAll(
+  policyConstraint: AppAbility,
+  settings: Settings,
+  option?: 'current' | 'past' | 'all' | 'future',
+): Promise<Course[]> {
   let result;
 
   if (option === 'current') {
@@ -34,10 +37,10 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                     AND: [
                       {
                         startYear: {
-                          lte: CURRENT_YEAR,
+                          lte: settings.current_year,
                         },
                         endYear: {
-                          gte: CURRENT_YEAR,
+                          gte: settings.current_year,
                         },
                       },
                     ],
@@ -46,10 +49,10 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                     AND: [
                       {
                         startSem: {
-                          lte: CURRENT_SEM,
+                          lte: settings.current_sem,
                         },
                         endSem: {
-                          gte: CURRENT_SEM,
+                          gte: settings.current_sem,
                         },
                       },
                     ],
@@ -81,17 +84,17 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                 OR: [
                   {
                     endYear: {
-                      lt: CURRENT_YEAR,
+                      lt: settings.current_year,
                     },
                   },
                   {
                     AND: [
                       {
-                        endYear: CURRENT_YEAR,
+                        endYear: settings.current_year,
                       },
                       {
                         endSem: {
-                          lt: CURRENT_SEM,
+                          lt: settings.current_sem,
                         },
                       },
                     ],
@@ -123,17 +126,17 @@ async function getAll(policyConstraint: AppAbility, option?: 'current' | 'past' 
                 OR: [
                   {
                     startYear: {
-                      gt: CURRENT_YEAR,
+                      gt: settings.current_year,
                     },
                   },
                   {
                     AND: [
                       {
-                        startYear: CURRENT_YEAR,
+                        startYear: settings.current_year,
                       },
                       {
                         startSem: {
-                          gt: CURRENT_SEM,
+                          gt: settings.current_sem,
                         },
                       },
                     ],

@@ -2,6 +2,7 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserSession } from '@prisma/client';
 import course from '../services/course.service';
+import settings from '../services/settings.service';
 import {
   assertCourseIdIsValid,
   assertCourseNameIsValid,
@@ -35,7 +36,8 @@ async function getAll(req: express.Request, res: express.Response) {
     assertGetAllOptionIsValid(body.option);
 
     // Default to all
-    const result = await course.getAll(res.locals.policyConstraint, body.option ?? 'all');
+    const setting = await settings.get();
+    const result = await course.getAll(res.locals.policyConstraint, setting, body.option ?? 'all');
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

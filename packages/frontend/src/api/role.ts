@@ -1,9 +1,15 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, UserOnRolesOnCourse } from './types';
+import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, Role, UserOnRolesOnCourse, UpdateUserRolePayload } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getRoles: builder.query<Role[], void>({
+      query: () => ({
+        url: '/role/',
+        credentials: 'include',
+      }),
+    }),
     getActionsOnRoles: builder.query<ActionsOnRoles[], void>({
       query: () => ({
         url: '/role/actionsOnRoles',
@@ -81,12 +87,25 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'ProjectRoles', id }],
     }),
+    updateUserRole: builder.mutation<void, UpdateUserRolePayload>({
+      query: (userRole) => ({
+        url: 'role/userRole',
+        credentials: 'include',
+        method: 'POST',
+        body: {
+          userEmail: userRole.userEmail,
+          newRoleId: userRole.newRoleId,
+        },
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
   overrideExisting: false,
 });
 
 export const {
   useGetActionsOnRolesQuery,
+  useGetRolesQuery,
   useGetActionsQuery,
   useAddActionToRoleMutation,
   useRemoveActionFromRoleMutation,
@@ -94,4 +113,5 @@ export const {
   useGetProjectUserRolesQuery,
   useUpdateCourseUserRoleMutation,
   useUpdateProjectUserRoleMutation,
+  useUpdateUserRoleMutation,
 } = extendedApi;

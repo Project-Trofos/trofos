@@ -28,8 +28,12 @@ export type User = {
   user_id: number;
   projects: Project[];
   courses: Course[];
-  // TODO: Create a role type once we established how they're used in the FE
-  roles: any[];
+  roles: UsersOnRoles[];
+};
+
+export type UsersOnRoles = {
+  user_email: string;
+  role_id: number;
 };
 
 export type CreateUserRequest = {
@@ -42,6 +46,11 @@ export type UserCourseRoleRequest = {
   userEmail: string;
   userRole: number;
   userId: number;
+}
+
+export type Role = {
+  role_name: string;
+  id: number;
 };
 
 export type Action = {
@@ -201,3 +210,13 @@ export type BacklogHistory = {
   history_type: BacklogHistoryType;
   date: string;
 } & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
+
+export type UpdateUserRolePayload = {
+  userEmail: string;
+  newRoleId: number;
+};
+
+export type Settings = {
+  current_year: number;
+  current_sem: number;
+};

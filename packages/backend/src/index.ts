@@ -8,6 +8,7 @@ import backlogRouter from './routes/backlog.route';
 import userRouter from './routes/user.route';
 import sprintRouter from './routes/sprint.route';
 import roleRouter from './routes/role.route';
+import settingsRouter from './routes/settings.route';
 
 const app = express();
 const port = 3001;
@@ -44,6 +45,9 @@ app.use('/sprint', sprintRouter);
 
 // Routes for role
 app.use('/role', roleRouter);
+
+// Routes for settings
+app.use('/settings', settingsRouter);
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
