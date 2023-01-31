@@ -33,7 +33,7 @@ describe('github controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(WEBHOOK_PROCESSED));
     });
 
-    it('should not process webhook', async () => {
+    it('should not process webhook when there is no backlog id', async () => {
       spies.handleWebhook.mockResolvedValueOnce([mockBacklogData]);
 
       const mockReq = createRequest({
