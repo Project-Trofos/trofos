@@ -1,4 +1,4 @@
-import { Course, Project, User, UsersOnCourses, Settings } from '@prisma/client';
+import { Course, Project, User, UsersOnCourses } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';

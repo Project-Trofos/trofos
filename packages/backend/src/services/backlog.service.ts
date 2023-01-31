@@ -61,11 +61,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
             },
           },
         },
-        project : {
-          connect : {
-            id : projectId
-          }
-        }
+        project: {
+          connect: {
+            id: projectId,
+          },
+        },
       },
     });
 
