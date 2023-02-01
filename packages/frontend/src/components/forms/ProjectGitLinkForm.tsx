@@ -22,7 +22,7 @@ export default function ProjectGitLinkForm(): JSX.Element {
   const [deleteGitUrl] = useDeleteGitUrlMutation();
 
   const isValidGithubUrl = (url: string) => {
-    const regex = /https?:\/\/(www.)?github.com\/[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*\/[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*.git/;
+    const regex = /https:\/\/github.com\/[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*\/[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*\.git$/;
 
     return regex.test(url);
   };
