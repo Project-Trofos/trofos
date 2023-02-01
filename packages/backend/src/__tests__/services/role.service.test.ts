@@ -413,7 +413,7 @@ describe('role.service tests', () => {
       await expect(roleService.updateUserRoleForCourse(1, 'testUser@test.com', 1, 1));
     });
   });
-  
+
   describe('updateUserRole', () => {
     it('should successfully update the users role if it exists', async () => {
       const prismaResponseObject: UsersOnRoles = {

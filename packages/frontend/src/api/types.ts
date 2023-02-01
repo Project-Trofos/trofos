@@ -35,14 +35,14 @@ export type User = {
 export type BasicRoles = {
   user_email: string;
   role_id: number;
-}
+};
 
 export type CourseRoles = {
   id: number;
   user_email: string;
   role_id: number;
   course_id: number;
-}
+};
 
 export type CreateUserRequest = {
   userEmail: string;
@@ -54,7 +54,7 @@ export type UserCourseRoleRequest = {
   userEmail: string;
   userRole: number;
   userId: number;
-}
+};
 
 export type Role = {
   role_name: string;
