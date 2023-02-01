@@ -62,4 +62,32 @@ router.delete(
   project.deleteBacklogStatus,
 );
 
+// Get git url by projectId
+router.get(
+  '/:projectId/gitLink',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  project.getGitLink,
+);
+
+// Add git url by projectId
+router.post(
+  '/:projectId/gitLink',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.addGitLink,
+);
+
+// Update git url by projectId
+router.put(
+  '/:projectId/gitLink',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.updateGitLink,
+);
+
+// Delete git url by projectId
+router.delete(
+  '/:projectId/gitLink',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.deleteGitLink,
+);
+
 export default router;

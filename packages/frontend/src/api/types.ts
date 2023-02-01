@@ -217,6 +217,16 @@ export type UpdateUserRolePayload = {
   newRoleId: number;
 };
 
+export type ProjectGitLink = {
+  project_id: number;
+  repo: string;
+};
+
+export type ProjectGitLinkData = {
+  projectId: number;
+  repoLink: string;
+}
+
 export type Settings = {
   current_year: number;
   current_sem: number;
