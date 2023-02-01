@@ -1,0 +1,19 @@
+.retrospective-container-card {
+  margin: 5px;
+}
+
+.retrospective-container-card .ant-card-head-title {
+  text-align: center;
+}
+
+.retrospective-container-card .ant-card-body {
+  padding: 12px;
+}
+
+.retrospective-container-form .ant-form-item {
+  margin-bottom: 0;
+}
+
+.retrospective-container-form input {
+  height: 44px;
+}

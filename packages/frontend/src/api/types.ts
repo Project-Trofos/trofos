@@ -225,9 +225,24 @@ export type ProjectGitLink = {
 export type ProjectGitLinkData = {
   projectId: number;
   repoLink: string;
-}
+};
 
 export type Settings = {
   current_year: number;
   current_sem: number;
+};
+
+export type RetrospectiveVotes = {
+  id: number;
+  retro_id: number;
+  user_id: number;
+  type: string;
+};
+
+export type Retrospective = {
+  id: number;
+  content: string;
+  type: string;
+  score: number;
+  votes: RetrospectiveVotes[];
 };

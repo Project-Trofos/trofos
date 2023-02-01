@@ -1,4 +1,13 @@
-import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, Prisma, User, UsersOnProjects, Settings } from '@prisma/client';
+import {
+  BacklogStatus,
+  BacklogStatusType,
+  Project,
+  ProjectGitLink,
+  Prisma,
+  User,
+  UsersOnProjects,
+  Settings,
+} from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
