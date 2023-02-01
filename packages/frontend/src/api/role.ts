@@ -1,6 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 import trofosApiSlice from '.';
-import { ActionsOnRoles, ActionOnRole, UserCourseRoleRequest, Role, UserOnRolesOnCourse, UpdateUserRolePayload } from './types';
+import {
+  ActionsOnRoles,
+  ActionOnRole,
+  UserCourseRoleRequest,
+  Role,
+  UserOnRolesOnCourse,
+  UpdateUserRolePayload,
+} from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({

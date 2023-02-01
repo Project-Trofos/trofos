@@ -3,8 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
-import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
-import { SHADOW_COURSE_DATA } from '../helpers/constants';
+import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID, SHADOW_COURSE_DATA } from '../helpers/constants';
 
 async function getAll(
   policyConstraint: AppAbility,
@@ -198,7 +197,7 @@ async function create(
   isPublic?: boolean,
   description?: string,
 ): Promise<Project> {
-  return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
+  return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
@@ -262,13 +261,12 @@ async function update(id: number, name?: string, isPublic?: boolean, description
 }
 
 async function remove(id: number): Promise<Project> {
-  return await prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
-
+  return prisma.$transaction<Project>(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.findUniqueOrThrow({
       where: {
         id,
-      }
-    })
+      },
+    });
 
     const deletedProject = await tx.project.delete({
       where: {
@@ -279,7 +277,7 @@ async function remove(id: number): Promise<Project> {
     // Remove dangling shadow courses
     await tx.course.delete({
       where: {
-        id : project.course_id
+        id: project.course_id,
       },
     });
 
@@ -306,7 +304,7 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 }
 
 async function addUser(projectId: number, userId: number): Promise<UsersOnProjects> {
-  return await prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
+  return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
     // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
     const userInfo = await tx.user.findFirstOrThrow({
@@ -343,7 +341,7 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
 async function removeUser(projectId: number, userId: number): Promise<UsersOnProjects> {
   // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
   // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-  return await prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
+  return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     const userInfo = await tx.user.findFirstOrThrow({
       where: {
         user_id: userId,

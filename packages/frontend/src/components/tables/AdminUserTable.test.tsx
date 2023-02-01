@@ -25,7 +25,7 @@ describe('test UserTable', () => {
           role_id: 1,
         },
       ],
-      courseRoles: []
+      courseRoles: [],
     },
   ];
 

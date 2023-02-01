@@ -107,7 +107,7 @@ async function updateSprintStatus(
   if (status === 'current') {
     assertProjectIdIsValid(projectId);
 
-    return await prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
+    return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
       // ensure there are no other active sprint for the project
       const isCurrentPresent = await tx.sprint.findFirst({
         where: {
