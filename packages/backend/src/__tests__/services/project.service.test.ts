@@ -1,4 +1,4 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Settings } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { projectsData } from '../mocks/projectData';

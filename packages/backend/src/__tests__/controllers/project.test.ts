@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes';
-import { BacklogStatus, BacklogStatusType, User, UsersOnProjects, Settings } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, User, UsersOnProjects } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import settings from '../../services/settings.service';

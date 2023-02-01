@@ -52,6 +52,11 @@ type BacklogDataType = {
       };
     };
   };
+  project: {
+    connect: {
+      id: number;
+    };
+  };
 };
 
 export const backlogsToAdd: BacklogDataType[] = [
@@ -91,6 +96,11 @@ export const backlogsToAdd: BacklogDataType[] = [
         },
       },
     },
+    project: {
+      connect: {
+        id: BACKLOG_PROJECT_ID,
+      },
+    },
   },
   {
     backlog_id: BACKLOG_2_ID,
@@ -126,6 +136,11 @@ export const backlogsToAdd: BacklogDataType[] = [
           project_id: BACKLOG_PROJECT_ID,
           name: 'To do',
         },
+      },
+    },
+    project: {
+      connect: {
+        id: BACKLOG_PROJECT_ID,
       },
     },
   },
@@ -165,6 +180,11 @@ export const backlogsToAdd: BacklogDataType[] = [
         },
       },
     },
+    project: {
+      connect: {
+        id: BACKLOG_PROJECT_ID,
+      },
+    },
   },
   {
     backlog_id: BACKLOG_4_ID,
@@ -202,6 +222,11 @@ export const backlogsToAdd: BacklogDataType[] = [
         },
       },
     },
+    project: {
+      connect: {
+        id: BACKLOG_PROJECT_ID,
+      },
+    },
   },
   {
     backlog_id: BACKLOG_5_ID,
@@ -237,6 +262,11 @@ export const backlogsToAdd: BacklogDataType[] = [
           project_id: BACKLOG_PROJECT_ID,
           name: 'To do',
         },
+      },
+    },
+    project: {
+      connect: {
+        id: BACKLOG_PROJECT_ID,
       },
     },
   },
