@@ -2,6 +2,7 @@ import React from 'react';
 import { Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
+import { useGetActionsOnRolesQuery } from '../api/role';
 import { useProject } from '../api/hooks';
 import InputWithButton from '../components/fields/InputWithButton';
 import Container from '../components/layouts/Container';
@@ -9,16 +10,19 @@ import UserTable from '../components/tables/UserTable';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
-  const { project, handleAddUser, handleRemoveUser, isLoading } = useProject(
+  const { project, projectUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
+  const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
 
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
         <UserTable
           users={project?.users}
+          userRoles={projectUserRoles}
+          actionsOnRoles={actionsOnRoles}
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={
@@ -29,6 +33,7 @@ export default function ProjectPeople(): JSX.Element {
             />
           }
           handleRemoveUser={handleRemoveUser}
+          handleUpdateUserRole={handleUpdateUserRole}
         />
       </Space>
     </Container>

@@ -15,7 +15,7 @@ describe('course.service tests', () => {
       id: 1,
       pname: 'project name',
       description: null,
-      pkey: null,
+      pkey: 'key',
       public: false,
       course_id: 1,
       created_at: new Date(Date.now()),
@@ -94,7 +94,9 @@ describe('course.service tests', () => {
     it('should return created course', async () => {
       const INDEX = 0;
       const newCourse = coursesData[INDEX];
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.course.create.mockResolvedValueOnce(newCourse);
+      prismaMock.$transaction.mockResolvedValueOnce(coursesData[INDEX]);
 
       const result = await course.create(
         1,
@@ -269,7 +271,10 @@ describe('course.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnCourses.create.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await course.addUser(targetCourse.id, USER_ID);
       expect(result).toEqual<UsersOnCourses>(resultMock);
@@ -286,7 +291,10 @@ describe('course.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnCourses.delete.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await course.removeUser(targetCourse.id, USER_ID);
       expect(result).toEqual<UsersOnCourses>(resultMock);
@@ -305,7 +313,10 @@ describe('course.service tests', () => {
   describe('addProject', () => {
     it('should return added project', async () => {
       const resultMock: Project = projectData[0];
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
+      prismaMock.user.findMany.mockResolvedValueOnce(userData);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
@@ -319,8 +330,11 @@ describe('course.service tests', () => {
   describe('removeProject', () => {
     it('should return removed project', async () => {
       const resultMock: Project = projectData[0];
+
+      prismaMock.user.findMany.mockResolvedValueOnce(userData);
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
       prismaMock.project.update.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
@@ -335,6 +349,7 @@ describe('course.service tests', () => {
       const INVALID_ID = 999;
       const resultMock: Project = projectData[0];
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockRejectedValueOnce(new Error('test'));
       expect(course.removeProject(INVALID_ID, 2022)).rejects.toThrow();
     });
   });
@@ -342,14 +357,13 @@ describe('course.service tests', () => {
   describe('addProjectAndCourse', () => {
     it('should return created project', async () => {
       const resultMock: Project = projectData[0];
-      prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(resultMock);
-      prismaMock.project.update.mockResolvedValueOnce(resultMock);
+      prismaMock.project.create.mockResolvedValueOnce(resultMock);
 
       if (!resultMock.course_id) {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.removeProject(resultMock.course_id, resultMock.id);
+      const result = await course.addProjectAndCourse(1, '1', 2022, 1, 'c1', projectData[0].pname);
       expect(result).toEqual<Project>(resultMock);
     });
   });

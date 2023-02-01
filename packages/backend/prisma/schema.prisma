@@ -19,7 +19,8 @@ model User {
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
   courses       UsersOnCourses[]
-  roles         UsersOnRoles[]
+  basicRoles UsersOnRoles[]
+  courseRoles UsersOnRolesOnCourses[]
 }
 
 model UserSession {
@@ -46,6 +47,8 @@ model Course {
   announcements Announcement[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
+  courseRoles UsersOnRolesOnCourses[]
+  shadow_course Boolean           @default(false)
   @@unique([code, startYear, startSem])
 }
 
@@ -67,8 +70,8 @@ model Project {
   description     String?
 
   // A project might not belong to a course (open project)
-  course_id       Int?
-  course          Course?           @relation(fields: [course_id], references: [id], onDelete: SetNull)
+  course_id       Int
+  course          Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   users           UsersOnProjects[]
   public          Boolean           @default(false)
@@ -204,7 +207,9 @@ model Role {
   id Int @id @default(autoincrement())
   role_name String @unique @db.VarChar(50)
   actions ActionsOnRoles[]
-  users UsersOnRoles[]
+  basicRoles UsersOnRoles[]
+  courseRoles UsersOnRolesOnCourses[]
+  
 }
 
 model ActionsOnRoles {
@@ -219,6 +224,17 @@ model UsersOnRoles {
   user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+}
+
+model UsersOnRolesOnCourses {
+  id Int @id @default(autoincrement())
+  user_email String @db.VarChar(320)
+  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  role_id Int
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  course_id Int
+  course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  @@unique([user_email, course_id])
 }
 
 enum Action {

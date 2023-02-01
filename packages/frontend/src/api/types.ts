@@ -20,6 +20,7 @@ export type Course = {
   description: string | null;
   public: boolean;
   created_at: string;
+  shadow_course: boolean;
 };
 
 export type User = {
@@ -27,18 +28,33 @@ export type User = {
   user_id: number;
   projects: Project[];
   courses: Course[];
-  roles: UsersOnRoles[];
+  basicRoles: BasicRoles[];
+  courseRoles: CourseRoles[];
 };
 
-export type UsersOnRoles = {
+export type BasicRoles = {
   user_email: string;
   role_id: number;
-};
+}
+
+export type CourseRoles = {
+  id: number;
+  user_email: string;
+  role_id: number;
+  course_id: number;
+}
 
 export type CreateUserRequest = {
   userEmail: string;
   newPassword: string;
 };
+
+export type UserCourseRoleRequest = {
+  id: number;
+  userEmail: string;
+  userRole: number;
+  userId: number;
+}
 
 export type Role = {
   role_name: string;
@@ -73,6 +89,7 @@ export type UserData = {
   user: {
     user_id: number;
     user_email: string;
+    courseRoles: CourseRoles[];
   };
 };
 
@@ -105,6 +122,17 @@ export type CourseData = Course & {
   milestones: Milestone[];
   announcements: Announcement[];
   users: UserData[];
+};
+
+export type UserOnRolesOnCourse = {
+  id: number;
+  user_email: string;
+  role_id: number;
+  course_id: number;
+  role: {
+    id: number;
+    role_name: string;
+  };
 };
 
 export type BacklogStatusData = {

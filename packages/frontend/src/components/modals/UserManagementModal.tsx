@@ -31,7 +31,7 @@ export default function UserManagementModal(props: UserManagement): JSX.Element 
 
   const handleRoleChange = async (newRoleId: number) => {
     // No change to role id
-    if (newRoleId === user.roles[0].role_id) {
+    if (newRoleId === user.basicRoles[0].role_id) {
       return;
     }
 
@@ -55,7 +55,7 @@ export default function UserManagementModal(props: UserManagement): JSX.Element 
           <Space direction="vertical">
             <Subheading>Role</Subheading>
             <Select
-              defaultValue={user.roles[0].role_id}
+              defaultValue={user.basicRoles[0].role_id}
               style={{ width: 120 }}
               onChange={handleRoleChange}
               options={roles?.map((role) => {
