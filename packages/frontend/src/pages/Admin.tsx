@@ -11,17 +11,14 @@ function Admin(): JSX.Element {
   return (
     <Layout className="admin-layout">
       <Content className="admin-content">
-        <Tabs centered>
-          <Tabs.TabPane tab="User Management" key="user-management">
-            <UserManagementTab />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Role Management" key="role-management">
-            <RoleManagementTab />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Settings Management" key="settings-management">
-            <SettingsManagementTab />
-          </Tabs.TabPane>
-        </Tabs>
+        <Tabs
+          items={[
+            { key: 'user-management', label: 'User Management', children: <UserManagementTab /> },
+            { key: 'role-management', label: 'Role Management', children: <RoleManagementTab /> },
+            { key: 'settings-management', label: 'Settings Management', children: <SettingsManagementTab /> },
+          ]}
+          centered
+        />
       </Content>
     </Layout>
   );

@@ -1,17 +1,31 @@
-import React from 'react';
-import { Typography, Row, Col, Space, Tabs } from 'antd';
+import React, { useMemo } from 'react';
+import { Typography, Space, Tabs } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
 import { useCurrentAndPastCourses } from '../api/hooks';
-import CourseCard from '../components/cards/CourseCard';
 
 import Container from '../components/layouts/Container';
-import { Course } from '../api/types';
+import getPane from '../helpers/getPane';
 
 const { Title } = Typography;
 
 export default function CoursesPage(): JSX.Element {
   const { currentCourses, pastCourses, futureCourses, isLoading } = useCurrentAndPastCourses();
+
+  const currentCoursesTabPane = useMemo(
+    () => getPane(currentCourses, 'Current Courses', 'There are no current courses.'),
+    [currentCourses],
+  );
+
+  const pastCoursesTabPane = useMemo(
+    () => getPane(pastCourses, 'Past Courses', 'There are no past courses.'),
+    [pastCourses],
+  );
+
+  const futureCoursesTabPane = useMemo(
+    () => getPane(futureCourses, 'Future Courses', 'There are no future courses.'),
+    [futureCourses],
+  );
 
   if (isLoading) {
     return <main style={{ margin: '48px' }}>Loading...</main>;
@@ -23,29 +37,7 @@ export default function CoursesPage(): JSX.Element {
         <Title>Courses</Title>
         <CourseCreationModal />
       </Space>
-      <Tabs>
-        {renderCoursesPane(currentCourses, 'Current Courses', 'There are no current courses.')}
-        {renderCoursesPane(pastCourses, 'Past Courses', 'There are no past courses.')}
-        {renderCoursesPane(futureCourses, 'Future Courses', 'There are no future courses.')}
-      </Tabs>
+      <Tabs items={[currentCoursesTabPane, pastCoursesTabPane, futureCoursesTabPane]} />
     </Container>
-  );
-}
-
-function renderCoursesPane(courses: Course[] | undefined, tabName: string, emptyPrompt: string) {
-  return (
-    <Tabs.TabPane tab={tabName} key={tabName}>
-      {!courses || courses.length === 0 ? (
-        emptyPrompt
-      ) : (
-        <Row gutter={[16, 16]} wrap>
-          {courses.map((course) => (
-            <Col key={course.id}>
-              <CourseCard course={course} />
-            </Col>
-          ))}
-        </Row>
-      )}
-    </Tabs.TabPane>
   );
 }

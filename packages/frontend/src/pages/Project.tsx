@@ -33,6 +33,7 @@ export default function ProjectPage(): JSX.Element {
   const { project, course, isLoading } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
 
   const selectedTab = useMemo(() => {
+    // Current location split [project, :projectId, :tabName]
     const split = location.pathname.split('/');
     return split[3];
   }, [location.pathname]);
@@ -118,48 +119,18 @@ export default function ProjectPage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/overview`}>
-                  Overview
-                </Link>
-              }
-              key="overview"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/users`}>
-                  People
-                </Link>
-              }
-              key="users"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/sprint`}>
-                  Sprint
-                </Link>
-              }
-              key="sprint"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/board`}>
-                  Board
-                </Link>
-              }
-              key="board"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/project/${project.id}/settings`}>
-                  Settings
-                </Link>
-              }
-              key="settings"
-            />
-          </Tabs>
+          <Tabs
+            items={[
+              { key: 'overview', label: 'Overview' },
+              { key: 'users', label: 'Users' },
+              { key: 'sprint', label: 'Sprint' },
+              { key: 'board', label: 'Board' },
+              { key: 'settings', label: 'Settings' },
+            ]}
+            activeKey={selectedTab}
+            className="footer-tabs"
+            onChange={(key) => navigate(`/project/${project.id}/${key}`)}
+          />
         }
       >
         <Text>{project.description}</Text>

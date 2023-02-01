@@ -1,4 +1,4 @@
-import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects, Settings } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
 import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
@@ -66,7 +66,9 @@ describe('project.service tests', () => {
     it('should return created project', async () => {
       const INDEX = 0;
       const newProject = projectsData[INDEX];
+      prismaMock.user.findFirstOrThrow.mockRejectedValueOnce(userData[INDEX]);
       prismaMock.project.create.mockResolvedValueOnce(newProject);
+      prismaMock.$transaction.mockResolvedValueOnce(newProject);
 
       const result = await project.create(
         1,
@@ -99,7 +101,9 @@ describe('project.service tests', () => {
     it('should return removed project', async () => {
       const INDEX = 0;
       const deletedProject = projectsData[INDEX];
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce(deletedProject);
       prismaMock.project.delete.mockResolvedValueOnce(deletedProject);
+      prismaMock.$transaction.mockResolvedValueOnce(deletedProject);
 
       const result = await project.remove(deletedProject.id);
       expect(result).toEqual<Project>(projectsData[INDEX]);
@@ -121,6 +125,7 @@ describe('project.service tests', () => {
 
   describe('addUser', () => {
     it('should return added user', async () => {
+      const INDEX = 0;
       const PROJECT_ID = 1;
       const USER_ID = 1;
       const resultMock: UsersOnProjects = {
@@ -128,7 +133,9 @@ describe('project.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.create.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await project.addUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);
@@ -137,6 +144,7 @@ describe('project.service tests', () => {
 
   describe('removeUser', () => {
     it('should return removed user', async () => {
+      const INDEX = 0;
       const PROJECT_ID = 1;
       const USER_ID = 1;
       const resultMock: UsersOnProjects = {
@@ -144,7 +152,9 @@ describe('project.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.delete.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await project.removeUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);

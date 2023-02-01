@@ -1,11 +1,11 @@
-import { Backlog, BacklogStatusType, HistoryType } from '@prisma/client';
+import { Backlog, BacklogStatusType, HistoryType, Prisma } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 
 async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
 
-  return prisma.$transaction<Backlog>(async (tx) => {
+  return prisma.$transaction<Backlog>(async (tx: Prisma.TransactionClient) => {
     const backlogCounter = await tx.project.findUniqueOrThrow({
       where: { id: projectId },
       select: { backlog_counter: true },
@@ -59,6 +59,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
               project_id: projectId,
               name: defaultBacklogStatus?.name || 'To do',
             },
+          },
+        },
+        project: {
+          connect: {
+            id: projectId,
           },
         },
       },
@@ -144,7 +149,7 @@ async function updateBacklog(backlogToUpdate: {
 }): Promise<Backlog> {
   const { projectId, backlogId, fieldToUpdate } = backlogToUpdate;
 
-  return prisma.$transaction<Backlog>(async (tx) => {
+  return prisma.$transaction<Backlog>(async (tx: Prisma.TransactionClient) => {
     const updatedBacklog = await tx.backlog.update({
       where: {
         project_id_backlog_id: {
@@ -186,7 +191,7 @@ async function updateBacklog(backlogToUpdate: {
 }
 
 async function deleteBacklog(projectId: number, backlogId: number): Promise<Backlog> {
-  return prisma.$transaction<Backlog>(async (tx) => {
+  return prisma.$transaction<Backlog>(async (tx: Prisma.TransactionClient) => {
     const backlog = await tx.backlog.delete({
       where: {
         project_id_backlog_id: {

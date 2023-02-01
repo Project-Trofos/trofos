@@ -10,17 +10,14 @@ export default function AccountPage(): JSX.Element {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={{ minHeight: 360 }}>
-        <Tabs centered>
-          <Tabs.TabPane tab="User Information" key="user-information">
-            <UserInformationTab />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Change Password" key="change-password">
-            <ChangePasswordTab />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="Access Management" key="access-management">
-            <UserAccessTab />
-          </Tabs.TabPane>
-        </Tabs>
+        <Tabs
+          items={[
+            { key: 'user-information', label: 'User Information', children: <UserInformationTab /> },
+            { key: 'change-password', label: 'Change Password', children: <ChangePasswordTab /> },
+            { key: 'access-management', label: 'Access Management', children: <UserAccessTab /> },
+          ]}
+          centered
+        />
       </Content>
     </Layout>
   );

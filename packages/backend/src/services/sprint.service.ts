@@ -1,4 +1,4 @@
-import { Sprint, SprintStatus } from '@prisma/client';
+import { Sprint, SprintStatus, Prisma } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
@@ -107,7 +107,7 @@ async function updateSprintStatus(
   if (status === 'current') {
     assertProjectIdIsValid(projectId);
 
-    return prisma.$transaction<Sprint>(async (tx) => {
+    return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
       // ensure there are no other active sprint for the project
       const isCurrentPresent = await tx.sprint.findFirst({
         where: {

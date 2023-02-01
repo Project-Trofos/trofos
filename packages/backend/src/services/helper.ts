@@ -1,12 +1,13 @@
 import { Prisma } from '@prisma/client';
 
-export const INCLUDE_USERS_ID_EMAIL = {
+export const INCLUDE_USERS_ID_EMAIL_COURSEROLE = {
   users: {
     select: {
       user: {
         select: {
           user_id: true,
           user_email: true,
+          courseRoles: true,
         },
       },
     },
@@ -20,6 +21,7 @@ export const INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS = {
         select: {
           user_id: true,
           user_email: true,
+          courseRoles: true,
         },
       },
     },
