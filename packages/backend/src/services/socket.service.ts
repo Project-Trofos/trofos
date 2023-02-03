@@ -1,9 +1,7 @@
-import { UserSession } from '@prisma/client';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import sessionService from './session.service';
 
 let io: Server<ClientToServerEvents, ServerToClientEvents>;
-const userSocketMap: Map<number, Socket> = new Map();
 
 export enum UpdateType {
   BACKLOG = 'backlog',
@@ -16,6 +14,7 @@ type ServerToClientEvents = {
 type ClientToServerEvents = {
   subscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
   unsubscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
+  update: (roomId: string) => void;
 };
 
 // Initialise socket io server
@@ -33,21 +32,14 @@ export function init(socketServer: Server) {
     }
 
     // Disconnect if cannot find user session information
-    let sessionInformation: UserSession | undefined;
     try {
-      sessionInformation = await sessionService.getUserSession(sessionId);
+      await sessionService.getUserSession(sessionId);
     } catch (err) {
       socket.disconnect();
       return;
     }
 
-    // Store user's socket
-    userSocketMap.set(sessionInformation.user_id, socket);
-
     socket.on('disconnect', () => {
-      if (sessionInformation) {
-        userSocketMap.delete(sessionInformation.user_id);
-      }
       socket.disconnect();
     });
 
@@ -58,13 +50,13 @@ export function init(socketServer: Server) {
     socket.on('unsubscribeToUpdate', (updateType, roomId) => {
       socket.leave(`${updateType}/${roomId}`);
     });
+
+    socket.on('update', (roomId) => {
+      socket.to(roomId).emit('updated');
+    });
   });
 }
 
 export function getIo() {
   return io;
-}
-
-export function getSocket(userId: number) {
-  return userSocketMap.get(userId);
 }

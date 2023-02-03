@@ -1,7 +1,7 @@
 import React from 'react';
 import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardType.css';
 
 type BacklogType = 'story' | 'task' | 'bug';

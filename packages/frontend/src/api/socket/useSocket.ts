@@ -1,25 +1,5 @@
 import { useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
-
-export enum UpdateType {
-  BACKLOG = 'backlog',
-}
-
-type ServerToClientEvents = {
-  updated: () => void;
-};
-
-type ClientToServerEvents = {
-  subscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
-  unsubscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
-};
-
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001',
-  {
-    withCredentials: true,
-  },
-);
+import socket, { UpdateType } from './socket';
 
 // Use socket to connect to a room and callback when update is detected
 export default function useSocket(updateType: UpdateType, roomId: string | undefined, callback: () => void) {
@@ -53,4 +33,8 @@ export default function useSocket(updateType: UpdateType, roomId: string | undef
   }, [roomId, updateType, callback]);
 
   return { isConnected };
+}
+
+export function emitUpdateEvent(roomId: string): void {
+  socket.volatile.emit('update', roomId);
 }

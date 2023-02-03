@@ -10,9 +10,10 @@ import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
 import './Project.css';
 import PageHeader from '../components/pageheader/PageHeader';
-import useSocket, { UpdateType } from '../api/socket/useSocket';
+import useSocket from '../api/socket/useSocket';
 import trofosApiSlice from '../api';
 import store from '../app/store';
+import { UpdateType } from '../api/socket/socket';
 
 const { Text } = Typography;
 
