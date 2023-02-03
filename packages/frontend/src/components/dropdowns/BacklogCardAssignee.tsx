@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, message, Select } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import { UserData } from '../../api/types';
 import './BacklogCardAssignee.css';
 
