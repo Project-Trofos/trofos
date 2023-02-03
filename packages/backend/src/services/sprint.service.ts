@@ -1,4 +1,12 @@
-import { Sprint, SprintStatus, Prisma } from '@prisma/client';
+import {
+  Sprint,
+  SprintStatus,
+  Prisma,
+  RetrospectiveType,
+  SprintRetrospective,
+  SprintRetrospectiveVote,
+  RetrospectiveVoteType,
+} from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
@@ -167,6 +175,89 @@ async function deleteSprint(sprintId: number): Promise<Sprint> {
   return sprint;
 }
 
+async function addRetrospective(
+  sprintId: number,
+  content: string,
+  type: RetrospectiveType,
+): Promise<SprintRetrospective> {
+  const retrospective = await prisma.sprintRetrospective.create({
+    data: {
+      sprint: {
+        connect: {
+          id: sprintId,
+        },
+      },
+      content,
+      type,
+    },
+  });
+
+  return retrospective;
+}
+
+async function getRetrospectives(sprintId: number): Promise<SprintRetrospective[]> {
+  const retrospectives = await prisma.sprintRetrospective.findMany({
+    where: {
+      sprint_id: sprintId,
+    },
+  });
+
+  return retrospectives;
+}
+
+async function addRetrospectiveVote(
+  retroId: number,
+  userId: number,
+  type: RetrospectiveVoteType,
+): Promise<SprintRetrospectiveVote> {
+  const retrospectiveVote = await prisma.sprintRetrospectiveVote.create({
+    data: {
+      retro: {
+        connect: {
+          id: retroId,
+        },
+      },
+      user_id: userId,
+      type,
+    },
+  });
+
+  return retrospectiveVote;
+}
+
+async function updateRetrospectiveVote(
+  retroId: number,
+  userId: number,
+  type: RetrospectiveVoteType,
+): Promise<SprintRetrospectiveVote> {
+  const retrospectiveVote = await prisma.sprintRetrospectiveVote.update({
+    where: {
+      retro_id_user_id: {
+        retro_id: retroId,
+        user_id: userId,
+      },
+    },
+    data: {
+      type,
+    },
+  });
+
+  return retrospectiveVote;
+}
+
+async function deleteRetrospectiveVote(retroId: number, userId: number): Promise<SprintRetrospectiveVote> {
+  const retrospectiveVote = await prisma.sprintRetrospectiveVote.delete({
+    where: {
+      retro_id_user_id: {
+        retro_id: retroId,
+        user_id: userId,
+      },
+    },
+  });
+
+  return retrospectiveVote;
+}
+
 export default {
   newSprint,
   listSprints,
@@ -174,4 +265,9 @@ export default {
   updateSprint,
   updateSprintStatus,
   deleteSprint,
+  addRetrospective,
+  getRetrospectives,
+  addRetrospectiveVote,
+  updateRetrospectiveVote,
+  deleteRetrospectiveVote,
 };
