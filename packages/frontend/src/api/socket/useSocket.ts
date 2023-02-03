@@ -6,6 +6,11 @@ export default function useSocket(updateType: UpdateType, roomId: string | undef
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
+    // Try to reconnect
+    if (!socket.connected) {
+      socket.connect();
+    }
+
     socket.on('connect', () => {
       setIsConnected(true);
     });
