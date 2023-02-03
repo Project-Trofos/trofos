@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { List, message, Typography } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useGetSprintsQuery } from '../api/sprint';
-import { useUpdateBacklogMutation } from '../api/backlog';
+import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
 import type { Sprint } from '../api/sprint';
 import SprintCreationModal from '../components/modals/SprintCreationModal';
 import SprintListingCard from '../components/cards/SprintListingCard';

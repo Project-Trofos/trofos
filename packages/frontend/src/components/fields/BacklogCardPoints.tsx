@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InputNumber, message } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardPoints.css';
 
 export default function BacklogCardPoints(props: { backlogId: number; currentPoints: number | null }) {
