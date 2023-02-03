@@ -6,8 +6,6 @@ import { mockBacklogReturnedProject } from '../mocks/projectData';
 import { mockBacklogData, mockBacklogFields } from '../mocks/backlogData';
 
 describe('backlog.service tests', () => {
-  const mockUserId = 1;
-
   describe('create backlog', () => {
     const mockReturnedProject = mockBacklogReturnedProject;
 
@@ -24,7 +22,7 @@ describe('backlog.service tests', () => {
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
       prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.newBacklog(backlog, mockUserId)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
 
     it('should create and return backlog when optional fields are omitted', async () => {
@@ -49,7 +47,7 @@ describe('backlog.service tests', () => {
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
       prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.newBacklog(backlog, mockUserId)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
 
     it('should create and return backlog with default status when present', async () => {
@@ -68,7 +66,7 @@ describe('backlog.service tests', () => {
       prismaMock.backlog.create.mockResolvedValue(mockReturnedBacklog);
       prismaMock.project.update.mockResolvedValue(mockReturnedUpdatedProject);
       prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.newBacklog(backlog, mockUserId)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.newBacklog(backlog)).resolves.toEqual(mockReturnedBacklog);
     });
   });
 
@@ -131,7 +129,7 @@ describe('backlog.service tests', () => {
       };
       prismaMock.backlog.update.mockResolvedValue(mockReturnedBacklog);
       prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.updateBacklog(backlogToUpdate, mockUserId)).resolves.toEqual(mockReturnedBacklog);
+      await expect(backlogService.updateBacklog(backlogToUpdate)).resolves.toEqual(mockReturnedBacklog);
     });
   });
 
@@ -142,9 +140,7 @@ describe('backlog.service tests', () => {
       const mockBacklogId = 1;
       prismaMock.backlog.delete.mockResolvedValue(mockReturnedBacklog);
       prismaMock.$transaction.mockResolvedValue(mockReturnedBacklog);
-      await expect(backlogService.deleteBacklog(mockProjectId, mockBacklogId, mockUserId)).resolves.toEqual(
-        mockReturnedBacklog,
-      );
+      await expect(backlogService.deleteBacklog(mockProjectId, mockBacklogId)).resolves.toEqual(mockReturnedBacklog);
     });
   });
 });

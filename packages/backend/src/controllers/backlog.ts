@@ -1,16 +1,12 @@
-import { Backlog, UserSession } from '@prisma/client';
+import { Backlog } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import backlogService from '../services/backlog.service';
 import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
-import { assertUserSessionIsValid } from '../helpers/error/assertions';
 
 const newBacklog = async (req: express.Request, res: express.Response) => {
   try {
-    const userSession = res.locals.userSession as UserSession | undefined;
-    assertUserSessionIsValid(userSession);
-
-    const backlog: Backlog = await backlogService.newBacklog(req.body, userSession.user_id);
+    const backlog: Backlog = await backlogService.newBacklog(req.body);
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -49,15 +45,10 @@ const getBacklog = async (req: express.Request, res: express.Response) => {
 const updateBacklog = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId, backlogId } = req.body;
-
-    const userSession = res.locals.userSession as UserSession | undefined;
-    assertUserSessionIsValid(userSession);
-
     if (!projectId || !backlogId) {
       throw new BadRequestError('projectId or backlogId cannot be empty');
     }
-
-    const backlog: Backlog = await backlogService.updateBacklog(req.body, userSession.user_id);
+    const backlog: Backlog = await backlogService.updateBacklog(req.body);
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -67,19 +58,10 @@ const updateBacklog = async (req: express.Request, res: express.Response) => {
 const deleteBacklog = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId, backlogId } = req.params;
-
-    const userSession = res.locals.userSession as UserSession | undefined;
-    assertUserSessionIsValid(userSession);
-
     if (!projectId || !backlogId) {
       throw new BadRequestError('projectId or backlogId cannot be empty');
     }
-
-    const backlog: Backlog = await backlogService.deleteBacklog(
-      Number(projectId),
-      Number(backlogId),
-      userSession.user_id,
-    );
+    const backlog: Backlog = await backlogService.deleteBacklog(Number(projectId), Number(backlogId));
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
