@@ -12,7 +12,7 @@ export default function Overview(): JSX.Element {
 
   return (
     <Container>
-      <MilestoneCard course={course} showEdit={false} />
+      {course && <MilestoneCard course={course} showEdit={false} />}
 
       <VisualizationCard projectId={project?.id} />
     </Container>
