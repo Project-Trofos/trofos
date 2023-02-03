@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Input, message, Typography } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../../api/auth';
 import { useCreateCommentMutation } from '../../api/comment';

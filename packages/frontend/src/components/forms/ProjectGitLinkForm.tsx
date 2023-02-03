@@ -7,7 +7,6 @@ import {
   useGetGitUrlQuery,
   useUpdateGitUrlMutation,
 } from '../../api/project';
-import DefaultForm from './DefaultForm';
 import './ProjectGitLinkForm.css';
 
 export default function ProjectGitLinkForm(): JSX.Element {

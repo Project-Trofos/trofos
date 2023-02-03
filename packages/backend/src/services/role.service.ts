@@ -88,7 +88,7 @@ function getAllActions(): string[] {
   return Object.values(Action);
 }
 
-async function getRoleActions(): Promise<any[]> {
+async function getRoleActions(): Promise<typeof actionOnRoles> {
   const actionOnRoles = await prisma.role.findMany({
     select: {
       id: true,
@@ -218,7 +218,7 @@ async function updateUserOnCoursePermissions(userId: number, courseId: number, r
         },
       });
     }
-  } catch (e: any) {
+  } catch (e) {
     console.error(e);
   }
 }

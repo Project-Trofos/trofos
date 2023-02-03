@@ -84,8 +84,8 @@ export default function ProjectPage(): JSX.Element {
     return <Typography.Title>This project does not exist!</Typography.Title>;
   }
 
-  const projectMenu = {
-    onClick: (e: any) => handleMenuClick(e.key),
+  const projectMenu: DropdownProps['menu'] = {
+    onClick: (e) => handleMenuClick(e.key),
     items: [
       {
         key: 'delete',
