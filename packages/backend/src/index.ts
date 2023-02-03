@@ -13,6 +13,7 @@ const wrap = (middleware: any) => (socket: Socket, next: any) => middleware(sock
 const io = new Server(server, {
   cors: corsOptions,
   cookie: true,
+  transports: ['websocket'],
 });
 
 io.use(wrap(cookieParser()));
