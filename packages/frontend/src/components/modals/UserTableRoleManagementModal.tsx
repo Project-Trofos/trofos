@@ -47,7 +47,7 @@ export default function UserTableRoleManagementModal(props: UserRoleManagement):
       <Button size="small" onClick={showModal}>
         {userRoleName}
       </Button>
-      <Modal title="Modify User's Role" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Modify User's Role" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Select defaultValue={userRoleName} onChange={handleSelectionChange}>
           {roles?.map((role) => (
             <Option key={role.id} value={role.id}>
