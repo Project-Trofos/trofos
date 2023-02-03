@@ -1,21 +1,36 @@
 import React from 'react';
 import { Button, Card, Space, Table, Tag } from 'antd';
-import { CourseData, UserData } from '../../api/types';
+import { CourseData, UserData, UserOnRolesOnCourse, ActionsOnRoles } from '../../api/types';
+import { useGetActionsOnRolesQuery } from '../../api/role';
 import { Subheading } from '../typography';
+import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
 
 type UserTableProps = {
   users: CourseData['users'] | undefined;
+  userRoles: UserOnRolesOnCourse[] | undefined;
+  actionsOnRoles: ActionsOnRoles[] | undefined;
   isLoading: boolean;
   heading?: string;
   control?: React.ReactNode;
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
+  handleUpdateUserRole?: (userEmail: string, roleId: number, userId: number) => void;
 };
 
 /**
  * Table for listing users
  */
-export default function UserTable({ users, isLoading, heading, control, myUserId, handleRemoveUser }: UserTableProps) {
+export default function UserTable({
+  users,
+  userRoles,
+  actionsOnRoles,
+  isLoading,
+  heading,
+  control,
+  myUserId,
+  handleRemoveUser,
+  handleUpdateUserRole,
+}: UserTableProps) {
   return (
     <Card className="table-card">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -57,6 +72,18 @@ export default function UserTable({ users, isLoading, heading, control, myUserId
                   <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
                     Remove
                   </Button>
+                )}
+                {handleUpdateUserRole && (
+                  <UserTableRoleManagementModal
+                    userRoleId={userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.id}
+                    userRoleName={
+                      userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.role_name
+                    }
+                    userEmail={record.user.user_email}
+                    userId={record.user.user_id}
+                    roles={actionsOnRoles}
+                    handleRoleChange={handleUpdateUserRole}
+                  />
                 )}
               </Space>
             )}

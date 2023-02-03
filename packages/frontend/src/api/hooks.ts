@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 import { message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
@@ -19,6 +20,12 @@ import {
   useGetProjectQuery,
   useRemoveProjectUserMutation,
 } from './project';
+import {
+  useGetCourseUserRolesQuery,
+  useGetProjectUserRolesQuery,
+  useUpdateCourseUserRoleMutation,
+  useUpdateProjectUserRoleMutation,
+} from './role';
 import { Project, Course } from './types';
 import { useGetSettingsQuery } from './settings';
 
@@ -34,11 +41,19 @@ export const useCurrentAndPastProjects = () => {
     if (projectsData.isError || projectsData.isLoading) {
       return undefined;
     }
+
+    const projects = (projectsData.data as Project[]).map((project) => {
+      if (project.course?.shadow_course) {
+        return { ...project, course: undefined, course_id: null };
+      }
+      return project;
+    });
+
     return {
-      pastProjects: (projectsData.data as Project[]).filter((p) =>
+      pastProjects: projects.filter((p) =>
         isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
-      currentProjects: (projectsData.data as Project[]).filter((p) =>
+      currentProjects: projects.filter((p) =>
         isCurrent(
           p.course?.startYear,
           p.course?.startSem,
@@ -48,7 +63,7 @@ export const useCurrentAndPastProjects = () => {
           CURRENT_SEM,
         ),
       ),
-      futureProjects: (projectsData.data as Project[]).filter((p) =>
+      futureProjects: projects.filter((p) =>
         isFuture(
           p.course?.startYear,
           p.course?.startSem,
@@ -95,9 +110,13 @@ export const useCurrentAndPastCourses = () => {
 // Get project information by id
 export const useProject = (projectId: number) => {
   const { data: project, isLoading: isProjectsLoading } = useGetProjectQuery({ id: projectId });
+  const { data: userRoles } = useGetProjectUserRolesQuery(projectId);
 
   const [addUser] = useAddProjectUserMutation();
   const [removeUser] = useRemoveProjectUserMutation();
+  const [updateUserProjectRole] = useUpdateProjectUserRoleMutation();
+
+  const projectCourseData = project?.course.shadow_course ? undefined : project?.course;
 
   const handleRemoveUser = useCallback(
     async (userId: number) => {
@@ -137,7 +156,43 @@ export const useProject = (projectId: number) => {
     [addUser, project],
   );
 
-  return { project, course: project?.course, handleAddUser, handleRemoveUser, isLoading: isProjectsLoading };
+  const handleUpdateUserRole = useCallback(
+    async (userEmail: string, roleId: number, userId: number) => {
+      try {
+        if (project) {
+          await updateUserProjectRole({
+            id: projectId,
+            userEmail: userEmail,
+            userRole: roleId,
+            userId: userId,
+          }).unwrap();
+          message.success('User role changed!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to modify user role');
+      }
+    },
+    [updateUserProjectRole, project],
+  );
+
+  const projectUserRoles = useMemo(() => {
+    if (!project) {
+      return undefined;
+    }
+
+    return userRoles;
+  }, [handleUpdateUserRole, project, userRoles, projectId]);
+
+  return {
+    project,
+    projectUserRoles,
+    course: projectCourseData,
+    handleAddUser,
+    handleRemoveUser,
+    handleUpdateUserRole,
+    isLoading: isProjectsLoading,
+  };
 };
 
 // Get course information by id
@@ -148,8 +203,10 @@ export const useCourse = (courseId?: string) => {
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
+  const [updateUserCourseRole] = useUpdateCourseUserRoleMutation();
   const [deleteMilestone] = useDeleteMilestoneMutation();
   const [updateMilestone] = useUpdateMilestoneMutation();
+  const { data: userRoles } = useGetCourseUserRolesQuery(courseIdNumber);
 
   const [deleteAnnouncement] = useDeleteAnnouncementMutation();
   const [updateAnnouncement] = useUpdateAnnouncementMutation();
@@ -163,6 +220,7 @@ export const useCourse = (courseId?: string) => {
     if (possibleCourses.length === 0) {
       return undefined;
     }
+
     return possibleCourses[0];
   }, [courses, courseIdNumber]);
 
@@ -210,6 +268,34 @@ export const useCourse = (courseId?: string) => {
     },
     [addUser, course],
   );
+
+  const handleUpdateUserRole = useCallback(
+    async (userEmail: string, roleId: number, userId: number) => {
+      try {
+        if (course) {
+          await updateUserCourseRole({
+            id: course.id,
+            userEmail: userEmail,
+            userRole: roleId,
+            userId: userId,
+          }).unwrap();
+          message.success('User role changed!');
+        }
+      } catch (e) {
+        console.log(getErrorMessage(e));
+        message.error('Failed to modify user role');
+      }
+    },
+    [addUser, course],
+  );
+
+  const courseUserRoles = useMemo(() => {
+    if (!courses || courses.length === 0 || !courseIdNumber) {
+      return undefined;
+    }
+
+    return userRoles;
+  }, [handleUpdateUserRole, courses, userRoles, courseIdNumber]);
 
   const handleDeleteMilestone = useCallback(
     async (milestoneId: number) => {
@@ -302,10 +388,12 @@ export const useCourse = (courseId?: string) => {
   return {
     course,
     filteredProjects,
+    courseUserRoles,
     handleAddUser,
     handleRemoveUser,
     handleDeleteMilestone,
     handleUpdateMilestone,
+    handleUpdateUserRole,
     handleDeleteAnnouncement,
     handleUpdateAnnouncement,
     isLoading: isCoursesLoading,

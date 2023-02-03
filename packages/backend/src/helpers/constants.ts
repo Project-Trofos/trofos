@@ -20,3 +20,14 @@ export const defaultBacklogStatus: Omit<BacklogStatus, 'project_id'>[] = [
   { name: 'In progress', type: 'in_progress', order: 1 },
   { name: 'Done', type: 'done', order: 1 },
 ];
+
+// Shadow course data (For independent projects)
+export const SHADOW_COURSE_DATA = {
+  cname: 'Independent course',
+  startYear: 0,
+  startSem: 0,
+  endYear: 0,
+  endSem: 0,
+  description: 'Independent course',
+  shadow_course: true,
+};

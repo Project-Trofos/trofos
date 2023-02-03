@@ -1,7 +1,7 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Settings } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
-import { projectsData } from '../mocks/projectData';
+import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 
@@ -66,7 +66,9 @@ describe('project.service tests', () => {
     it('should return created project', async () => {
       const INDEX = 0;
       const newProject = projectsData[INDEX];
+      prismaMock.user.findFirstOrThrow.mockRejectedValueOnce(userData[INDEX]);
       prismaMock.project.create.mockResolvedValueOnce(newProject);
+      prismaMock.$transaction.mockResolvedValueOnce(newProject);
 
       const result = await project.create(
         1,
@@ -99,7 +101,9 @@ describe('project.service tests', () => {
     it('should return removed project', async () => {
       const INDEX = 0;
       const deletedProject = projectsData[INDEX];
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce(deletedProject);
       prismaMock.project.delete.mockResolvedValueOnce(deletedProject);
+      prismaMock.$transaction.mockResolvedValueOnce(deletedProject);
 
       const result = await project.remove(deletedProject.id);
       expect(result).toEqual<Project>(projectsData[INDEX]);
@@ -121,6 +125,7 @@ describe('project.service tests', () => {
 
   describe('addUser', () => {
     it('should return added user', async () => {
+      const INDEX = 0;
       const PROJECT_ID = 1;
       const USER_ID = 1;
       const resultMock: UsersOnProjects = {
@@ -128,7 +133,9 @@ describe('project.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.create.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await project.addUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);
@@ -137,6 +144,7 @@ describe('project.service tests', () => {
 
   describe('removeUser', () => {
     it('should return removed user', async () => {
+      const INDEX = 0;
       const PROJECT_ID = 1;
       const USER_ID = 1;
       const resultMock: UsersOnProjects = {
@@ -144,7 +152,9 @@ describe('project.service tests', () => {
         user_id: USER_ID,
         created_at: new Date(Date.now()),
       };
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.delete.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
       const result = await project.removeUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);
@@ -283,6 +293,46 @@ describe('project.service tests', () => {
 
       const result = await project.deleteBacklogStatus(PROJECT_ID, NAME);
       expect(result).toEqual<BacklogStatus>(resultMock);
+    });
+  });
+
+  describe('getGitUrl', () => {
+    const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+    it('should return project git url', async () => {
+      prismaMock.projectGitLink.findFirst.mockResolvedValueOnce(resultMock);
+
+      const result = await project.getGitUrl(mockReturnedProjectGitLink.project_id);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('addGitUrl', () => {
+    it('should return added git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.create.mockResolvedValueOnce(resultMock);
+
+      const result = await project.addGitUrl(mockReturnedProjectGitLink.project_id, mockReturnedProjectGitLink.repo);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('updateGitUrl', () => {
+    it('should return updated git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.update.mockResolvedValueOnce(resultMock);
+
+      const result = await project.updateGitUrl(mockReturnedProjectGitLink.project_id, mockReturnedProjectGitLink.repo);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('deleteGitUrl', () => {
+    it('should return deleted git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.delete.mockResolvedValueOnce(resultMock);
+
+      const result = await project.deleteGitUrl(mockReturnedProjectGitLink.project_id);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
     });
   });
 });

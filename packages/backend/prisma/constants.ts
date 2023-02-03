@@ -13,8 +13,8 @@ export const BACKLOG_USER_1_EMAIL = 'testBacklogUser1@test.com';
 export const BACKLOG_USER_2_EMAIL = 'testBacklogUser2@test.com';
 
 // Role Id
-export const STUDENT_ROLE_ID = 1;
-export const FACULTY_ROLE_ID = 2;
+export const FACULTY_ROLE_ID = 1;
+export const STUDENT_ROLE_ID = 2;
 export const ADMIN_ROLE_ID = 3;
 
 // Project Id
@@ -37,3 +37,16 @@ export const SPRINT_1_ID = 1;
 export const COURSE_1_ID = 1;
 export const COURSE_2_ID = 2;
 export const COURSE_3_ID = 3;
+export const SHADOW_COURSE_1_ID = 4;
+export const SHADOW_COURSE_2_ID = 5;
+
+// Shadow course data (For independent projects)
+export const SHADOW_COURSE_DATA = {
+  cname: 'Independent course',
+  startYear: 0,
+  startSem: 0,
+  endYear: 0,
+  endSem: 0,
+  description: 'Independent course',
+  shadow_course: true,
+};

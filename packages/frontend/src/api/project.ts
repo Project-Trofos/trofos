@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { BacklogStatusData, Project, ProjectData } from './types';
+import { BacklogStatusData, Project, ProjectData, ProjectGitLink, ProjectGitLinkData } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -154,6 +154,48 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
     }),
+
+    // Project Git link API
+    getGitUrl: builder.query<ProjectGitLink, Pick<Project, 'id'>>({
+      query: ({ id }) => ({
+        url: `project/${id}/gitLink`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
+    }),
+
+    addGitUrl: builder.mutation<ProjectGitLink, ProjectGitLinkData>({
+      query: (param) => ({
+        url: `project/${param.projectId}/gitLink`,
+        method: 'POST',
+        body: {
+          repoLink: param.repoLink,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    updateGitUrl: builder.mutation<ProjectGitLink, ProjectGitLinkData>({
+      query: (param) => ({
+        url: `project/${param.projectId}/gitLink`,
+        method: 'PUT',
+        body: {
+          repoLink: param.repoLink,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    deleteGitUrl: builder.mutation<ProjectGitLink, Pick<Project, 'id'>>({
+      query: ({ id }) => ({
+        url: `project/${id}/gitLink`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -171,4 +213,8 @@ export const {
   useUpdateBacklogStatusMutation,
   useUpdateBacklogStatusOrderMutation,
   useDeleteBacklogStatusMutation,
+  useGetGitUrlQuery,
+  useAddGitUrlMutation,
+  useUpdateGitUrlMutation,
+  useDeleteGitUrlMutation,
 } = extendedApi;

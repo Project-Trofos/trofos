@@ -1,4 +1,4 @@
-import { User, UsersOnCourses, UsersOnProjects, UsersOnRoles } from '@prisma/client';
+import { User, UsersOnCourses, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
@@ -8,7 +8,8 @@ export type Users = {
   user_id: number;
   courses: UsersOnCourses[];
   projects: UsersOnProjects[];
-  roles: UsersOnRoles[];
+  basicRoles: UsersOnRoles[];
+  courseRoles: UsersOnRolesOnCourses[];
 };
 
 async function getAll(): Promise<Users[]> {
@@ -18,7 +19,8 @@ async function getAll(): Promise<Users[]> {
       user_id: true,
       courses: true,
       projects: true,
-      roles: true,
+      basicRoles: true,
+      courseRoles: true,
     },
   });
 
@@ -31,7 +33,7 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
     data: {
       user_email: userEmail,
       user_password_hash: passwordHash,
-      roles: {
+      basicRoles: {
         create: [
           {
             role_id: STUDENT_ROLE_ID,

@@ -8,6 +8,7 @@ import backlogRouter from './routes/backlog.route';
 import userRouter from './routes/user.route';
 import sprintRouter from './routes/sprint.route';
 import roleRouter from './routes/role.route';
+import githubRouter from './routes/github.route';
 import settingsRouter from './routes/settings.route';
 
 const app = express();
@@ -47,6 +48,9 @@ app.use('/sprint', sprintRouter);
 
 // Routes for role
 app.use('/role', roleRouter);
+
+// Routes for github app
+app.use('/github', githubRouter);
 
 // Routes for settings
 app.use('/settings', settingsRouter);

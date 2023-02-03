@@ -13,6 +13,7 @@ import { createCourseTableSeed } from './course.seed';
 import { createUsersOnCoursesTableSeed } from './usersOnCourses.seed';
 import { createMilestoneTableSeed } from './milestone.seed';
 import { createSettingsTableSeed } from './setting.seed';
+import { createUsersOnRolesOnCoursesTableSeed } from './usersOnRolesOnCourses.seed';
 
 const prisma = new PrismaClient();
 
@@ -21,6 +22,7 @@ async function main() {
   await createRoleTableSeed(prisma);
   await createActionsOnRolesTableSeed(prisma);
   await createUsersOnRolesTableSeed(prisma);
+  await createSettingsTableSeed(prisma);
   await createCourseTableSeed(prisma);
   await createUsersOnCoursesTableSeed(prisma);
   await createMilestoneTableSeed(prisma);
@@ -30,7 +32,7 @@ async function main() {
   await createBacklogStatusTableSeed(prisma);
   await createBacklogTableSeed(prisma);
   await createBacklogHistoryTableSeed(prisma);
-  await createSettingsTableSeed(prisma);
+  await createUsersOnRolesOnCoursesTableSeed(prisma);
 }
 
 main()

@@ -19,7 +19,8 @@ model User {
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
   courses       UsersOnCourses[]
-  roles         UsersOnRoles[]
+  basicRoles UsersOnRoles[]
+  courseRoles UsersOnRolesOnCourses[]
 }
 
 model UserSession {
@@ -46,6 +47,8 @@ model Course {
   announcements Announcement[]
   public        Boolean           @default(false)
   created_at    DateTime          @default(now())
+  courseRoles UsersOnRolesOnCourses[]
+  shadow_course Boolean           @default(false)
   @@unique([code, startYear, startSem])
 }
 
@@ -67,8 +70,8 @@ model Project {
   description     String?
 
   // A project might not belong to a course (open project)
-  course_id       Int?
-  course          Course?           @relation(fields: [course_id], references: [id], onDelete: SetNull)
+  course_id       Int
+  course          Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   users           UsersOnProjects[]
   public          Boolean           @default(false)
@@ -77,8 +80,10 @@ model Project {
   backlog_counter Int               @default(0)
 
   sprints         Sprint[]
-
+  backlogs        Backlog[]
   backlogStatuses BacklogStatus[]
+
+  projectGitLink  ProjectGitLink?
 }
 
 model Announcement {
@@ -130,6 +135,7 @@ model Backlog {
   assignee      UsersOnProjects?  @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id])
   assignee_id   Int?
   project_id    Int
+  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
   points        Int?
   description   String?
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
@@ -191,7 +197,7 @@ model Sprint {
   duration      Int               // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
   start_date    DateTime?
   end_date      DateTime?
-  project       Project           @relation(fields: [project_id], references: [id])
+  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
   project_id    Int
   goals         String?
   status        SprintStatus      @default(upcoming)
@@ -203,7 +209,9 @@ model Role {
   id Int @id @default(autoincrement())
   role_name String @unique @db.VarChar(50)
   actions ActionsOnRoles[]
-  users UsersOnRoles[]
+  basicRoles UsersOnRoles[]
+  courseRoles UsersOnRolesOnCourses[]
+  
 }
 
 model ActionsOnRoles {
@@ -218,6 +226,23 @@ model UsersOnRoles {
   user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+}
+
+model ProjectGitLink {
+  project       Project   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id    Int       @id
+  repo          String
+}
+
+model UsersOnRolesOnCourses {
+  id Int @id @default(autoincrement())
+  user_email String @db.VarChar(320)
+  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  role_id Int
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  course_id Int
+  course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  @@unique([user_email, course_id])
 }
 
 enum Action {

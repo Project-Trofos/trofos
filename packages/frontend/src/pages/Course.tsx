@@ -26,8 +26,9 @@ export default function CoursePage(): JSX.Element {
   const [removeCourse] = useRemoveCourseMutation();
 
   const selectedTab = useMemo(() => {
+    // Current location split [course, :courseId, :tabName]
     const split = location.pathname.split('/');
-    return split[5];
+    return split[3];
   }, [location.pathname]);
 
   const { course } = useCourse(params.courseId);
@@ -83,32 +84,16 @@ export default function CoursePage(): JSX.Element {
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
-          <Tabs defaultActiveKey="overview" activeKey={selectedTab} className="footer-tabs">
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/overview`}>
-                  Overview
-                </Link>
-              }
-              key="overview"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/users`}>
-                  People
-                </Link>
-              }
-              key="users"
-            />
-            <Tabs.TabPane
-              tab={
-                <Link style={{ textDecoration: 'none' }} to={`/course/${course.id}/settings`}>
-                  Settings
-                </Link>
-              }
-              key="settings"
-            />
-          </Tabs>
+          <Tabs
+            items={[
+              { key: 'overview', label: 'Overview' },
+              { key: 'users', label: 'Users' },
+              { key: 'settings', label: 'Settings' },
+            ]}
+            activeKey={selectedTab}
+            className="footer-tabs"
+            onChange={(key) => navigate(`/course/${course.id}/${key}`)}
+          />
         }
       >
         <Text>{course.description}</Text>

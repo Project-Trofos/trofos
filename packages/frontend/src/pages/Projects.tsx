@@ -1,16 +1,30 @@
-import React from 'react';
-import { Typography, Row, Col, Tabs, Space } from 'antd';
+import React, { useMemo } from 'react';
+import { Typography, Tabs, Space } from 'antd';
 
-import ProjectCard from '../components/cards/ProjectCard';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';
-import { Project } from '../api/types';
+import getPane from '../helpers/getPane';
 
 const { Title } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
   const { currentProjects, pastProjects, futureProjects, isLoading } = useCurrentAndPastProjects();
+
+  const currentProjectTabPane = useMemo(
+    () => getPane(currentProjects, 'Current Projects', 'There are no current projects.'),
+    [currentProjects],
+  );
+
+  const pastProjectTabPane = useMemo(
+    () => getPane(pastProjects, 'Past Projects', 'There are no past projects.'),
+    [pastProjects],
+  );
+
+  const futureProjectTabPane = useMemo(
+    () => getPane(futureProjects, 'Future Projects', 'There are no future projects.'),
+    [futureProjects],
+  );
 
   if (isLoading) {
     return <main style={{ margin: '48px' }}>Loading...</main>;
@@ -23,29 +37,7 @@ export default function ProjectsPage(): JSX.Element {
         <ProjectCreationModal />
       </Space>
 
-      <Tabs>
-        {renderProjectsPane(currentProjects, 'Current Projects', 'There are no current projects.')}
-        {renderProjectsPane(pastProjects, 'Past Projects', 'There are no past projects.')}
-        {renderProjectsPane(futureProjects, 'Future Projects', 'There are no future projects.')}
-      </Tabs>
+      <Tabs items={[currentProjectTabPane, pastProjectTabPane, futureProjectTabPane]} />
     </Container>
-  );
-}
-
-function renderProjectsPane(projects: Project[] | undefined, tabName: string, emptyPrompt: string) {
-  return (
-    <Tabs.TabPane tab={tabName} key={tabName}>
-      {!projects || projects.length === 0 ? (
-        emptyPrompt
-      ) : (
-        <Row gutter={[16, 16]} wrap>
-          {projects.map((project) => (
-            <Col key={project.id}>
-              <ProjectCard project={project} />
-            </Col>
-          ))}
-        </Row>
-      )}
-    </Tabs.TabPane>
   );
 }
