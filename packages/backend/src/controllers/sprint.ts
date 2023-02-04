@@ -66,7 +66,7 @@ const deleteSprint = async (req: express.Request, res: express.Response) => {
     assertSprintIdIsValid(sprintId);
     const sprint: Sprint = await sprintService.deleteSprint(Number(sprintId));
     return res.status(StatusCodes.OK).json(sprint);
-  } catch (error: any) {
+  } catch (error) {
     return getDefaultErrorRes(error, res);
   }
 };

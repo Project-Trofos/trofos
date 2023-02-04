@@ -30,7 +30,7 @@ export default function CourseOverview(): JSX.Element {
         handleDeleteAnnouncement={handleDeleteAnnouncement}
         handleUpdateAnnouncement={handleUpdateAnnouncement}
       />
-      <MilestoneCard course={course} showEdit={showEdit} />
+      {course && <MilestoneCard course={course} showEdit={showEdit} />}
       <ProjectTable
         projects={filteredProjects}
         isLoading={isLoading}

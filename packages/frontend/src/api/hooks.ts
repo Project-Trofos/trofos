@@ -173,7 +173,7 @@ export const useProject = (projectId: number) => {
         message.error('Failed to modify user role');
       }
     },
-    [updateUserProjectRole, project],
+    [updateUserProjectRole, project, projectId],
   );
 
   const projectUserRoles = useMemo(() => {
@@ -182,7 +182,7 @@ export const useProject = (projectId: number) => {
     }
 
     return userRoles;
-  }, [handleUpdateUserRole, project, userRoles, projectId]);
+  }, [project, userRoles]);
 
   return {
     project,
@@ -286,7 +286,7 @@ export const useCourse = (courseId?: string) => {
         message.error('Failed to modify user role');
       }
     },
-    [addUser, course],
+    [course, updateUserCourseRole],
   );
 
   const courseUserRoles = useMemo(() => {
@@ -295,7 +295,7 @@ export const useCourse = (courseId?: string) => {
     }
 
     return userRoles;
-  }, [handleUpdateUserRole, courses, userRoles, courseIdNumber]);
+  }, [courses, userRoles, courseIdNumber]);
 
   const handleDeleteMilestone = useCallback(
     async (milestoneId: number) => {

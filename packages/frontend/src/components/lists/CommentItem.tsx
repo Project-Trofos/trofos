@@ -152,7 +152,7 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
   const renderDeleteModal = (comment: CommentType) => (
     <Modal
       title="DELETE COMMENT"
-      visible={isDeleteModalOpen}
+      open={isDeleteModalOpen}
       onOk={() => handleDeleteComment(comment.comment_id)}
       onCancel={() => closeDeleteConfirmationModal()}
       okText="Delete"

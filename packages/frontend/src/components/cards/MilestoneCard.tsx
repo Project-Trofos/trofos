@@ -9,17 +9,15 @@ import { CourseData } from '../../api/types';
 import './CommonCard.css';
 import './MilestoneCard.css';
 
-const { Step } = Steps;
-
 type MilestoneCardProps = {
-  course?: CourseData;
+  course: CourseData;
   showEdit?: boolean;
 };
 
 // Card for displaying and editing milestones of a course
 export default function MilestoneCard(props: MilestoneCardProps): JSX.Element {
   const { course, showEdit = false } = props;
-  const { handleDeleteMilestone, handleUpdateMilestone } = useCourse(course?.id.toString());
+  const { handleDeleteMilestone, handleUpdateMilestone } = useCourse(course.id.toString());
   const { milestones, statuses } = useMilestone(course?.milestones);
 
   return (

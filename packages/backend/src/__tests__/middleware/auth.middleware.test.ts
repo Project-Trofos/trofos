@@ -106,7 +106,7 @@ describe('auth.middleware tests', () => {
       } as express.Request;
       const mockResponse = {
         send() {},
-        json(j: any) {
+        json(j) {
           this.json = j;
           return this;
         },
@@ -138,7 +138,7 @@ describe('auth.middleware tests', () => {
       } as express.Request;
       const mockResponse = {
         send() {},
-        json(j: any) {
+        json(j) {
           this.json = j;
           return this;
         },
@@ -171,7 +171,7 @@ describe('auth.middleware tests', () => {
       } as express.Request;
       const mockResponse = {
         send() {},
-        json(j: any) {
+        json(j) {
           this.json = j;
           return this;
         },
@@ -205,7 +205,7 @@ describe('auth.middleware tests', () => {
       } as express.Request;
       const mockResponse = {
         send() {},
-        json(j: any) {
+        json(j) {
           this.json = j;
           return this;
         },

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Card, Space, Table, Tag } from 'antd';
 import { CourseData, UserData, UserOnRolesOnCourse, ActionsOnRoles } from '../../api/types';
-import { useGetActionsOnRolesQuery } from '../../api/role';
 import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
 
