@@ -203,7 +203,7 @@ model Sprint {
   status          SprintStatus      @default(upcoming)
   backlogs        Backlog[]
   backlog_history BacklogHistory[]
-  retrospective   SprintRetrospective[]
+  retrospective   Retrospective[]
 }
 
 model Role {
@@ -246,18 +246,18 @@ model UsersOnRolesOnCourses {
   @@unique([user_email, course_id])
 }
 
-model SprintRetrospective {
+model Retrospective {
   id          Int                         @id @default(autoincrement())
   sprint      Sprint                      @relation(fields: [sprint_id], references: [id], onDelete: Cascade) 
   sprint_id   Int
   content     String
   type        RetrospectiveType
   score       Int                         @default(0)
-  votes       SprintRetrospectiveVote[]
+  votes       RetrospectiveVote[]
 }
 
-model SprintRetrospectiveVote {
-  retro       SprintRetrospective @relation(fields: [retro_id], references: [id], onDelete: Cascade)
+model RetrospectiveVote {
+  retro       Retrospective   @relation(fields: [retro_id], references: [id], onDelete: Cascade)
   retro_id    Int
   // To keep it simple, user_id is not related to any user models to allow for anonymous votes in the future
   user_id     Int

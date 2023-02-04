@@ -232,17 +232,29 @@ export type Settings = {
   current_sem: number;
 };
 
-export type RetrospectiveVotes = {
+export type RetrospectiveVote = {
   id: number;
   retro_id: number;
   user_id: number;
-  type: string;
+  type: RetrospectiveVoteType;
 };
 
 export type Retrospective = {
   id: number;
+  sprint_id: number;
   content: string;
-  type: string;
+  type: RetrospectiveType;
   score: number;
-  votes: RetrospectiveVotes[];
+  votes: RetrospectiveVote[];
 };
+
+export enum RetrospectiveType {
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
+  ACTION = 'action',
+}
+
+export enum RetrospectiveVoteType {
+  UP = 'up',
+  DOWN = 'down',
+}

@@ -1,90 +1,49 @@
 import React from 'react';
 import { Card, Divider, Form, Input } from 'antd';
-import './RetrospectiveContainerCard.css';
+import { useGetRetrospectivesQuery } from '../../api/sprint';
+import { useAddRetrospectiveMutation } from '../../api/socket/retrospectiveHooks';
+import { RetrospectiveType } from '../../api/types';
 import RetrospectiveContentCard from './RetrospectiveContentCard';
-
-const MOCK_RETRO = [
-  {
-    id: 0,
-    content: 'We did well in the discussion and execution of the backlogs this week',
-    type: 'well',
-    votes: [],
-    score: 3,
-  },
-  {
-    id: 1,
-    content: 'We did well in the discussion and execution of the backlogs this week',
-    type: 'well',
-    votes: [
-      {
-        id: 0,
-        retro_id: 0,
-        user_id: 3,
-        type: 'down',
-      },
-    ],
-    score: 1,
-  },
-  {
-    id: 2,
-    content: 'We did well in the discussion and execution of the backlogs this week',
-    type: 'well',
-    votes: [
-      {
-        id: 2,
-        retro_id: 0,
-        user_id: 3,
-        type: 'up',
-      },
-    ],
-    score: 3,
-  },
-  {
-    id: 3,
-    content: 'We did well in the discussion and execution of the backlogs this week',
-    type: 'well',
-    votes: [
-      {
-        id: 2,
-        retro_id: 0,
-        user_id: 3,
-        type: 'up',
-      },
-    ],
-    score: 3,
-  },
-  {
-    id: 4,
-    content: 'We did well in the discussion and execution of the backlogs this week',
-    type: 'well',
-    votes: [],
-    score: 3,
-  },
-];
+import './RetrospectiveContainerCard.css';
 
 export default function RetrospectiveContainerCard(props: RetrospectiveContainerCardProps): JSX.Element {
-  const { title, type } = props;
+  const { title, type, sprintId } = props;
+  const [form] = Form.useForm();
 
-  const handleFormSubmit = (formData: any) => {
-    console.log(formData);
+  const { data: retrospectivesData } = useGetRetrospectivesQuery({ sprintId, type });
+  const [addRetrospective] = useAddRetrospectiveMutation();
+
+  const handleFormSubmit = async (formData: { content: string }) => {
+    const { content } = formData;
+    if (!content) return;
+
+    try {
+      await addRetrospective({ sprintId, content, type }).unwrap();
+      form.resetFields();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <Card className="retrospective-container-card" title={title}>
-      {MOCK_RETRO.map((retro) => (
+      {retrospectivesData?.map((retro) => (
         <RetrospectiveContentCard key={retro.id} retroEntry={retro} />
       ))}
-      <Divider />
-      <Form className="retrospective-container-form" onFinish={handleFormSubmit}>
-        <Form.Item name="content">
-          <Input placeholder="Type something here..." />
-        </Form.Item>
-      </Form>
+      <div className="retrospective-container-card-footer">
+        <Divider />
+        <Form className="retrospective-container-form" form={form} onFinish={handleFormSubmit}>
+          <Form.Item name="content">
+            <Input placeholder="Type something here..." />
+          </Form.Item>
+        </Form>
+      </div>
     </Card>
   );
 }
 
 type RetrospectiveContainerCardProps = {
   title: string;
-  type: string;
+  type: RetrospectiveType;
+  sprintId: number;
 };

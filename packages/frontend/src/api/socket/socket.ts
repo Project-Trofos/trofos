@@ -2,16 +2,17 @@ import { io, Socket } from 'socket.io-client';
 
 export enum UpdateType {
   BACKLOG = 'backlog',
+  RETRO = 'retro',
 }
 
 type ServerToClientEvents = {
-  updated: () => void;
+  updated: (type?: string) => void;
 };
 
 type ClientToServerEvents = {
   subscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
   unsubscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
-  update: (roomId: string) => void;
+  update: (roomId: string, type?: string) => void;
 };
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(

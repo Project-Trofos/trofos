@@ -28,13 +28,13 @@
 
 .vote-container button.up.ant-btn:hover,
 .vote-container button.up.is-selected {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgb(0 0 0 / 4%);
   color: #42a7ee;
 }
 
 .vote-container button.down.ant-btn:hover,
 .vote-container button.down.is-selected {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgb(0 0 0 / 4%);
   color: #f34132;
 }
 

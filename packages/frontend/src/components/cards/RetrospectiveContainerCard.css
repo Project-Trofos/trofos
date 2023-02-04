@@ -1,5 +1,8 @@
 .retrospective-container-card {
   margin: 5px;
+  width: 33%;
+  display: flex;
+  flex-flow: column;
 }
 
 .retrospective-container-card .ant-card-head-title {
@@ -8,6 +11,13 @@
 
 .retrospective-container-card .ant-card-body {
   padding: 12px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.retrospective-container-card-footer {
+  margin-top: auto;
 }
 
 .retrospective-container-form .ant-form-item {
