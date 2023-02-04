@@ -19,6 +19,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   {
     path: process.env.REACT_APP_SOCKET_IO_PATH || '/socket.io/',
     withCredentials: true,
+    transports: ['websocket'],
   },
 );
 
