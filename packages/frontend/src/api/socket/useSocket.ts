@@ -18,34 +18,38 @@ export default function useSocket(
       socket.connect();
     }
 
-    socket.on('connect', () => {
+    const connectListener = () => {
       setIsConnected(true);
-    });
+    };
+
+    socket.on('connect', connectListener);
 
     if (roomId) {
       socket.emit('subscribeToUpdate', updateType, roomId);
       callbackFuncs[`${updateType}/${roomId}`] = callback;
     }
 
-    socket.on('disconnect', () => {
+    const disconnectListener = () => {
       setIsConnected(false);
-    });
+    };
 
-    socket.on('updated', (type?: string) => {
-      callbackFuncs[`${updateType}/${roomId}`]?.(type);
-    });
+    socket.on('disconnect', disconnectListener);
+
+    const updatedListener = (id: string, type?: string) => {
+      if (id !== `${updateType}/${roomId}`) return;
+      callbackFuncs[id]?.(type);
+    };
+
+    socket.on('updated', updatedListener);
 
     return () => {
       if (roomId) {
         socket.emit('unsubscribeToUpdate', updateType, roomId);
         delete callbackFuncs[`${updateType}/${roomId}`];
       }
-      // only disconnect if there are no more callback functions
-      if (isEmpty(callbackFuncs)) {
-        socket.off('updated');
-        socket.off('connect');
-        socket.off('disconnect');
-      }
+      socket.off('updated', updatedListener);
+      socket.off('connect', connectListener);
+      socket.off('disconnect', disconnectListener);
     };
   }, [roomId, updateType, callback]);
 

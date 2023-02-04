@@ -23,6 +23,9 @@ exports[`RetrospectiveContainerCard test renders retrospective card with correct
         class="ant-card-body"
       >
         <div
+          class="retrospective-container-card-body"
+        />
+        <div
           class="retrospective-container-card-footer"
         >
           <div

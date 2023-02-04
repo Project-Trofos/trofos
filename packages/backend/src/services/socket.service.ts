@@ -9,7 +9,7 @@ export enum UpdateType {
 }
 
 type ServerToClientEvents = {
-  updated: (type?: string) => void;
+  updated: (roomId: string, type?: string) => void;
 };
 
 type ClientToServerEvents = {
@@ -53,7 +53,7 @@ export function init(socketServer: Server) {
     });
 
     socket.on('update', (roomId, type) => {
-      socket.to(roomId).emit('updated', type);
+      socket.to(roomId).emit('updated', roomId, type);
     });
   });
 }

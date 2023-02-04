@@ -6,7 +6,7 @@ export enum UpdateType {
 }
 
 type ServerToClientEvents = {
-  updated: (type?: string) => void;
+  updated: (id: string, type?: string) => void;
 };
 
 type ClientToServerEvents = {

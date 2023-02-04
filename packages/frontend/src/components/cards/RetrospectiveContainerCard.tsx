@@ -27,9 +27,11 @@ export default function RetrospectiveContainerCard(props: RetrospectiveContainer
 
   return (
     <Card className="retrospective-container-card" title={title}>
-      {retrospectivesData?.map((retro) => (
-        <RetrospectiveContentCard key={retro.id} retroEntry={retro} />
-      ))}
+      <div className="retrospective-container-card-body">
+        {retrospectivesData?.map((retro) => (
+          <RetrospectiveContentCard key={retro.id} retroEntry={retro} />
+        ))}
+      </div>
       <div className="retrospective-container-card-footer">
         <Divider />
         <Form className="retrospective-container-form" form={form} onFinish={handleFormSubmit}>

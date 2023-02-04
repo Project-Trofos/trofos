@@ -16,6 +16,11 @@
   flex-flow: column;
 }
 
+.retrospective-container-card-body {
+  height: 50vh;
+  overflow-y: auto;
+}
+
 .retrospective-container-card-footer {
   margin-top: auto;
 }
