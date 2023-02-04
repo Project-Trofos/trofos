@@ -40,7 +40,7 @@ export default function BacklogCardStatus(props: { backlogId: number; currentSta
   return (
     <Select
       className="backlog-card-status"
-      defaultValue={currentStatus}
+      value={currentStatus}
       options={processBacklogStatusOptions(backlogStatus)}
       onClick={(e) => e.stopPropagation()}
       onChange={handleStatusChange}

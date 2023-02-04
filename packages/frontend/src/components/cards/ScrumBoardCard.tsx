@@ -3,6 +3,7 @@ import { Avatar, Card } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Draggable } from 'react-beautiful-dnd';
 import { useNavigate, useParams } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import type { Backlog } from '../../api/types';
 import './ScrumBoardCard.css';
 
@@ -48,4 +49,4 @@ function ScrumBoardCard(props: { backlog: Backlog; projectKey: string | null | u
   );
 }
 
-export default ScrumBoardCard;
+export default React.memo(ScrumBoardCard, (prevProps, currProps) => isEqual(prevProps, currProps));

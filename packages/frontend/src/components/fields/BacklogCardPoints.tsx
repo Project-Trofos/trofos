@@ -46,7 +46,7 @@ export default function BacklogCardPoints(props: { backlogId: number; currentPoi
   return (
     <InputNumber
       className={`backlog-card-points ${currentPoints ? 'points-active' : ''}`}
-      defaultValue={currentPoints || undefined}
+      value={currentPoints || undefined}
       onClick={(e) => e.stopPropagation()}
       onBlur={handlePointsChange}
       min={1}

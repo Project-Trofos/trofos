@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { isEqual } from 'lodash';
 import {
   useAddRetrospectiveVoteMutation,
   useDeleteRetrospectiveVoteMutation,
@@ -9,7 +10,7 @@ import {
 import { Retrospective, RetrospectiveVoteType } from '../../api/types';
 import './RetrospectiveContentCard.css';
 
-export default function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Element {
+function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Element {
   const { retroEntry } = props;
   const [addRetrospectiveVote] = useAddRetrospectiveVoteMutation();
   const [updateRetrospectiveVote] = useUpdateRetrospectiveVoteMutation();
@@ -76,3 +77,5 @@ export default function RetrospectiveContentCard(props: RetrospectiveContentCard
 type RetrospectiveContentCardProps = {
   retroEntry: Retrospective;
 };
+
+export default React.memo(RetrospectiveContentCard, (prevRetro, currRetro) => isEqual(prevRetro, currRetro));
