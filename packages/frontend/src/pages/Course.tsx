@@ -53,8 +53,8 @@ export default function CoursePage(): JSX.Element {
     );
   }
 
-  const courseMenu = {
-    onClick: (e: any) => handleMenuClick(e.key),
+  const courseMenu: DropdownProps['menu'] = {
+    onClick: (e) => handleMenuClick(e.key),
     items: [
       {
         key: '1',
