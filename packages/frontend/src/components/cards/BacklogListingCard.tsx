@@ -1,4 +1,5 @@
 import React from 'react';
+import { isEqual } from 'lodash';
 import type { Backlog } from '../../api/types';
 import { UserData } from '../../api/types';
 import BacklogCardStatus from '../dropdowns/BacklogCardStatus';
@@ -34,4 +35,4 @@ type BacklogListingCardProps = {
   users?: UserData[];
 };
 
-export default BacklogListingCard;
+export default React.memo(BacklogListingCard, (prevProps, currProps) => isEqual(prevProps, currProps));
