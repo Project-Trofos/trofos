@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import SprintListingCard from './SprintListingCard';
@@ -25,15 +26,17 @@ describe('SprintCard test', () => {
   };
 
   const { baseElement } = render(
-    <Provider store={store}>
-      <DragDropContext onDragEnd={jest.fn()}>
-        <SprintListingCard
-          sprint={mockSprint}
-          setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
-          setSprint={mockSprintListingCardProps.setSprint}
-        />
-      </DragDropContext>
-    </Provider>,
+    <BrowserRouter>
+      <Provider store={store}>
+        <DragDropContext onDragEnd={jest.fn()}>
+          <SprintListingCard
+            sprint={mockSprint}
+            setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}
+            setSprint={mockSprintListingCardProps.setSprint}
+          />
+        </DragDropContext>
+      </Provider>
+    </BrowserRouter>,
   );
 
   it('renders sprint card with correct details', () => {
