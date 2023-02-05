@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import userService from '../../services/user.service';
 
@@ -20,11 +20,8 @@ describe('user.service tests', () => {
         {
           user_email: 'testEmail@test.com',
           user_id: 1,
-          courses: [],
-          projects: [],
-          roles: [],
         },
-      ] as any;
+      ] as User[];
       prismaMock.user.findMany.mockResolvedValueOnce(prismaResponseObject);
       await expect(userService.getAll()).resolves.toEqual(prismaResponseObject);
     });
@@ -41,12 +38,10 @@ describe('user.service tests', () => {
     });
 
     it('should return the created user if the request was successful', async () => {
-      const prismaResponseObject = [
-        {
-          user_email: 'testEmail@test.com',
-          user_password_hash: 'testPassword',
-        },
-      ] as any;
+      const prismaResponseObject = {
+        user_email: 'testEmail@test.com',
+        user_password_hash: 'testPassword',
+      } as User;
       prismaMock.user.create.mockResolvedValueOnce(prismaResponseObject);
       await expect(userService.create('testUser@test.com', 'testPassword')).resolves.toEqual(prismaResponseObject);
     });

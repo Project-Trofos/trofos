@@ -3,7 +3,7 @@ import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetBacklogStatusQuery } from '../../api/project';
 import { BacklogStatusData } from '../../api/types';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardStatus.css';
 
 export default function BacklogCardStatus(props: { backlogId: number; currentStatus: string }) {
@@ -40,7 +40,7 @@ export default function BacklogCardStatus(props: { backlogId: number; currentSta
   return (
     <Select
       className="backlog-card-status"
-      defaultValue={currentStatus}
+      value={currentStatus}
       options={processBacklogStatusOptions(backlogStatus)}
       onClick={(e) => e.stopPropagation()}
       onChange={handleStatusChange}

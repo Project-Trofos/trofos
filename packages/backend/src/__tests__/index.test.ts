@@ -1,5 +1,6 @@
+import { Server } from 'http';
 import request from 'supertest';
-import server from '../index';
+import app, { port } from '../server';
 import sessionService from '../services/session.service';
 import authenticationService from '../services/authentication.service';
 import roleService from '../services/role.service';
@@ -9,12 +10,18 @@ const authenticationServiceValidateUserSpy = jest.spyOn(authenticationService, '
 const sessionServiceCreateUserSessionSpy = jest.spyOn(sessionService, 'createUserSession');
 const roleServiceGetUserRoleInformationSpy = jest.spyOn(roleService, 'getUserRoleInformation');
 
-afterAll((done) => {
-  server.close();
-  done();
-});
+describe('server.ts', () => {
+  let server: Server;
 
-describe('index.ts', () => {
+  beforeAll(() => {
+    server = app.listen(port);
+  });
+
+  afterAll((done) => {
+    server.close();
+    done();
+  });
+
   test('/ route should return Hello World', async () => {
     const res = await request(server).get('/');
     expect(res.text).toEqual('Hello World!');

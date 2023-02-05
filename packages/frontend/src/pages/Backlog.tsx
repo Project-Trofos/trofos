@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, message, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useGetBacklogQuery, useUpdateBacklogMutation } from '../api/backlog';
+import { useGetBacklogQuery } from '../api/backlog';
+import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
 import BacklogInputNumber from '../components/fields/BacklogInputNumber';
 import BacklogSelect from '../components/fields/BacklogSelect';
 import BacklogSummaryInput from '../components/fields/BacklogSummaryInput';
@@ -41,6 +42,10 @@ function Backlog(): JSX.Element {
   const backlogId = Number(params.backlogId);
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const { data: backlog } = useGetBacklogQuery({ projectId, backlogId });
+
+  useEffect(() => {
+    form.setFieldsValue(backlog);
+  }, [form, backlog]);
 
   const removeUnchangedFields = (payload: { [key: string]: string | number | null }) => {
     const updatedPayload: { [key: string]: string | number | null } = {};

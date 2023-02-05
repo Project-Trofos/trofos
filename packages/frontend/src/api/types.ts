@@ -217,7 +217,44 @@ export type UpdateUserRolePayload = {
   newRoleId: number;
 };
 
+export type ProjectGitLink = {
+  project_id: number;
+  repo: string;
+};
+
+export type ProjectGitLinkData = {
+  projectId: number;
+  repoLink: string;
+};
+
 export type Settings = {
   current_year: number;
   current_sem: number;
 };
+
+export type RetrospectiveVote = {
+  id: number;
+  retro_id: number;
+  user_id: number;
+  type: RetrospectiveVoteType;
+};
+
+export type Retrospective = {
+  id: number;
+  sprint_id: number;
+  content: string;
+  type: RetrospectiveType;
+  score: number;
+  votes: RetrospectiveVote[];
+};
+
+export enum RetrospectiveType {
+  POSITIVE = 'positive',
+  NEGATIVE = 'negative',
+  ACTION = 'action',
+}
+
+export enum RetrospectiveVoteType {
+  UP = 'up',
+  DOWN = 'down',
+}

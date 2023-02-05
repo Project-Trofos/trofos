@@ -1,4 +1,13 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects, Prisma, Settings } from '@prisma/client';
+import {
+  BacklogStatus,
+  BacklogStatusType,
+  Project,
+  ProjectGitLink,
+  Prisma,
+  User,
+  UsersOnProjects,
+  Settings,
+} from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
@@ -464,6 +473,54 @@ async function deleteBacklogStatus(projectId: number, name: string): Promise<Bac
   return result;
 }
 
+async function getGitUrl(projectId: number): Promise<ProjectGitLink | null> {
+  const result = await prisma.projectGitLink.findFirst({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return result;
+}
+
+async function addGitUrl(projectId: number, repoLink: string): Promise<ProjectGitLink> {
+  const result = await prisma.projectGitLink.create({
+    data: {
+      project: {
+        connect: {
+          id: projectId,
+        },
+      },
+      repo: repoLink,
+    },
+  });
+
+  return result;
+}
+
+async function updateGitUrl(projectId: number, repoLink: string): Promise<ProjectGitLink> {
+  const result = await prisma.projectGitLink.update({
+    where: {
+      project_id: projectId,
+    },
+    data: {
+      repo: repoLink,
+    },
+  });
+
+  return result;
+}
+
+async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
+  const result = await prisma.projectGitLink.delete({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getAll,
@@ -478,4 +535,8 @@ export default {
   updateBacklogStatus,
   updateBacklogStatusOrder,
   deleteBacklogStatus,
+  getGitUrl,
+  addGitUrl,
+  updateGitUrl,
+  deleteGitUrl,
 };

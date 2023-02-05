@@ -42,3 +42,8 @@ class Worker {
 }
 global.URL.createObjectURL = jest.fn();
 window.Worker = Worker as unknown as typeof window.Worker;
+
+// Resolve the issue where socket.io has a dependency using setImmediate
+// https://github.com/prisma/prisma/issues/8558
+// eslint-disable-next-line @typescript-eslint/no-implied-eval, @typescript-eslint/no-explicit-any
+global.setImmediate = global.setImmediate || ((fn: any, ...args: any) => global.setTimeout(fn, 0, ...args));

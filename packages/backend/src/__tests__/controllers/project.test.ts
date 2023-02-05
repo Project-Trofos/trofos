@@ -4,7 +4,7 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import settings from '../../services/settings.service';
 import projectController from '../../controllers/project';
-import { projectsData } from '../mocks/projectData';
+import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 
 const spies = {
@@ -21,6 +21,10 @@ const spies = {
   updateBacklogStatusOrder: jest.spyOn(project, 'updateBacklogStatusOrder'),
   getBacklogStatus: jest.spyOn(project, 'getBacklogStatus'),
   deleteBacklogStatus: jest.spyOn(project, 'deleteBacklogStatus'),
+  getGitUrl: jest.spyOn(project, 'getGitUrl'),
+  addGitUrl: jest.spyOn(project, 'addGitUrl'),
+  updateGitUrl: jest.spyOn(project, 'updateGitUrl'),
+  deleteGitUrl: jest.spyOn(project, 'deleteGitUrl'),
   getSettings: jest.spyOn(settings, 'get'),
 };
 
@@ -497,6 +501,142 @@ describe('project controller tests', () => {
       await projectController.deleteBacklogStatus(mockReq, mockRes);
 
       expect(spies.deleteBacklogStatus).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('getGitLink', () => {
+    it('should return project git link', async () => {
+      spies.getGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedProjectGitLink.project_id,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.getGitLink(mockReq, mockRes);
+
+      expect(spies.getGitUrl).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedProjectGitLink));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.getGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {},
+      });
+      const mockRes = createResponse();
+
+      await projectController.getGitLink(mockReq, mockRes);
+
+      expect(spies.getGitUrl).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('addGitLink', () => {
+    it('should return added git link', async () => {
+      spies.addGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedProjectGitLink.project_id,
+        },
+        body: {
+          repoLink: mockReturnedProjectGitLink.repo,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.addGitLink(mockReq, mockRes);
+
+      expect(spies.addGitUrl).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedProjectGitLink));
+    });
+
+    it('should return error if project id is given', async () => {
+      spies.addGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {},
+        body: {
+          repoLink: mockReturnedProjectGitLink.repo,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.addGitLink(mockReq, mockRes);
+
+      expect(spies.addGitUrl).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('updateGitLink', () => {
+    it('should return updated git link', async () => {
+      spies.updateGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedProjectGitLink.project_id,
+        },
+        body: {
+          repoLink: mockReturnedProjectGitLink.repo,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.updateGitLink(mockReq, mockRes);
+
+      expect(spies.updateGitUrl).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedProjectGitLink));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.updateGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {},
+        body: {
+          repoLink: mockReturnedProjectGitLink.repo,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.updateGitLink(mockReq, mockRes);
+
+      expect(spies.updateGitUrl).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('deleteGitLink', () => {
+    it('should return deleted git link', async () => {
+      spies.deleteGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedProjectGitLink.project_id,
+        },
+      });
+      const mockRes = createResponse();
+
+      await projectController.deleteGitLink(mockReq, mockRes);
+
+      expect(spies.deleteGitUrl).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedProjectGitLink));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.deleteGitUrl.mockResolvedValueOnce(mockReturnedProjectGitLink);
+      const mockReq = createRequest({
+        params: {},
+      });
+      const mockRes = createResponse();
+
+      await projectController.deleteGitLink(mockReq, mockRes);
+
+      expect(spies.deleteGitUrl).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });

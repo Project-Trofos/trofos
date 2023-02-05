@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteBacklogMutation } from '../../api/backlog';
+import { useDeleteBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogMenu.css';
 
 function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Element {

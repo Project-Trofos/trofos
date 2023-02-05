@@ -1,4 +1,4 @@
-import { UserSession } from '@prisma/client';
+import { RetrospectiveType, RetrospectiveVoteType, UserSession } from '@prisma/client';
 import { OptionRequestBody } from '../../controllers/requestTypes';
 import { BadRequestError } from './errorTypes';
 
@@ -78,7 +78,7 @@ export function assertProjectNameIsValid(projectName: string | undefined): asser
   }
 }
 
-export function assertInputIsNotEmpty(input: any, inputName: string) {
+export function assertInputIsNotEmpty<T>(input: T | undefined, inputName: string): asserts input is T {
   if (!input) {
     throw new BadRequestError(getFieldUndefinedErrorMessage(inputName));
   }
@@ -195,5 +195,46 @@ export function assertSprintDurationIsValid(duration: number | undefined): asser
 export function assertSprintDatesAreValid(dates: string[] | undefined): asserts dates is string[] | undefined {
   if (dates && dates.length !== 2) {
     throw new BadRequestError('Either both start and end dates must be present or leave both dates empty');
+  }
+}
+
+export function assertRepoLinkIsValid(repoLink: string | undefined): asserts repoLink is string {
+  if (!repoLink) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('repoLink'));
+  }
+}
+
+export function assertGithubPayloadIsValid(
+  payload: { [key: string]: any } | undefined,
+): asserts payload is { [key: string]: any } {
+  if (!payload) {
+    throw new BadRequestError('Invalid payload in webhook');
+  }
+}
+
+export function assertRetrospectiveTypeIsValid(type: string | undefined): asserts type is RetrospectiveType {
+  if (!type || !(type in RetrospectiveType)) {
+    throw new BadRequestError('Invalid retrospective type');
+  }
+}
+
+export function assertRetrospectiveContentIsValid(content: string | undefined): asserts content is string {
+  if (!content) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('content'));
+  }
+}
+
+export function assertRetroIdIsValid(retroId: string | number | undefined): asserts retroId is string | number {
+  if (!retroId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('retroId'));
+  }
+  if (typeof retroId !== 'number') {
+    assertStringIsNumberOrThrow(retroId, getFieldNotNumberErrorMessage('retroId'));
+  }
+}
+
+export function assertRetrospectiveVoteTypeIsValid(type: string | undefined): asserts type is RetrospectiveVoteType {
+  if (!type || !(type in RetrospectiveVoteType)) {
+    throw new BadRequestError('Invalid retrospective vote type');
   }
 }

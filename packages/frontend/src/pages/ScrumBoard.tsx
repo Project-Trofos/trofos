@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, message, Typography } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../api/backlog';
+import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
 import { useGetBacklogStatusQuery, useGetProjectQuery } from '../api/project';
 import { useGetActiveSprintQuery } from '../api/sprint';
 import type { Backlog, ScrumBoardUserData } from '../api/types';

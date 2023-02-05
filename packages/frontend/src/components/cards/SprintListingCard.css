@@ -31,3 +31,7 @@ li.sprint-card-container.ant-list-item {
 .sprint-status-button {
   margin: 0 10px;
 }
+
+.sprint-retro-button {
+  margin-right: 10px;
+}

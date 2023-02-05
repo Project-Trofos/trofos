@@ -10,6 +10,10 @@ import { getErrorMessage } from '../helpers/error';
 import { useProject } from '../api/hooks';
 import './Project.css';
 import PageHeader from '../components/pageheader/PageHeader';
+import useSocket from '../api/socket/useSocket';
+import trofosApiSlice from '../api';
+import store from '../app/store';
+import { UpdateType } from '../api/socket/socket';
 
 const { Text } = Typography;
 
@@ -30,7 +34,15 @@ export default function ProjectPage(): JSX.Element {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
 
-  const { project, course, isLoading } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
+  const projectId = Number(params.projectId) || -1;
+
+  const { project, course, isLoading } = useProject(projectId);
+
+  // Refetch active sprint data upon update
+  const handleReset = useCallback(() => {
+    store.dispatch(trofosApiSlice.util.invalidateTags(['Backlog', 'BacklogHistory', 'Sprint']));
+  }, []);
+  useSocket(UpdateType.BACKLOG, projectId.toString(), handleReset);
 
   const selectedTab = useMemo(() => {
     // Current location split [project, :projectId, :tabName]
@@ -72,8 +84,8 @@ export default function ProjectPage(): JSX.Element {
     return <Typography.Title>This project does not exist!</Typography.Title>;
   }
 
-  const projectMenu = {
-    onClick: (e: any) => handleMenuClick(e.key),
+  const projectMenu: DropdownProps['menu'] = {
+    onClick: (e) => handleMenuClick(e.key),
     items: [
       {
         key: 'delete',

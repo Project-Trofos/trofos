@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, message } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardSummary.css';
 
 export default function BacklogCardSummary(props: { backlogId: number; currentSummary: string }) {
@@ -12,7 +12,17 @@ export default function BacklogCardSummary(props: { backlogId: number; currentSu
   const params = useParams();
   const projectId = Number(params.projectId);
   const [updateBacklog] = useUpdateBacklogMutation();
+  const [summaryValue, setSummaryValue] = useState(currentSummary);
   const [isError, setIsError] = useState(false);
+
+  const handleSummaryValueChange = (event: React.ChangeEvent<HTMLTextAreaElement> | undefined) => {
+    if (!event) return;
+    setSummaryValue(event.target.value);
+  };
+
+  useEffect(() => {
+    setSummaryValue(currentSummary);
+  }, [currentSummary]);
 
   const handleSummaryChange = async (event: React.FocusEvent<HTMLTextAreaElement, Element>) => {
     const updatedSummary = event.target.value;
@@ -48,7 +58,8 @@ export default function BacklogCardSummary(props: { backlogId: number; currentSu
   return (
     <TextArea
       className="backlog-card-summary"
-      defaultValue={currentSummary}
+      value={summaryValue}
+      onChange={handleSummaryValueChange}
       onBlur={handleSummaryChange}
       onClick={(e) => e.stopPropagation()}
       status={isError ? 'error' : undefined}

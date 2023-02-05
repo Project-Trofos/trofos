@@ -1,7 +1,7 @@
-import { BacklogStatus, BacklogStatusType, Project, User, UsersOnProjects } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
-import { projectsData } from '../mocks/projectData';
+import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 
@@ -293,6 +293,46 @@ describe('project.service tests', () => {
 
       const result = await project.deleteBacklogStatus(PROJECT_ID, NAME);
       expect(result).toEqual<BacklogStatus>(resultMock);
+    });
+  });
+
+  describe('getGitUrl', () => {
+    const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+    it('should return project git url', async () => {
+      prismaMock.projectGitLink.findFirst.mockResolvedValueOnce(resultMock);
+
+      const result = await project.getGitUrl(mockReturnedProjectGitLink.project_id);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('addGitUrl', () => {
+    it('should return added git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.create.mockResolvedValueOnce(resultMock);
+
+      const result = await project.addGitUrl(mockReturnedProjectGitLink.project_id, mockReturnedProjectGitLink.repo);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('updateGitUrl', () => {
+    it('should return updated git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.update.mockResolvedValueOnce(resultMock);
+
+      const result = await project.updateGitUrl(mockReturnedProjectGitLink.project_id, mockReturnedProjectGitLink.repo);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('deleteGitUrl', () => {
+    it('should return deleted git url', async () => {
+      const resultMock: ProjectGitLink = mockReturnedProjectGitLink;
+      prismaMock.projectGitLink.delete.mockResolvedValueOnce(resultMock);
+
+      const result = await project.deleteGitUrl(mockReturnedProjectGitLink.project_id);
+      expect(result).toEqual<ProjectGitLink>(resultMock);
     });
   });
 });

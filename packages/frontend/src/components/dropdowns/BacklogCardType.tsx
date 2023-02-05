@@ -1,7 +1,7 @@
 import React from 'react';
 import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardType.css';
 
 type BacklogType = 'story' | 'task' | 'bug';
@@ -39,7 +39,7 @@ export default function BacklogCardType(props: { backlogId: number; currentType:
   return (
     <Select
       className="backlog-card-type"
-      defaultValue={currentType}
+      value={currentType}
       options={BACKLOG_TYPE_OPTIONS}
       onClick={(e) => e.stopPropagation()}
       onChange={handleTypeChange}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, FormProps, Input, message } from 'antd';
 import './Login.css';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 
@@ -18,7 +18,7 @@ export default function LoginPage(): JSX.Element {
     }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
+  const onFinishFailed: FormProps['onFinishFailed'] = (errorInfo) => {
     console.error('Failed:', errorInfo);
   };
 
