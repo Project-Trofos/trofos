@@ -9,7 +9,7 @@ export interface SprintFormFields extends FormData {
   goals?: string;
 }
 
-export interface SprintUpdatePayload extends Partial<Omit<SprintFormFields, 'projectId'>> {
+export interface SprintUpdatePayload extends Partial<SprintFormFields> {
   sprintId: number;
 }
 

@@ -48,8 +48,8 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Sprint', 'Project', 'Backlog'],
     }),
-    deleteSprint: builder.mutation<Sprint, number>({
-      query: (sprintId) => ({
+    deleteSprint: builder.mutation<Sprint, { sprintId: number; projectId: number }>({
+      query: ({ sprintId }) => ({
         url: `sprint/deleteSprint/${sprintId}`,
         method: 'DELETE',
         credentials: 'include',
