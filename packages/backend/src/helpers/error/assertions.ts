@@ -1,4 +1,4 @@
-import { UserSession } from '@prisma/client';
+import { RetrospectiveType, RetrospectiveVoteType, UserSession } from '@prisma/client';
 import { OptionRequestBody } from '../../controllers/requestTypes';
 import { BadRequestError } from './errorTypes';
 
@@ -209,5 +209,32 @@ export function assertGithubPayloadIsValid(
 ): asserts payload is { [key: string]: any } {
   if (!payload) {
     throw new BadRequestError('Invalid payload in webhook');
+  }
+}
+
+export function assertRetrospectiveTypeIsValid(type: string | undefined): asserts type is RetrospectiveType {
+  if (!type || !(type in RetrospectiveType)) {
+    throw new BadRequestError('Invalid retrospective type');
+  }
+}
+
+export function assertRetrospectiveContentIsValid(content: string | undefined): asserts content is string {
+  if (!content) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('content'));
+  }
+}
+
+export function assertRetroIdIsValid(retroId: string | number | undefined): asserts retroId is string | number {
+  if (!retroId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('retroId'));
+  }
+  if (typeof retroId !== 'number') {
+    assertStringIsNumberOrThrow(retroId, getFieldNotNumberErrorMessage('retroId'));
+  }
+}
+
+export function assertRetrospectiveVoteTypeIsValid(type: string | undefined): asserts type is RetrospectiveVoteType {
+  if (!type || !(type in RetrospectiveVoteType)) {
+    throw new BadRequestError('Invalid retrospective vote type');
   }
 }

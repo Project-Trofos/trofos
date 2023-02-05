@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Collapse, message } from 'antd';
 import dayjs from 'dayjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Sprint, useUpdateSprintMutation } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
@@ -11,6 +11,7 @@ import StrictModeDroppable from '../dnd/StrictModeDroppable';
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
   const { Panel } = Collapse;
+  const navigate = useNavigate();
 
   const params = useParams();
   const projectId = Number(params.projectId);
@@ -58,6 +59,10 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     }
   };
 
+  const navigateToRetrospective = (sprintId: number) => {
+    navigate(`./${sprintId}/retrospective`);
+  };
+
   return (
     <StrictModeDroppable droppableId={sprint.id.toString()}>
       {(provided) => (
@@ -69,6 +74,11 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                 <div className="sprint-card-inner-container">
                   <div className="sprint-card-name">{sprint.name}</div>
                   <div className="sprint-status-button">{renderSprintStatusButton()}</div>
+                  {(sprint.status === 'completed' || sprint.status === 'closed') && (
+                    <div className="sprint-retro-button">
+                      <Button onClick={() => navigateToRetrospective(sprint.id)}>Retrospective</Button>
+                    </div>
+                  )}
                   {sprint.start_date && sprint.end_date && (
                     <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
                       'DD/MM/YYYY',

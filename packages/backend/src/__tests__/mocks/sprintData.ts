@@ -1,4 +1,4 @@
-import { Sprint } from '@prisma/client';
+import { Retrospective, RetrospectiveType, RetrospectiveVote, RetrospectiveVoteType, Sprint } from '@prisma/client';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
 
 export const mockSprintData: Sprint = {
@@ -26,4 +26,30 @@ export const mockSprintToUpdate: Omit<SprintFields, 'projectId'> & { sprintId: n
   name: 'Sprint 1',
   dates: ['2022-10-09 07:03:56', '2022-10-23 07:03:56'],
   goals: 'Updated goals',
+};
+
+export const mockRetrospectiveData: Retrospective = {
+  id: 1,
+  sprint_id: 1,
+  content: 'Test retrospective',
+  type: RetrospectiveType.positive,
+  score: 1,
+};
+
+export const mockRetrospectiveFields = {
+  sprintId: 1,
+  content: 'Test retrospective',
+  type: RetrospectiveType.positive,
+};
+
+export const mockRetrospectiveVoteData: RetrospectiveVote = {
+  retro_id: 1,
+  user_id: 1,
+  type: RetrospectiveVoteType.up,
+};
+
+export const mockRetrospectiveVoteFields = {
+  retroId: 1,
+  userId: 1,
+  type: RetrospectiveVoteType.up,
 };

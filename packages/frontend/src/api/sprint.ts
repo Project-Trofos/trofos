@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import type { SprintFormFields, SprintUpdatePayload } from '../helpers/SprintModal.types';
-import type { Backlog } from './types';
+import type { Backlog, Retrospective, RetrospectiveType, RetrospectiveVote, RetrospectiveVoteType } from './types';
 
 export type Sprint = {
   id: number;
@@ -56,6 +56,67 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Sprint', 'Project', 'Backlog'],
     }),
+    addRetrospective: builder.mutation<Retrospective, { sprintId: number; content: string; type: RetrospectiveType }>({
+      query: ({ sprintId, content, type }) => ({
+        url: 'sprint/addRetrospective/',
+        method: 'POST',
+        body: {
+          sprintId,
+          content,
+          type,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.type}` }],
+    }),
+    getRetrospectives: builder.query<Retrospective[], { sprintId: number; type?: RetrospectiveType }>({
+      query: ({ sprintId, type }) => ({
+        url: `sprint/getRetrospectives/${sprintId}/${type || ''}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.type}` }],
+    }),
+    addRetrospectiveVote: builder.mutation<
+      RetrospectiveVote,
+      { retroId: number; type: RetrospectiveVoteType; sprintId: number; retroType: RetrospectiveType }
+    >({
+      query: ({ retroId, type }) => ({
+        url: 'sprint/addRetrospectiveVote/',
+        method: 'POST',
+        body: {
+          retroId,
+          type,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.retroType}` }],
+    }),
+    updateRetrospectiveVote: builder.mutation<
+      RetrospectiveVote,
+      { retroId: number; type: RetrospectiveVoteType; sprintId: number; retroType: RetrospectiveType }
+    >({
+      query: ({ retroId, type }) => ({
+        url: 'sprint/updateRetrospectiveVote/',
+        method: 'PUT',
+        body: {
+          retroId,
+          type,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.retroType}` }],
+    }),
+    deleteRetrospectiveVote: builder.mutation<
+      RetrospectiveVote,
+      { retroId: number; sprintId: number; retroType: RetrospectiveType }
+    >({
+      query: ({ retroId }) => ({
+        url: `sprint/deleteRetrospectiveVote/${retroId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.retroType}` }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -66,4 +127,9 @@ export const {
   useAddSprintMutation,
   useUpdateSprintMutation,
   useDeleteSprintMutation,
+  useAddRetrospectiveMutation,
+  useGetRetrospectivesQuery,
+  useAddRetrospectiveVoteMutation,
+  useUpdateRetrospectiveVoteMutation,
+  useDeleteRetrospectiveVoteMutation,
 } = extendedApi;

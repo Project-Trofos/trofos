@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RetrospectiveContainerCard test renders retrospective card with correct details 1`] = `
+<body>
+  <div>
+    <div
+      class="ant-card ant-card-bordered retrospective-container-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            What went well?
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="retrospective-container-card-body"
+        />
+        <div
+          class="retrospective-container-card-footer"
+        >
+          <div
+            class="ant-divider ant-divider-horizontal"
+            role="separator"
+          />
+          <form
+            class="ant-form ant-form-horizontal retrospective-container-form"
+          >
+            <div
+              class="ant-form-item"
+            >
+              <div
+                class="ant-row ant-form-item-row"
+              >
+                <div
+                  class="ant-col ant-form-item-control"
+                >
+                  <div
+                    class="ant-form-item-control-input"
+                  >
+                    <div
+                      class="ant-form-item-control-input-content"
+                    >
+                      <input
+                        class="ant-input"
+                        id="content"
+                        placeholder="Type something here..."
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;

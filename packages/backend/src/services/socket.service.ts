@@ -5,16 +5,17 @@ let io: Server<ClientToServerEvents, ServerToClientEvents>;
 
 export enum UpdateType {
   BACKLOG = 'backlog',
+  RETRO = 'retro',
 }
 
 type ServerToClientEvents = {
-  updated: () => void;
+  updated: (roomId: string, type?: string) => void;
 };
 
 type ClientToServerEvents = {
   subscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
   unsubscribeToUpdate: (updateType: UpdateType, roomId: string) => void;
-  update: (roomId: string) => void;
+  update: (roomId: string, type?: string) => void;
 };
 
 // Initialise socket io server
@@ -51,8 +52,8 @@ export function init(socketServer: Server) {
       socket.leave(`${updateType}/${roomId}`);
     });
 
-    socket.on('update', (roomId) => {
-      socket.to(roomId).emit('updated');
+    socket.on('update', (roomId, type) => {
+      socket.to(roomId).emit('updated', roomId, type);
     });
   });
 }

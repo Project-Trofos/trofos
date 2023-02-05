@@ -2,7 +2,15 @@ import { Sprint, SprintStatus } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import sprintService from '../../services/sprint.service';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
-import { mockSprintData, mockSprintFields, mockSprintToUpdate } from '../mocks/sprintData';
+import {
+  mockRetrospectiveData,
+  mockRetrospectiveFields,
+  mockRetrospectiveVoteData,
+  mockRetrospectiveVoteFields,
+  mockSprintData,
+  mockSprintFields,
+  mockSprintToUpdate,
+} from '../mocks/sprintData';
 import { BadRequestError } from '../../helpers/error';
 
 const SPRINT_EXIST_ERR_MSG = 'An active sprint already exists';
@@ -151,6 +159,73 @@ describe('sprint.service tests', () => {
       const mockSprintId = 1;
       prismaMock.sprint.delete.mockResolvedValue(mockSprintData);
       await expect(sprintService.deleteSprint(mockSprintId)).resolves.toEqual(mockSprintData);
+    });
+  });
+
+  describe('add retrospective', () => {
+    it('should add and return retrospective with valid fields', async () => {
+      const mockReturnedRetrospective = mockRetrospectiveData;
+
+      prismaMock.retrospective.create.mockResolvedValueOnce(mockReturnedRetrospective);
+      await expect(
+        sprintService.addRetrospective(
+          mockRetrospectiveFields.sprintId,
+          mockRetrospectiveFields.content,
+          mockRetrospectiveFields.type,
+        ),
+      ).resolves.toEqual(mockReturnedRetrospective);
+    });
+  });
+
+  describe('get retrospectives', () => {
+    it('should return retrospectives with valid fields', async () => {
+      const mockReturnedRetrospectives = [mockRetrospectiveData];
+
+      prismaMock.retrospective.findMany.mockResolvedValueOnce(mockReturnedRetrospectives);
+      await expect(
+        sprintService.getRetrospectives(mockRetrospectiveFields.sprintId, mockRetrospectiveVoteFields.userId),
+      ).resolves.toEqual(mockReturnedRetrospectives);
+    });
+  });
+
+  describe('add retrospective vote', () => {
+    it('should add and return retrospective vote with valid fields', async () => {
+      const mockReturnedRetrospectiveVote = mockRetrospectiveVoteData;
+
+      prismaMock.$transaction.mockResolvedValueOnce(mockReturnedRetrospectiveVote);
+      await expect(
+        sprintService.addRetrospectiveVote(
+          mockRetrospectiveVoteFields.retroId,
+          mockRetrospectiveVoteFields.userId,
+          mockRetrospectiveVoteFields.type,
+        ),
+      ).resolves.toEqual(mockReturnedRetrospectiveVote);
+    });
+  });
+
+  describe('update retrospective vote', () => {
+    it('should update and return retrospective vote with valid fields', async () => {
+      const mockReturnedRetrospectiveVote = mockRetrospectiveVoteData;
+
+      prismaMock.$transaction.mockResolvedValueOnce(mockReturnedRetrospectiveVote);
+      await expect(
+        sprintService.updateRetrospectiveVote(
+          mockRetrospectiveVoteFields.retroId,
+          mockRetrospectiveVoteFields.userId,
+          mockRetrospectiveVoteFields.type,
+        ),
+      ).resolves.toEqual(mockReturnedRetrospectiveVote);
+    });
+  });
+
+  describe('delete retrospective vote', () => {
+    it('should delete and return retrospective with valid fields', async () => {
+      const mockReturnedRetrospectiveVote = mockRetrospectiveVoteData;
+
+      prismaMock.$transaction.mockResolvedValueOnce(mockReturnedRetrospectiveVote);
+      await expect(
+        sprintService.deleteRetrospectiveVote(mockRetrospectiveVoteFields.retroId, mockRetrospectiveVoteFields.userId),
+      ).resolves.toEqual(mockReturnedRetrospectiveVote);
     });
   });
 });

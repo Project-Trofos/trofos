@@ -41,7 +41,7 @@ export default function BacklogCardPriority(props: { backlogId: number; currentP
   return (
     <Select
       className={`backlog-card-priority ${currentPriority}-priority`}
-      defaultValue={currentPriority}
+      value={currentPriority}
       options={BACKLOG_PRIORITY_OPTIONS}
       onClick={(e) => e.stopPropagation()}
       onChange={handlePriorityChange}

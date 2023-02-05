@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import socket, { UpdateType } from './socket';
 
+const callbackFuncs: { [key: string]: (type?: string) => void } = {};
+
 // Use socket to connect to a room and callback when update is detected
-export default function useSocket(updateType: UpdateType, roomId: string | undefined, callback: () => void) {
+export default function useSocket(
+  updateType: UpdateType,
+  roomId: string | undefined,
+  callback: (type?: string) => void,
+) {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -11,35 +17,44 @@ export default function useSocket(updateType: UpdateType, roomId: string | undef
       socket.connect();
     }
 
-    socket.on('connect', () => {
+    const connectListener = () => {
       setIsConnected(true);
-    });
+    };
+
+    socket.on('connect', connectListener);
 
     if (roomId) {
       socket.emit('subscribeToUpdate', updateType, roomId);
+      callbackFuncs[`${updateType}/${roomId}`] = callback;
     }
 
-    socket.on('disconnect', () => {
+    const disconnectListener = () => {
       setIsConnected(false);
-    });
+    };
 
-    socket.on('updated', () => {
-      callback();
-    });
+    socket.on('disconnect', disconnectListener);
+
+    const updatedListener = (id: string, type?: string) => {
+      if (id !== `${updateType}/${roomId}`) return;
+      callbackFuncs[id]?.(type);
+    };
+
+    socket.on('updated', updatedListener);
 
     return () => {
       if (roomId) {
         socket.emit('unsubscribeToUpdate', updateType, roomId);
+        delete callbackFuncs[`${updateType}/${roomId}`];
       }
-      socket.off('updated');
-      socket.off('connect');
-      socket.off('disconnect');
+      socket.off('updated', updatedListener);
+      socket.off('connect', connectListener);
+      socket.off('disconnect', disconnectListener);
     };
   }, [roomId, updateType, callback]);
 
   return { isConnected };
 }
 
-export function emitUpdateEvent(roomId: string): void {
-  socket.volatile.emit('update', roomId);
+export function emitUpdateEvent(roomId: string, type?: string): void {
+  socket.volatile.emit('update', roomId, type);
 }

@@ -192,17 +192,18 @@ model Comment {
 }
 
 model Sprint {
-  id            Int               @id @default(autoincrement())
-  name          String
-  duration      Int               // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
-  start_date    DateTime?
-  end_date      DateTime?
-  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  project_id    Int
-  goals         String?
-  status        SprintStatus      @default(upcoming)
-  backlogs      Backlog[]
+  id              Int               @id @default(autoincrement())
+  name            String
+  duration        Int               // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
+  start_date      DateTime?
+  end_date        DateTime?
+  project         Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id      Int
+  goals           String?
+  status          SprintStatus      @default(upcoming)
+  backlogs        Backlog[]
   backlog_history BacklogHistory[]
+  retrospective   Retrospective[]
 }
 
 model Role {
@@ -243,6 +244,25 @@ model UsersOnRolesOnCourses {
   course_id Int
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
   @@unique([user_email, course_id])
+}
+
+model Retrospective {
+  id          Int                         @id @default(autoincrement())
+  sprint      Sprint                      @relation(fields: [sprint_id], references: [id], onDelete: Cascade) 
+  sprint_id   Int
+  content     String
+  type        RetrospectiveType
+  score       Int                         @default(0)
+  votes       RetrospectiveVote[]
+}
+
+model RetrospectiveVote {
+  retro       Retrospective   @relation(fields: [retro_id], references: [id], onDelete: Cascade)
+  retro_id    Int
+  // To keep it simple, user_id is not related to any user models to allow for anonymous votes in the future
+  user_id     Int
+  type        RetrospectiveVoteType
+  @@id([retro_id, user_id])
 }
 
 enum Action {
@@ -294,4 +314,15 @@ enum HistoryType {
   create
   update
   delete
+}
+
+enum RetrospectiveType {
+  positive
+  negative
+  action
+}
+
+enum RetrospectiveVoteType {
+  up
+  down
 }

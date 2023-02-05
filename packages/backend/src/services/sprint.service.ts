@@ -1,4 +1,12 @@
-import { Sprint, SprintStatus, Prisma } from '@prisma/client';
+import {
+  Sprint,
+  SprintStatus,
+  Prisma,
+  RetrospectiveType,
+  Retrospective,
+  RetrospectiveVote,
+  RetrospectiveVoteType,
+} from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
@@ -167,6 +175,140 @@ async function deleteSprint(sprintId: number): Promise<Sprint> {
   return sprint;
 }
 
+async function addRetrospective(sprintId: number, content: string, type: RetrospectiveType): Promise<Retrospective> {
+  const retrospective = await prisma.retrospective.create({
+    data: {
+      sprint: {
+        connect: {
+          id: sprintId,
+        },
+      },
+      content,
+      type,
+    },
+  });
+
+  return retrospective;
+}
+
+async function getRetrospectives(sprintId: number, userId: number, type?: RetrospectiveType): Promise<Retrospective[]> {
+  const retrospectives = await prisma.retrospective.findMany({
+    where: {
+      sprint_id: sprintId,
+      type,
+    },
+    include: {
+      votes: {
+        where: {
+          user_id: userId,
+        },
+      },
+    },
+    orderBy: [
+      {
+        score: Prisma.SortOrder.desc,
+      },
+      {
+        id: Prisma.SortOrder.asc,
+      },
+    ],
+  });
+
+  return retrospectives;
+}
+
+async function addRetrospectiveVote(
+  retroId: number,
+  userId: number,
+  type: RetrospectiveVoteType,
+): Promise<RetrospectiveVote> {
+  return prisma.$transaction<RetrospectiveVote>(async (tx: Prisma.TransactionClient) => {
+    const retrospectiveVote = await tx.retrospectiveVote.create({
+      data: {
+        retro: {
+          connect: {
+            id: retroId,
+          },
+        },
+        user_id: userId,
+        type,
+      },
+    });
+
+    await tx.retrospective.update({
+      where: {
+        id: retroId,
+      },
+      data: {
+        score: {
+          ...(retrospectiveVote.type === RetrospectiveVoteType.up ? { increment: 1 } : { decrement: 1 }),
+        },
+      },
+    });
+
+    return retrospectiveVote;
+  });
+}
+
+async function updateRetrospectiveVote(
+  retroId: number,
+  userId: number,
+  type: RetrospectiveVoteType,
+): Promise<RetrospectiveVote> {
+  return prisma.$transaction<RetrospectiveVote>(async (tx: Prisma.TransactionClient) => {
+    const retrospectiveVote = await tx.retrospectiveVote.update({
+      where: {
+        retro_id_user_id: {
+          retro_id: retroId,
+          user_id: userId,
+        },
+      },
+      data: {
+        type,
+      },
+    });
+
+    await tx.retrospective.update({
+      where: {
+        id: retroId,
+      },
+      data: {
+        score: {
+          ...(retrospectiveVote.type === RetrospectiveVoteType.up ? { increment: 2 } : { decrement: 2 }),
+        },
+      },
+    });
+
+    return retrospectiveVote;
+  });
+}
+
+async function deleteRetrospectiveVote(retroId: number, userId: number): Promise<RetrospectiveVote> {
+  return prisma.$transaction<RetrospectiveVote>(async (tx: Prisma.TransactionClient) => {
+    const retrospectiveVote = await prisma.retrospectiveVote.delete({
+      where: {
+        retro_id_user_id: {
+          retro_id: retroId,
+          user_id: userId,
+        },
+      },
+    });
+
+    await tx.retrospective.update({
+      where: {
+        id: retroId,
+      },
+      data: {
+        score: {
+          ...(retrospectiveVote.type === RetrospectiveVoteType.up ? { decrement: 1 } : { increment: 1 }),
+        },
+      },
+    });
+
+    return retrospectiveVote;
+  });
+}
+
 export default {
   newSprint,
   listSprints,
@@ -174,4 +316,9 @@ export default {
   updateSprint,
   updateSprintStatus,
   deleteSprint,
+  addRetrospective,
+  getRetrospectives,
+  addRetrospectiveVote,
+  updateRetrospectiveVote,
+  deleteRetrospectiveVote,
 };
