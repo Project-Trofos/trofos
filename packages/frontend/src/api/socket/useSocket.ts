@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { isEmpty } from 'lodash';
 import socket, { UpdateType } from './socket';
 
 const callbackFuncs: { [key: string]: (type?: string) => void } = {};
