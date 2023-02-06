@@ -9,6 +9,7 @@ describe('authentication.service tests', () => {
     const prismaResponseObject: User = {
       user_id: 1,
       user_email: 'testUser@test.com',
+      user_display_name: "Test User",
       user_password_hash: bcrypt.hashSync('testPassword', 10),
     };
     const responseObject = {
@@ -38,6 +39,7 @@ describe('authentication.service tests', () => {
     const prismaResponseObject: User = {
       user_id: 1,
       user_email: 'testUser@test.com',
+      user_display_name: "Test User",
       user_password_hash: bcrypt.hashSync('testPassword', 10),
     };
     const responseObject = {
@@ -57,6 +59,7 @@ describe('authentication.service tests', () => {
     const prismaResponseObject: User = {
       user_id: 1,
       user_email: 'testUser@test.com',
+      user_display_name: "Test User",
       user_password_hash: null,
     };
     const responseObject = {
