@@ -7,6 +7,7 @@ import roleService from '../../services/role.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import accountService from '../../services/account.service';
 import { RoleInformation } from '../../services/types/role.service.types';
+import userService from '../../services/user.service';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -17,6 +18,8 @@ const spies = {
   sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
   roleServiceGetRoleInformation: jest.spyOn(roleService, 'getUserRoleInformation'),
   accountServiceChangePassword: jest.spyOn(accountService, 'changePassword'),
+  accountServiceChangeDisplayName: jest.spyOn(accountService, 'changeDisplayName'),
+  userServiceGet: jest.spyOn(userService, 'get'),
 };
 
 afterEach(() => {
@@ -182,8 +185,15 @@ describe('account.controller tests', () => {
         roleActions: [],
         isAdmin: false,
       };
+      const user = {
+        user_id : 1,
+        user_email: 'testUser@test.com',
+        user_password_hash: 'test',
+        user_display_name: 'Test User',
+      }
       spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(userRoleInformation);
+      spies.userServiceGet.mockResolvedValueOnce(user);
       const testCookie = 'testCookie';
       const mockReq = createRequest({
         cookies: {
@@ -194,7 +204,7 @@ describe('account.controller tests', () => {
       await authentication.getUserInfo(mockReq, mockRes);
       expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getJSONData()).toEqual({ userEmail: 'testUser@test.com', userId: 1, userRoleActions: [] });
+      expect(mockRes._getJSONData()).toEqual({ userEmail: 'testUser@test.com', userId: 1, userRoleActions: [], userDisplayName: "Test User" });
     });
   });
 
@@ -204,6 +214,7 @@ describe('account.controller tests', () => {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
+        user_display_name: "Test User"
       };
       spies.accountServiceChangePassword.mockResolvedValueOnce(changePasswordResponseObject);
       const mockReq = createRequest();
@@ -233,6 +244,43 @@ describe('account.controller tests', () => {
       expect(spies.accountServiceChangePassword).toHaveBeenCalledWith(1, 'oldTestPassword', 'newTestPassword');
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Unable to change password' });
+    });
+  });
+
+  describe('changeDisplayName', () => {
+    it("should return status 200 OK if the user's display name was successfully changed", async () => {
+      const changeDisplayNameResponseObject = {
+        user_email: 'testEmail@test.com',
+        user_id: 1,
+        user_password_hash: 'testPassword',
+        user_display_name: "New Test User"
+      };
+      spies.accountServiceChangeDisplayName.mockResolvedValueOnce(changeDisplayNameResponseObject);
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+      mockReq.body = {
+        userId: 1,
+        displayName: "New Test User",
+      };
+      await authentication.changeDisplayName(mockReq, mockRes);
+      expect(spies.accountServiceChangeDisplayName).toHaveBeenCalledWith(1, "New Test User");
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual({ message: 'Display name successfully changed' });
+    });
+
+    it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's display name", async () => {
+      const changeDisplayNameError = new Error('Unable to change display name');
+      spies.accountServiceChangeDisplayName.mockRejectedValueOnce(changeDisplayNameError);
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+      mockReq.body = {
+        userId: 1,
+        displayName: 'New Test User',
+      };
+      await authentication.changeDisplayName(mockReq, mockRes);
+      expect(spies.accountServiceChangeDisplayName).toHaveBeenCalledWith(1, 'New Test User');
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Unable to change display name' });
     });
   });
 });

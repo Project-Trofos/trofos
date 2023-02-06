@@ -95,6 +95,6 @@ describe('test course creation modal', () => {
     fireEvent.click(button);
 
     await screen.findByText(/Group 1/i);
-    expect(screen.getByText(mockUserInfo.userEmail)).toBeInTheDocument();
+    expect(screen.getByText(mockUserInfo.userDisplayName)).toBeInTheDocument();
   });
 });

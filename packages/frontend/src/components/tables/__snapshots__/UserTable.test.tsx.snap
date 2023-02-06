@@ -61,6 +61,7 @@ exports[`test UserTable should render table with correct fields 1`] = `
                               style="width: 150px;"
                             />
                             <col />
+                            <col />
                             <col
                               style="width: 150px;"
                             />
@@ -197,6 +198,12 @@ exports[`test UserTable should render table with correct fields 1`] = `
                                 class="ant-table-cell"
                                 scope="col"
                               >
+                                Display Name
+                              </th>
+                              <th
+                                class="ant-table-cell"
+                                scope="col"
+                              >
                                 Action
                               </th>
                             </tr>
@@ -218,6 +225,11 @@ exports[`test UserTable should render table with correct fields 1`] = `
                                 class="ant-table-cell"
                               >
                                 email
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Test User
                               </td>
                               <td
                                 class="ant-table-cell"
