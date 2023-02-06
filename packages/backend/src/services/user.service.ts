@@ -6,6 +6,17 @@ import { STUDENT_ROLE_ID } from '../helpers/constants';
 
 const USER_DISPLAY_NAME_MAX_LENGTH =  50;
 
+// Exclude keys from user
+function exclude<User, Key extends keyof User>(
+  user: User,
+  keys: Key[]
+): Omit<User, Key> {
+  for (let key of keys) {
+    delete user[key]
+  }
+  return user
+}
+
 export type Users = {
   user_email: string;
   user_id: number;
@@ -33,10 +44,7 @@ async function get(user_id : number) : Promise<User> {
 
 async function getAll(): Promise<Users[]> {
   const users = await prisma.user.findMany({
-    select: {
-      user_email: true,
-      user_display_name: true,
-      user_id: true,
+    include: {
       courses: true,
       projects: true,
       basicRoles: true,
@@ -44,7 +52,9 @@ async function getAll(): Promise<Users[]> {
     },
   });
 
-  return users;
+  const usersWithoutPassword = users.map(user => exclude(user, ['user_password_hash']));
+
+  return usersWithoutPassword;
 }
 
 async function create(userEmail: string, userPassword: string): Promise<User> {
