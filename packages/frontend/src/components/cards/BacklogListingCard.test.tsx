@@ -24,6 +24,7 @@ describe('BacklogCard test', () => {
       user_id: 2,
       user: {
         user_email: 'testBacklogUser2@test.com',
+        user_display_name: "Backlog User 2"
       },
     },
   };

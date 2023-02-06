@@ -11,6 +11,7 @@ describe('test UserTable', () => {
     {
       user: {
         user_email: 'email',
+        user_display_name: "Test User",
         user_id: 999,
         courseRoles: [
           {
