@@ -282,5 +282,6 @@ describe('account.controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Unable to change display name' });
     });
+
   });
 });

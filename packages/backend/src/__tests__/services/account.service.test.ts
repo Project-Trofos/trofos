@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import accountService from '../../services/account.service';
+import { userData } from '../mocks/userData';
 
 const PRISMA_RECORD_NOT_FOUND = 'P2025';
 
@@ -10,16 +11,12 @@ describe('account.service tests', () => {
     it("should successfuly change the user's password if a valid userId and old password is supplied", async () => {
       const oldHashedPassword = bcrypt.hashSync('oldUserPassword', 10);
       const mockFindUser = {
-        user_email: 'testEmail@test.com',
-        user_id: 1,
-        user_display_name: "Test User", 
+        ...userData[0], 
         user_password_hash: oldHashedPassword,
       };
       const hashedPassword = bcrypt.hashSync('newUserPassword', 10);
       const mockUpdateUser = {
-        user_email: 'testEmail@test.com',
-        user_id: 1,
-        user_display_name: "Test User", 
+        ...userData[0],
         user_password_hash: hashedPassword,
       };
       prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(mockFindUser);
@@ -42,9 +39,7 @@ describe('account.service tests', () => {
       const serviceError = new Error('Your old password has been entered incorrectly. Please enter it again.');
       const oldHashedPassword = bcrypt.hashSync('oldUserPassword', 10);
       const mockFindUser = {
-        user_email: 'testEmail@test.com',
-        user_id: 1,
-        user_display_name: "Test User",
+        ...userData[0],
         user_password_hash: oldHashedPassword,
       };
       prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(mockFindUser);
@@ -57,8 +52,7 @@ describe('account.service tests', () => {
   describe('changeDisplayName', () => {
     it("should successfully change the user's display name if a valid display name is supplied", async () => {
       const mockUpdateUser = {
-        user_id: 1,
-        user_email: "testEmail@test.com",
+        ...userData[0],
         user_display_name: "New Display Name",
         user_password_hash: null
       };
