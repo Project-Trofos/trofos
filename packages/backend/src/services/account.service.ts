@@ -31,11 +31,6 @@ async function changePassword(userId: number, oldUserPassword: string, newUserPa
 }
 
 async function changeDisplayName(userId: number, displayName: string): Promise<User> {
-
-  if (displayName.length === 0) {
-    throw new Error('Display name must have atleast one character!');
-  }
-
   const updatedUser = await prisma.user.update({
     where: {
       user_id: userId,

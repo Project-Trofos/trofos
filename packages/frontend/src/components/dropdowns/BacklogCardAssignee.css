@@ -12,7 +12,7 @@
   padding-right: 0;
 }
 
-.backlog-card-assignee .ant-select-selection-item .assignee-email {
+.backlog-card-assignee .ant-select-selection-item .assignee-display-name {
   display: none;
 }
 
