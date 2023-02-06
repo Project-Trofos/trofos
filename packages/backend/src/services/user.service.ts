@@ -16,9 +16,9 @@ export type Users = {
 };
 
 async function get(user_id : number) : Promise<User> {
-  return await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUniqueOrThrow({
     where: {
-      user_id: user_id,
+      user_id,
     },
     include: {
       projects: true,
@@ -27,6 +27,8 @@ async function get(user_id : number) : Promise<User> {
       courseRoles: true,
     }
   });
+
+  return user;
 }
 
 async function getAll(): Promise<Users[]> {

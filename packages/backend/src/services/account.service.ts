@@ -36,14 +36,16 @@ async function changeDisplayName(userId: number, displayName: string): Promise<U
     throw new Error('Display name must have atleast one character!');
   }
 
-  return await prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: {
       user_id: userId,
     },
     data : {
       user_display_name: displayName,
     }
-  })
+  });
+
+  return updatedUser;
 }
 
 export default {
