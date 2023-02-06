@@ -48,7 +48,7 @@ export default function BacklogCardAssignee(props: {
       {projectUsers?.map((user) => (
         <Option key={user.user.user_id} value={user.user.user_id}>
           <Avatar className="assignee-avatar" style={{ backgroundColor: '#85041C' }} icon={<UserOutlined />} />
-          <span className="assignee-email">{user.user.user_email}</span>
+          <span className="assignee-email">{user.user.user_display_name}</span>
         </Option>
       ))}
     </Select>

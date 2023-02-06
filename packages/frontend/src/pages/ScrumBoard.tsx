@@ -36,7 +36,7 @@ export default function ScrumBoard(): JSX.Element {
     }
 
     const updatedUsers = [...users];
-    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned' } };
+    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned', user_display_name: "Unassigned" } };
     updatedUsers.push(unassignedUser);
     return updatedUsers;
   };
@@ -133,7 +133,7 @@ export default function ScrumBoard(): JSX.Element {
       droppables.push(
         <div key={user.user.user_id} className="scrum-board-user-container">
           <Title className="scrum-board-user-title" level={5}>
-            {user.user.user_email}
+            {user.user.user_display_name}
           </Title>
           <div className="scrum-board-droppable">{renderUserDroppables(user.user.user_id)}</div>
         </div>,

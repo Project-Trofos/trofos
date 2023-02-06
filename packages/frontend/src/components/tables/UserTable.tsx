@@ -62,6 +62,10 @@ export default function UserTable({
             sorter={(a: UserData, b: UserData) => a.user.user_email.localeCompare(b.user.user_email)}
           />
           <Table.Column
+            title="Display Name"
+            dataIndex={['user', 'user_display_name']}
+          />
+          <Table.Column
             width={150}
             title="Action"
             dataIndex="action"

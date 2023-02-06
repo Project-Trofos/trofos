@@ -44,6 +44,7 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
             include: {
               user: {
                 select: {
+                  user_display_name: true,
                   user_email: true,
                 },
               },
@@ -70,6 +71,7 @@ async function listActiveSprint(projectId: number): Promise<Sprint | null> {
             include: {
               user: {
                 select: {
+                  user_display_name: true,
                   user_email: true,
                 },
               },

@@ -13,4 +13,6 @@ router.get('/userInfo', hasAuth(null, null), account.getUserInfo);
 
 router.post('/changePassword', hasAuth(null, userPolicy.POLICY_NAME), account.changePassword);
 
+router.post('/changeDisplayName', hasAuth(null, userPolicy.POLICY_NAME), account.changeDisplayName);
+
 export default router;

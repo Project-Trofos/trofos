@@ -3,6 +3,9 @@ import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 
+
+const USER_DISPLAY_NAME_MAX_LENGTH =  50;
+
 export type Users = {
   user_email: string;
   user_id: number;
@@ -12,10 +15,25 @@ export type Users = {
   courseRoles: UsersOnRolesOnCourses[];
 };
 
+async function get(user_id : number) : Promise<User> {
+  return await prisma.user.findUniqueOrThrow({
+    where: {
+      user_id: user_id,
+    },
+    include: {
+      projects: true,
+      courses: true,
+      basicRoles: true,
+      courseRoles: true,
+    }
+  });
+}
+
 async function getAll(): Promise<Users[]> {
   const users = await prisma.user.findMany({
     select: {
       user_email: true,
+      user_display_name: true,
       user_id: true,
       courses: true,
       projects: true,
@@ -32,6 +50,7 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
   const user = await prisma.user.create({
     data: {
       user_email: userEmail,
+      user_display_name: userEmail.slice(0, USER_DISPLAY_NAME_MAX_LENGTH),
       user_password_hash: passwordHash,
       basicRoles: {
         create: [
@@ -48,5 +67,6 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
 
 export default {
   getAll,
+  get,
   create,
 };

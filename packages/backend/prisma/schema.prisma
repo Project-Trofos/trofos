@@ -16,6 +16,7 @@ model Settings {
 model User {
   user_id Int @id @default(autoincrement())
   user_email String @unique @db.VarChar(320)
+  user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
   courses       UsersOnCourses[]

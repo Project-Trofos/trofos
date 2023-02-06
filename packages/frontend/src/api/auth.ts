@@ -12,6 +12,7 @@ export type UserLoginInfo = {
 
 export type UserInfo = {
   userEmail: string;
+  userDisplayName: string;
   userRoleActions: string[];
   userId: number;
 };
@@ -20,6 +21,11 @@ export type ChangePassword = {
   userId: number | undefined;
   oldUserPassword: string;
   newUserPassword: string;
+};
+
+export type ChangeDisplayName = {
+  userId: number | undefined;
+  displayName: string;
 };
 
 // Auth APIs
@@ -63,8 +69,21 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    changeDisplayName: builder.mutation<void, ChangeDisplayName>({
+      query: (changeDisplayName) => ({
+        url: '/account/changeDisplayName',
+        method: 'POST',
+        body: {
+          userId: changeDisplayName.userId,
+          displayName: changeDisplayName.displayName,
+        },
+        credentials: 'include',
+        invalidatesTags: ['UserInfo'],
+      }),
+    }),
+
   }),
 });
 
-export const { useLoginUserMutation, useLogoutUserMutation, useGetUserInfoQuery, useChangePasswordMutation } =
+export const { useLoginUserMutation, useLogoutUserMutation, useGetUserInfoQuery, useChangePasswordMutation, useChangeDisplayNameMutation } =
   extendedApi;

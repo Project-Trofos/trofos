@@ -30,7 +30,7 @@ function BacklogUserSelect(props: BacklogUserSelectPropsTypes): JSX.Element {
       {options.map((option) => (
         <Option key={option.user.user_id} value={option.user.user_id}>
           <Avatar className="user-select-avatar" style={{ backgroundColor: '#ccc' }} icon={<UserOutlined />} />
-          <span className="user-select-username-text">{option.user.user_email}</span>
+          <span className="user-select-username-text">{option.user.user_display_name}</span>
         </Option>
       ))}
     </Select>
