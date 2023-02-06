@@ -24,7 +24,7 @@ describe('course.service tests', () => {
   ];
 
   // Mock data for users
-  const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
+  const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash', user_display_name: "User" }];
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);

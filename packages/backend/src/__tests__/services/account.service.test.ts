@@ -12,12 +12,14 @@ describe('account.service tests', () => {
       const mockFindUser = {
         user_email: 'testEmail@test.com',
         user_id: 1,
+        user_display_name: "Test User", 
         user_password_hash: oldHashedPassword,
       };
       const hashedPassword = bcrypt.hashSync('newUserPassword', 10);
       const mockUpdateUser = {
         user_email: 'testEmail@test.com',
         user_id: 1,
+        user_display_name: "Test User", 
         user_password_hash: hashedPassword,
       };
       prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(mockFindUser);
@@ -42,6 +44,7 @@ describe('account.service tests', () => {
       const mockFindUser = {
         user_email: 'testEmail@test.com',
         user_id: 1,
+        user_display_name: "Test User",
         user_password_hash: oldHashedPassword,
       };
       prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(mockFindUser);
@@ -49,5 +52,23 @@ describe('account.service tests', () => {
         serviceError,
       );
     });
+  });
+
+  describe('changeDisplayName', () => {
+    it('should throw an error if the display name is empty', async () => {
+      const error = new Error('Display name must have atleast one character!');
+      await expect(accountService.changeDisplayName(1, '')).rejects.toThrow(error);
+    })
+
+    it("should successfully change the user's display name if a valid display name is supplied", async () => {
+      const mockUpdateUser = {
+        user_id: 1,
+        user_email: "testEmail@test.com",
+        user_display_name: "New Display Name",
+        user_password_hash: null
+      };
+      prismaMock.user.update.mockResolvedValueOnce(mockUpdateUser);
+      await expect(accountService.changeDisplayName(1, 'New Display Name')).resolves.toEqual(mockUpdateUser);
+    })
   });
 });
