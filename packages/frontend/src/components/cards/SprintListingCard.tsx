@@ -2,7 +2,8 @@ import React from 'react';
 import { Button, Collapse, message } from 'antd';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Sprint, useUpdateSprintMutation } from '../../api/sprint';
+import { useUpdateSprintMutation } from '../../api/socket/sprintHooks';
+import { Sprint } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
 import './SprintListingCard.css';
@@ -32,7 +33,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     const payload = {
       status: updatedStatus,
       sprintId: sprint.id,
-      ...(updatedStatus === 'current' ? { projectId } : {}),
+      projectId,
     };
 
     try {
@@ -85,7 +86,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                     )}`}</div>
                   )}
                   <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
-                    <SprintMenu sprintId={sprint.id} handleSprintOnClick={handleSprintOnClick} />
+                    <SprintMenu sprintId={sprint.id} projectId={projectId} handleSprintOnClick={handleSprintOnClick} />
                   </div>
                 </div>
               }
