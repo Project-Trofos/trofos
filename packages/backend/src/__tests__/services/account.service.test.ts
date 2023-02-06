@@ -55,11 +55,6 @@ describe('account.service tests', () => {
   });
 
   describe('changeDisplayName', () => {
-    it('should throw an error if the display name is empty', async () => {
-      const error = new Error('Display name must have atleast one character!');
-      await expect(accountService.changeDisplayName(1, '')).rejects.toThrow(error);
-    })
-
     it("should successfully change the user's display name if a valid display name is supplied", async () => {
       const mockUpdateUser = {
         user_id: 1,

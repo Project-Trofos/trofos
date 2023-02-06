@@ -11,8 +11,6 @@ export default function UserInformationTab(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
   const [changeDisplayName] = useChangeDisplayNameMutation();
 
-  console.log(userInfo)
-
   const [displayName, setDisplayName] = useState(userInfo?.userDisplayName)
 
   useEffect(() => {
