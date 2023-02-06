@@ -9,9 +9,9 @@ export interface SprintFormFields extends FormData {
   goals?: string;
 }
 
-export interface SprintUpdatePayload extends Partial<SprintFormFields> {
+export type SprintUpdatePayload = Partial<SprintFormFields> & {
   sprintId: number;
-}
+};
 
 export type AutoSprintTypes = {
   name: string;
