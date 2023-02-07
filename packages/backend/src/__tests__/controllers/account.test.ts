@@ -18,7 +18,7 @@ const spies = {
   sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
   roleServiceGetRoleInformation: jest.spyOn(roleService, 'getUserRoleInformation'),
   accountServiceChangePassword: jest.spyOn(accountService, 'changePassword'),
-  accountServiceChangeDisplayName: jest.spyOn(accountService, 'changeDisplayName'),
+  accountServiceUpdateUser: jest.spyOn(accountService, 'updateUser'),
   userServiceGet: jest.spyOn(userService, 'get'),
 };
 
@@ -247,40 +247,40 @@ describe('account.controller tests', () => {
     });
   });
 
-  describe('changeDisplayName', () => {
-    it("should return status 200 OK if the user's display name was successfully changed", async () => {
-      const changeDisplayNameResponseObject = {
+  describe('updateUser', () => {
+    it("should return status 200 OK if the user's data was successfully updated", async () => {
+      const updateUserResponseObject = {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
         user_display_name: "New Test User"
       };
-      spies.accountServiceChangeDisplayName.mockResolvedValueOnce(changeDisplayNameResponseObject);
+      spies.accountServiceUpdateUser.mockResolvedValueOnce(updateUserResponseObject);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         userId: 1,
         displayName: "New Test User",
       };
-      await authentication.changeDisplayName(mockReq, mockRes);
-      expect(spies.accountServiceChangeDisplayName).toHaveBeenCalledWith(1, "New Test User");
+      await authentication.updateUser(mockReq, mockRes);
+      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, "New Test User");
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual({ message: 'Display name successfully changed' });
+      expect(mockRes._getData()).toEqual({ message: 'User info successfully updated' });
     });
 
-    it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's display name", async () => {
-      const changeDisplayNameError = new Error('Unable to change display name');
-      spies.accountServiceChangeDisplayName.mockRejectedValueOnce(changeDisplayNameError);
+    it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's data", async () => {
+      const changeDisplayNameError = new Error('Unable to update user');
+      spies.accountServiceUpdateUser.mockRejectedValueOnce(changeDisplayNameError);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         userId: 1,
         displayName: 'New Test User',
       };
-      await authentication.changeDisplayName(mockReq, mockRes);
-      expect(spies.accountServiceChangeDisplayName).toHaveBeenCalledWith(1, 'New Test User');
+      await authentication.updateUser(mockReq, mockRes);
+      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, 'New Test User');
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-      expect(mockRes._getJSONData()).toEqual({ error: 'Unable to change display name' });
+      expect(mockRes._getJSONData()).toEqual({ error: 'Unable to update user' });
     });
 
   });

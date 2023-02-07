@@ -30,7 +30,7 @@ async function changePassword(userId: number, oldUserPassword: string, newUserPa
   return updatedUser;
 }
 
-async function changeDisplayName(userId: number, displayName: string): Promise<User> {
+async function updateUser(userId: number, displayName: string): Promise<User> {
   const updatedUser = await prisma.user.update({
     where: {
       user_id: userId,
@@ -45,5 +45,5 @@ async function changeDisplayName(userId: number, displayName: string): Promise<U
 
 export default {
   changePassword,
-  changeDisplayName
+  updateUser
 };

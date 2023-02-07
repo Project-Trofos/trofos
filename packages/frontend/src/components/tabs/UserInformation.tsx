@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Typography, Space, Row, Col, Input, Button, message } from 'antd';
-import { useGetUserInfoQuery, useChangeDisplayNameMutation } from '../../api/auth';
+import { useGetUserInfoQuery, useUpdateUserInfoMutation } from '../../api/auth';
 import { getErrorMessage } from '../../helpers/error';
 
 /**
@@ -9,7 +9,7 @@ import { getErrorMessage } from '../../helpers/error';
 
 export default function UserInformationTab(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
-  const [changeDisplayName] = useChangeDisplayNameMutation();
+  const [updateUserInfo] = useUpdateUserInfoMutation();
 
   const [displayName, setDisplayName] = useState(userInfo?.userDisplayName)
 
@@ -25,7 +25,7 @@ export default function UserInformationTab(): JSX.Element {
     async () => {
       try {
           if (displayName) {
-            await changeDisplayName({
+            await updateUserInfo({
               displayName,
               userId: userInfo?.userId,
             }).unwrap();
