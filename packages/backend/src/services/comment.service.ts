@@ -41,6 +41,7 @@ async function list(projectId: number, backlogId: number) {
         include: {
           user: {
             select: {
+              user_display_name: true,
               user_email: true,
               user_id: true,
             },

@@ -46,4 +46,26 @@ describe('user.service tests', () => {
       await expect(userService.create('testUser@test.com', 'testPassword')).resolves.toEqual(prismaResponseObject);
     });
   });
+
+  describe('get', () => {
+    it('should throw an error if something went wrong during the operation', async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Prisma error', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
+      prismaMock.user.findUniqueOrThrow.mockRejectedValueOnce(prismaError);
+      await expect(userService.get(1)).rejects.toThrow(prismaError);
+    });
+
+    it('should return ther user if the request was successful', async () => {
+      const prismaResponseObject = {
+        user_email: 'testEmail@test.com',
+        user_id: 1,
+        user_display_name: "Test User",
+        user_password_hash: null
+      };
+      prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(prismaResponseObject);
+      await expect(userService.get(1)).resolves.toEqual(prismaResponseObject);
+    });
+  })
 });

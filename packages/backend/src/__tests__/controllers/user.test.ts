@@ -78,6 +78,7 @@ describe('user.controller tests', () => {
       const createdUser: User = {
         user_id: 1,
         user_email: 'testEmail@test.com',
+        user_display_name: "Test User",
         user_password_hash: 'testPassword',
       };
       spies.userServiceCreateUser.mockResolvedValueOnce(createdUser);

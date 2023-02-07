@@ -28,6 +28,7 @@ describe('test course creation modal', () => {
         user: {
           user_id: 1,
           user_email: 'email',
+          user_display_name: 'User 1',
           courseRoles: [
             {
               id: 1,
@@ -45,6 +46,7 @@ describe('test course creation modal', () => {
 
   const mockUserInfo: UserInfo = {
     userEmail: 'email',
+    userDisplayName: "User 1",
     userId: 1,
     userRoleActions: [],
   };
@@ -93,6 +95,6 @@ describe('test course creation modal', () => {
     fireEvent.click(button);
 
     await screen.findByText(/Group 1/i);
-    expect(screen.getByText(mockUserInfo.userEmail)).toBeInTheDocument();
+    expect(screen.getByText(mockUserInfo.userDisplayName)).toBeInTheDocument();
   });
 });

@@ -64,7 +64,9 @@ export default function AnnouncementCard(props: AnnouncementCardProps): JSX.Elem
                     <AvatarWithName
                       icon={<UserOutlined />}
                       // Will update to showing username after the API is available
-                      username={course?.users.find((u) => u.user.user_id === announcement.user_id)?.user.user_email}
+                      username={
+                        course?.users.find((u) => u.user.user_id === announcement.user_id)?.user.user_display_name
+                      }
                     />
                   )}
                 </>

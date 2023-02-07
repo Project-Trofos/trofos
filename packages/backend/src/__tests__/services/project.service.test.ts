@@ -4,10 +4,9 @@ import project from '../../services/project.service';
 import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
+import { userData } from '../mocks/userData';
 
 describe('project.service tests', () => {
-  // Mock data for users
-  const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
 

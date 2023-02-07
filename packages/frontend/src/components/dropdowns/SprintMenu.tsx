@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
-import { useDeleteSprintMutation } from '../../api/sprint';
+import { useDeleteSprintMutation } from '../../api/socket/sprintHooks';
 
 function SprintMenu(props: {
   sprintId: number;
+  projectId: number;
   handleSprintOnClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
 }): JSX.Element {
-  const { sprintId, handleSprintOnClick } = props;
+  const { sprintId, projectId, handleSprintOnClick } = props;
   const [deleteSprint] = useDeleteSprintMutation();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleDeleteSprint = async () => {
     try {
-      await deleteSprint(sprintId).unwrap();
+      await deleteSprint({ sprintId, projectId }).unwrap();
       message.success('Sprint deleted');
     } catch (e) {
       message.error('Failed to delete sprint');

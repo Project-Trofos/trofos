@@ -121,7 +121,7 @@ export default function BulkProjectCreationModal({
                   bordered
                   key={a.name}
                   dataSource={a.users}
-                  renderItem={(item) => <List.Item>{item.user.user_email}</List.Item>}
+                  renderItem={(item) => <List.Item>{item.user.user_display_name}</List.Item>}
                 />
               ))}
             </>

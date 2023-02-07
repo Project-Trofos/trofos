@@ -7,6 +7,7 @@ export const INCLUDE_USERS_ID_EMAIL_COURSEROLE = {
         select: {
           user_id: true,
           user_email: true,
+          user_display_name: true,
           courseRoles: true,
         },
       },
@@ -21,6 +22,7 @@ export const INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS = {
         select: {
           user_id: true,
           user_email: true,
+          user_display_name: true,
           courseRoles: true,
         },
       },
