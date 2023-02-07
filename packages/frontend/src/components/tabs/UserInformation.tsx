@@ -15,7 +15,11 @@ export default function UserInformationTab(): JSX.Element {
 
   useEffect(() => {
     setDisplayName(userInfo?.userDisplayName);
-  }, [userInfo])
+  }, [userInfo]);
+
+  const handleSave = () => {
+    handleUpdateDisplayName();
+  }
 
   const handleUpdateDisplayName =
     async () => {
@@ -28,7 +32,7 @@ export default function UserInformationTab(): JSX.Element {
             message.success('Display name changed!');
         }
       } catch (e) {
-        console.log(getErrorMessage(e));
+        console.error(getErrorMessage(e));
         message.error('Failed to modify user display name');
       }
     }
@@ -46,10 +50,10 @@ export default function UserInformationTab(): JSX.Element {
             <Typography.Title level={3}>Display Name:</Typography.Title>
               <Input 
                 onChange={(e) => setDisplayName(e.target.value)}
-                onPressEnter={handleUpdateDisplayName}
                 value={displayName}
               />
           </Space>
+          <Button type="primary" onClick={handleSave}>Save</Button>
         </Space>
       </Col>
     </Row>
