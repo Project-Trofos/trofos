@@ -18,13 +18,13 @@ export type UserInfo = {
 };
 
 export type ChangePassword = {
-  userId: number | undefined;
+  userId: number;
   oldUserPassword: string;
   newUserPassword: string;
 };
 
 export type UpdateUserInfo = {
-  userId: number | undefined;
+  userId: number;
   displayName: string;
 };
 
