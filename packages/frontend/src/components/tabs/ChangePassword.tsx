@@ -13,15 +13,17 @@ export default function ChangePasswordTab(): JSX.Element {
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
-    const changePasswordBody: ChangePassword = {
-      userId: userInfo?.userId,
-      oldUserPassword: values.oldPassword,
-      newUserPassword: values.newPassword,
-    };
     try {
-      await changePassword(changePasswordBody).unwrap();
-      message.success('Password Changed Successfully', 5);
-      form.resetFields();
+      if (values && userInfo) {
+        const changePasswordBody: ChangePassword = {
+          userId: userInfo.userId,
+          oldUserPassword: values.oldPassword,
+          newUserPassword: values.newPassword,
+        };
+        await changePassword(changePasswordBody).unwrap();
+        message.success('Password Changed Successfully', 5);
+        form.resetFields();
+      }
     } catch (error: any) {
       message.error(error.data.error, 5);
     }

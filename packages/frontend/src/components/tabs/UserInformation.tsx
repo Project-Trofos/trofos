@@ -24,13 +24,13 @@ export default function UserInformationTab(): JSX.Element {
   const handleUpdateDisplayName =
     async () => {
       try {
-          if (displayName) {
+          if (displayName && userInfo) {
             await updateUserInfo({
               displayName,
-              userId: userInfo?.userId,
+              userId: userInfo.userId,
             }).unwrap();
             message.success('Display name changed!');
-        }
+          }
       } catch (e) {
         console.error(getErrorMessage(e));
         message.error('Failed to modify user display name');
