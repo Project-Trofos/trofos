@@ -49,15 +49,15 @@ describe('account.service tests', () => {
     });
   });
 
-  describe('changeDisplayName', () => {
-    it("should successfully change the user's display name if a valid display name is supplied", async () => {
+  describe('updateUser', () => {
+    it("should successfully update the user's data if the fields supplied are valid", async () => {
       const mockUpdateUser = {
         ...userData[0],
         user_display_name: "New Display Name",
         user_password_hash: null
       };
       prismaMock.user.update.mockResolvedValueOnce(mockUpdateUser);
-      await expect(accountService.changeDisplayName(1, 'New Display Name')).resolves.toEqual(mockUpdateUser);
-    })
+      await expect(accountService.updateUser(1, 'New Display Name')).resolves.toEqual(mockUpdateUser);
+    });
   });
 });

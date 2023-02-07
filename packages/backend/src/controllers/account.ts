@@ -86,16 +86,16 @@ const changePassword = async (req: express.Request, res: express.Response) => {
   }
 };
 
-const changeDisplayName = async (req: express.Request, res: express.Response) => {
+const updateUser = async (req: express.Request, res: express.Response) => {
   try {
     const { userId, displayName } = req.body;
 
     assertInputIsNotEmpty(userId, 'User Id');
     assertInputIsNotEmpty(displayName, 'Display name');
 
-    await accountService.changeDisplayName(userId, displayName);
+    await accountService.updateUser(userId, displayName);
     return res.status(StatusCodes.OK).send({
-      message: 'Display name successfully changed',
+      message: 'User info successfully updated',
     });
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -107,5 +107,5 @@ export default {
   logoutUser,
   getUserInfo,
   changePassword,
-  changeDisplayName
+  updateUser
 };
