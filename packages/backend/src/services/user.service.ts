@@ -11,10 +11,12 @@ function exclude<User, Key extends keyof User>(
   user: User,
   keys: Key[]
 ): Omit<User, Key> {
-  for (let key of keys) {
-    delete user[key]
-  }
-  return user
+
+  const excludedUser = user;
+
+  keys.forEach(key => delete excludedUser[key]);
+
+  return excludedUser
 }
 
 export type Users = {
