@@ -4,7 +4,7 @@ import { List, message, Typography } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { useGetSprintsQuery } from '../api/sprint';
+import { useGetSprintsByProjectIdQuery } from '../api/sprint';
 import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
 import type { Sprint } from '../api/sprint';
 import SprintCreationModal from '../components/modals/SprintCreationModal';
@@ -29,7 +29,7 @@ function ProjectSprints(): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const projectId = Number(params.projectId);
-  const { data: sprintsData } = useGetSprintsQuery(projectId);
+  const { data: sprintsData } = useGetSprintsByProjectIdQuery(projectId);
 
   const [updateBacklog] = useUpdateBacklogMutation();
 

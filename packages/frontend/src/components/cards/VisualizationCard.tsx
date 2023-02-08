@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Card, Select } from 'antd';
+import { skipToken } from '@reduxjs/toolkit/dist/query/react';
 import { useGetProjectBacklogHistoryQuery } from '../../api/backlog';
-import { useGetSprintsQuery, Sprint } from '../../api/sprint';
+import { useGetSprintsByProjectIdQuery, Sprint } from '../../api/sprint';
 import { Subheading } from '../typography';
 import { BurnDownChart } from '../visualization/BurnDownChart';
 
 import './VisualizationCard.css';
 
 export default function VisualizationCard({ projectId }: { projectId: number | undefined }) {
-  const { data: sprintsData } = useGetSprintsQuery(projectId ?? -1);
-  const { data: backlogHistory } = useGetProjectBacklogHistoryQuery({ projectId: projectId ?? -1 });
+  const { data: sprintsData } = useGetSprintsByProjectIdQuery(projectId ?? skipToken);
+  const { data: backlogHistory } = useGetProjectBacklogHistoryQuery(projectId ? { projectId } : skipToken);
   const [sprintSelected, setSprintSelected] = useState<Sprint | undefined>();
 
   return (

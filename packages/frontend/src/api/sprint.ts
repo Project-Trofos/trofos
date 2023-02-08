@@ -6,7 +6,7 @@ export type Sprint = {
   id: number;
   name: string;
   duration: number;
-  goals: string;
+  goals: string | null;
   start_date: string;
   end_date: string;
   project_id: number;
@@ -16,7 +16,14 @@ export type Sprint = {
 
 export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSprints: builder.query<{ sprints: Sprint[]; unassignedBacklogs: Backlog[] }, number>({
+    getSprints: builder.query<Sprint[], void>({
+      query: () => ({
+        url: `sprint/listSprints`,
+        credentials: 'include',
+      }),
+      providesTags: ['Sprint'],
+    }),
+    getSprintsByProjectId: builder.query<{ sprints: Sprint[]; unassignedBacklogs: Backlog[] }, number>({
       query: (projectId) => ({
         url: `sprint/listSprints/${projectId}`,
         credentials: 'include',
@@ -123,6 +130,7 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
 
 export const {
   useGetSprintsQuery,
+  useGetSprintsByProjectIdQuery,
   useGetActiveSprintQuery,
   useAddSprintMutation,
   useUpdateSprintMutation,
