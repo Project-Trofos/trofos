@@ -12,6 +12,7 @@ import {
   mockSprintToUpdate,
 } from '../mocks/sprintData';
 import { BadRequestError } from '../../helpers/error';
+import projectConstraint from '../../policies/constraints/project.constraint';
 
 const SPRINT_EXIST_ERR_MSG = 'An active sprint already exists';
 
@@ -41,6 +42,23 @@ describe('sprint.service tests', () => {
   });
 
   describe('get sprints', () => {
+    it('should return sprints when called with valid project policy constraint', async () => {
+      const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+
+      const mockReturnedSprints: Sprint[] = [
+        mockSprintData,
+        {
+          ...mockSprintData,
+          id: 2,
+          name: 'Sprint 2',
+        },
+      ];
+      prismaMock.sprint.findMany.mockResolvedValueOnce(mockReturnedSprints);
+      await expect(sprintService.listSprints(projectPolicyConstraint)).resolves.toEqual(mockReturnedSprints);
+    });
+  });
+
+  describe('get sprints by project id', () => {
     it('should return sprints when called with valid project id', async () => {
       const mockReturnedSprints: Sprint[] = [
         mockSprintData,
@@ -52,9 +70,11 @@ describe('sprint.service tests', () => {
       ];
       const projectId = 123;
       prismaMock.sprint.findMany.mockResolvedValueOnce(mockReturnedSprints);
-      await expect(sprintService.listSprints(projectId)).resolves.toEqual(mockReturnedSprints);
+      await expect(sprintService.listSprintsByProjectId(projectId)).resolves.toEqual(mockReturnedSprints);
     });
+  });
 
+  describe('get active sprints by project id', () => {
     it('should return active sprint when called with valid project id', async () => {
       const mockReturnedSprint: Sprint = {
         ...mockSprintData,

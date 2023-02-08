@@ -13,13 +13,22 @@ const newBacklog = async (req: express.Request, res: express.Response) => {
   }
 };
 
-const listBacklogs = async (req: express.Request, res: express.Response) => {
+const listBacklogsByProjectId = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId } = req.params;
     if (!projectId) {
       throw new BadRequestError('projectId cannot be empty');
     }
-    const backlogs: Backlog[] = await backlogService.listBacklogs(Number(projectId));
+    const backlogs: Backlog[] = await backlogService.listBacklogsByProjectId(Number(projectId));
+    return res.status(StatusCodes.OK).json(backlogs);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const listBacklogs = async (req: express.Request, res: express.Response) => {
+  try {
+    const backlogs: Backlog[] = await backlogService.listBacklogs(res.locals.policyConstraint);
     return res.status(StatusCodes.OK).json(backlogs);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -70,6 +79,7 @@ const deleteBacklog = async (req: express.Request, res: express.Response) => {
 
 export default {
   newBacklog,
+  listBacklogsByProjectId,
   listBacklogs,
   getBacklog,
   updateBacklog,

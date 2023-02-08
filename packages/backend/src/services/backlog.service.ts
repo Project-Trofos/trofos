@@ -1,6 +1,8 @@
 import { Backlog, BacklogStatusType, HistoryType, Prisma } from '@prisma/client';
+import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
+import { AppAbility } from '../policies/policyTypes';
 
 async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
@@ -108,10 +110,26 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   });
 }
 
-async function listBacklogs(projectId: number): Promise<Backlog[]> {
+async function listBacklogsByProjectId(projectId: number): Promise<Backlog[]> {
   const backlogs = await prisma.backlog.findMany({
     where: {
       project_id: projectId,
+    },
+  });
+
+  return backlogs;
+}
+
+/**
+ * List all backlogs that a user can see.
+ * A user can see a backlog only if he can access the project that the backlog belongs to.
+ */
+async function listBacklogs(policyConstraint: AppAbility): Promise<Backlog[]> {
+  const backlogs = await prisma.backlog.findMany({
+    where: {
+      project: {
+        AND: [accessibleBy(policyConstraint).Project],
+      },
     },
   });
 
@@ -233,6 +251,7 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
 
 export default {
   newBacklog,
+  listBacklogsByProjectId,
   listBacklogs,
   listUnassignedBacklogs,
   getBacklog,
