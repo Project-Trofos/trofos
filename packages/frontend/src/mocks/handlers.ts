@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
-import { CourseData } from '../api/types';
+import { Sprint } from '../api/sprint';
+import { BacklogHistory, BacklogHistoryType, CourseData } from '../api/types';
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
@@ -72,6 +73,171 @@ const NUSMODS_MODULE = {
   title: 'The Nature of Language',
   semesters: [1, 2],
 };
+
+export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
+  {
+    project_id: 901,
+    backlog_id: 1,
+    sprint_id: null,
+    history_type: BacklogHistoryType.CREATE,
+    type: 'task',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:01:46.884Z',
+  },
+  {
+    project_id: 901,
+    backlog_id: 2,
+    sprint_id: null,
+    history_type: BacklogHistoryType.CREATE,
+    type: 'task',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:02:03.952Z',
+  },
+  {
+    project_id: 901,
+    backlog_id: 3,
+    sprint_id: 4,
+    history_type: BacklogHistoryType.CREATE,
+    type: 'bug',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:02:17.572Z',
+  },
+  {
+    project_id: 901,
+    backlog_id: 2,
+    sprint_id: 2,
+    history_type: BacklogHistoryType.UPDATE,
+    type: 'task',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:02:20.586Z',
+  },
+  {
+    project_id: 901,
+    backlog_id: 4,
+    sprint_id: null,
+    history_type: BacklogHistoryType.CREATE,
+    type: 'task',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:02:50.500Z',
+  },
+  {
+    project_id: 901,
+    backlog_id: 4,
+    sprint_id: 3,
+    history_type: BacklogHistoryType.UPDATE,
+    type: 'task',
+    priority: null,
+    reporter_id: 1,
+    assignee_id: null,
+    points: null,
+    status: 'To do',
+    date: '2023-02-07T12:02:55.022Z',
+  },
+];
+
+export const MSW_SPRINT: Sprint[] = [
+  {
+    id: 2,
+    name: 'Sprint 1',
+    duration: 1,
+    start_date: '2023-02-07T11:43:08.000Z',
+    end_date: '2023-02-14T11:43:08.000Z',
+    project_id: 901,
+    goals: null,
+    status: 'closed',
+    backlogs: [],
+  },
+  {
+    id: 3,
+    name: 'Sprint 2',
+    duration: 1,
+    start_date: '2023-02-14T11:43:08.000Z',
+    end_date: '2023-02-21T11:43:08.000Z',
+    project_id: 901,
+    goals: null,
+    status: 'current',
+    backlogs: [
+      {
+        backlog_id: 2,
+        summary: 's1',
+        type: 'task',
+        sprint_id: 3,
+        priority: 'medium',
+        reporter_id: 1,
+        assignee_id: 1,
+        project_id: 901,
+        points: 2,
+        description: null,
+        status: 'In progress',
+        assignee: {
+          project_id: 901,
+          user_id: 1,
+          created_at: '2023-02-07T11:22:33.172Z',
+          user: {
+            user_display_name: 'User 1',
+            user_email: 'testUser@test.com',
+          },
+        },
+      },
+      {
+        backlog_id: 4,
+        summary: 's2',
+        type: 'task',
+        sprint_id: 3,
+        priority: null,
+        reporter_id: 1,
+        assignee_id: 1,
+        project_id: 901,
+        points: 3,
+        description: null,
+        status: 'Done',
+        assignee: {
+          project_id: 901,
+          user_id: 1,
+          created_at: '2023-02-07T11:22:33.172Z',
+          user: {
+            user_display_name: 'User 1',
+            user_email: 'testUser@test.com',
+          },
+        },
+      },
+      {
+        backlog_id: 3,
+        summary: 's3',
+        type: 'bug',
+        sprint_id: 3,
+        priority: null,
+        reporter_id: 1,
+        assignee_id: null,
+        project_id: 901,
+        points: 10,
+        description: 'ssss',
+        status: 'Done',
+        assignee: null,
+      },
+    ],
+  },
+];
 
 const handlers = [
   // Handles GET on /project

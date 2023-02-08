@@ -197,7 +197,7 @@ export type Backlog = {
       user_email: string;
       user_display_name: string;
     };
-  };
+  } | null;
 };
 
 export type BacklogUpdatePayload = {
