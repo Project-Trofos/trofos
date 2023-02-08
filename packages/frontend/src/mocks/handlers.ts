@@ -160,8 +160,8 @@ export const MSW_SPRINT: Sprint[] = [
     id: 2,
     name: 'Sprint 1',
     duration: 1,
-    start_date: '2023-02-07T11:43:08.000Z',
-    end_date: '2023-02-14T11:43:08.000Z',
+    start_date: '2023-02-01T11:43:08.000Z',
+    end_date: '2023-02-02T11:43:08.000Z',
     project_id: 901,
     goals: null,
     status: 'closed',
@@ -171,8 +171,8 @@ export const MSW_SPRINT: Sprint[] = [
     id: 3,
     name: 'Sprint 2',
     duration: 1,
-    start_date: '2023-02-14T11:43:08.000Z',
-    end_date: '2023-02-21T11:43:08.000Z',
+    start_date: '2023-02-02T11:43:08.000Z',
+    end_date: '2023-02-03T11:43:08.000Z',
     project_id: 901,
     goals: null,
     status: 'current',
@@ -192,7 +192,7 @@ export const MSW_SPRINT: Sprint[] = [
         assignee: {
           project_id: 901,
           user_id: 1,
-          created_at: '2023-02-07T11:22:33.172Z',
+          created_at: '2023-02-01T11:22:33.172Z',
           user: {
             user_display_name: 'User 1',
             user_email: 'testUser@test.com',
@@ -214,7 +214,7 @@ export const MSW_SPRINT: Sprint[] = [
         assignee: {
           project_id: 901,
           user_id: 1,
-          created_at: '2023-02-07T11:22:33.172Z',
+          created_at: '2023-02-01T11:22:33.172Z',
           user: {
             user_display_name: 'User 1',
             user_email: 'testUser@test.com',
