@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { Space, Switch, Typography } from 'antd';
+import { Card, Space, Switch, Typography } from 'antd';
 import { UserInfo } from '../api/auth';
 
 import ProjectTable from '../components/tables/ProjectTable';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';
-import { Heading } from '../components/typography';
+import { Heading, WelcomeMessage } from '../components/typography';
 import CourseTable from '../components/tables/CourseTable';
-
-const { Title } = Typography;
 
 export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const [isPastProject, setIsPastProject] = useState(false);
@@ -41,24 +39,24 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
       <Space direction="vertical" style={{ width: '100%' }}>
         <Heading>Home</Heading>
         <WelcomeMessage username={userInfo.userEmail} />
-        <CourseTable
-          courses={isPastCourse ? pastCourses : currentCourses}
-          isLoading={isCourseLoading}
-          heading={isPastCourse ? 'Past Course' : 'Current Course'}
-          control={courseControl}
-        />
-        <ProjectTable
-          projects={isPastProject ? pastProjects : currentProjects}
-          isLoading={isProjectLoading}
-          heading={isPastProject ? 'Past Projects' : 'Current Projects'}
-          control={projectControl}
-          showCourseColumn
-        />
+        <Card className="table-card">
+          <CourseTable
+            courses={isPastCourse ? pastCourses : currentCourses}
+            isLoading={isCourseLoading}
+            heading={isPastCourse ? 'Past Course' : 'Current Course'}
+            control={courseControl}
+          />
+        </Card>
+        <Card>
+          <ProjectTable
+            projects={isPastProject ? pastProjects : currentProjects}
+            isLoading={isProjectLoading}
+            heading={isPastProject ? 'Past Projects' : 'Current Projects'}
+            control={projectControl}
+            showCourseColumn
+          />
+        </Card>
       </Space>
     </Container>
   );
-}
-
-function WelcomeMessage({ username }: { username: string }) {
-  return <Title level={5}>Welcome, {username}!</Title>;
 }

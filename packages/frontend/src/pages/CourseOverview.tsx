@@ -1,3 +1,4 @@
+import { Card } from 'antd';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
@@ -31,11 +32,13 @@ export default function CourseOverview(): JSX.Element {
         handleUpdateAnnouncement={handleUpdateAnnouncement}
       />
       {course && <MilestoneCard course={course} showEdit={showEdit} />}
-      <ProjectTable
-        projects={filteredProjects}
-        isLoading={isLoading}
-        control={<BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />}
-      />
+      <Card>
+        <ProjectTable
+          projects={filteredProjects}
+          isLoading={isLoading}
+          control={<BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />}
+        />
+      </Card>
     </Container>
   );
 }

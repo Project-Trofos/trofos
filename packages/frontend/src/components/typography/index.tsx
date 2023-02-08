@@ -22,3 +22,7 @@ export function Subheading({ children, ...props }: React.ComponentProps<typeof T
     </Title>
   );
 }
+
+export function WelcomeMessage({ username }: { username: string }) {
+  return <Title level={5}>Welcome, {username}!</Title>;
+}
