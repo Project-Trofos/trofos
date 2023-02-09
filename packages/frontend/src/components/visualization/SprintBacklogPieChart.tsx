@@ -4,9 +4,9 @@ import { Sprint } from '../../api/sprint';
 import { Backlog } from '../../api/types';
 import useGroupSprintBacklog from './useGroupSprintBacklog';
 
-export default function SprintBacklogPieChart(props: { sprint: Sprint; unassignedBacklog: Backlog[] }) {
-  const { sprint, unassignedBacklog } = props;
-  const data = useGroupSprintBacklog(sprint, unassignedBacklog);
+export default function SprintBacklogPieChart(props: { sprints: Sprint[]; unassignedBacklog: Backlog[] }) {
+  const { sprints, unassignedBacklog } = props;
+  const data = useGroupSprintBacklog(sprints, unassignedBacklog);
 
   const config = {
     data,

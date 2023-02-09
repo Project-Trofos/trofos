@@ -7,7 +7,7 @@ describe('test useGroupSprintBacklog hook', () => {
   describe('when provided with valid data', () => {
     it('should return valid backlog groups', () => {
       let unassigned: Backlog[] = [];
-      const { result, rerender } = renderHook(() => useGroupSprintBacklog(MSW_SPRINT[1], unassigned));
+      const { result, rerender } = renderHook(() => useGroupSprintBacklog([MSW_SPRINT[1]], unassigned));
 
       expect(result.current).toContainEqual({ type: 'In progress', value: 1 });
       expect(result.current).toContainEqual({ type: 'Done', value: 2 });
@@ -33,7 +33,7 @@ describe('test useGroupSprintBacklog hook', () => {
 
       expect(result.current).toContainEqual({ type: 'In progress', value: 1 });
       expect(result.current).toContainEqual({ type: 'Done', value: 2 });
-      expect(result.current).toContainEqual({ type: 'Unassigned', value: 1 });
+      expect(result.current).toContainEqual({ type: 'Backlog', value: 1 });
     });
   });
 });

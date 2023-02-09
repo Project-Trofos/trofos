@@ -2,15 +2,17 @@ import { useMemo } from 'react';
 import { Sprint } from '../../api/sprint';
 import { Backlog } from '../../api/types';
 
-// Group backlogs of a sprint into types
-// Assuming there is no backlog status `Unassigned`
-export default function useGroupSprintBacklog(sprint: Sprint, unassignedBacklog: Backlog[]) {
+// Group backlogs of sprints into types
+// Assuming there is no backlog status `Backlog`
+export default function useGroupSprintBacklog(sprints: Sprint[], unassignedBacklog: Backlog[]) {
   const data = useMemo(() => {
     const categories = new Map<string, number>();
 
-    // Accumulate each category of backlog for this sprint
-    for (const item of sprint.backlogs) {
-      categories.set(item.status, (categories.get(item.status) ?? 0) + 1);
+    // Accumulate each category of backlog for sprints
+    for (const sprint of sprints) {
+      for (const item of sprint.backlogs) {
+        categories.set(item.status, (categories.get(item.status) ?? 0) + 1);
+      }
     }
 
     const categoriesList = Array.from(categories.entries()).map((entry) => {
@@ -22,10 +24,10 @@ export default function useGroupSprintBacklog(sprint: Sprint, unassignedBacklog:
 
     // Add in unassigned backlogs if applicable
     if (unassignedBacklog.length > 0) {
-      return [...categoriesList, { type: 'Unassigned', value: unassignedBacklog.length }];
+      return [...categoriesList, { type: 'Backlog', value: unassignedBacklog.length }];
     }
     return categoriesList;
-  }, [sprint, unassignedBacklog]);
+  }, [sprints, unassignedBacklog]);
 
   return data;
 }

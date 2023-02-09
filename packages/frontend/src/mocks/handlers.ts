@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
 import { Sprint } from '../api/sprint';
-import { BacklogHistory, BacklogHistoryType, CourseData } from '../api/types';
+import { BacklogHistory, BacklogHistoryType, CourseData, ProjectData } from '../api/types';
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
@@ -57,17 +57,6 @@ export const MSW_COURSE: CourseData = {
   created_at: '2022-09-14T03:33:34.960Z',
 };
 
-const PROJECT = {
-  id: 1,
-  pname: 'project1',
-  pkey: null,
-  description: 'project1_description',
-  course_id: '1',
-  public: false,
-  created_at: '2022-09-15T01:58:01.735Z',
-  course: MSW_COURSE,
-};
-
 const NUSMODS_MODULE = {
   moduleCode: 'EL1101E',
   title: 'The Nature of Language',
@@ -76,7 +65,7 @@ const NUSMODS_MODULE = {
 
 export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 1,
     sprint_id: null,
     history_type: BacklogHistoryType.CREATE,
@@ -89,7 +78,7 @@ export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
     date: '2023-02-07T12:01:46.884Z',
   },
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 2,
     sprint_id: null,
     history_type: BacklogHistoryType.CREATE,
@@ -102,7 +91,7 @@ export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
     date: '2023-02-07T12:02:03.952Z',
   },
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 3,
     sprint_id: 4,
     history_type: BacklogHistoryType.CREATE,
@@ -115,7 +104,7 @@ export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
     date: '2023-02-07T12:02:17.572Z',
   },
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 2,
     sprint_id: 2,
     history_type: BacklogHistoryType.UPDATE,
@@ -128,7 +117,7 @@ export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
     date: '2023-02-07T12:02:20.586Z',
   },
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 4,
     sprint_id: null,
     history_type: BacklogHistoryType.CREATE,
@@ -141,7 +130,7 @@ export const MSW_BACKLOG_HISTORY: BacklogHistory[] = [
     date: '2023-02-07T12:02:50.500Z',
   },
   {
-    project_id: 901,
+    project_id: 1,
     backlog_id: 4,
     sprint_id: 3,
     history_type: BacklogHistoryType.UPDATE,
@@ -162,7 +151,7 @@ export const MSW_SPRINT: Sprint[] = [
     duration: 1,
     start_date: '2023-02-01T11:43:08.000Z',
     end_date: '2023-02-02T11:43:08.000Z',
-    project_id: 901,
+    project_id: 1,
     goals: null,
     status: 'closed',
     backlogs: [],
@@ -173,7 +162,7 @@ export const MSW_SPRINT: Sprint[] = [
     duration: 1,
     start_date: '2023-02-02T11:43:08.000Z',
     end_date: '2023-02-03T11:43:08.000Z',
-    project_id: 901,
+    project_id: 1,
     goals: null,
     status: 'current',
     backlogs: [
@@ -185,12 +174,12 @@ export const MSW_SPRINT: Sprint[] = [
         priority: 'medium',
         reporter_id: 1,
         assignee_id: 1,
-        project_id: 901,
+        project_id: 1,
         points: 2,
         description: null,
         status: 'In progress',
         assignee: {
-          project_id: 901,
+          project_id: 1,
           user_id: 1,
           created_at: '2023-02-01T11:22:33.172Z',
           user: {
@@ -207,12 +196,12 @@ export const MSW_SPRINT: Sprint[] = [
         priority: null,
         reporter_id: 1,
         assignee_id: 1,
-        project_id: 901,
+        project_id: 1,
         points: 3,
         description: null,
         status: 'Done',
         assignee: {
-          project_id: 901,
+          project_id: 1,
           user_id: 1,
           created_at: '2023-02-01T11:22:33.172Z',
           user: {
@@ -229,7 +218,7 @@ export const MSW_SPRINT: Sprint[] = [
         priority: null,
         reporter_id: 1,
         assignee_id: null,
-        project_id: 901,
+        project_id: 1,
         points: 10,
         description: 'ssss',
         status: 'Done',
@@ -239,9 +228,23 @@ export const MSW_SPRINT: Sprint[] = [
   },
 ];
 
+export const MSW_PROJECT: ProjectData = {
+  id: 1,
+  pname: 'project1',
+  pkey: null,
+  description: 'project1_description',
+  course_id: 1,
+  public: false,
+  created_at: '2022-09-15T01:58:01.735Z',
+  course: MSW_COURSE,
+  backlogStatuses: [],
+  sprints: MSW_SPRINT,
+  users: [],
+};
+
 const handlers = [
   // Handles GET on /project
-  rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([PROJECT])))),
+  rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
 
   // Handles GET on /course
   rest.get(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_COURSE])))),

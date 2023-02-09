@@ -1,0 +1,232 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CourseOverviewCard test when it renders should render card correctly 1`] = `
+<body>
+  <div>
+    <div
+      class="ant-card ant-card-bordered"
+    >
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="ant-row"
+          style="margin: -16px -16px -16px -16px;"
+        >
+          <div
+            class="ant-col ant-col-xs-24 ant-col-sm-6"
+            style="padding: 16px 16px 16px 16px;"
+          >
+            <div
+              class="ant-statistic"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Projects
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  <span
+                    class="ant-statistic-content-value-int"
+                  >
+                    1
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-xs-24 ant-col-sm-6"
+            style="padding: 16px 16px 16px 16px;"
+          >
+            <div
+              class="ant-statistic"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Current Active Sprints
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  <span
+                    class="ant-statistic-content-value-int"
+                  >
+                    1
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-xs-24 ant-col-sm-6"
+            style="padding: 16px 16px 16px 16px;"
+          >
+            <div
+              class="ant-statistic"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Completed Issues
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  <span
+                    class="ant-statistic-content-value-int"
+                  >
+                    2
+                  </span>
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
+                >
+                  / 3
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-xs-24 ant-col-sm-6"
+            style="padding: 16px 16px 16px 16px;"
+          >
+            <div
+              class="ant-statistic"
+            >
+              <div
+                class="ant-statistic-title"
+              >
+                Backlogs
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
+                >
+                  <span
+                    class="ant-statistic-content-value-int"
+                  >
+                    0
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-divider ant-divider-horizontal"
+          role="separator"
+        />
+        <div
+          class="ant-row"
+        >
+          <div
+            class="ant-col ant-col-xs-24 ant-col-md-12"
+          >
+            <div
+              class="ant-space ant-space-vertical"
+              style="width: 100%; align-items: center;"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-bottom: 8px;"
+              >
+                <h4
+                  class="ant-typography"
+                >
+                  Active Sprint Issue Types
+                </h4>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  data-chart-source-type="G2Plot"
+                  size-sensor-id="1"
+                  style="height: inherit;"
+                >
+                  <div
+                    style="position:relative;"
+                  >
+                    <canvas
+                      height="400"
+                      style="width: 400px; height: 400px; display: inline-block; vertical-align: middle;"
+                      width="400"
+                    />
+                  </div>
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-xs-24 ant-col-md-12"
+          >
+            <div
+              class="ant-space ant-space-vertical"
+              style="width: 100%; align-items: center;"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-bottom: 8px;"
+              >
+                <h4
+                  class="ant-typography"
+                >
+                  Daily Completed Story Points
+                </h4>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  data-chart-source-type="G2Plot"
+                  size-sensor-id="2"
+                  style="height: inherit;"
+                >
+                  <div
+                    style="position:relative;"
+                  >
+                    <canvas
+                      height="400"
+                      style="width: 400px; height: 400px; display: inline-block; vertical-align: middle;"
+                      width="400"
+                    />
+                  </div>
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;

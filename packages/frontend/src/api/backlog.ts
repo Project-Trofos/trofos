@@ -144,6 +144,14 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['BacklogHistory'],
     }),
+    getBacklogHistory: builder.query<BacklogHistory[], void>({
+      query: () => ({
+        url: `backlog/getHistory`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: ['BacklogHistory'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -155,6 +163,7 @@ export const {
   useAddBacklogMutation,
   useUpdateBacklogMutation,
   useDeleteBacklogMutation,
+  useGetBacklogHistoryQuery,
   useGetProjectBacklogHistoryQuery,
   useGetSprintBacklogHistoryQuery,
 } = extendedApi;

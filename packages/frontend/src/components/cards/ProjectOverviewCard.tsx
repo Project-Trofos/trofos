@@ -41,7 +41,7 @@ export default function ProjectOverviewCard(props: {
             <Col xs={24} md={12}>
               <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
                 <Subheading>Active Sprint Issue Types</Subheading>
-                <SprintBacklogPieChart sprint={activeSprint} unassignedBacklog={unassignedBacklogs} />
+                <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} />
               </Space>
             </Col>
             <Col xs={24} md={12}>
