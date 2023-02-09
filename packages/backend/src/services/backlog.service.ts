@@ -103,6 +103,11 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
             },
           },
         },
+        project: {
+          connect: {
+            id: projectId,
+          },
+        },
       },
     });
 
@@ -201,6 +206,11 @@ async function updateBacklog(backlogToUpdate: {
             },
           },
         },
+        project: {
+          connect: {
+            id: projectId,
+          },
+        },
       },
     });
 
@@ -240,6 +250,11 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
               project_id: projectId,
               name: backlog.status,
             },
+          },
+        },
+        project: {
+          connect: {
+            id: projectId,
           },
         },
       },

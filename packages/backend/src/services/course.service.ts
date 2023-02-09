@@ -561,6 +561,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
 
     await tx.usersOnRolesOnCourses.createMany({
       data: queries,
+      skipDuplicates: true,
     });
 
     return project;
@@ -619,6 +620,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
 
     await tx.usersOnRolesOnCourses.createMany({
       data: queries,
+      skipDuplicates: true,
     });
 
     return result;

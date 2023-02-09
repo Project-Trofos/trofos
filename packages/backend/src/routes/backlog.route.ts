@@ -17,6 +17,7 @@ router.put('/updateBacklog', hasAuth(Action.update_project, null), backlog.updat
 router.delete('/deleteBacklog/:projectId/:backlogId', hasAuth(Action.update_project, null), backlog.deleteBacklog);
 
 // Routes for backlog history
+router.get('/getHistory', hasAuth(Action.read_project, projectPolicy.POLICY_NAME), backlogHistory.getBacklogHistory);
 router.get(
   '/getHistory/project/:projectId',
   hasAuth(Action.read_project, null),
