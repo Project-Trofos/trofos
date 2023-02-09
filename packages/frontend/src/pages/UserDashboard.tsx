@@ -82,6 +82,16 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
               />
             </Card>
           </Col>
+          <Col span={24}>
+            <Card>
+              <BacklogTable
+                heading="Unassigned Issues"
+                backlogs={backlogsForUser.filter((b) => b.assignee_id === null)}
+                isLoading={isBacklogsLoading}
+                projects={projects}
+              />
+            </Card>
+          </Col>
         </Row>
       </Space>
     </Container>
@@ -100,9 +110,6 @@ function UserDashboardStatistics(props: {
       <Row gutter={[16, 16]}>
         <Col span={6}>
           <Statistic title="Active Sprints" value={sprintsForUser.filter((s) => s.status === 'current').length} />
-        </Col>
-        <Col span={6}>
-          <Statistic title="My Issues" value={userAssignedBacklogs.length} />
         </Col>
         <Col span={6}>
           <Statistic
