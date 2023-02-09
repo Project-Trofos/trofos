@@ -82,6 +82,7 @@ model Project {
 
   sprints         Sprint[]
   backlogs        Backlog[]
+  backlogHistories BacklogHistory[]
   backlogStatuses BacklogStatus[]
 
   projectGitLink  ProjectGitLink?
@@ -149,6 +150,7 @@ model Backlog {
 // Track history of backlog for analysis
 model BacklogHistory {
   project_id    Int
+  project       Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
   backlog_id    Int
 
   sprint_id     Int?
