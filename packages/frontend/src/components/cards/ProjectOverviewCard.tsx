@@ -33,7 +33,11 @@ export default function ProjectOverviewCard(props: {
               <Statistic title="Backlogs" value={unassignedBacklogs.length} />
             </Col>
             <Col sm={6} xs={24}>
-              <Countdown title="Time before end of sprint" value={activeSprint.end_date} format="D day HH hour" />
+              <Countdown
+                title="Time before end of sprint"
+                value={activeSprint.end_date}
+                format="D [day(s)] HH [hour(s)]"
+              />
             </Col>
           </Row>
           <Divider />
