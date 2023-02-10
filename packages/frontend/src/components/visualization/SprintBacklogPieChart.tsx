@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Empty } from 'antd';
 import { Pie } from '@ant-design/plots';
 import { Sprint } from '../../api/sprint';
 import { Backlog } from '../../api/types';
@@ -7,11 +9,14 @@ import useGroupSprintBacklog from './useGroupSprintBacklog';
 export default function SprintBacklogPieChart(props: { sprints: Sprint[]; unassignedBacklog: Backlog[] }) {
   const { sprints, unassignedBacklog } = props;
   const data = useGroupSprintBacklog(sprints, unassignedBacklog);
+  const navigate = useNavigate();
 
   const config = {
     data,
     angleField: 'value',
     colorField: 'type',
+    width: 400,
+    height: 300,
     radius: 0.8,
     label: {
       type: 'inner',
@@ -27,6 +32,16 @@ export default function SprintBacklogPieChart(props: { sprints: Sprint[]; unassi
       },
     ],
   };
+
+  if (data.length === 0) {
+    return (
+      <Empty style={{ flex: '1' }} description="You have no issues in the current sprint...">
+        <Button type="primary" onClick={() => navigate('../sprint')}>
+          View Sprint
+        </Button>
+      </Empty>
+    );
+  }
 
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <Pie {...config} />;

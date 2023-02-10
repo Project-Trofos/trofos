@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Statistic, Divider, Space, Typography } from 'antd';
+import { Card, Row, Col, Statistic, Divider, Space, Typography, Empty } from 'antd';
 import Countdown from 'antd/es/statistic/Countdown';
 import { Sprint } from '../../api/sprint';
 import { Backlog, BacklogHistory } from '../../api/types';
