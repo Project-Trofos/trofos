@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography } from 'antd';
-import { useGetBacklogsQuery } from '../api/backlog';
+import { useGetBacklogsByProjectIdQuery } from '../api/backlog';
 import BacklogCreationModal from '../components/modals/BacklogCreationModal';
 import BacklogList from '../components/lists/BacklogList';
 import './ProjectBacklogs.css';
@@ -12,7 +12,7 @@ function ProjectBacklog(): JSX.Element {
   const params = useParams();
   const projectId = Number(params.projectId);
 
-  const { data: backlogs } = useGetBacklogsQuery(projectId);
+  const { data: backlogs } = useGetBacklogsByProjectIdQuery(projectId);
 
   return (
     <div className="project-backlog-container">

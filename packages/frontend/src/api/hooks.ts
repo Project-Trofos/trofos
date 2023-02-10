@@ -2,6 +2,7 @@
 import { message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { confirmDeleteAnnouncement } from '../components/modals/confirm';
 import { getErrorMessage } from '../helpers/error';
 import {
@@ -206,7 +207,7 @@ export const useCourse = (courseId?: string) => {
   const [updateUserCourseRole] = useUpdateCourseUserRoleMutation();
   const [deleteMilestone] = useDeleteMilestoneMutation();
   const [updateMilestone] = useUpdateMilestoneMutation();
-  const { data: userRoles } = useGetCourseUserRolesQuery(courseIdNumber);
+  const { data: userRoles } = useGetCourseUserRolesQuery(courseIdNumber ?? skipToken);
 
   const [deleteAnnouncement] = useDeleteAnnouncementMutation();
   const [updateAnnouncement] = useUpdateAnnouncementMutation();
