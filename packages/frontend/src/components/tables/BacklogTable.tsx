@@ -6,6 +6,7 @@ import { Subheading } from '../typography';
 
 import { filterDropdown } from './helper';
 import BacklogCardPriority from '../dropdowns/BacklogCardPriority';
+import compareBacklogPriority from '../../helpers/compareBacklogPriority';
 
 type BacklogTableProps = {
   backlogs: Backlog[] | undefined;
@@ -85,7 +86,7 @@ export default function BacklogTable({
               />
             );
           }}
-          sorter={(a: Backlog, b: Backlog) => (a.priority ?? '').localeCompare(b.priority ?? '')}
+          sorter={(a: Backlog, b: Backlog) => compareBacklogPriority(a.priority, b.priority)}
         />
         <Table.Column
           width={100}
