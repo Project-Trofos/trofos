@@ -114,7 +114,7 @@ exports[`ProjectOverviewCard test when there is active sprint renders card corre
                 <span
                   class="ant-statistic-content-value"
                 >
-                  0 day 00 hour
+                  0 day(s) 00 hour(s)
                 </span>
               </div>
             </div>
