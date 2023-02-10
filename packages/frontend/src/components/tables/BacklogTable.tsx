@@ -67,7 +67,7 @@ export default function BacklogTable({
           sorter={(a: Backlog, b: Backlog) => a.backlog_id - b.backlog_id}
         />
         <Table.Column
-          title="Description"
+          title="Summary"
           dataIndex="summary"
           filterDropdown={filterDropdown}
           sorter={(a: Backlog, b: Backlog) => a.summary.localeCompare(b.summary)}
