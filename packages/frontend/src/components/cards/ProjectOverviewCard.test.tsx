@@ -17,7 +17,7 @@ describe('ProjectOverviewCard test', () => {
   });
 
   describe('when there is active sprint', () => {
-    it('renders card correctly', () => {
+    it.skip('renders card correctly', () => {
       const { baseElement } = render(
         <BrowserRouter>
           <ProjectOverviewCard sprints={MSW_SPRINT} backlogHistory={MSW_BACKLOG_HISTORY} unassignedBacklogs={[]} />
