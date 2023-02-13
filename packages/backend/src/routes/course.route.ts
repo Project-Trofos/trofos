@@ -6,8 +6,10 @@ import milestone from '../controllers/milestone';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
 import coursePolicy from '../policies/course.policy';
 import projectPolicy from '../policies/project.policy';
+import multer from "multer";
 
 const router = express.Router();
+const upload = multer({ dest: 'tmp/csv' });
 
 // Get all courses
 router.get('/', hasAuth(null, coursePolicy.POLICY_NAME), course.getAll);
@@ -89,5 +91,8 @@ router.delete(
   hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
   course.removeProject,
 );
+
+// Import course data via a csv file
+router.post('/:courseId/import/csv', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), upload.single('file'), course.importCsv);
 
 export default router;

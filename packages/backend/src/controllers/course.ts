@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from "fs";
 import { StatusCodes } from 'http-status-codes';
 import { UserSession } from '@prisma/client';
 import course from '../services/course.service';
@@ -10,6 +11,8 @@ import {
   assertCourseYearIsNumber,
   assertProjectIdIsValid,
   assertUserIdIsValid,
+  assertInputIsNotEmpty,  
+  assertFileIsCorrectType,
   getDefaultErrorRes,
 } from '../helpers/error';
 import {
@@ -27,6 +30,7 @@ import {
   UserRequestBody,
 } from './requestTypes';
 import numberOrUndefined from '../helpers/common';
+import csvService from '../services/csv.service';
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
@@ -271,6 +275,25 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
   }
 }
 
+async function importCsv(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+
+    assertInputIsNotEmpty(req.file, 'Csv file');
+    assertFileIsCorrectType(req.file.mimetype, 'csv');
+    assertCourseIdIsValid(courseId);
+
+    const result = await csvService.importCourseData(req.file.path, Number(courseId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  } finally {
+    if (req.file?.path) {
+      fs.unlinkSync(req.file.path);
+    }
+  }
+}
+
 export default {
   getAll,
   get,
@@ -285,4 +308,5 @@ export default {
   addProject,
   removeProject,
   addProjectAndCourse,
+  importCsv
 };

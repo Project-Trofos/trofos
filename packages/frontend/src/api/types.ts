@@ -258,3 +258,8 @@ export enum RetrospectiveVoteType {
   UP = 'up',
   DOWN = 'down',
 }
+
+export type CourseImportCsvPayload = {
+  courseId: number,
+  payload: FormData
+}

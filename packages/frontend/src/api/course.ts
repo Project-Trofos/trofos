@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import { PickRename } from '../helpers/types';
-import { Course, CourseData, Project } from './types';
+import { Course, CourseData, CourseImportCsvPayload, Project } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -312,6 +312,14 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, { courseId }) => [{ type: 'Course', courseId }],
     }),
+    importCsv: builder.mutation<void, CourseImportCsvPayload>({
+      query: (params) => ({
+      url: `course/${params.courseId}/import/csv`,
+      method: 'POST',
+      body: params.payload,
+      credentials: 'include'
+      }),
+  })
   }),
   overrideExisting: false,
 });
@@ -334,4 +342,5 @@ export const {
   useCreateAnnouncementMutation,
   useDeleteAnnouncementMutation,
   useUpdateAnnouncementMutation,
+  useImportCsvMutation,
 } = extendedApi;
