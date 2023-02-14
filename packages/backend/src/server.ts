@@ -7,6 +7,7 @@ import projectRouter from './routes/project.route';
 import backlogRouter from './routes/backlog.route';
 import userRouter from './routes/user.route';
 import sprintRouter from './routes/sprint.route';
+import feedbackRouter from './routes/feedback.route';
 import roleRouter from './routes/role.route';
 import githubRouter from './routes/github.route';
 import settingsRouter from './routes/settings.route';
@@ -45,6 +46,9 @@ app.use('/user', userRouter);
 
 // Routes for backlog
 app.use('/sprint', sprintRouter);
+
+// Routes for settings
+app.use('/feedback', feedbackRouter);
 
 // Routes for role
 app.use('/role', roleRouter);
