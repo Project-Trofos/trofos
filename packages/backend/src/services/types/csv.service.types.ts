@@ -5,10 +5,11 @@ export const IMPORT_COURSE_DATA_CONFIG = {
     headers : true
 }
 
-export const INVALID_EMAIL = "Email provided has an invalid format\n"
-export const INVALID_PASSWORD = "Password cannot be empty if non-SSO email is provided\n"
-export const INVALID_ROLE = "Role provided is invalid\n"
-export const INVALID_TEAM_NAME = "Team name cannot be empty\n"
+export const INVALID_EMAIL = "Email provided has an invalid format"
+export const INVALID_PASSWORD = "Password cannot be empty if non-SSO email is provided"
+export const INVALID_ROLE = "Role provided is invalid"
+export const INVALID_TEAM_NAME = "Team name cannot be empty"
+export const MESSAGE_SPACE = " "
 
 export type ImportCourseDataCsv = {
     name : string,

@@ -9,14 +9,15 @@ import {
     INVALID_EMAIL,
     INVALID_PASSWORD,
     INVALID_ROLE,
-    INVALID_TEAM_NAME
+    INVALID_TEAM_NAME,
+    MESSAGE_SPACE
 } from "./types/csv.service.types";
 import { validate } from "email-validator";
 import { ROLE_ID_MAP, STUDENT_ROLE_ID } from "../helpers/constants";
 import prisma from '../models/prismaClient';
 import { Prisma } from '.prisma/client';
 
-async function importCourseData(csvFilePath: string, courseId: number) {
+async function importCourseData(csvFilePath: string, courseId: number) : Promise<void> {
         return new Promise((resolve, reject) => {
             let errorMessages = "";
             let userDetailsMap = new Map<string, ImportCourseDataUser>();
@@ -29,22 +30,22 @@ async function importCourseData(csvFilePath: string, courseId: number) {
                 validateImportCourseData(data, callback);
             })
             .on('error', error => {
-                errorMessages += `Error: ${error.message}\n`;
+                errorMessages += `Error: ${error.message}` + MESSAGE_SPACE;
             })
             .on('data-invalid', (row, rowNumber, reason) => {
-                errorMessages += `Invalid: [rowNumber=${rowNumber}] [row=${JSON.stringify(row)}] [reason=${reason}]\n`;
+                errorMessages += `Invalid: [rowNumber=${rowNumber}] [row=${row}] [reason=${reason}] ` + MESSAGE_SPACE;
             })
             .on('data', (row : ImportCourseDataCsv) => {
                 transformImportCourseData(row, courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
             })
             .on('finish', async () => {
                 if (errorMessages) {
-                    reject(errorMessages);
+                    reject(errorMessages.trimRight());
                     return;
                 }
                 try {
-                    const result = await processImportCourseData(courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
-                    resolve(result);
+                    await processImportCourseData(courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
+                    resolve();
                 } catch (error) {
                     reject(error)
                 }
@@ -56,19 +57,19 @@ async function importCourseData(csvFilePath: string, courseId: number) {
 function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
     let errorMessages = "";
     if (!validate(data.email)) {
-        errorMessages += INVALID_EMAIL;
+        errorMessages += INVALID_EMAIL + MESSAGE_SPACE;
     }
     if (!validatePassword(data)) {
-        errorMessages += INVALID_PASSWORD;
+        errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
     }
     if (!validateRole(data)) {
-        errorMessages += INVALID_ROLE;
+        errorMessages += INVALID_ROLE + MESSAGE_SPACE;
     }
     if (!validateTeamName(data)) {
-        errorMessages += INVALID_TEAM_NAME;
+        errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
     }
     if (errorMessages) {
-        return callback(null, false, errorMessages);
+        return callback(null, false, errorMessages.trimRight());
     }
     return callback(null, true);
 }
@@ -107,8 +108,10 @@ function transformImportCourseData(
     const userData = getUserData(row);
     const groupData = getGroupData(row, courseId);
     userDetailsMap.set(row.email, userData);
-    groupDetailsMap.set(row.teamName, groupData);
-    userGroupingMap.set(row.email, row.teamName);
+    if (row.teamName) {
+        groupDetailsMap.set(row.teamName, groupData);
+        userGroupingMap.set(row.email, row.teamName);
+    }
 }
 
 async function processImportCourseData(
@@ -167,7 +170,7 @@ async function processImportCourseData(
                     user_password_hash : userData.password,
                     basicRoles : {
                         create : {
-                            role_id : STUDENT_ROLE_ID,
+                            role_id : STUDENT_ROLE_ID, // Default role of a new user
                         }
                     },
                     courseRoles : {
@@ -183,6 +186,7 @@ async function processImportCourseData(
             if (userData.roleId === STUDENT_ROLE_ID) {
                 const userGroup = userGroupingMap.get(userEmail);
                 const projectId = groupDetailsMap.get(userGroup as string)?.projectId;
+                // Since Project names are not unique within a course, a new project is always created on csv submission
                 await tx.usersOnProjects.create({
                     data : {
                         user_id : user.user_id,
