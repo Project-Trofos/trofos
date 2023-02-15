@@ -2,7 +2,24 @@ import * as csv from '@fast-csv/parse';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import csvService from "../../services/csv.service";
 import { INVALID_EMAIL, INVALID_ROLE, INVALID_TEAM_NAME, MESSAGE_SPACE } from '../../services/types/csv.service.types';
-import { ImportCourseDataCsvBuilder, validateImportCourseDataCallback, CallbackReturnTest, groupDetailsMap, userDetailsMap, userGroupingMap, studentOne, projectOne, facultyOne, projectTwo, studentTwo, projectOnePrismaMock, studentOnePrismaUserUpsertMock, projectTwoPrismaMock, studentTwoPrismaUserUpsertMock, facultyOnePrismaUserUpsertMock } from '../mocks/csvData';
+import { 
+    ImportCourseDataCsvBuilder,
+    validateImportCourseDataCallback,
+    CallbackReturnTest, 
+    groupDetailsMap, 
+    userDetailsMap, 
+    userGroupingMap, 
+    studentOne, 
+    projectOne, 
+    facultyOne, 
+    projectTwo, 
+    studentTwo, 
+    projectOnePrismaCreateMock, 
+    studentOnePrismaUserUpsertMock, 
+    projectTwoPrismaCreateMock, 
+    studentTwoPrismaUserUpsertMock, 
+    facultyOnePrismaUserUpsertMock 
+} from '../mocks/csvData';
 
 beforeEach(() => {
     userDetailsMap.clear();
@@ -124,7 +141,7 @@ describe("csv.service.tests", () => {
             groupDetailsMap.set(projectOne.teamName, projectOne);
             userGroupingMap.set(studentOne.email, projectOne.teamName);
 
-            prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaMock);
+            prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
             prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
             prismaMock.usersOnProjects.create.mockResolvedValueOnce({
                 project_id : projectOne.projectId as number,
@@ -132,6 +149,7 @@ describe("csv.service.tests", () => {
                 created_at : new Date(Date.now())
             })
             prismaMock.$transaction.mockResolvedValueOnce(true)
+            await expect(csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap)).resolves.toEqual(true);
         });
 
         it("should create two projects and add users to them when there are two user-group mappings", async () => {
@@ -141,8 +159,8 @@ describe("csv.service.tests", () => {
             groupDetailsMap.set(projectTwo.teamName, projectTwo);
             userGroupingMap.set(studentOne.email, projectOne.teamName);
             userGroupingMap.set(studentTwo.email, projectTwo.teamName);
-            prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaMock);
-            prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaMock);
+            prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
+            prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaCreateMock);
             prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
             prismaMock.user.upsert.mockResolvedValueOnce(studentTwoPrismaUserUpsertMock);
             prismaMock.usersOnProjects.create.mockResolvedValueOnce({
@@ -155,7 +173,8 @@ describe("csv.service.tests", () => {
                 user_id : studentTwo.id as number,
                 created_at : new Date(Date.now())
             })
-            prismaMock.$transaction.mockResolvedValueOnce(true)
+            prismaMock.$transaction.mockResolvedValueOnce(true);
+            await expect(csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap)).resolves.toEqual(true);
 
         })
 
@@ -167,7 +186,8 @@ describe("csv.service.tests", () => {
                 user_id : facultyOne.id as number,
                 created_at : new Date(Date.now())
             })
-            prismaMock.$transaction.mockResolvedValueOnce(true)
+            prismaMock.$transaction.mockResolvedValueOnce(true);
+            await expect(csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap)).resolves.toEqual(true);
         })
     })
 })

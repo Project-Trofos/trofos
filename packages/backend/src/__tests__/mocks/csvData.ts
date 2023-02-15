@@ -79,7 +79,7 @@ export const projectTwo : ImportCourseDataGroup = {
     projectName : "projectTwo"
 }
 
-export const projectOnePrismaMock : Project = {
+export const projectOnePrismaCreateMock : Project = {
     id : 1,
     pname : "projectOne",
     pkey : "projectOne",
@@ -90,7 +90,7 @@ export const projectOnePrismaMock : Project = {
     created_at : new Date(Date.now())
 }
 
-export const projectTwoPrismaMock : Project = {
+export const projectTwoPrismaCreateMock : Project = {
     id : 2,
     pname : "projectTwo",
     pkey : "projectTwo",
