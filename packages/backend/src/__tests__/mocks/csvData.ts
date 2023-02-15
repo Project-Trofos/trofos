@@ -1,4 +1,4 @@
-import { Project, User, UsersOnCourses, UsersOnProjects } from "@prisma/client";
+import { Project, User } from "@prisma/client";
 import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from "../../helpers/constants";
 import { ImportCourseDataCsv, ImportCourseDataGroup, ImportCourseDataUser } from "../../services/types/csv.service.types"
 

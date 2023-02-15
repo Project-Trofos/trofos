@@ -6,6 +6,8 @@ import ImportDataModal from "./ImportDataModal";
 import store from '../../app/store';
 import { CourseData, ProjectData } from '../../api/types';
 
+const mockFile = new File(['hello'], 'hello.png', { type: 'image/png' });
+
 const mockCourseData: CourseData = {
     id: 1,
     code: 'course_id',
@@ -94,31 +96,33 @@ describe("test import data modal", () => {
     it('should disable the import button when no files are selected', () => {
         setup(mockCourseData, [mockProjectData]);
 
-        const button = screen.getByText(/^import$/i).closest('button');;
+        const button = screen.getByRole("button", { name: /^import$/i });
         expect(button).toBeDisabled();
     });
 
     it('should enable the import button when a file is selected to be uploaded', async () => {
         setup(mockCourseData, [mockProjectData]);
-        const mockFile = new File(['hello'], 'hello.png', { type: 'image/png' });
-        // The input element is hidden. Requires a roundabout way to simulate upload.
+        // The input element is hidden. Requires a roundabout way to simulate upload. https://stackoverflow.com/a/65910134
+        /* eslint-disable testing-library/no-node-access, testing-library/no-unnecessary-act */
         const hiddenFileInput = document.querySelector('input[type="file"]') as Element;
         await act(async () => {
             fireEvent.change(hiddenFileInput, { target: { files: [mockFile] } });
           });
+        /* eslint-enable */
 
-        const button = screen.getByText(/^import$/i).closest('button');
+        const button = screen.getByRole("button", { name: /^import$/i });
         expect(button).toBeEnabled(); 
     });
 
     it('should prevent the user from uploading a csv if the course has projects', async () => {
         setup(mockCourseData, [mockProjectData]);
-        // The input element is hidden. Requires a roundabout way to simulate upload.
-        const fakeFile = new File(['hello'], 'hello.png', { type: 'image/png' });
+        // The input element is hidden. Requires a roundabout way to simulate upload. https://stackoverflow.com/a/65910134
+        /* eslint-disable testing-library/no-node-access, testing-library/no-unnecessary-act */
         const hiddenFileInput = document.querySelector('input[type="file"]') as Element;
         await act(async () => {
-            fireEvent.change(hiddenFileInput, { target: { files: [fakeFile] } });
+            fireEvent.change(hiddenFileInput, { target: { files: [mockFile] } });
           });
+        /* eslint-enable */
 
         const button = screen.getByText(/^import$/i);
         fireEvent.click(button);

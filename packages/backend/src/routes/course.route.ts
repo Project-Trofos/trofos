@@ -1,12 +1,12 @@
 import { Action } from '@prisma/client';
 import express from 'express';
+import multer from "multer";
 import announcement from '../controllers/announcement';
 import course from '../controllers/course';
 import milestone from '../controllers/milestone';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
 import coursePolicy from '../policies/course.policy';
 import projectPolicy from '../policies/project.policy';
-import multer from "multer";
 
 const router = express.Router();
 const upload = multer({ dest: 'tmp/csv' });

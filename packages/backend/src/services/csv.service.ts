@@ -1,4 +1,6 @@
 import * as csv from '@fast-csv/parse';
+import { validate } from "email-validator";
+import { Prisma } from '@prisma/client';
 import {
     getGroupData,
     getUserData,
@@ -12,66 +14,8 @@ import {
     INVALID_TEAM_NAME,
     MESSAGE_SPACE
 } from "./types/csv.service.types";
-import { validate } from "email-validator";
 import { ROLE_ID_MAP, STUDENT_ROLE_ID } from "../helpers/constants";
 import prisma from '../models/prismaClient';
-import { Prisma } from '.prisma/client';
-
-async function importCourseData(csvFilePath: string, courseId: number) : Promise<void> {
-        return new Promise((resolve, reject) => {
-            let errorMessages = "";
-            let userDetailsMap = new Map<string, ImportCourseDataUser>();
-            let groupDetailsMap = new Map<string, ImportCourseDataGroup>();
-            let userGroupingMap = new Map<string, string>();
-            const csvParseStream = csv.parseFile<ImportCourseDataCsv, ImportCourseDataCsv>(csvFilePath, IMPORT_COURSE_DATA_CONFIG);
-        
-            csvParseStream.validate((data: ImportCourseDataCsv, callback: csv.RowValidateCallback) : void => {
-                validateImportCourseData(data, callback);
-            })
-            .on('error', error => {
-                errorMessages += `Error: ${error.message}` + MESSAGE_SPACE;
-            })
-            .on('data-invalid', (row, rowNumber, reason) => {
-                errorMessages += `Invalid: [rowNumber=${rowNumber}] [row=${row}] [reason=${reason}] ` + MESSAGE_SPACE;
-            })
-            .on('data', (row : ImportCourseDataCsv) => {
-                transformImportCourseData(row, courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
-            })
-            .on('finish', async () => {
-                if (errorMessages) {
-                    reject(errorMessages.trimRight());
-                    return;
-                }
-                try {
-                    await processImportCourseData(courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
-                    resolve();
-                } catch (error) {
-                    reject(error)
-                }
-                
-            });
-        });
-}
-
-function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
-    let errorMessages = "";
-    if (!validate(data.email)) {
-        errorMessages += INVALID_EMAIL + MESSAGE_SPACE;
-    }
-    if (!validatePassword(data)) {
-        errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
-    }
-    if (!validateRole(data)) {
-        errorMessages += INVALID_ROLE + MESSAGE_SPACE;
-    }
-    if (!validateTeamName(data)) {
-        errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
-    }
-    if (errorMessages) {
-        return callback(null, false, errorMessages.trimRight());
-    }
-    return callback(null, true);
-}
 
 function validateTeamName(data: ImportCourseDataCsv) : boolean {
     // Assumption: Team name is required for all students. A student cannot be unassigned
@@ -97,6 +41,26 @@ function validateRole(data: ImportCourseDataCsv) : boolean {
     return ROLE_ID_MAP.has(data.role.toUpperCase());
 }
 
+function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
+    let errorMessages = "";
+    if (!validate(data.email)) {
+        errorMessages += INVALID_EMAIL + MESSAGE_SPACE;
+    }
+    if (!validatePassword(data)) {
+        errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
+    }
+    if (!validateRole(data)) {
+        errorMessages += INVALID_ROLE + MESSAGE_SPACE;
+    }
+    if (!validateTeamName(data)) {
+        errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
+    }
+    if (errorMessages) {
+        return callback(null, false, errorMessages.trimRight());
+    }
+    return callback(null, true);
+}
+
 function transformImportCourseData(
     row: ImportCourseDataCsv, 
     courseId: number, 
@@ -120,9 +84,10 @@ async function processImportCourseData(
     userGroupingMap: Map<string, string>
     ) {
 
-    return await prisma.$transaction(async (tx : Prisma.TransactionClient) => {
+    return prisma.$transaction(async (tx : Prisma.TransactionClient) => {
         // Create projects
-        for (let groupDetails of groupDetailsMap.entries()) {
+        /* eslint-disable no-restricted-syntax, no-await-in-loop */
+        for (const groupDetails of groupDetailsMap.entries()) {
             const groupName = groupDetails[0];
             const groupData = groupDetails[1];
             const project = await tx.project.create({
@@ -136,7 +101,7 @@ async function processImportCourseData(
             groupDetailsMap.set(groupName, groupData);
         }
 
-        for (let userDetails of userDetailsMap.entries()) {
+        for (const userDetails of userDetailsMap.entries()) {
             const userEmail = userDetails[0];
             const userData = userDetails[1];
             // Create users and their course roles
@@ -210,8 +175,51 @@ async function processImportCourseData(
                 })
             }
         }
+        /* eslint-enable no-restricted-syntax, no-await-in-loop */
     });
 }
+
+async function importCourseData(csvFilePath: string, courseId: number) : Promise<void> {
+        return new Promise((resolve, reject) => {
+            let errorMessages = "";
+            const userDetailsMap = new Map<string, ImportCourseDataUser>();
+            const groupDetailsMap = new Map<string, ImportCourseDataGroup>();
+            const userGroupingMap = new Map<string, string>();
+            const csvParseStream = csv.parseFile<ImportCourseDataCsv, ImportCourseDataCsv>(csvFilePath, IMPORT_COURSE_DATA_CONFIG);
+        
+            csvParseStream.validate((data: ImportCourseDataCsv, callback: csv.RowValidateCallback) : void => {
+                validateImportCourseData(data, callback);
+            })
+            .on('error', error => {
+                errorMessages += `Error: ${error.message}${  MESSAGE_SPACE}`;
+            })
+            .on('data-invalid', (row, rowNumber, reason) => {
+                errorMessages += `Invalid: [rowNumber=${rowNumber}] [row=${row}] [reason=${reason}] ${  MESSAGE_SPACE}`;
+            })
+            .on('data', (row : ImportCourseDataCsv) => {
+                transformImportCourseData(row, courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
+            })
+            .on('finish', async () => {
+                if (errorMessages) {
+                    reject(errorMessages.trimRight());
+                    return;
+                }
+                try {
+                    await processImportCourseData(courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
+                    resolve();
+                } catch (error) {
+                    reject(error)
+                }
+                
+            });
+        });
+}
+
+
+
+
+
+
 
 export default {
     importCourseData,
