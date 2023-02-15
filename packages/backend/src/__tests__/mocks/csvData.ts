@@ -102,18 +102,21 @@ export const projectTwoPrismaCreateMock : Project = {
 }
 
 export const studentOnePrismaUserUpsertMock : User = {
+    user_display_name : "studentOne",
     user_id : 1,
     user_email : studentOne.email,
     user_password_hash : null
 }
 
 export const studentTwoPrismaUserUpsertMock : User = {
+    user_display_name : "studentTwo",
     user_id : 2,
     user_email : studentTwo.email,
     user_password_hash : null
 }
 
 export const facultyOnePrismaUserUpsertMock : User = {
+    user_display_name : "facultyOne",
     user_id : 3,
     user_email : facultyOne.email,
     user_password_hash : null
