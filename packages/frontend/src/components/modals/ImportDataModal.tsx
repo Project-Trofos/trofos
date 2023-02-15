@@ -7,7 +7,7 @@ import { getErrorMessage } from "../../helpers/error";
 import { CourseData, ProjectData } from '../../api/types';
 
 const CSV_TEMPLATE_PATH = "/download/importCourseData.csv";
-const CSV_NAME = "importCourseData.csv";
+const CSV_TEMPLATE_NAME = "importCourseData.csv";
 
 export default function ImportDataModal({ course, projects } : { course: CourseData | undefined, projects: ProjectData[] | undefined }) : JSX.Element {
 
@@ -21,7 +21,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
     };
 
     const handleOk = async () => {
-        if (projects && projects.length > 0) {
+        if (!projects || projects.length > 0) {
             message.error("Course already has projects. Please delete them before uploading a new CSV file.");
         } else {
             const formData = new FormData();
@@ -84,7 +84,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
                 <Upload {...props}>
                         <Button icon={<UploadOutlined />}>Select File</Button>
                 </Upload>
-                <a href={CSV_TEMPLATE_PATH} download={CSV_NAME}>Download csv template</a>
+                <a href={CSV_TEMPLATE_PATH} download={CSV_TEMPLATE_NAME}>Download csv template</a>
             </Space>
         </Modal>
       </>
