@@ -23,7 +23,6 @@ async function importCourseData(csvFilePath: string, courseId: number) : Promise
             let userDetailsMap = new Map<string, ImportCourseDataUser>();
             let groupDetailsMap = new Map<string, ImportCourseDataGroup>();
             let userGroupingMap = new Map<string, string>();
-    
             const csvParseStream = csv.parseFile<ImportCourseDataCsv, ImportCourseDataCsv>(csvFilePath, IMPORT_COURSE_DATA_CONFIG);
         
             csvParseStream.validate((data: ImportCourseDataCsv, callback: csv.RowValidateCallback) : void => {
@@ -77,7 +76,7 @@ function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowVa
 function validateTeamName(data: ImportCourseDataCsv) : boolean {
     // Assumption: Team name is required for all students. A student cannot be unassigned
     const roleId = ROLE_ID_MAP.get(data.role.toUpperCase());
-    if (!roleId || (!data.teamName  && roleId === STUDENT_ROLE_ID)) {
+    if (!data.teamName  && roleId === STUDENT_ROLE_ID) {
         return false;
     }
     return true;
@@ -194,6 +193,7 @@ async function processImportCourseData(
                     }
                 });
             } else {
+                // ASSUMPTION : non-STUDENT roles will not be added to projects
                 // On repeated CSV submissions, there may already be an entry for the course
                 await tx.usersOnCourses.upsert({
                     where : {
@@ -215,5 +215,8 @@ async function processImportCourseData(
 
 export default {
     importCourseData,
+    validateImportCourseData,
+    transformImportCourseData,
+    processImportCourseData
 }
 

@@ -36,10 +36,10 @@ export type ImportCourseDataGroup = {
 }
 
 export function getUserData(data : ImportCourseDataCsv) : ImportCourseDataUser {
-    const studentRoleId = ROLE_ID_MAP.get(data.role.toUpperCase());
-    const studentPassword = data.password ? bcrypt.hashSync(data.password, 10) : undefined;
+    const userRoleId = ROLE_ID_MAP.get(data.role.toUpperCase());
+    const userPassword = data.password ? bcrypt.hashSync(data.password, 10) : undefined;
 
-    if (!studentRoleId) {
+    if (!userRoleId) {
         throw new Error(INVALID_ROLE);
     }
 
@@ -47,8 +47,8 @@ export function getUserData(data : ImportCourseDataCsv) : ImportCourseDataUser {
         id: undefined,
         name : data.name,
         email : data.email,
-        password : studentPassword,
-        roleId : studentRoleId,
+        password : userPassword,
+        roleId : userRoleId,
     }
 
     return student;
