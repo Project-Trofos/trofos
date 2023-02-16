@@ -24,13 +24,14 @@ import { TRANSFORMERS } from '@lexical/markdown';
 import theme from './themes/Theme';
 import './themes/Theme.css';
 
-import './Editor.css';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import PlaygroundAutoLinkPlugin from './plugins/AutoLinkPlugin';
 import LexicalEditorRefPlugin from './plugins/LexicalEditorRefPlugin';
 import LoadInitialContentPlugin from './plugins/LoadInitialContentPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
+
+import './Editor.css';
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
@@ -60,13 +61,14 @@ const baseInitialConfig: InitialConfigType = {
 };
 
 type EditorProps = {
-  initialHtml?: string;
+  // Serialised editor state
+  initialStateString?: string;
   isEditable?: boolean;
   hideToolbar?: boolean;
 };
 
 const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
-  const { initialHtml, isEditable = true, hideToolbar = false } = props;
+  const { initialStateString, isEditable = true, hideToolbar = false } = props;
 
   const initialConfig: InitialConfigType = {
     ...baseInitialConfig,
@@ -94,7 +96,7 @@ const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
         <LinkPlugin />
         <CheckListPlugin />
         <LexicalEditorRefPlugin ref={ref} />
-        <LoadInitialContentPlugin html={initialHtml} />
+        <LoadInitialContentPlugin editorStateString={initialStateString} />
       </div>
     </LexicalComposer>
   );

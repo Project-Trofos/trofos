@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import { LexicalEditor } from 'lexical';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
+/**
+ * Set the ref to the current editor instance.
+ */
 const LexicalEditorRefPlugin = React.forwardRef<LexicalEditor>((props, ref) => {
   const [editor] = useLexicalComposerContext();
 

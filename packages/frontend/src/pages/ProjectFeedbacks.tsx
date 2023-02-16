@@ -56,12 +56,14 @@ function FacultyView(props: { sprintId?: number }) {
 
   const handleSave = () => {
     if (editorRef.current) {
+      // We can only get editor state in an update callback
       editorRef.current.update(async () => {
         if (editorRef.current && sprintId) {
+          const serialisedState = JSON.stringify(editorRef.current.getEditorState());
           if (currentFeedback) {
-            await handleUpdateFeedback(currentFeedback.id, JSON.stringify(editorRef.current.getEditorState()));
+            await handleUpdateFeedback(currentFeedback.id, serialisedState);
           } else {
-            await handleCreateFeedback(sprintId, JSON.stringify(editorRef.current.getEditorState()));
+            await handleCreateFeedback(sprintId, serialisedState);
           }
         }
       });
@@ -69,6 +71,7 @@ function FacultyView(props: { sprintId?: number }) {
     setViewState('view');
   };
 
+  // Go back to view state once sprint ID changed
   useEffect(() => {
     setViewState('view');
   }, [sprintId]);
@@ -76,9 +79,9 @@ function FacultyView(props: { sprintId?: number }) {
   return (
     <>
       {viewState === 'view' && currentFeedback && (
-        <Editor initialHtml={currentFeedback?.content} ref={editorRef} hideToolbar isEditable={false} />
+        <Editor initialStateString={currentFeedback?.content} ref={editorRef} hideToolbar isEditable={false} />
       )}
-      {viewState === 'edit' && <Editor initialHtml={currentFeedback?.content} ref={editorRef} />}
+      {viewState === 'edit' && <Editor initialStateString={currentFeedback?.content} ref={editorRef} />}
 
       <Space style={{ display: 'flex', justifyContent: 'center' }}>
         {viewState === 'view' && (
@@ -120,7 +123,7 @@ function StudentView(props: { sprintId?: number }) {
   const currentFeedback = getFeedbackBySprintId(sprintId ?? -1);
 
   return currentFeedback ? (
-    <Editor initialHtml={currentFeedback.content} isEditable={false} hideToolbar />
+    <Editor initialStateString={currentFeedback.content} isEditable={false} hideToolbar />
   ) : (
     <p>No feedback for this sprint yet...</p>
   );

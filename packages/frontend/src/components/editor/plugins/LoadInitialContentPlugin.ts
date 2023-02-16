@@ -1,27 +1,29 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getRoot, $insertNodes } from 'lexical';
-import { $generateNodesFromDOM } from '@lexical/html';
+import { $getRoot } from 'lexical';
 import React from 'react';
 
 type InitialContentProps = {
-  html?: string;
+  editorStateString?: string;
 };
 
-export default function LoadInitialContentPlugin({ html }: InitialContentProps) {
+/**
+ * Load initial state into the editor using a serialised editor state string.
+ */
+export default function LoadInitialContentPlugin({ editorStateString }: InitialContentProps) {
   const [editor] = useLexicalComposerContext();
 
   React.useEffect(() => {
     editor.update(() => {
-      if (html) {
-        const savedState = editor.parseEditorState(html);
+      if (editorStateString) {
+        const savedState = editor.parseEditorState(editorStateString);
         editor.setEditorState(savedState);
       } else {
         $getRoot().clear();
       }
     });
-    // Only update if html changed
+    // Only update if editorStateString changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [html]);
+  }, [editorStateString]);
 
   return null;
 }

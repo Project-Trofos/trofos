@@ -39,6 +39,7 @@ import './ToolbarPlugin.css';
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
 
+  // Track these states for the current selection
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -47,6 +48,7 @@ export default function ToolbarPlugin() {
   const [isSuperscript, setIsSuperscript] = useState(false);
   const [isCode, setIsCode] = useState(false);
 
+  // Update toolbar so we can display current selection properties
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
     if ($isRangeSelection(selection)) {
@@ -65,10 +67,13 @@ export default function ToolbarPlugin() {
     editor.update(() => {
       const root = $getRoot();
       const firstChild = root.getFirstChild();
+
       if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
+        // Naively convert the markdown in the first child node if it exists
         $convertFromMarkdownString(firstChild.getTextContent(), PLAYGROUND_TRANSFORMERS);
         document.getElementsByClassName('editor-editable-container')[0].classList.remove('container-no-padding');
       } else {
+        // Convert all nodes into markdown and replace current root with markdown node
         const markdown = $convertToMarkdownString(PLAYGROUND_TRANSFORMERS);
         root.clear().append($createCodeNode('markdown').append($createTextNode(markdown)));
         document.getElementsByClassName('editor-editable-container')[0].classList.add('container-no-padding');
@@ -77,6 +82,7 @@ export default function ToolbarPlugin() {
     });
   }, [editor]);
 
+  // Trigger update toolbar state after each selection change
   useEffect(() => {
     return editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
