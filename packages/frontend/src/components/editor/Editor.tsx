@@ -6,7 +6,6 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import { LexicalEditor } from 'lexical';
@@ -87,16 +86,15 @@ const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
           placeholder={null}
           ErrorBoundary={LexicalErrorBoundary}
         />
-        <HistoryPlugin />
         <TabIndentationPlugin />
-        <PlaygroundAutoLinkPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        <PlaygroundAutoLinkPlugin />
         <CodeHighlightPlugin />
-        <LexicalEditorRefPlugin ref={ref} />
-        <LoadInitialContentPlugin html={initialHtml} />
         <ListPlugin />
         <LinkPlugin />
         <CheckListPlugin />
+        <LexicalEditorRefPlugin ref={ref} />
+        <LoadInitialContentPlugin html={initialHtml} />
       </div>
     </LexicalComposer>
   );

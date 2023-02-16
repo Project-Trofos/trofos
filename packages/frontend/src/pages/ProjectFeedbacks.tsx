@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Select, Space } from 'antd';
 import { LexicalEditor } from 'lexical';
 import { useParams } from 'react-router-dom';
-import { $generateHtmlFromNodes } from '@lexical/html';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useProject } from '../api/hooks';
 
@@ -42,6 +41,9 @@ export default function ProjectFeedbacks(): JSX.Element {
   );
 }
 
+/**
+ * Contains edit and view functionalities.
+ */
 function FacultyView(props: { sprintId?: number }) {
   const { sprintId } = props;
   const { getFeedbackBySprintId, handleCreateFeedback, handleUpdateFeedback, handleDeleteFeedback } = useFeedback();
@@ -57,15 +59,19 @@ function FacultyView(props: { sprintId?: number }) {
       editorRef.current.update(async () => {
         if (editorRef.current && sprintId) {
           if (currentFeedback) {
-            await handleUpdateFeedback(currentFeedback.id, $generateHtmlFromNodes(editorRef.current));
+            await handleUpdateFeedback(currentFeedback.id, JSON.stringify(editorRef.current.getEditorState()));
           } else {
-            await handleCreateFeedback(sprintId, $generateHtmlFromNodes(editorRef.current));
+            await handleCreateFeedback(sprintId, JSON.stringify(editorRef.current.getEditorState()));
           }
         }
       });
     }
     setViewState('view');
   };
+
+  useEffect(() => {
+    setViewState('view');
+  }, [sprintId]);
 
   return (
     <>
@@ -88,7 +94,12 @@ function FacultyView(props: { sprintId?: number }) {
         {viewState === 'edit' && <Button onClick={() => setViewState('view')}>Cancel</Button>}
         {currentFeedback && (
           <Button
-            onClick={() => confirm('Are you sure you want to delete?', () => handleDeleteFeedback(currentFeedback.id))}
+            onClick={() =>
+              confirm('Are you sure you want to delete?', async () => {
+                await handleDeleteFeedback(currentFeedback.id);
+                setViewState('view');
+              })
+            }
             danger
           >
             Delete feedback
@@ -99,6 +110,9 @@ function FacultyView(props: { sprintId?: number }) {
   );
 }
 
+/**
+ * Contains a read-only editor.
+ */
 function StudentView(props: { sprintId?: number }) {
   const { sprintId } = props;
 

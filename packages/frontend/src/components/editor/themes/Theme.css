@@ -64,7 +64,8 @@
   text-align: right;
   min-width: 25px;
 }
-.editor-code:after {
+/* TODO: Need a way to change highlight language. Disable the language name display for now */
+/* .editor-code:after {
   content: attr(data-highlight-language);
   top: 2%;
   right: 5px;
@@ -73,7 +74,7 @@
   text-transform: uppercase;
   position: absolute;
   color: rgba(0, 0, 0, 0.5);
-}
+} */
 
 .editor-tokenComment {
   color: slategray;
