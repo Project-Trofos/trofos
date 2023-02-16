@@ -12,13 +12,11 @@ type DefaultFormProps = {
 
 export default function DefaultForm({ initialValues, onFinish, isUpdating, children }: DefaultFormProps): JSX.Element {
   return (
-    <Form labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} initialValues={initialValues} onFinish={onFinish}>
+    <Form layout="vertical" initialValues={initialValues} onFinish={onFinish}>
       {children}
-      <Form.Item label=" " colon={false}>
-        <Button type="primary" htmlType="submit" loading={isUpdating}>
-          Update
-        </Button>
-      </Form.Item>
+      <Button type="primary" htmlType="submit" loading={isUpdating}>
+        Update
+      </Button>
     </Form>
   );
 }
