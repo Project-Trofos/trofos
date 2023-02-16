@@ -12,6 +12,8 @@ import { useGetSprintsByProjectIdQuery } from '../api/sprint';
 import { useGetUserInfoQuery } from '../api/auth';
 import conditionalRender from '../helpers/conditionalRender';
 import confirm from '../components/modals/confirm';
+import Timestamp from '../components/common/Timestamp';
+import AvatarWithName from '../components/avatar/AvatarWithName';
 
 export default function ProjectFeedbacks(): JSX.Element {
   const params = useParams();
@@ -34,7 +36,7 @@ export default function ProjectFeedbacks(): JSX.Element {
         conditionalRender(
           <FacultyView sprintId={selectedSprintId} />,
           userInfo?.userRoleActions ?? [],
-          ['create_course'],
+          ['create_course', 'admin'],
           <StudentView sprintId={selectedSprintId} />,
         )}
     </Container>
@@ -78,6 +80,15 @@ function FacultyView(props: { sprintId?: number }) {
 
   return (
     <>
+      {currentFeedback && (
+        <Space>
+          <AvatarWithName
+            icon={currentFeedback.user.user_display_name[0]}
+            username={currentFeedback.user.user_display_name}
+          />
+          <Timestamp createdAt={currentFeedback.created_at} updatedAt={currentFeedback.updated_at} />
+        </Space>
+      )}
       {viewState === 'view' && currentFeedback && (
         <Editor initialStateString={currentFeedback?.content} ref={editorRef} hideToolbar isEditable={false} />
       )}
@@ -123,7 +134,16 @@ function StudentView(props: { sprintId?: number }) {
   const currentFeedback = getFeedbackBySprintId(sprintId ?? -1);
 
   return currentFeedback ? (
-    <Editor initialStateString={currentFeedback.content} isEditable={false} hideToolbar />
+    <>
+      <Space>
+        <AvatarWithName
+          icon={currentFeedback.user.user_display_name[0]}
+          username={currentFeedback.user.user_display_name}
+        />
+        <Timestamp createdAt={currentFeedback.created_at} updatedAt={currentFeedback.updated_at} />
+      </Space>
+      <Editor initialStateString={currentFeedback.content} isEditable={false} hideToolbar />
+    </>
   ) : (
     <p>No feedback for this sprint yet...</p>
   );
