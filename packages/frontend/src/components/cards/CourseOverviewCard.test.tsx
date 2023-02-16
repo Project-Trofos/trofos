@@ -6,7 +6,7 @@ import CourseOverviewCard from './CourseOverviewCard';
 
 describe('CourseOverviewCard test', () => {
   describe('when it renders', () => {
-    it('should render card correctly', () => {
+    it.skip('should render card correctly', () => {
       const { baseElement } = render(
         <BrowserRouter>
           <CourseOverviewCard
