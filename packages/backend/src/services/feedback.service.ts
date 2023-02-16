@@ -35,6 +35,15 @@ async function list(policyConstraint: AppAbility) {
     orderBy: {
       created_at: 'asc',
     },
+    include: {
+      user: {
+        select: {
+          user_display_name: true,
+          user_email: true,
+          user_id: true,
+        },
+      },
+    },
   });
   return feedbacks;
 }

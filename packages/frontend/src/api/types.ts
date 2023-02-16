@@ -264,3 +264,17 @@ export enum RetrospectiveVoteType {
   UP = 'up',
   DOWN = 'down',
 }
+
+export type Feedback = {
+  id: number;
+  user_id?: number;
+  user: {
+    user_id: number;
+    user_email: string;
+    user_display_name: string;
+  };
+  sprint_id: number;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+};
