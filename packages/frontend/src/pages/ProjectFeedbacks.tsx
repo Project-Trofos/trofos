@@ -36,7 +36,7 @@ export default function ProjectFeedbacks(): JSX.Element {
         conditionalRender(
           <FacultyView sprintId={selectedSprintId} />,
           userInfo?.userRoleActions ?? [],
-          ['create_course', 'admin'],
+          ['create_feedback', 'admin'],
           <StudentView sprintId={selectedSprintId} />,
         )}
     </Container>

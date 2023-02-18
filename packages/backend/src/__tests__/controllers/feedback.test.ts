@@ -3,7 +3,7 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import feedbackController from '../../controllers/feedback';
 import feedbackService from '../../services/feedback.service';
 import { mockFeedbackData } from '../mocks/feedbackData';
-import projectConstraint from '../../policies/constraints/project.constraint';
+import feedbackConstraint from '../../policies/constraints/feedback.constraint';
 
 const feedbackServiceSpies = {
   create: jest.spyOn(feedbackService, 'create'),
@@ -18,7 +18,7 @@ describe('feedbackController tests', () => {
     jest.clearAllMocks();
   });
 
-  const policyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+  const policyConstraint = feedbackConstraint.feedbackPolicyConstraint(1, true);
   const mockFeedback = mockFeedbackData[0];
 
   describe('create feedback', () => {

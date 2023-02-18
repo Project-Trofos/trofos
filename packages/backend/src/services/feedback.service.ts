@@ -26,11 +26,7 @@ async function create(payload: { sprintId: number; userId: number; content: stri
 async function list(policyConstraint: AppAbility) {
   const feedbacks = prisma.feedback.findMany({
     where: {
-      sprint: {
-        project: {
-          AND: [accessibleBy(policyConstraint).Project],
-        },
-      },
+      AND: [accessibleBy(policyConstraint).Feedback],
     },
     orderBy: {
       created_at: 'asc',

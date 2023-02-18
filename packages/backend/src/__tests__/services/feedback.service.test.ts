@@ -1,10 +1,10 @@
 import { prismaMock } from '../../models/mock/mockPrismaClient';
-import projectConstraint from '../../policies/constraints/project.constraint';
+import feedbackConstraint from '../../policies/constraints/feedback.constraint';
 import feedbackService from '../../services/feedback.service';
 import { mockFeedbackData } from '../mocks/feedbackData';
 
 describe('feedback.service tests', () => {
-  const policyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+  const policyConstraint = feedbackConstraint.feedbackPolicyConstraint(1, true);
 
   describe('create feedback', () => {
     it('should create and return feedback', async () => {

@@ -292,6 +292,11 @@ enum Action {
   read_project
   update_project
   delete_project
+  // Project feedback
+  create_feedback
+  read_feedback
+  update_feedback
+  delete_feedback
   // User related actions
   read_users
   create_users
