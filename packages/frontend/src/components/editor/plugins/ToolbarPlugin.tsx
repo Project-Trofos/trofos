@@ -7,7 +7,6 @@ import {
   AlignRightOutlined,
   BoldOutlined,
   CheckOutlined,
-  FileMarkdownOutlined,
   ItalicOutlined,
   MoreOutlined,
   OrderedListOutlined,
@@ -18,8 +17,6 @@ import {
 import { Dropdown } from 'antd';
 
 import {
-  $createTextNode,
-  $getRoot,
   $getSelection,
   $isRangeSelection,
   COMMAND_PRIORITY_CRITICAL,
@@ -27,12 +24,8 @@ import {
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
-import { $createCodeNode, $isCodeNode } from '@lexical/code';
-import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
 import { INSERT_CHECK_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-
-import { PLAYGROUND_TRANSFORMERS } from './MarkdownTransformersPlugin';
 
 import './ToolbarPlugin.css';
 
@@ -61,26 +54,6 @@ export default function ToolbarPlugin() {
       setIsCode(selection.hasFormat('code'));
     }
   }, []);
-
-  // Toggle markdown
-  const handleMarkdownToggle = useCallback(() => {
-    editor.update(() => {
-      const root = $getRoot();
-      const firstChild = root.getFirstChild();
-
-      if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
-        // Naively convert the markdown in the first child node if it exists
-        $convertFromMarkdownString(firstChild.getTextContent(), PLAYGROUND_TRANSFORMERS);
-        document.getElementsByClassName('editor-editable-container')[0].classList.remove('container-no-padding');
-      } else {
-        // Convert all nodes into markdown and replace current root with markdown node
-        const markdown = $convertToMarkdownString(PLAYGROUND_TRANSFORMERS);
-        root.clear().append($createCodeNode('markdown').append($createTextNode(markdown)));
-        document.getElementsByClassName('editor-editable-container')[0].classList.add('container-no-padding');
-      }
-      root.selectEnd();
-    });
-  }, [editor]);
 
   // Trigger update toolbar state after each selection change
   useEffect(() => {
@@ -185,8 +158,6 @@ export default function ToolbarPlugin() {
       />
 
       <CheckOutlined title="Check list" onClick={() => editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)} />
-
-      <FileMarkdownOutlined title="Show markdown" onClick={() => handleMarkdownToggle()} />
     </div>
   );
 }
