@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Collapse, Space } from 'antd';
+import { Button, Collapse, Empty, Space } from 'antd';
 import { LexicalEditor } from 'lexical';
 import { useParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
@@ -28,21 +28,25 @@ export default function ProjectFeedbacks(): JSX.Element {
 
   return (
     <Container>
-      <Collapse>
-        {sprints?.sprints?.map((s) => {
-          return (
-            <Panel header={s.name} key={s.id}>
-              {/* Render Editor for faculty, editor display for students */}
-              {conditionalRender(
-                <FacultyView sprintId={s.id} />,
-                userInfo?.userRoleActions ?? [],
-                ['create_feedback', 'admin'],
-                <StudentView sprintId={s.id} />,
-              )}
-            </Panel>
-          );
-        })}
-      </Collapse>
+      {sprints?.sprints && sprints.sprints.length > 0 ? (
+        <Collapse>
+          {sprints?.sprints?.map((s) => {
+            return (
+              <Panel header={s.name} key={s.id}>
+                {/* Render Editor for faculty, editor display for students */}
+                {conditionalRender(
+                  <FacultyView sprintId={s.id} />,
+                  userInfo?.userRoleActions ?? [],
+                  ['create_feedback', 'admin'],
+                  <StudentView sprintId={s.id} />,
+                )}
+              </Panel>
+            );
+          })}
+        </Collapse>
+      ) : (
+        <Empty description="No sprint has been created." />
+      )}
     </Container>
   );
 }
