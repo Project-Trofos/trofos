@@ -67,6 +67,44 @@ describe('feedbackController tests', () => {
       expect(feedbackServiceSpies.create).not.toHaveBeenCalledWith();
       expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
+
+    it('should throw an error and return status 500 when content is missing', async () => {
+      const request = createRequest({
+        body: {
+          sprintId: mockFeedback.sprint_id,
+          content: undefined,
+        },
+      });
+
+      const mockResponse = createResponse();
+
+      mockResponse.locals.userSession = {
+        user_id: mockFeedback.user_id,
+      };
+
+      feedbackServiceSpies.create.mockResolvedValueOnce(mockFeedback);
+
+      await feedbackController.create(request, mockResponse);
+      expect(feedbackServiceSpies.create).not.toHaveBeenCalledWith();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should throw an error and return status 500 when userSession is missing', async () => {
+      const request = createRequest({
+        body: {
+          sprintId: mockFeedback.sprint_id,
+          content: mockFeedback.content,
+        },
+      });
+
+      const mockResponse = createResponse();
+
+      feedbackServiceSpies.create.mockResolvedValueOnce(mockFeedback);
+
+      await feedbackController.create(request, mockResponse);
+      expect(feedbackServiceSpies.create).not.toHaveBeenCalledWith();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('list feedbacks', () => {
