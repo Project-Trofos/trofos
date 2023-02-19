@@ -60,8 +60,6 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
       userRoleActions: userRoleInformation.roleActions,
     };
 
-    
-
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
     console.error(e);
@@ -107,5 +105,5 @@ export default {
   logoutUser,
   getUserInfo,
   changePassword,
-  updateUser
+  updateUser,
 };

@@ -7,12 +7,14 @@ import {
   User,
   UsersOnProjects,
   Settings,
+  UsersOnProjectsSetting,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID, SHADOW_COURSE_DATA } from '../helpers/constants';
+import { UserSettingsType } from './types/project.service.types';
 
 async function getAll(
   policyConstraint: AppAbility,
@@ -335,6 +337,13 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
       },
     });
 
+    await tx.usersOnProjectsSetting.create({
+      data: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    });
+
     await tx.usersOnRolesOnCourses.create({
       data: {
         course_id: projectInfo.course_id,
@@ -521,6 +530,39 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   return result;
 }
 
+async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectsSetting | null> {
+  const result = await prisma.usersOnProjectsSetting.findUnique({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+  });
+
+  return result;
+}
+
+async function updateUserSettings(
+  projectId: number,
+  userId: number,
+  updatedSettings: UserSettingsType,
+): Promise<UsersOnProjectsSetting> {
+  const result = await prisma.usersOnProjectsSetting.update({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+    data: {
+      ...updatedSettings,
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getAll,
@@ -539,4 +581,6 @@ export default {
   addGitUrl,
   updateGitUrl,
   deleteGitUrl,
+  getUserSettings,
+  updateUserSettings,
 };

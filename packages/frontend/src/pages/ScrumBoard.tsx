@@ -36,7 +36,7 @@ export default function ScrumBoard(): JSX.Element {
     }
 
     const updatedUsers = [...users];
-    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned', user_display_name: "Unassigned" } };
+    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned', user_display_name: 'Unassigned' } };
     updatedUsers.push(unassignedUser);
     return updatedUsers;
   };

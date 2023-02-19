@@ -11,7 +11,7 @@ describe('account.service tests', () => {
     it("should successfuly change the user's password if a valid userId and old password is supplied", async () => {
       const oldHashedPassword = bcrypt.hashSync('oldUserPassword', 10);
       const mockFindUser = {
-        ...userData[0], 
+        ...userData[0],
         user_password_hash: oldHashedPassword,
       };
       const hashedPassword = bcrypt.hashSync('newUserPassword', 10);
@@ -53,8 +53,8 @@ describe('account.service tests', () => {
     it("should successfully update the user's data if the fields supplied are valid", async () => {
       const mockUpdateUser = {
         ...userData[0],
-        user_display_name: "New Display Name",
-        user_password_hash: null
+        user_display_name: 'New Display Name',
+        user_password_hash: null,
       };
       prismaMock.user.update.mockResolvedValueOnce(mockUpdateUser);
       await expect(accountService.updateUser(1, 'New Display Name')).resolves.toEqual(mockUpdateUser);

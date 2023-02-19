@@ -11,6 +11,7 @@ import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 import ProjectBacklogStatusForm from '../components/forms/ProjectBacklogStatusForm';
 import ProjectGitLinkForm from '../components/forms/ProjectGitLinkForm';
+import ProjectUserSettingsForm from '../components/forms/ProjectUserSettingsForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
@@ -65,6 +66,10 @@ export default function ProjectSettings(): JSX.Element {
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>GitHub Linkage</Subheading>
         <ProjectGitLinkForm />
+      </Space>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>User Settings:</Subheading>
+        <ProjectUserSettingsForm />
       </Space>
     </Container>
   );

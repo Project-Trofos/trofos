@@ -90,4 +90,16 @@ router.delete(
   project.deleteGitLink,
 );
 
+router.get(
+  '/:projectId/user/settings',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  project.getUserSettings,
+);
+
+router.put(
+  '/:projectId/user/settings',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.updateUserSettings,
+);
+
 export default router;

@@ -34,7 +34,9 @@ describe('project controller tests', () => {
   });
 
   // Mock data for users
-  const usersData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash', user_display_name: "User" }];
+  const usersData: User[] = [
+    { user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash', user_display_name: 'User' },
+  ];
 
   // Mock data for users on projects
   const usersProjectData: UsersOnProjects[] = [{ project_id: 1, user_id: 1, created_at: new Date(Date.now()) }];
