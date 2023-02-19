@@ -39,6 +39,22 @@ async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
       },
       {
         role_id: FACULTY_ROLE_ID,
+        action: Action.create_feedback,
+      },
+      {
+        role_id: FACULTY_ROLE_ID,
+        action: Action.read_feedback,
+      },
+      {
+        role_id: FACULTY_ROLE_ID,
+        action: Action.update_feedback,
+      },
+      {
+        role_id: FACULTY_ROLE_ID,
+        action: Action.delete_feedback,
+      },
+      {
+        role_id: FACULTY_ROLE_ID,
         action: Action.read_users,
       },
       {
