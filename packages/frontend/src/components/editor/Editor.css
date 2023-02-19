@@ -20,7 +20,7 @@
 
 .editor-container {
   position: relative;
-  box-shadow: var(--default-box-shadow);
+  border: 1px rgb(219, 219, 219) solid;
 }
 
 .editor-placeholder {
