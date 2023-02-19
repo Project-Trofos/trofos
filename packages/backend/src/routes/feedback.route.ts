@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/', hasAuth(Action.read_feedback, feedbackPolicy.POLICY_NAME), feedback.list);
 
-router.get('/:sprintId', hasAuth(Action.read_feedback, feedbackPolicy.POLICY_NAME), feedback.listBySprintId);
+router.get('/sprint/:sprintId', hasAuth(Action.read_feedback, feedbackPolicy.POLICY_NAME), feedback.listBySprintId);
 
 router.post('/', hasAuth(Action.create_feedback, feedbackPolicy.POLICY_NAME), feedback.create);
 

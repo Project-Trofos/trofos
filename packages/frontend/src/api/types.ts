@@ -269,7 +269,6 @@ export type Feedback = {
   id: number;
   user_id?: number;
   user: {
-    user_id: number;
     user_email: string;
     user_display_name: string;
   };

@@ -8,7 +8,16 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'feedback/',
         credentials: 'include',
       }),
-      providesTags: ['Feedback'],
+      providesTags: (result, error, arg) =>
+        result ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback'] : ['Feedback'],
+    }),
+    getFeedbacksBySprintId: builder.query<Feedback[], { sprintId: number }>({
+      query: ({ sprintId }) => ({
+        url: `feedback/sprint/${sprintId}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) =>
+        result ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback'] : ['Feedback'],
     }),
     createFeedback: builder.mutation<Omit<Feedback, 'user'>, Pick<Feedback, 'sprint_id' | 'content'>>({
       query: ({ sprint_id, content }) => ({
@@ -31,7 +40,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: ['Feedback'],
+      invalidatesTags: (result, error, arg) => [{ type: 'Feedback', id: arg.id }],
     }),
     deleteFeedback: builder.mutation<Feedback, Pick<Feedback, 'id'>>({
       query: ({ id }) => ({
@@ -45,5 +54,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetFeedbacksQuery, useCreateFeedbackMutation, useUpdateFeedbackMutation, useDeleteFeedbackMutation } =
-  extendedApi;
+export const {
+  useGetFeedbacksQuery,
+  useGetFeedbacksBySprintIdQuery,
+  useCreateFeedbackMutation,
+  useUpdateFeedbackMutation,
+  useDeleteFeedbackMutation,
+} = extendedApi;

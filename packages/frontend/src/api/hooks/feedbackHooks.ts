@@ -1,30 +1,19 @@
 import { message } from 'antd';
-import { useCallback } from 'react';
 import { getErrorMessage } from '../../helpers/error';
 import {
   useCreateFeedbackMutation,
   useDeleteFeedbackMutation,
-  useGetFeedbacksQuery,
+  useGetFeedbacksBySprintIdQuery,
   useUpdateFeedbackMutation,
 } from '../feedback';
 
-export function useFeedback() {
-  const { data: allFeedbacks } = useGetFeedbacksQuery();
+export function useFeedbackBySprint(sprintId: number) {
+  const { data: feedbacks } = useGetFeedbacksBySprintIdQuery({ sprintId });
   const [createFeedback] = useCreateFeedbackMutation();
   const [updateFeedback] = useUpdateFeedbackMutation();
   const [deleteFeedback] = useDeleteFeedbackMutation();
 
-  const getFeedbackBySprintId = useCallback(
-    (sprintId: number) => {
-      if (!allFeedbacks) {
-        return undefined;
-      }
-      return allFeedbacks.find((f) => f.sprint_id === sprintId);
-    },
-    [allFeedbacks],
-  );
-
-  const handleCreateFeedback = async (sprintId: number, content: string) => {
+  const handleCreateFeedback = async (content: string) => {
     try {
       await createFeedback({ sprint_id: sprintId, content }).unwrap();
       message.success('Feedback created!');
@@ -54,5 +43,5 @@ export function useFeedback() {
     }
   };
 
-  return { allFeedbacks, getFeedbackBySprintId, handleCreateFeedback, handleUpdateFeedback, handleDeleteFeedback };
+  return { feedbacks, handleCreateFeedback, handleUpdateFeedback, handleDeleteFeedback };
 }

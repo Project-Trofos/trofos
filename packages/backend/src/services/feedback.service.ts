@@ -36,7 +36,6 @@ async function list(policyConstraint: AppAbility) {
         select: {
           user_display_name: true,
           user_email: true,
-          user_id: true,
         },
       },
     },
@@ -44,15 +43,23 @@ async function list(policyConstraint: AppAbility) {
   return feedbacks;
 }
 
-async function listBySprintId(projectId: number) {
+async function listBySprintId(sprintId: number) {
   const feedbacks = prisma.feedback.findMany({
     where: {
       sprint: {
-        project_id: projectId,
+        id: sprintId,
       },
     },
     orderBy: {
       created_at: 'asc',
+    },
+    include: {
+      user: {
+        select: {
+          user_display_name: true,
+          user_email: true,
+        },
+      },
     },
   });
   return feedbacks;
