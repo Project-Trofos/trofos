@@ -30,7 +30,6 @@ export default function ProjectFeedbacks(): JSX.Element {
   const { data: projectRole } = useGetProjectUserRolesQuery(project?.id ?? skipToken);
   const { data: actionOnRoles } = useGetActionsOnRolesQuery();
   const { data: userInfo } = useGetUserInfoQuery();
-  // Merge basic and project roles
   const projectActions: string[] = Array.from(
     new Set([
       ...(projectRole
@@ -38,7 +37,8 @@ export default function ProjectFeedbacks(): JSX.Element {
         .flatMap(
           (r) => actionOnRoles?.find((a) => a.id === r.role_id)?.actions.flatMap((action) => action.action) ?? [],
         ) ?? []),
-      ...(userInfo?.userRoleActions ?? []),
+      // Add admin action from basic role action if applicable
+      ...(userInfo?.userRoleActions.includes('admin') ? ['admin'] : []),
     ]),
   );
 
