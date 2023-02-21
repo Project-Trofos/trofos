@@ -11,17 +11,20 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       providesTags: (result, error, arg) =>
         result ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback'] : ['Feedback'],
     }),
-    getFeedbacksBySprintId: builder.query<Feedback[], { sprintId: number }>({
-      query: ({ sprintId }) => ({
-        url: `feedback/sprint/${sprintId}`,
+    getFeedbacksBySprintId: builder.query<Feedback[], { sprintId: number; projectId: number }>({
+      query: ({ sprintId, projectId }) => ({
+        url: `project/${projectId}/feedback/sprint/${sprintId}`,
         credentials: 'include',
       }),
       providesTags: (result, error, arg) =>
         result ? [...result.map(({ id }) => ({ type: 'Feedback' as const, id })), 'Feedback'] : ['Feedback'],
     }),
-    createFeedback: builder.mutation<Omit<Feedback, 'user'>, Pick<Feedback, 'sprint_id' | 'content'>>({
-      query: ({ sprint_id, content }) => ({
-        url: 'feedback/',
+    createFeedback: builder.mutation<
+      Omit<Feedback, 'user'>,
+      Pick<Feedback, 'sprint_id' | 'content'> & { projectId: number }
+    >({
+      query: ({ sprint_id, content, projectId }) => ({
+        url: `project/${projectId}/feedback`,
         method: 'POST',
         body: {
           sprintId: sprint_id,
@@ -31,9 +34,9 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Feedback'],
     }),
-    updateFeedback: builder.mutation<Feedback, Pick<Feedback, 'id' | 'content'>>({
-      query: ({ content, id }) => ({
-        url: `feedback/${id}`,
+    updateFeedback: builder.mutation<Feedback, Pick<Feedback, 'id' | 'content'> & { projectId: number }>({
+      query: ({ content, id, projectId }) => ({
+        url: `project/${projectId}/feedback/${id}`,
         method: 'PUT',
         body: {
           content,
@@ -42,9 +45,9 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Feedback', id: arg.id }],
     }),
-    deleteFeedback: builder.mutation<Feedback, Pick<Feedback, 'id'>>({
-      query: ({ id }) => ({
-        url: `feedback/${id}`,
+    deleteFeedback: builder.mutation<Feedback, Pick<Feedback, 'id'> & { projectId: number }>({
+      query: ({ id, projectId }) => ({
+        url: `project/${projectId}/feedback/${id}`,
         method: 'DELETE',
         credentials: 'include',
       }),

@@ -17,6 +17,7 @@ import { useFeedbackBySprint as useFeedbackBySprintId } from '../api/hooks/feedb
 import { Feedback } from '../api/types';
 
 import './ProjectFeedbacks.css';
+import { useGetActionsOnRolesQuery, useGetProjectUserRolesQuery } from '../api/role';
 
 const { Panel } = Collapse;
 
@@ -24,21 +25,36 @@ export default function ProjectFeedbacks(): JSX.Element {
   const params = useParams();
   const { project } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
   const { data: sprints } = useGetSprintsByProjectIdQuery(project?.id ?? skipToken);
+
+  // TODO (Luoyi): Use API for fetching user project actions
+  const { data: projectRole } = useGetProjectUserRolesQuery(project?.id ?? skipToken);
+  const { data: actionOnRoles } = useGetActionsOnRolesQuery();
   const { data: userInfo } = useGetUserInfoQuery();
+  // Merge basic and project roles
+  const projectActions: string[] = Array.from(
+    new Set([
+      ...(projectRole
+        ?.filter((r) => r.user_email === userInfo?.userEmail)
+        .flatMap(
+          (r) => actionOnRoles?.find((a) => a.id === r.role_id)?.actions.flatMap((action) => action.action) ?? [],
+        ) ?? []),
+      ...(userInfo?.userRoleActions ?? []),
+    ]),
+  );
 
   return (
     <Container>
-      {sprints?.sprints && sprints.sprints.length > 0 ? (
+      {project && sprints?.sprints && sprints.sprints.length > 0 ? (
         <Collapse>
           {sprints?.sprints?.map((s) => {
             return (
               <Panel header={s.name} key={s.id}>
                 {/* Render Editor for faculty, editor display for students */}
                 {conditionalRender(
-                  <FacultyView sprintId={s.id} />,
-                  userInfo?.userRoleActions ?? [],
-                  ['create_feedback', 'admin'],
-                  <StudentView sprintId={s.id} />,
+                  <FacultyView projectId={project.id} sprintId={s.id} />,
+                  projectActions,
+                  ['create_feedback', 'update_feedback', 'delete_feedback', 'admin'],
+                  <StudentView projectId={project.id} sprintId={s.id} />,
                 )}
               </Panel>
             );
@@ -54,11 +70,13 @@ export default function ProjectFeedbacks(): JSX.Element {
 /**
  * Contains edit and view functionalities.
  */
-function FacultyView(props: { sprintId: number }) {
-  const { sprintId } = props;
+function FacultyView(props: { sprintId: number; projectId: number }) {
+  const { sprintId, projectId } = props;
 
-  const { feedbacks, handleCreateFeedback, handleDeleteFeedback, handleUpdateFeedback } =
-    useFeedbackBySprintId(sprintId);
+  const { feedbacks, handleCreateFeedback, handleDeleteFeedback, handleUpdateFeedback } = useFeedbackBySprintId(
+    projectId,
+    sprintId,
+  );
 
   return (
     <div className="feedbacks-container">
@@ -156,10 +174,10 @@ function FeedbackEditor(props: {
 /**
  * Contains a read-only editor.
  */
-function StudentView(props: { sprintId: number }) {
-  const { sprintId } = props;
+function StudentView(props: { sprintId: number; projectId: number }) {
+  const { sprintId, projectId } = props;
 
-  const { feedbacks } = useFeedbackBySprintId(sprintId);
+  const { feedbacks } = useFeedbackBySprintId(projectId, sprintId);
 
   return feedbacks && feedbacks.length > 0 ? (
     <div className="feedbacks-container">
