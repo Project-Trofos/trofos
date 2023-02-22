@@ -1,0 +1,27 @@
+.editor-toolbar-container {
+  background-color: white;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+
+  border-bottom: 2px solid #ebecf0;
+
+  display: flex;
+  gap: 0.5em;
+  padding: 0.5em 0.5em;
+  overflow-x: auto;
+}
+
+.editor-toolbar-container > *:hover {
+  background-color: rgb(224, 224, 224);
+  border-radius: 0.375em;
+}
+
+.editor-button-active {
+  background-color: rgb(224, 224, 224);
+  border-radius: 0.375em;
+}
+
+.editor-toolbar-container .anticon {
+  padding: 0.5em 0.5em;
+  cursor: pointer;
+}
