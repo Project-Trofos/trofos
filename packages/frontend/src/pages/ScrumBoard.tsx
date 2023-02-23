@@ -9,6 +9,7 @@ import type { Backlog, ScrumBoardUserData } from '../api/types';
 import ScrumBoardCard from '../components/cards/ScrumBoardCard';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import './ScrumBoard.css';
+import Container from '../components/layouts/Container';
 
 const { Title } = Typography;
 
@@ -36,7 +37,7 @@ export default function ScrumBoard(): JSX.Element {
     }
 
     const updatedUsers = [...users];
-    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned', user_display_name: "Unassigned" } };
+    const unassignedUser = { user: { user_id: null, user_email: 'Unassigned', user_display_name: 'Unassigned' } };
     updatedUsers.push(unassignedUser);
     return updatedUsers;
   };
@@ -144,23 +145,25 @@ export default function ScrumBoard(): JSX.Element {
   };
 
   return (
-    <div className="scrum-board-drag-drop-context">
-      {!backlogs && (
-        <Alert
-          className="scrum-board-warning"
-          message="No Active Sprint"
-          description="You have not started a sprint. To display backlogs on the scrum board, you will need to start a sprint first."
-          type="warning"
-        />
-      )}
-      <div className="scrum-board-status-container">
-        {backlogStatus?.map((status) => (
-          <div key={status.name} className="scrum-board-status">
-            <Title level={5}>{status.name} </Title>
-          </div>
-        ))}
+    <Container noGap fullWidth style={{ backgroundColor: 'white', height: '100%' }}>
+      <div className="scrum-board-drag-drop-context">
+        {!backlogs && (
+          <Alert
+            className="scrum-board-warning"
+            message="No Active Sprint"
+            description="You have not started a sprint. To display backlogs on the scrum board, you will need to start a sprint first."
+            type="warning"
+          />
+        )}
+        <div className="scrum-board-status-container">
+          {backlogStatus?.map((status) => (
+            <div key={status.name} className="scrum-board-status">
+              <Title level={5}>{status.name} </Title>
+            </div>
+          ))}
+        </div>
+        <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
-    </div>
+    </Container>
   );
 }

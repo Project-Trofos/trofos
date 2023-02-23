@@ -5,7 +5,7 @@ import './Container.css';
 export default function Container(
   props: React.ComponentPropsWithoutRef<'section'> & { fullWidth?: boolean; noGap?: boolean },
 ) {
-  const { className, children, style, fullWidth, noGap, ...rest } = props;
+  const { className, children, fullWidth, noGap, ...rest } = props;
 
   return (
     <section
