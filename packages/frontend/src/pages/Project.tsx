@@ -146,9 +146,9 @@ export default function ProjectPage(): JSX.Element {
           />
         }
       >
-        <Text>{project.description}</Text>
+        {project.description && <Text>{project.description}</Text>}
       </PageHeader>
-      <section className="project-section-container">
+      <section className="overflow-scroll-container">
         <Outlet />
       </section>
     </>
