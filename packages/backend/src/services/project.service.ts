@@ -530,8 +530,8 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   return result;
 }
 
-async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectsSetting | null> {
-  const result = await prisma.usersOnProjectsSetting.findUnique({
+async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectsSetting> {
+  const result = await prisma.usersOnProjectsSetting.findUniqueOrThrow({
     where: {
       project_id_user_id: {
         project_id: projectId,
