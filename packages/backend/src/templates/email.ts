@@ -1,5 +1,5 @@
 export function commentSubject(projectName: string, backlog: string) {
-  return `Trofos: New comment on ${projectName}:${backlog}`;
+  return `Trofos - New comment on ${projectName}: ${backlog}`;
 }
 
 export function commentBody(username: string, comment: string, projectId: number, backlogId: number) {

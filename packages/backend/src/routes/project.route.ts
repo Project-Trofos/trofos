@@ -92,6 +92,7 @@ router.delete(
   project.deleteGitLink,
 );
 
+// Routes for getting and updating user settings for projects
 router.get(
   '/:projectId/user/settings',
   hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
@@ -102,6 +103,7 @@ router.put(
   '/:projectId/user/settings',
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.updateUserSettings,
+);
 
 // Get all feedbacks of a sprint of a project
 router.get(
