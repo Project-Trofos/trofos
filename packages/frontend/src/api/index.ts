@@ -18,6 +18,7 @@ const trofosApiSlice = createApi({
     'Settings',
     'Retrospective',
     'ProjectUserSettings',
+    'Feedback',
   ],
   endpoints: () => ({}),
 });

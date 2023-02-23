@@ -23,6 +23,7 @@ import ProjectSprints from '../pages/ProjectSprints';
 import CoursePeople from '../pages/CoursePeople';
 import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
+import ProjectFeedbacks from '../pages/ProjectFeedbacks';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="board" element={<ScrumBoard />} />
+            <Route path="feedback" element={<ProjectFeedbacks />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />

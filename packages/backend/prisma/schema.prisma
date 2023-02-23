@@ -22,6 +22,8 @@ model User {
   courses       UsersOnCourses[]
   basicRoles UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
+
+  feedbacks Feedback[]
 }
 
 model UserSession {
@@ -216,6 +218,18 @@ model Sprint {
   backlogs        Backlog[]
   backlog_history BacklogHistory[]
   retrospective   Retrospective[]
+  feedback        Feedback[]
+}
+
+model Feedback {
+  id            Int               @id @default(autoincrement())
+  user_id       Int?
+  user          User?             @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
+  sprint_id     Int               
+  sprint        Sprint            @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  content       String
+  created_at    DateTime          @default(now())
+  updated_at    DateTime?
 }
 
 model Role {
@@ -224,7 +238,6 @@ model Role {
   actions ActionsOnRoles[]
   basicRoles UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
-  
 }
 
 model ActionsOnRoles {
@@ -288,6 +301,11 @@ enum Action {
   read_project
   update_project
   delete_project
+  // Project feedback
+  create_feedback
+  read_feedback
+  update_feedback
+  delete_feedback
   // User related actions
   read_users
   create_users
