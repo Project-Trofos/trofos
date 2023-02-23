@@ -19,19 +19,19 @@
 }
 
 .editor-text-code {
-  background-color: rgb(240, 242, 245);
+  background-color: rgb(240 242 245);
   padding: 1px 0.25rem;
   font-family: Menlo, Consolas, Monaco, monospace;
   font-size: 94%;
 }
 
 .editor-link {
-  color: rgb(33, 111, 219);
+  color: rgb(33 111 219);
   text-decoration: none;
 }
 
 .editor-code {
-  background-color: rgb(240, 242, 245);
+  background-color: rgb(240 242 245);
   font-family: Menlo, Consolas, Monaco, monospace;
   display: block;
   padding: 8px 8px 8px 52px;
@@ -51,7 +51,7 @@
   margin-bottom: 0;
 }
 
-.editor-code:before {
+.editor-code::before {
   content: attr(data-gutter);
   position: absolute;
   background-color: #eee;
@@ -64,7 +64,9 @@
   text-align: right;
   min-width: 25px;
 }
+
 /* TODO: Need a way to change highlight language. Disable the language name display for now */
+
 /* .editor-code:after {
   content: attr(data-highlight-language);
   top: 2%;
@@ -120,7 +122,7 @@
 
 .editor-heading-h1 {
   font-size: 24px;
-  color: rgb(5, 5, 5);
+  color: rgb(5 5 5);
   font-weight: 400;
   margin: 0;
   margin-bottom: 12px;
@@ -129,7 +131,7 @@
 
 .editor-heading-h2 {
   font-size: 15px;
-  color: rgb(101, 103, 107);
+  color: rgb(101 103 107);
   font-weight: 700;
   margin: 0;
   margin-top: 10px;
@@ -140,8 +142,8 @@
   margin: 0;
   margin-left: 20px;
   font-size: 15px;
-  color: rgb(101, 103, 107);
-  border-left-color: rgb(206, 208, 212);
+  color: rgb(101 103 107);
+  border-left-color: rgb(206 208 212);
   border-left-width: 4px;
   border-left-style: solid;
   padding-left: 16px;
@@ -160,7 +162,7 @@
 }
 
 .editor-listitem {
-  margin: 8px 32px 8px 32px;
+  margin: 8px 32px;
 }
 
 .editor-nested-listitem {
@@ -177,11 +179,13 @@
   list-style-type: none;
   outline: none;
 }
+
 .editor-list-checked {
   text-decoration: line-through;
 }
-.editor-list-unchecked:before,
-.editor-list-checked:before {
+
+.editor-list-unchecked::before,
+.editor-list-checked::before {
   content: '';
   width: 16px;
   height: 16px;
@@ -192,27 +196,32 @@
   background-size: cover;
   position: absolute;
 }
-.editor-list-unchecked[dir='rtl']:before,
-.editor-list-checked[dir='rtl']:before {
+
+.editor-list-unchecked[dir='rtl']::before,
+.editor-list-checked[dir='rtl']::before {
   left: auto;
   right: 0;
 }
-.editor-list-unchecked:focus:before,
-.editor-list-checked:focus:before {
+
+.editor-list-unchecked:focus::before,
+.editor-list-checked:focus::before {
   box-shadow: 0 0 0 2px #a6cdfe;
   border-radius: 2px;
 }
-.editor-list-unchecked:before {
+
+.editor-list-unchecked::before {
   border: 1px solid #999;
   border-radius: 2px;
 }
-.editor-list-checked:before {
-  border: 1px solid rgb(61, 135, 245);
+
+.editor-list-checked::before {
+  border: 1px solid rgb(61 135 245);
   border-radius: 2px;
   background-color: #3d87f5;
   background-repeat: no-repeat;
 }
-.editor-list-checked:after {
+
+.editor-list-checked::after {
   content: '';
   cursor: pointer;
   border-color: #fff;

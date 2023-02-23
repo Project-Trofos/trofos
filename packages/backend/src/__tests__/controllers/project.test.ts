@@ -4,7 +4,12 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import project from '../../services/project.service';
 import settings from '../../services/settings.service';
 import projectController from '../../controllers/project';
-import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
+import {
+  mockReturnedProjectGitLink,
+  mockReturnedUserSettings,
+  mockUpdatedUserSettings,
+  projectsData,
+} from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 
 const spies = {
@@ -26,6 +31,8 @@ const spies = {
   updateGitUrl: jest.spyOn(project, 'updateGitUrl'),
   deleteGitUrl: jest.spyOn(project, 'deleteGitUrl'),
   getSettings: jest.spyOn(settings, 'get'),
+  getUserSettings: jest.spyOn(project, 'getUserSettings'),
+  updateUserSettings: jest.spyOn(project, 'updateUserSettings'),
 };
 
 describe('project controller tests', () => {
@@ -639,6 +646,74 @@ describe('project controller tests', () => {
       await projectController.deleteGitLink(mockReq, mockRes);
 
       expect(spies.deleteGitUrl).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('getUserSettings', () => {
+    it('should return user settings', async () => {
+      spies.getUserSettings.mockResolvedValueOnce(mockReturnedUserSettings);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedUserSettings.project_id,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await projectController.getUserSettings(mockReq, mockRes);
+
+      expect(spies.getUserSettings).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedUserSettings));
+    });
+
+    it('should return error if project id is missing', async () => {
+      spies.getUserSettings.mockResolvedValueOnce(mockReturnedUserSettings);
+      const mockReq = createRequest({
+        params: {},
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await projectController.getUserSettings(mockReq, mockRes);
+
+      expect(spies.getUserSettings).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('updateGitLink', () => {
+    it('should return updated user settings', async () => {
+      spies.updateUserSettings.mockResolvedValueOnce(mockReturnedUserSettings);
+      const mockReq = createRequest({
+        params: {
+          projectId: mockReturnedUserSettings.project_id,
+        },
+        body: {
+          updatedSettings: mockUpdatedUserSettings,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await projectController.updateUserSettings(mockReq, mockRes);
+
+      expect(spies.updateUserSettings).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockReturnedUserSettings));
+    });
+
+    it('should return error if no projectId given', async () => {
+      spies.updateUserSettings.mockResolvedValueOnce(mockReturnedUserSettings);
+      const mockReq = createRequest({
+        params: {},
+        body: {
+          updatedSettings: mockUpdatedUserSettings,
+        },
+      });
+      const mockRes = createResponse({ locals: { userSession: { userId: 1 } } });
+
+      await projectController.updateUserSettings(mockReq, mockRes);
+
+      expect(spies.updateUserSettings).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });

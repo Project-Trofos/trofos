@@ -1,7 +1,20 @@
-import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, User, UsersOnProjects } from '@prisma/client';
+import {
+  BacklogStatus,
+  BacklogStatusType,
+  Project,
+  ProjectGitLink,
+  User,
+  UsersOnProjects,
+  UsersOnProjectsSetting,
+} from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
-import { mockReturnedProjectGitLink, projectsData } from '../mocks/projectData';
+import {
+  mockReturnedProjectGitLink,
+  mockReturnedUserSettings,
+  mockUpdatedUserSettings,
+  projectsData,
+} from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import { userData } from '../mocks/userData';
@@ -331,6 +344,36 @@ describe('project.service tests', () => {
 
       const result = await project.deleteGitUrl(mockReturnedProjectGitLink.project_id);
       expect(result).toEqual<ProjectGitLink>(resultMock);
+    });
+  });
+
+  describe('getUserSettings', () => {
+    it('should return user settings', async () => {
+      const resultMock: UsersOnProjectsSetting = mockReturnedUserSettings;
+      prismaMock.usersOnProjectsSetting.findUniqueOrThrow.mockResolvedValueOnce(resultMock);
+
+      const result = await project.getUserSettings(
+        mockReturnedUserSettings.project_id,
+        mockReturnedUserSettings.user_id,
+      );
+      expect(result).toEqual<UsersOnProjectsSetting>(resultMock);
+    });
+  });
+
+  describe('updateUserSettings', () => {
+    it('should return updated user settings', async () => {
+      const resultMock: UsersOnProjectsSetting = {
+        ...mockReturnedUserSettings,
+        ...mockUpdatedUserSettings,
+      };
+      prismaMock.usersOnProjectsSetting.update.mockResolvedValueOnce(resultMock);
+
+      const result = await project.updateUserSettings(
+        mockReturnedUserSettings.project_id,
+        mockReturnedUserSettings.user_id,
+        mockUpdatedUserSettings,
+      );
+      expect(result).toEqual<UsersOnProjectsSetting>(resultMock);
     });
   });
 });

@@ -46,6 +46,7 @@ const getDataForEmail = async (comment: Comment) => {
 };
 
 const sendEmail = async (comment: Comment) => {
+  if (!ses.isSESEnabled()) return;
   const { projectData, backlogData, commenterData, reporterData, reporterSettings, assigneeData, assingeeSettings } =
     await getDataForEmail(comment);
   const backlogIdentifier = projectData.pkey

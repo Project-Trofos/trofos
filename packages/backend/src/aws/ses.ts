@@ -2,6 +2,11 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 const sesClient = new SESClient({ region: 'ap-southeast-1' });
 
+// Disable SES features if in test env or email service is not provided
+function isSESEnabled() {
+  return process.env.NODE_ENV !== 'test' && process.env.EMAIL_SERVICE === 'AWS_SES';
+}
+
 async function sendEmail(emailDest: string, subject: string, body: string) {
   const params = {
     Destination: {
@@ -31,5 +36,6 @@ async function sendEmail(emailDest: string, subject: string, body: string) {
 }
 
 export default {
+  isSESEnabled,
   sendEmail,
 };
