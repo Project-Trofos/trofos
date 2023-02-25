@@ -34,7 +34,7 @@ async function createUsersOnProjectsTableSeed(prisma: PrismaClient) {
     data: usersOnProjectsData,
   });
 
-  await prisma.usersOnProjectsSetting.createMany({
+  await prisma.usersOnProjectOnSettings.createMany({
     data: usersOnProjectsData,
   });
 

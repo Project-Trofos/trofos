@@ -1,4 +1,4 @@
-import { Backlog, Comment, Project, User, UsersOnProjectsSetting } from '@prisma/client';
+import { Backlog, Comment, Project, User, UsersOnProjectOnSettings } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import {
@@ -21,12 +21,12 @@ const getDataForEmail = async (comment: Comment) => {
   const projectData: Project = await projectService.getById(comment.project_id);
   const commenterData: User = await userService.get(comment.commenter_id);
   const reporterData: User = await userService.get(backlogData.reporter_id);
-  const reporterSettings: UsersOnProjectsSetting = await projectService.getUserSettings(
+  const reporterSettings: UsersOnProjectOnSettings | null = await projectService.getUserSettings(
     projectData.id,
     reporterData.user_id,
   );
   let assigneeData: User | undefined;
-  let assingeeSettings: UsersOnProjectsSetting | undefined;
+  let assingeeSettings: UsersOnProjectOnSettings | null | undefined;
 
   // Skip fetching assignee if null or reporter and assignee is the same user
   if (backlogData.assignee_id && backlogData.assignee_id !== backlogData.reporter_id) {
@@ -55,7 +55,7 @@ const sendEmail = async (comment: Comment) => {
   const subject = commentSubject(projectData.pname, backlogIdentifier);
   const body = commentBody(commenterData.user_display_name, comment.content, projectData.id, backlogData.backlog_id);
 
-  if (commenterData.user_id !== reporterData.user_id && reporterSettings.email_notification) {
+  if (commenterData.user_id !== reporterData.user_id && reporterSettings?.email_notification) {
     await ses.sendEmail(reporterData.user_email, subject, body);
   }
 

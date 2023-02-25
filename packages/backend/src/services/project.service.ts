@@ -7,7 +7,7 @@ import {
   User,
   UsersOnProjects,
   Settings,
-  UsersOnProjectsSetting,
+  UsersOnProjectOnSettings,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
@@ -337,7 +337,7 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
       },
     });
 
-    await tx.usersOnProjectsSetting.create({
+    await tx.usersOnProjectOnSettings.create({
       data: {
         project_id: projectId,
         user_id: userId,
@@ -530,8 +530,8 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   return result;
 }
 
-async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectsSetting> {
-  const result = await prisma.usersOnProjectsSetting.findUniqueOrThrow({
+async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectOnSettings | null> {
+  const result = await prisma.usersOnProjectOnSettings.findUnique({
     where: {
       project_id_user_id: {
         project_id: projectId,
@@ -547,8 +547,8 @@ async function updateUserSettings(
   projectId: number,
   userId: number,
   updatedSettings: UserSettingsType,
-): Promise<UsersOnProjectsSetting> {
-  const result = await prisma.usersOnProjectsSetting.update({
+): Promise<UsersOnProjectOnSettings> {
+  const result = await prisma.usersOnProjectOnSettings.update({
     where: {
       project_id_user_id: {
         project_id: projectId,

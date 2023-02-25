@@ -124,11 +124,11 @@ model UsersOnProjects {
   reported_backlogs Backlog[]                 @relation("ReportedBacklogs")
   assigned_backlogs Backlog[]                 @relation("AssignedBacklogs")
   comments          Comment[]
-  settings          UsersOnProjectsSetting[] 
+  settings          UsersOnProjectOnSettings[] 
   @@id([project_id, user_id])
 }
 
-model UsersOnProjectsSetting {
+model UsersOnProjectOnSettings {
   project_id            Int
   user_id               Int
   usersOnProjects       UsersOnProjects       @relation(fields: [project_id, user_id], references: [project_id, user_id], onDelete: Cascade)

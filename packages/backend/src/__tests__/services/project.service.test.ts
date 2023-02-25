@@ -5,7 +5,7 @@ import {
   ProjectGitLink,
   User,
   UsersOnProjects,
-  UsersOnProjectsSetting,
+  UsersOnProjectOnSettings,
 } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
@@ -349,31 +349,31 @@ describe('project.service tests', () => {
 
   describe('getUserSettings', () => {
     it('should return user settings', async () => {
-      const resultMock: UsersOnProjectsSetting = mockReturnedUserSettings;
-      prismaMock.usersOnProjectsSetting.findUniqueOrThrow.mockResolvedValueOnce(resultMock);
+      const resultMock: UsersOnProjectOnSettings = mockReturnedUserSettings;
+      prismaMock.usersOnProjectOnSettings.findUnique.mockResolvedValueOnce(resultMock);
 
       const result = await project.getUserSettings(
         mockReturnedUserSettings.project_id,
         mockReturnedUserSettings.user_id,
       );
-      expect(result).toEqual<UsersOnProjectsSetting>(resultMock);
+      expect(result).toEqual<UsersOnProjectOnSettings>(resultMock);
     });
   });
 
   describe('updateUserSettings', () => {
     it('should return updated user settings', async () => {
-      const resultMock: UsersOnProjectsSetting = {
+      const resultMock: UsersOnProjectOnSettings = {
         ...mockReturnedUserSettings,
         ...mockUpdatedUserSettings,
       };
-      prismaMock.usersOnProjectsSetting.update.mockResolvedValueOnce(resultMock);
+      prismaMock.usersOnProjectOnSettings.update.mockResolvedValueOnce(resultMock);
 
       const result = await project.updateUserSettings(
         mockReturnedUserSettings.project_id,
         mockReturnedUserSettings.user_id,
         mockUpdatedUserSettings,
       );
-      expect(result).toEqual<UsersOnProjectsSetting>(resultMock);
+      expect(result).toEqual<UsersOnProjectOnSettings>(resultMock);
     });
   });
 });

@@ -2,12 +2,14 @@ import React from 'react';
 import { message, Switch } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserSettingsQuery, useUpdateUserSettingsMutation } from '../../api/project';
+import { ProjectUserSettings } from '../../api/types';
 import './ProjectUserSettingsForm.css';
 
-export default function ProjectUserSettingsForm(): JSX.Element {
+export default function ProjectUserSettingsForm(props: { projectUserSettings: ProjectUserSettings }): JSX.Element {
+  const { projectUserSettings } = props;
+
   const params = useParams();
   const projectId = Number(params.projectId);
-  const { data: projectUserSettings } = useGetUserSettingsQuery({ id: projectId });
   const [updateProjectSettings] = useUpdateUserSettingsMutation();
 
   const handleEmailNotificationOnChange = async (checked: boolean) => {
