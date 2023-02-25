@@ -96,10 +96,11 @@ export default function CoursePage(): JSX.Element {
           />
         }
       >
-        <Text>{course.description}</Text>
+        {course.description && <Text>{course.description}</Text>}
       </PageHeader>
-      {/* TODO: make this responsive */}
-      <Outlet />
+      <section className="overflow-scroll-container">
+        <Outlet />
+      </section>
     </>
   );
 }

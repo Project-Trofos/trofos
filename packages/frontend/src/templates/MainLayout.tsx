@@ -3,7 +3,7 @@ import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
 import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import './MainLayout.css';
+
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import { useLogoutUserMutation, useGetUserInfoQuery, UserInfo } from '../api/auth';
 import trofosApiSlice from '../api/index';
@@ -11,6 +11,8 @@ import GlobalSearch from '../components/search/GlobalSearch';
 import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
 import AvatarButton from '../components/button/AvatarButton';
+
+import './MainLayout.css';
 
 const { Header, Sider, Content } = Layout;
 
@@ -202,7 +204,9 @@ export default function MainLayout() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint="lg" collapsedWidth="0" className="main-layout-sider">
-        <div style={{ fontSize: '2rem', padding: '1rem', color: 'white' }}>Trofos</div>
+        <Link to="/">
+          <div className="logo">Trofos</div>
+        </Link>
         <Menu
           mode="inline"
           selectedKeys={selectedKeys}

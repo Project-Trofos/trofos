@@ -1,5 +1,7 @@
-.project-section-container {
+.overflow-scroll-container {
+  height: 0px;
   flex-grow: 1;
+  overflow: auto;
 }
 
 .footer-tabs .ant-tabs-nav {

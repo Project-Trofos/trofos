@@ -25,3 +25,17 @@
 .ant-layout .ant-layout-sider-zero-width-trigger {
   top: 12px;
 }
+
+.logo {
+  font-size: 2rem;
+  margin: 10px;
+  color: white;
+  height: calc(63 - 10 * 2) px;
+  text-align: center;
+  border-radius: 0.375rem;
+}
+
+.logo:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
