@@ -61,11 +61,11 @@ describe('user.service tests', () => {
       const prismaResponseObject = {
         user_email: 'testEmail@test.com',
         user_id: 1,
-        user_display_name: "Test User",
-        user_password_hash: null
+        user_display_name: 'Test User',
+        user_password_hash: null,
       };
       prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(prismaResponseObject);
       await expect(userService.get(1)).resolves.toEqual(prismaResponseObject);
     });
-  })
+  });
 });

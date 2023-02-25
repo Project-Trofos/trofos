@@ -233,6 +233,12 @@ export type ProjectGitLinkData = {
   repoLink: string;
 };
 
+export type ProjectUserSettings = {
+  project_id: number;
+  user_id: number;
+  email_notification: boolean;
+};
+
 export type Settings = {
   current_year: number;
   current_sem: number;

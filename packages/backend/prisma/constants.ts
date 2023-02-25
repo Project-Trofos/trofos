@@ -6,11 +6,11 @@ export const BACKLOG_USER_1_ID = 901;
 export const BACKLOG_USER_2_ID = 902;
 
 // User Display Names
-export const USER_1_DISPLAY_NAME = "User 1";
-export const USER_2_DISPLAY_NAME = "User 2";
-export const USER_3_DISPLAY_NAME = "User 3";
-export const BACKLOG_USER_1_DISPLAY_NAME = "Backlog User 1";
-export const BACKLOG_USER_2_DISPLAY_NAME = "Backlog User 2";
+export const USER_1_DISPLAY_NAME = 'User 1';
+export const USER_2_DISPLAY_NAME = 'User 2';
+export const USER_3_DISPLAY_NAME = 'User 3';
+export const BACKLOG_USER_1_DISPLAY_NAME = 'Backlog User 1';
+export const BACKLOG_USER_2_DISPLAY_NAME = 'Backlog User 2';
 
 // User Emails
 export const USER_1_EMAIL = 'testUser@test.com';

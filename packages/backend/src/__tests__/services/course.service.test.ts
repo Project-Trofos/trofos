@@ -10,7 +10,6 @@ import { BadRequestError } from '../../helpers/error';
 import { userData } from '../mocks/userData';
 
 describe('course.service tests', () => {
-  
   // Mock data for projects
   const projectData: Project[] = [
     {

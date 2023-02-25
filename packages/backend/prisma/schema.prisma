@@ -117,13 +117,22 @@ model Milestone {
 
 model UsersOnProjects {
   project_id        Int
-  project           Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project           Project                   @relation(fields: [project_id], references: [id], onDelete: Cascade)
   user_id           Int
-  user              User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at        DateTime      @default(now())
-  reported_backlogs Backlog[]     @relation("ReportedBacklogs")
-  assigned_backlogs Backlog[]     @relation("AssignedBacklogs")
+  user              User                      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at        DateTime                  @default(now())
+  reported_backlogs Backlog[]                 @relation("ReportedBacklogs")
+  assigned_backlogs Backlog[]                 @relation("AssignedBacklogs")
   comments          Comment[]
+  settings          UsersOnProjectOnSettings[] 
+  @@id([project_id, user_id])
+}
+
+model UsersOnProjectOnSettings {
+  project_id            Int
+  user_id               Int
+  usersOnProjects       UsersOnProjects       @relation(fields: [project_id, user_id], references: [project_id, user_id], onDelete: Cascade)
+  email_notification    Boolean               @default(false)
   @@id([project_id, user_id])
 }
 

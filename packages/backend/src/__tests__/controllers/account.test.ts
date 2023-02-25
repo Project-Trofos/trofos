@@ -186,11 +186,11 @@ describe('account.controller tests', () => {
         isAdmin: false,
       };
       const user = {
-        user_id : 1,
+        user_id: 1,
         user_email: 'testUser@test.com',
         user_password_hash: 'test',
         user_display_name: 'Test User',
-      }
+      };
       spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(userRoleInformation);
       spies.userServiceGet.mockResolvedValueOnce(user);
@@ -204,7 +204,12 @@ describe('account.controller tests', () => {
       await authentication.getUserInfo(mockReq, mockRes);
       expect(spies.sessionServiceGetUserSession).toHaveBeenCalledWith(testCookie);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getJSONData()).toEqual({ userEmail: 'testUser@test.com', userId: 1, userRoleActions: [], userDisplayName: "Test User" });
+      expect(mockRes._getJSONData()).toEqual({
+        userEmail: 'testUser@test.com',
+        userId: 1,
+        userRoleActions: [],
+        userDisplayName: 'Test User',
+      });
     });
   });
 
@@ -214,7 +219,7 @@ describe('account.controller tests', () => {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
-        user_display_name: "Test User"
+        user_display_name: 'Test User',
       };
       spies.accountServiceChangePassword.mockResolvedValueOnce(changePasswordResponseObject);
       const mockReq = createRequest();
@@ -253,17 +258,17 @@ describe('account.controller tests', () => {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
-        user_display_name: "New Test User"
+        user_display_name: 'New Test User',
       };
       spies.accountServiceUpdateUser.mockResolvedValueOnce(updateUserResponseObject);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         userId: 1,
-        displayName: "New Test User",
+        displayName: 'New Test User',
       };
       await authentication.updateUser(mockReq, mockRes);
-      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, "New Test User");
+      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, 'New Test User');
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual({ message: 'User info successfully updated' });
     });
@@ -282,6 +287,5 @@ describe('account.controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Unable to update user' });
     });
-
   });
 });
