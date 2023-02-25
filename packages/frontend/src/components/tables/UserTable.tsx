@@ -37,14 +37,7 @@ export default function UserTable({
           <Subheading>{heading ?? 'People'}</Subheading>
           {control}
         </Space>
-        <Table
-          dataSource={users}
-          rowKey={(user) => user.user.user_id}
-          loading={isLoading}
-          bordered
-          size="small"
-          pagination={{ pageSize: 5 }}
-        >
+        <Table dataSource={users} rowKey={(user) => user.user.user_id} loading={isLoading} bordered size="small">
           <Table.Column
             width={150}
             title="ID"
@@ -61,10 +54,7 @@ export default function UserTable({
             dataIndex={['user', 'user_email']}
             sorter={(a: UserData, b: UserData) => a.user.user_email.localeCompare(b.user.user_email)}
           />
-          <Table.Column
-            title="Display Name"
-            dataIndex={['user', 'user_display_name']}
-          />
+          <Table.Column title="Display Name" dataIndex={['user', 'user_display_name']} />
           <Table.Column
             width={150}
             title="Action"
