@@ -1,10 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
 
 import { UserData } from '../../api/types';
 import UserTable from './UserTable';
-import store from '../../app/store';
 
 describe('test UserTable', () => {
   const mockUsers: UserData[] = [
