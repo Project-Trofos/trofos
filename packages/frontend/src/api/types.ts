@@ -260,6 +260,6 @@ export enum RetrospectiveVoteType {
 }
 
 export type CourseImportCsvPayload = {
-  courseId: number,
-  payload: FormData
-}
+  courseId: number;
+  payload: FormData;
+};

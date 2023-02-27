@@ -1,6 +1,6 @@
 import { Action } from '@prisma/client';
 import express from 'express';
-import multer from "multer";
+import multer from 'multer';
 import announcement from '../controllers/announcement';
 import course from '../controllers/course';
 import milestone from '../controllers/milestone';
@@ -93,6 +93,11 @@ router.delete(
 );
 
 // Import course data via a csv file
-router.post('/:courseId/import/csv', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), upload.single('file'), course.importCsv);
+router.post(
+  '/:courseId/import/csv',
+  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
+  upload.single('file'),
+  course.importCsv,
+);
 
 export default router;

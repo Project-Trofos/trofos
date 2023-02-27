@@ -239,7 +239,7 @@ export function assertRetrospectiveVoteTypeIsValid(type: string | undefined): as
   }
 }
 
-export function assertFileIsCorrectType(fileType: string | undefined, type: string) : asserts fileType is string {
+export function assertFileIsCorrectType(fileType: string | undefined, type: string): asserts fileType is string {
   if (!fileType || !fileType.includes(type)) {
     throw new BadRequestError(`Invalid file type. File must be of type ${type}`);
   }

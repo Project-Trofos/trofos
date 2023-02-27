@@ -1,5 +1,5 @@
 import express from 'express';
-import fs from "fs";
+import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import { UserSession } from '@prisma/client';
 import course from '../services/course.service';
@@ -11,7 +11,7 @@ import {
   assertCourseYearIsNumber,
   assertProjectIdIsValid,
   assertUserIdIsValid,
-  assertInputIsNotEmpty,  
+  assertInputIsNotEmpty,
   assertFileIsCorrectType,
   getDefaultErrorRes,
 } from '../helpers/error';
@@ -308,5 +308,5 @@ export default {
   addProject,
   removeProject,
   addProjectAndCourse,
-  importCsv
+  importCsv,
 };

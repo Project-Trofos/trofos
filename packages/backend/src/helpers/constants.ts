@@ -8,7 +8,7 @@ export const ADMIN_ROLE_ID = 3;
 export const ROLE_ID_MAP = new Map<string, number>([
   ['FACULTY', FACULTY_ROLE_ID],
   ['STUDENT', STUDENT_ROLE_ID],
-  ['ADMIN', ADMIN_ROLE_ID]
+  ['ADMIN', ADMIN_ROLE_ID],
 ]);
 
 // sprint status

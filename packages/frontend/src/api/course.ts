@@ -314,12 +314,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
     importCsv: builder.mutation<void, CourseImportCsvPayload>({
       query: (params) => ({
-      url: `course/${params.courseId}/import/csv`,
-      method: 'POST',
-      body: params.payload,
-      credentials: 'include'
+        url: `course/${params.courseId}/import/csv`,
+        method: 'POST',
+        body: params.payload,
+        credentials: 'include',
       }),
-  })
+    }),
   }),
   overrideExisting: false,
 });

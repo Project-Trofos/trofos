@@ -275,9 +275,9 @@ async function remove(id: number): Promise<Project> {
       where: {
         id,
       },
-      select : {
-        course : true
-      }
+      select: {
+        course: true,
+      },
     });
 
     const deletedProject = await tx.project.delete({
@@ -294,7 +294,6 @@ async function remove(id: number): Promise<Project> {
         },
       });
     }
-
 
     return deletedProject;
   });

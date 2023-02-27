@@ -79,7 +79,7 @@ export default function CoursePage(): JSX.Element {
         title={course.cname}
         subTitle={<Tag>{course.code}</Tag>}
         extra={[
-          <ImportDataModal key="import-csv" course={course} projects={filteredProjects}/>,
+          <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
           <ProjectCreationModal key="create-project" course={course} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
         ]}
