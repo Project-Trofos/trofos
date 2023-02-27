@@ -13,7 +13,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [uploading, setUploading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const [importCsv] = useImportCsvMutation();
 
     const showModal = () => {
@@ -26,7 +26,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
         } else {
             const formData = new FormData();
             formData.append('file', fileList[0] as RcFile);
-            setUploading(true);
+            setIsUploading(true);
             try {
                 if (course) {
                     await importCsv({
@@ -39,7 +39,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
             } catch (error) {
                 message.error(getErrorMessage(error));
             }
-            setUploading(false);
+            setIsUploading(false);
         }
         setIsModalOpen(false);
     };
@@ -72,9 +72,9 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
             title="Import CSV Data" 
             okButtonProps={{
                 disabled: fileList.length === 0,
-                loading: uploading
+                loading: isUploading
             }} 
-            okText={uploading ? 'Uploading' : 'Import'}
+            okText={isUploading ? 'Uploading' : 'Import'}
             open={isModalOpen} 
             onOk={handleOk} 
             onCancel={handleCancel}
