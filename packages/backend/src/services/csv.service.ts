@@ -149,14 +149,18 @@ async function processImportCourseData(
             // Add users to project/course
             if (userData.roleId === STUDENT_ROLE_ID) {
                 const userGroup = userGroupingMap.get(userEmail);
-                const projectId = groupDetailsMap.get(userGroup as string)?.projectId;
-                // Since Project names are not unique within a course, a new project is always created on csv submission
-                await tx.usersOnProjects.create({
-                    data : {
-                        user_id : user.user_id,
-                        project_id : Number(projectId)
-                    }
-                });
+                if (userGroup) {
+                    const projectId = groupDetailsMap.get(userGroup)?.projectId;
+                    // Since Project names are not unique within a course, a new project is always created on csv submission
+                    await tx.usersOnProjects.create({
+                        data : {
+                            user_id : user.user_id,
+                            project_id : Number(projectId)
+                        }
+                    });
+                } else {
+                    throw new Error(userEmail + ": userGroup undefined");
+                }
             } else {
                 // ASSUMPTION : non-STUDENT roles will not be added to projects
                 // On repeated CSV submissions, there may already be an entry for the course
