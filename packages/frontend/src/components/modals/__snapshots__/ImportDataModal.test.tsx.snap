@@ -100,6 +100,7 @@ exports[`test import data modal should display the components correctly 1`] = `
                       >
                         <input
                           accept=""
+                          data-testid="upload-button"
                           style="display: none;"
                           type="file"
                         />

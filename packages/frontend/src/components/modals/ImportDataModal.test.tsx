@@ -1,10 +1,11 @@
 import React from "react";
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import server from "../../mocks/server";
 import ImportDataModal from "./ImportDataModal";
 import store from '../../app/store';
 import { CourseData, ProjectData } from '../../api/types';
+import user from '@testing-library/user-event';
 
 const mockFile = new File(['hello'], 'hello.png', { type: 'image/png' });
 
@@ -102,13 +103,8 @@ describe("test import data modal", () => {
 
     it('should enable the import button when a file is selected to be uploaded', async () => {
         setup(mockCourseData, [mockProjectData]);
-        // The input element is hidden. Requires a roundabout way to simulate upload. https://stackoverflow.com/a/65910134
-        /* eslint-disable testing-library/no-node-access, testing-library/no-unnecessary-act */
-        const hiddenFileInput = document.querySelector('input[type="file"]') as Element;
-        await act(async () => {
-            fireEvent.change(hiddenFileInput, { target: { files: [mockFile] } });
-          });
-        /* eslint-enable */
+        const input = screen.getByTestId("upload-button");
+        user.upload(input, mockFile);
 
         const button = screen.getByRole("button", { name: /^import$/i });
         expect(button).toBeEnabled(); 
@@ -116,12 +112,8 @@ describe("test import data modal", () => {
 
     it('should prevent the user from uploading a csv if the course has projects', async () => {
         setup(mockCourseData, [mockProjectData]);
-        // The input element is hidden. Requires a roundabout way to simulate upload. https://stackoverflow.com/a/65910134
-        /* eslint-disable testing-library/no-node-access, testing-library/no-unnecessary-act */
-        const hiddenFileInput = document.querySelector('input[type="file"]') as Element;
-        await act(async () => {
-            fireEvent.change(hiddenFileInput, { target: { files: [mockFile] } });
-          });
+        const input = screen.getByTestId("upload-button");
+        user.upload(input, mockFile);
         /* eslint-enable */
 
         const button = screen.getByText(/^import$/i);

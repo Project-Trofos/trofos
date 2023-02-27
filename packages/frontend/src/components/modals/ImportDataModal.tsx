@@ -81,7 +81,7 @@ export default function ImportDataModal({ course, projects } : { course: CourseD
         >
             <Space direction="vertical">
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                <Upload {...props}>
+                <Upload data-testid="upload-button" {...props}>
                         <Button icon={<UploadOutlined />}>Select File</Button>
                 </Upload>
                 <a href={CSV_TEMPLATE_PATH} download={CSV_TEMPLATE_NAME}>Download csv template</a>
