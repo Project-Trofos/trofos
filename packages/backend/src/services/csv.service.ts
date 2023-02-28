@@ -83,12 +83,11 @@ async function processImportCourseData(
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
   userGroupingMap: Map<string, string>,
 ) {
+
   return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+
     // Create projects
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for (const groupDetails of groupDetailsMap.entries()) {
-      const groupName = groupDetails[0];
-      const groupData = groupDetails[1];
+    const projectPromises = Array.from(groupDetailsMap).map(async ([groupName, groupData]) => {
       const project = await tx.project.create({
         data: {
           pname: groupData.projectName,
@@ -98,11 +97,19 @@ async function processImportCourseData(
       });
       groupData.projectId = project.id;
       groupDetailsMap.set(groupName, groupData);
-    }
+    });
 
-    for (const userDetails of userDetailsMap.entries()) {
-      const userEmail = userDetails[0];
-      const userData = userDetails[1];
+    // Wait for all promises to be settled before continuing. 
+    // This is required for correct behaviour within a transaction.
+    // https://medium.com/@alkor_shikyaro/transactions-and-promises-in-node-js-ca5a3aeb6b74
+    const projectActions = await Promise.allSettled(projectPromises);
+    projectActions.map(action => {
+      if (action.status === 'rejected') {
+        throw new Error(action.reason);
+      } 
+    });
+
+    const userPromises = Array.from(userDetailsMap).map(async ([userEmail, userData]) => {
       // Create users and their course roles
       const user = await tx.user.upsert({
         where: {
@@ -177,8 +184,18 @@ async function processImportCourseData(
           },
         });
       }
-    }
-    /* eslint-enable no-restricted-syntax, no-await-in-loop */
+    });
+
+      // Wait for all promises to be settled before continuing. 
+    // This is required for correct behaviour within a transaction.
+    // https://medium.com/@alkor_shikyaro/transactions-and-promises-in-node-js-ca5a3aeb6b74
+    const userActions = await Promise.allSettled(userPromises);
+    userActions.map(action => {
+      if (action.status === 'rejected') {
+        throw new Error(action.reason);
+      } 
+    });
+
   });
 }
 
