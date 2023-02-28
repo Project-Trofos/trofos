@@ -1,0 +1,2 @@
+name,email,password,role,teamName,projectName
+Student Name,Student Email,For Non-SSO emails,"[STUDENT, FACULTY]",Used to group students,Optional field

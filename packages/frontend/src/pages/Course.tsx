@@ -7,6 +7,7 @@ import { confirmDeleteCourse } from '../components/modals/confirm';
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCourse } from '../api/hooks';
 import PageHeader from '../components/pageheader/PageHeader';
+import ImportDataModal from '../components/modals/ImportDataModal';
 
 const { Text } = Typography;
 
@@ -31,7 +32,7 @@ export default function CoursePage(): JSX.Element {
     return split[3];
   }, [location.pathname]);
 
-  const { course } = useCourse(params.courseId);
+  const { course, filteredProjects } = useCourse(params.courseId);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -78,6 +79,7 @@ export default function CoursePage(): JSX.Element {
         title={course.cname}
         subTitle={<Tag>{course.code}</Tag>}
         extra={[
+          <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
           <ProjectCreationModal key="create-project" course={course} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
         ]}

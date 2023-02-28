@@ -277,6 +277,9 @@ async function remove(id: number): Promise<Project> {
       where: {
         id,
       },
+      select: {
+        course: true,
+      },
     });
 
     const deletedProject = await tx.project.delete({
@@ -285,12 +288,14 @@ async function remove(id: number): Promise<Project> {
       },
     });
 
-    // Remove dangling shadow courses
-    await tx.course.delete({
-      where: {
-        id: project.course_id,
-      },
-    });
+    if (project.course.shadow_course) {
+      // Remove dangling shadow courses
+      await tx.course.delete({
+        where: {
+          id: project.course.id,
+        },
+      });
+    }
 
     return deletedProject;
   });

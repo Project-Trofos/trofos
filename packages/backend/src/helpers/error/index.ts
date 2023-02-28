@@ -12,6 +12,7 @@ import {
   assertBacklogIdIsValid,
   assertCommentIdIsValid,
   assertCommentIsValid,
+  assertFileIsCorrectType,
 } from './assertions';
 import { getDefaultErrorRes } from './response';
 
@@ -30,4 +31,5 @@ export {
   assertBacklogIdIsValid,
   assertCommentIdIsValid,
   assertCommentIsValid,
+  assertFileIsCorrectType,
 };
