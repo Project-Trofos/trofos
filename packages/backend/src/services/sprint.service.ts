@@ -7,9 +7,11 @@ import {
   RetrospectiveVote,
   RetrospectiveVoteType,
 } from '@prisma/client';
+import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
+import { AppAbility } from '../policies/policyTypes';
 
 async function newSprint(sprintFields: SprintFields): Promise<Sprint> {
   const { projectId, name, dates, duration, goals } = sprintFields;
@@ -32,7 +34,35 @@ async function newSprint(sprintFields: SprintFields): Promise<Sprint> {
   return sprint;
 }
 
-async function listSprints(projectId: number): Promise<Sprint[]> {
+async function listSprints(policyConstraint: AppAbility): Promise<Sprint[]> {
+  const sprints = await prisma.sprint.findMany({
+    where: {
+      project: {
+        AND: [accessibleBy(policyConstraint).Project],
+      },
+    },
+    include: {
+      backlogs: {
+        include: {
+          assignee: {
+            include: {
+              user: {
+                select: {
+                  user_display_name: true,
+                  user_email: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return sprints;
+}
+
+async function listSprintsByProjectId(projectId: number): Promise<Sprint[]> {
   const sprints = await prisma.sprint.findMany({
     where: {
       project_id: projectId,
@@ -44,6 +74,7 @@ async function listSprints(projectId: number): Promise<Sprint[]> {
             include: {
               user: {
                 select: {
+                  user_display_name: true,
                   user_email: true,
                 },
               },
@@ -70,6 +101,7 @@ async function listActiveSprint(projectId: number): Promise<Sprint | null> {
             include: {
               user: {
                 select: {
+                  user_display_name: true,
                   user_email: true,
                 },
               },
@@ -312,6 +344,7 @@ async function deleteRetrospectiveVote(retroId: number, userId: number): Promise
 export default {
   newSprint,
   listSprints,
+  listSprintsByProjectId,
   listActiveSprint,
   updateSprint,
   updateSprintStatus,

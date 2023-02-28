@@ -30,6 +30,20 @@ async function changePassword(userId: number, oldUserPassword: string, newUserPa
   return updatedUser;
 }
 
+async function updateUser(userId: number, displayName: string): Promise<User> {
+  const updatedUser = await prisma.user.update({
+    where: {
+      user_id: userId,
+    },
+    data: {
+      user_display_name: displayName,
+    },
+  });
+
+  return updatedUser;
+}
+
 export default {
   changePassword,
+  updateUser,
 };

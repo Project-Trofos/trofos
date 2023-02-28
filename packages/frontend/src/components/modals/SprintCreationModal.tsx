@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, message, Modal, Select, DatePicker } from 'antd';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { useAddSprintMutation, useUpdateSprintMutation } from '../../api/sprint';
+import { useAddSprintMutation, useUpdateSprintMutation } from '../../api/socket/sprintHooks';
 import type { Sprint } from '../../api/sprint';
 import type { SprintFormFields, SprintUpdatePayload, AutoSprintTypes } from '../../helpers/SprintModal.types';
 import './SprintCreationModal.css';
@@ -117,6 +117,7 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
     const payload: SprintUpdatePayload = {
       ...processedPayload,
       sprintId: sprint.id,
+      projectId: sprint.project_id,
     };
 
     try {

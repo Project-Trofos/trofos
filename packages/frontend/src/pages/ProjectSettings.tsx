@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../api/hooks';
-import { useUpdateProjectMutation } from '../api/project';
+import { useGetUserSettingsQuery, useUpdateProjectMutation } from '../api/project';
 import DefaultForm from '../components/forms/DefaultForm';
 import ProjectKeyFormInput from '../components/forms/ProjectKeyFormItem';
 import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
@@ -11,9 +11,11 @@ import { Subheading } from '../components/typography';
 import { getErrorMessage } from '../helpers/error';
 import ProjectBacklogStatusForm from '../components/forms/ProjectBacklogStatusForm';
 import ProjectGitLinkForm from '../components/forms/ProjectGitLinkForm';
+import ProjectUserSettingsForm from '../components/forms/ProjectUserSettingsForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
+  const { data: projectUserSettings } = useGetUserSettingsQuery({ id: Number(params.projectId) });
   const { project } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
 
   const [updateProject] = useUpdateProjectMutation();
@@ -66,6 +68,12 @@ export default function ProjectSettings(): JSX.Element {
         <Subheading>GitHub Linkage</Subheading>
         <ProjectGitLinkForm />
       </Space>
+      {projectUserSettings && (
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Subheading>User Settings:</Subheading>
+          <ProjectUserSettingsForm projectUserSettings={projectUserSettings} />
+        </Space>
+      )}
     </Container>
   );
 }

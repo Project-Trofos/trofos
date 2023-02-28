@@ -1,5 +1,12 @@
 import trofosApiSlice from '.';
-import { BacklogStatusData, Project, ProjectData, ProjectGitLink, ProjectGitLinkData } from './types';
+import {
+  BacklogStatusData,
+  Project,
+  ProjectData,
+  ProjectGitLink,
+  ProjectGitLinkData,
+  ProjectUserSettings,
+} from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -196,6 +203,29 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }],
     }),
+
+    getUserSettings: builder.query<ProjectUserSettings, Pick<Project, 'id'>>({
+      query: ({ id }) => ({
+        url: `project/${id}/user/settings`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'ProjectUserSettings', id: arg.id }],
+    }),
+
+    updateUserSettings: builder.mutation<
+      ProjectUserSettings,
+      { projectId: number; updatedSettings: Partial<ProjectUserSettings> }
+    >({
+      query: ({ projectId, updatedSettings }) => ({
+        url: `project/${projectId}/user/settings`,
+        method: 'PUT',
+        body: {
+          updatedSettings,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'ProjectUserSettings', id: arg.projectId }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -217,4 +247,6 @@ export const {
   useAddGitUrlMutation,
   useUpdateGitUrlMutation,
   useDeleteGitUrlMutation,
+  useGetUserSettingsQuery,
+  useUpdateUserSettingsMutation,
 } = extendedApi;

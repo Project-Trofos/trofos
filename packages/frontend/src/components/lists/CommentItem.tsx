@@ -83,7 +83,7 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
         avatar={<Avatar icon={<UserOutlined />} />}
         title={
           <>
-            {comment.commenter.user.user_email} &#x2022;{' '}
+            {comment.commenter.user.user_display_name} &#x2022;{' '}
             <span className="comment-timestamp">{renderCommentTimestamp(comment)}</span>
           </>
         }
@@ -132,7 +132,7 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
           avatar={<Avatar icon={<UserOutlined />} />}
           title={
             <>
-              {comment.commenter.user.user_email} &#x2022;{' '}
+              {comment.commenter.user.user_display_name} &#x2022;{' '}
               <span className="comment-timestamp">{renderCommentTimestamp(comment)}</span>
             </>
           }

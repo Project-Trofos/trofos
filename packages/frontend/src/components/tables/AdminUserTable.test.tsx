@@ -16,6 +16,7 @@ describe('test UserTable', () => {
   const users: User[] = [
     {
       user_email: 'testEmail@test.com',
+      user_display_name: 'Test User',
       user_id: 1,
       projects: [],
       courses: [],

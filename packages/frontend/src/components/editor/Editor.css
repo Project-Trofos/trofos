@@ -1,0 +1,32 @@
+.editor-editable-container {
+  background-color: white;
+  padding: 1.5em;
+}
+
+.editor-editable-container-editor-view {
+  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+  min-height: 10em;
+}
+
+.container-no-padding {
+  padding: 0;
+  min-height: 0;
+}
+
+.editor-editable-container:focus {
+  outline: none;
+}
+
+.editor-container {
+  position: relative;
+  border: 1px rgb(219 219 219) solid;
+}
+
+.editor-placeholder {
+  position: absolute;
+  top: 1.5em;
+  left: 1em;
+  color: dimgray;
+  pointer-events: none;
+}

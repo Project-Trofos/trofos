@@ -1,0 +1,16 @@
+.feedbacks-container > :not(:last-child) {
+  margin-bottom: 2em;
+}
+
+.feedback-editor {
+  border: 1px rgb(233 233 233) solid;
+  padding: 1em;
+}
+
+.feedback-button-group:not(:only-child) {
+  margin-top: 1em;
+}
+
+.feedback-user-container {
+  margin-bottom: 1em;
+}

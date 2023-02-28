@@ -273,6 +273,37 @@ async function deleteGitLink(req: express.Request, res: express.Response) {
   }
 }
 
+async function getUserSettings(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const userSession = res.locals.userSession as UserSession | undefined;
+    assertUserSessionIsValid(userSession);
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.getUserSettings(Number(projectId), Number(userSession.user_id));
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function updateUserSettings(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { updatedSettings } = req.body;
+    const userSession = res.locals.userSession as UserSession | undefined;
+    assertUserSessionIsValid(userSession);
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.updateUserSettings(Number(projectId), Number(userSession.user_id), updatedSettings);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -290,4 +321,6 @@ export default {
   addGitLink,
   updateGitLink,
   deleteGitLink,
+  getUserSettings,
+  updateUserSettings,
 };

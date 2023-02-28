@@ -25,6 +25,7 @@ export type Course = {
 
 export type User = {
   user_email: string;
+  user_display_name: string;
   user_id: number;
   projects: Project[];
   courses: Course[];
@@ -75,6 +76,7 @@ export type ActionsOnRoles = {
   role_name: string;
   actions: Action[];
 };
+
 export type ProjectData = Project & {
   course: Course | null;
   users: UserData[];
@@ -89,6 +91,7 @@ export type UserData = {
   user: {
     user_id: number;
     user_email: string;
+    user_display_name: string;
     courseRoles: CourseRoles[];
   };
 };
@@ -96,6 +99,7 @@ export type UserData = {
 export type ScrumBoardUserData = {
   user: {
     user_id: number | null;
+    user_display_name: string;
     user_email: string;
   };
 };
@@ -156,6 +160,7 @@ export type Comment = {
     user: {
       user_id: number;
       user_email: string;
+      user_display_name: string;
     };
   };
 };
@@ -190,8 +195,9 @@ export type Backlog = {
     user_id: number;
     user: {
       user_email: string;
+      user_display_name: string;
     };
-  };
+  } | null;
 };
 
 export type BacklogUpdatePayload = {
@@ -225,6 +231,12 @@ export type ProjectGitLink = {
 export type ProjectGitLinkData = {
   projectId: number;
   repoLink: string;
+};
+
+export type ProjectUserSettings = {
+  project_id: number;
+  user_id: number;
+  email_notification: boolean;
 };
 
 export type Settings = {
@@ -262,4 +274,17 @@ export enum RetrospectiveVoteType {
 export type CourseImportCsvPayload = {
   courseId: number;
   payload: FormData;
+};
+
+export type Feedback = {
+  id: number;
+  user_id?: number;
+  user: {
+    user_email: string;
+    user_display_name: string;
+  };
+  sprint_id: number;
+  content: string;
+  created_at: string;
+  updated_at?: string;
 };

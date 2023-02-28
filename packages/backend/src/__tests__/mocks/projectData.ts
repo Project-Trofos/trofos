@@ -1,4 +1,5 @@
-import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink } from '@prisma/client';
+import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, UsersOnProjectOnSettings } from '@prisma/client';
+import { UserSettingsType } from '../../services/types/project.service.types';
 
 // Mock data for projects
 export const projectsData: Project[] = [
@@ -72,4 +73,14 @@ export const mockDoneBacklogStatus: BacklogStatus = {
 export const mockReturnedProjectGitLink: ProjectGitLink = {
   project_id: 1,
   repo: 'https://github.com/Project-Trofos/trofos.git',
+};
+
+export const mockReturnedUserSettings: UsersOnProjectOnSettings = {
+  project_id: 1,
+  user_id: 1,
+  email_notification: true,
+};
+
+export const mockUpdatedUserSettings: UserSettingsType = {
+  email_notification: false,
 };

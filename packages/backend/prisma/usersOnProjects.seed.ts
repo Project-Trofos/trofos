@@ -11,25 +11,31 @@ import {
 } from './constants';
 
 async function createUsersOnProjectsTableSeed(prisma: PrismaClient) {
+  const usersOnProjectsData = [
+    {
+      user_id: BACKLOG_USER_1_ID,
+      project_id: BACKLOG_PROJECT_ID,
+    },
+    {
+      user_id: BACKLOG_USER_2_ID,
+      project_id: BACKLOG_PROJECT_ID,
+    },
+    {
+      user_id: USER_1_ID,
+      project_id: PROJECT_1_ID,
+    },
+    {
+      user_id: USER_2_ID,
+      project_id: PROJECT_3_ID,
+    },
+  ];
+
   const usersOnProjects = await prisma.usersOnProjects.createMany({
-    data: [
-      {
-        user_id: BACKLOG_USER_1_ID,
-        project_id: BACKLOG_PROJECT_ID,
-      },
-      {
-        user_id: BACKLOG_USER_2_ID,
-        project_id: BACKLOG_PROJECT_ID,
-      },
-      {
-        user_id: USER_1_ID,
-        project_id: PROJECT_1_ID,
-      },
-      {
-        user_id: USER_2_ID,
-        project_id: PROJECT_3_ID,
-      },
-    ],
+    data: usersOnProjectsData,
+  });
+
+  await prisma.usersOnProjectOnSettings.createMany({
+    data: usersOnProjectsData,
   });
 
   console.log('created usersOnProjects table seed %s', usersOnProjects);

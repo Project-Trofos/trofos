@@ -7,6 +7,7 @@ import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
 import { BadRequestError } from '../../helpers/error';
+import { userData } from '../mocks/userData';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -22,9 +23,6 @@ describe('course.service tests', () => {
       backlog_counter: 0,
     },
   ];
-
-  // Mock data for users
-  const userData: User[] = [{ user_email: 'user@mail.com', user_id: 1, user_password_hash: 'hash' }];
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);

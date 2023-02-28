@@ -1,4 +1,4 @@
-import { Comment } from '@prisma/client';
+import { Backlog, Comment, Project, User, UsersOnProjectOnSettings } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import {
@@ -10,6 +10,59 @@ import {
   getDefaultErrorRes,
 } from '../helpers/error';
 import commentService from '../services/comment.service';
+import projectService from '../services/project.service';
+import backlogService from '../services/backlog.service';
+import userService from '../services/user.service';
+import ses from '../aws/ses';
+import { commentSubject, commentBody } from '../templates/email';
+
+const getDataForEmail = async (comment: Comment) => {
+  const backlogData: Backlog = (await backlogService.getBacklog(comment.project_id, comment.backlog_id)) as Backlog;
+  const projectData: Project = await projectService.getById(comment.project_id);
+  const commenterData: User = await userService.get(comment.commenter_id);
+  const reporterData: User = await userService.get(backlogData.reporter_id);
+  const reporterSettings: UsersOnProjectOnSettings | null = await projectService.getUserSettings(
+    projectData.id,
+    reporterData.user_id,
+  );
+  let assigneeData: User | undefined;
+  let assingeeSettings: UsersOnProjectOnSettings | null | undefined;
+
+  // Skip fetching assignee if null or reporter and assignee is the same user
+  if (backlogData.assignee_id && backlogData.assignee_id !== backlogData.reporter_id) {
+    assigneeData = await userService.get(backlogData.assignee_id);
+    assingeeSettings = await projectService.getUserSettings(projectData.id, assigneeData.user_id);
+  }
+
+  return {
+    projectData,
+    backlogData,
+    commenterData,
+    reporterData,
+    reporterSettings,
+    assigneeData,
+    assingeeSettings,
+  };
+};
+
+const sendEmail = async (comment: Comment) => {
+  if (!ses.isSESEnabled()) return;
+  const { projectData, backlogData, commenterData, reporterData, reporterSettings, assigneeData, assingeeSettings } =
+    await getDataForEmail(comment);
+  const backlogIdentifier = projectData.pkey
+    ? `${projectData.pkey}-${backlogData.backlog_id}`
+    : `${backlogData.backlog_id}`;
+  const subject = commentSubject(projectData.pname, backlogIdentifier);
+  const body = commentBody(commenterData.user_display_name, comment.content, projectData.id, backlogData.backlog_id);
+
+  if (commenterData.user_id !== reporterData.user_id && reporterSettings?.email_notification) {
+    await ses.sendEmail(reporterData.user_email, subject, body);
+  }
+
+  if (assigneeData && commenterData.user_id !== assigneeData.user_id && assingeeSettings?.email_notification) {
+    await ses.sendEmail(assigneeData.user_email, subject, body);
+  }
+};
 
 const create = async (req: express.Request, res: express.Response) => {
   try {
@@ -25,6 +78,9 @@ const create = async (req: express.Request, res: express.Response) => {
       Number(commenterId),
       content,
     );
+
+    await sendEmail(comment);
+
     return res.status(StatusCodes.OK).json(comment);
   } catch (error) {
     return getDefaultErrorRes(error, res);

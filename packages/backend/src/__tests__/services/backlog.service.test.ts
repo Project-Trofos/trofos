@@ -4,6 +4,7 @@ import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../helpers/types/backlog.service.types';
 import { mockBacklogReturnedProject } from '../mocks/projectData';
 import { mockBacklogData, mockBacklogFields } from '../mocks/backlogData';
+import projectConstraint from '../../policies/constraints/project.constraint';
 
 describe('backlog.service tests', () => {
   describe('create backlog', () => {
@@ -70,7 +71,7 @@ describe('backlog.service tests', () => {
     });
   });
 
-  describe('get backlogs', () => {
+  describe('get backlogs by project id', () => {
     it('should return backlogs when called with valid project id', async () => {
       const mockReturnedBacklogs: Backlog[] = [
         mockBacklogData,
@@ -90,7 +91,16 @@ describe('backlog.service tests', () => {
       ];
       const projectId = 123;
       prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
-      await expect(backlogService.listBacklogs(projectId)).resolves.toEqual(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogsByProjectId(projectId)).resolves.toEqual(mockReturnedBacklogs);
+    });
+  });
+
+  describe('get backlogs', () => {
+    it('should return all backlogs when called with valid app ability', async () => {
+      const mockReturnedBacklogs: Backlog[] = [mockBacklogData];
+      const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+      prismaMock.backlog.findMany.mockResolvedValueOnce(mockReturnedBacklogs);
+      await expect(backlogService.listBacklogs(projectPolicyConstraint)).resolves.toEqual(mockReturnedBacklogs);
     });
   });
 

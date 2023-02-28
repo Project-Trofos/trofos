@@ -4,6 +4,16 @@ import { assertProjectIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import backlogHistoryService from '../services/backlogHistory.service';
 import { assertSprintIdIsValid } from '../helpers/error/assertions';
 
+const getBacklogHistory = async (req: express.Request, res: express.Response) => {
+  try {
+    const history = await backlogHistoryService.getBacklogHistory(res.locals.policyConstraint);
+
+    return res.status(StatusCodes.OK).json(history);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const getProjectBacklogHistory = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId } = req.params;
@@ -33,6 +43,7 @@ const getSprintBacklogHistory = async (req: express.Request, res: express.Respon
 };
 
 export default {
+  getBacklogHistory,
   getProjectBacklogHistory,
   getSprintBacklogHistory,
 };

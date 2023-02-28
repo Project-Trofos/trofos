@@ -4,11 +4,13 @@ import { PolicyOutcome } from './policyTypes';
 import coursePolicy from './course.policy';
 import projectPolicy from './project.policy';
 import userPolicy from './user.policy';
+import feedbackPolicy from './feedback.policy';
 
 const commandMap: { [policyName: string]: any } = {};
 commandMap[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicy;
 commandMap[projectPolicy.POLICY_NAME] = projectPolicy.applyProjectPolicy;
 commandMap[userPolicy.POLICY_NAME] = userPolicy.applyUserPolicy;
+commandMap[feedbackPolicy.POLICY_NAME] = feedbackPolicy.applyFeedbackPolicy;
 
 async function execute(
   req: express.Request,
