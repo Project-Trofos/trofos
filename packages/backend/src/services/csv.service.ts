@@ -83,10 +83,9 @@ async function processImportCourseData(
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
   userGroupingMap: Map<string, string>,
 ) {
-
   return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-
     // Create projects
+    /* eslint-disable array-callback-return, no-param-reassign */
     const projectPromises = Array.from(groupDetailsMap).map(async ([groupName, groupData]) => {
       const project = await tx.project.create({
         data: {
@@ -99,14 +98,14 @@ async function processImportCourseData(
       groupDetailsMap.set(groupName, groupData);
     });
 
-    // Wait for all promises to be settled before continuing. 
+    // Wait for all promises to be settled before continuing.
     // This is required for correct behaviour within a transaction.
     // https://medium.com/@alkor_shikyaro/transactions-and-promises-in-node-js-ca5a3aeb6b74
     const projectActions = await Promise.allSettled(projectPromises);
-    projectActions.map(action => {
+    projectActions.map((action) => {
       if (action.status === 'rejected') {
         throw new Error(action.reason);
-      } 
+      }
     });
 
     const userPromises = Array.from(userDetailsMap).map(async ([userEmail, userData]) => {
@@ -186,16 +185,17 @@ async function processImportCourseData(
       }
     });
 
-      // Wait for all promises to be settled before continuing. 
+    // Wait for all promises to be settled before continuing.
     // This is required for correct behaviour within a transaction.
     // https://medium.com/@alkor_shikyaro/transactions-and-promises-in-node-js-ca5a3aeb6b74
     const userActions = await Promise.allSettled(userPromises);
-    userActions.map(action => {
+    userActions.map((action) => {
       if (action.status === 'rejected') {
         throw new Error(action.reason);
-      } 
+      }
     });
 
+    /* eslint-enable array-callback-return, no-param-reassign */
   });
 }
 
