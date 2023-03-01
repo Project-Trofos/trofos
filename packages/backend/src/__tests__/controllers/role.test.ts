@@ -24,7 +24,7 @@ const spies = {
 const roleServiceUserRolesForCourseObject: UserRolesForCourse[] = [
   {
     id: 1,
-    user_email: 'testUser@test.com',
+    user_id: 1,
     role_id: 1,
     course_id: 1,
     role: {
@@ -41,7 +41,7 @@ const roleServiceActionsOnRolesObject: ActionsOnRoles = {
 
 const roleServiceUserRoleActionsForCourseObject: UserRoleActionsForCourse = {
   id: 1,
-  user_email: 'testEmail@test.com',
+  user_id: 1,
   course_id: 1,
   role_id: 1,
   role: {
@@ -221,7 +221,7 @@ describe('role.controller tests', () => {
   });
 
   describe('getUserRoleActionsForCourse', () => {
-    it('should return status 400 BAD REQUEST if the user email was not supplied', async () => {
+    it('should return status 400 BAD REQUEST if the user id was not supplied', async () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
@@ -230,7 +230,7 @@ describe('role.controller tests', () => {
       await role.getUserRoleActionsForCourse(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(mockRes._getJSONData()).toEqual({
-        error: 'Please provide a valid User email! User email cannot be undefined.',
+        error: 'User id must be a number',
       });
     });
 
@@ -238,7 +238,7 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        userEmail: 'testEmail@test.com',
+        userId: 1,
       };
       await role.getUserRoleActionsForCourse(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
@@ -252,7 +252,7 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.body = {
         courseId: 1,
-        userEmail: 'testEmail@test.com',
+        userId: 1,
       };
       spies.roleServiceGetUserRoleActionsForCourse.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       await role.getUserRoleActionsForCourse(mockReq, mockRes);
@@ -263,7 +263,7 @@ describe('role.controller tests', () => {
   });
 
   describe('getUserRoleActionsForProject', () => {
-    it('should return status 400 BAD REQUEST if the user email was not supplied', async () => {
+    it('should return status 400 BAD REQUEST if the user id was not supplied', async () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
@@ -272,7 +272,7 @@ describe('role.controller tests', () => {
       await role.getUserRoleActionsForProject(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(mockRes._getJSONData()).toEqual({
-        error: 'Please provide a valid User email! User email cannot be undefined.',
+        error: 'User id must be a number',
       });
     });
 
@@ -280,7 +280,7 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        userEmail: 'testEmail@test.com',
+        userId: 1,
       };
       await role.getUserRoleActionsForProject(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
@@ -294,7 +294,7 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.body = {
         projectId: 1,
-        userEmail: 'testEmail@test.com',
+        userId: 1,
       };
       spies.roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);
       await role.getUserRoleActionsForProject(mockReq, mockRes);
@@ -352,7 +352,6 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userRole: 1,
         userId: 1,
       };
@@ -367,7 +366,6 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.params.courseId = '1';
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userId: 1,
       };
       await role.updateUserRoleForCourse(mockReq, mockRes);
@@ -382,29 +380,12 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.params.courseId = '1';
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userRole: 1,
       };
 
       await role.updateUserRoleForCourse(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(mockRes._getJSONData()).toEqual({ error: 'Please provide a valid User Id! User Id cannot be undefined.' });
-    });
-
-    it('should return status 400 BAD REQUEST if the user email was not supplied', async () => {
-      const mockReq = createRequest();
-      const mockRes = createResponse();
-      mockReq.params.courseId = '1';
-      mockReq.body = {
-        userRole: 1,
-        userId: 1,
-      };
-
-      await role.updateUserRoleForCourse(mockReq, mockRes);
-      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(mockRes._getJSONData()).toEqual({
-        error: 'Please provide a valid User Email! User Email cannot be undefined.',
-      });
     });
 
     it('should return HTTP 200 OK if the query is successful', async () => {
@@ -414,7 +395,6 @@ describe('role.controller tests', () => {
       mockReq.body = {
         userRole: 1,
         userId: 1,
-        userEmail: 'testUser@test.com',
       };
 
       spies.roleServiceUpdateUserRoleForCourse.mockResolvedValueOnce();
@@ -428,7 +408,6 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userRole: 1,
         userId: 1,
       };
@@ -443,7 +422,6 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.params.projectId = '1';
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userId: 1,
       };
       await role.updateUserRoleForProject(mockReq, mockRes);
@@ -458,29 +436,12 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.params.projectId = '1';
       mockReq.body = {
-        userEmail: 'testUser@test.com',
         userRole: 1,
       };
 
       await role.updateUserRoleForProject(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(mockRes._getJSONData()).toEqual({ error: 'Please provide a valid User Id! User Id cannot be undefined.' });
-    });
-
-    it('should return status 400 BAD REQUEST if the user email was not supplied', async () => {
-      const mockReq = createRequest();
-      const mockRes = createResponse();
-      mockReq.params.projectId = '1';
-      mockReq.body = {
-        userRole: 1,
-        userId: 1,
-      };
-
-      await role.updateUserRoleForProject(mockReq, mockRes);
-      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(mockRes._getJSONData()).toEqual({
-        error: 'Please provide a valid User Email! User Email cannot be undefined.',
-      });
     });
 
     it('should return HTTP 200 OK if the query is successful', async () => {
@@ -490,7 +451,6 @@ describe('role.controller tests', () => {
       mockReq.body = {
         userRole: 1,
         userId: 1,
-        userEmail: 'testUser@test.com',
       };
 
       spies.roleServiceUpdateUserRoleForProject.mockResolvedValueOnce();
@@ -504,7 +464,7 @@ describe('role.controller tests', () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
-        user_email: 'testUser@test.com',
+        userId: 1,
       };
       await role.updateUserRole(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
@@ -513,7 +473,7 @@ describe('role.controller tests', () => {
       });
     });
 
-    it('should return status 400 BAD REQUEST if the userEmail was not supplied', async () => {
+    it('should return status 400 BAD REQUEST if the User id was not supplied', async () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
@@ -522,7 +482,7 @@ describe('role.controller tests', () => {
       await role.updateUserRole(mockReq, mockRes);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(mockRes._getJSONData()).toEqual({
-        error: 'Please provide a valid User email! User email cannot be undefined.',
+        error: 'User id must be a number',
       });
     });
 
@@ -539,7 +499,7 @@ describe('role.controller tests', () => {
       const mockRes = createResponse();
       mockReq.body = {
         newRoleId: 1,
-        userEmail: 'testUser@test.com',
+        userId: 1,
       };
       mockRes.locals.userSession = userSessionInformation;
       await role.updateUserRole(mockReq, mockRes);
@@ -551,7 +511,7 @@ describe('role.controller tests', () => {
     it('should update the uers role if the query was successful', async () => {
       const userSessionInformation: UserSession = {
         user_email: 'testAdmin@test.com',
-        user_id: 1,
+        user_id: 2,
         user_is_admin: true,
         session_id: 'testSessionId',
         user_role_id: 1,
@@ -559,13 +519,13 @@ describe('role.controller tests', () => {
       };
       const roleServiceResponseObject: UsersOnRoles = {
         role_id: 1,
-        user_email: 'testUser@test.com',
+        user_id: 1,
       };
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         newRoleId: 1,
-        userEmail: 'testUser@test.com',
+        userId: 1,
       };
       mockRes.locals.userSession = userSessionInformation;
       spies.roleServiceUpdateUserRole.mockResolvedValueOnce(roleServiceResponseObject);

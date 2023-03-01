@@ -201,13 +201,6 @@ async function create(
 
   try {
     return await prisma.$transaction<Course>(async (tx: Prisma.TransactionClient) => {
-      // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-      // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-      const userInfo = await tx.user.findFirstOrThrow({
-        where: {
-          user_id: userId,
-        },
-      });
 
       const course = await tx.course.create({
         data: {
@@ -229,7 +222,7 @@ async function create(
 
       await tx.usersOnRolesOnCourses.create({
         data: {
-          user_email: userInfo.user_email,
+          user_id: userId,
           course_id: course.id,
           role_id: FACULTY_ROLE_ID,
         },
@@ -373,14 +366,6 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 
 async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
   return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-    const userInfo = await tx.user.findFirstOrThrow({
-      where: {
-        user_id: userId,
-      },
-    });
-
     const userOnCourses = await tx.usersOnCourses.create({
       data: {
         course_id: courseId,
@@ -391,7 +376,7 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
     await tx.usersOnRolesOnCourses.create({
       data: {
         course_id: courseId,
-        user_email: userInfo.user_email,
+        user_id: userId,
         role_id: STUDENT_ROLE_ID,
       },
     });
@@ -402,14 +387,6 @@ async function addUser(courseId: number, userId: number): Promise<UsersOnCourses
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
   return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-    const userInfo = await tx.user.findFirstOrThrow({
-      where: {
-        user_id: userId,
-      },
-    });
-
     const userOnCourses = await tx.usersOnCourses.delete({
       where: {
         course_id_user_id: {
@@ -421,9 +398,9 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnCour
 
     await tx.usersOnRolesOnCourses.delete({
       where: {
-        user_email_course_id: {
+        user_id_course_id: {
           course_id: courseId,
-          user_email: userInfo.user_email,
+          user_id: userId,
         },
       },
     });
@@ -553,7 +530,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     // For each user in usersOnProjects, we create a role for them in the new attached course
     const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
       return {
-        user_email: user.user_email,
+        user_id: user.user_id,
         course_id: courseId,
         role_id: STUDENT_ROLE_ID,
       };
@@ -612,7 +589,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     // For each user in usersOnProjects, we create a role for them in the new independent project
     const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
       return {
-        user_email: user.user_email,
+        user_id: user.user_id,
         course_id: course.id,
         role_id: STUDENT_ROLE_ID,
       };

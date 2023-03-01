@@ -109,31 +109,12 @@ async function processImportCourseData(
     });
 
     const userPromises = Array.from(userDetailsMap).map(async ([userEmail, userData]) => {
-      // Create users and their course roles
+      // Create users
       const user = await tx.user.upsert({
         where: {
           user_email: userEmail,
         },
-        update: {
-          courseRoles: {
-            upsert: {
-              where: {
-                user_email_course_id: {
-                  user_email: userEmail,
-                  course_id: courseId,
-                },
-              },
-              create: {
-                course_id: courseId,
-                role_id: userData.roleId,
-              },
-              update: {
-                course_id: courseId,
-                role_id: userData.roleId,
-              },
-            },
-          },
-        },
+        update: {}, // This ensures that the user always exists
         create: {
           user_email: userData.email,
           user_password_hash: userData.password,
@@ -150,6 +131,26 @@ async function processImportCourseData(
           },
         },
       });
+
+      // We must incur another db query here because we cannot access userId in the update clause of the query above
+      // A tradeoff is that if the user is created above, this query is unnecessary
+      await tx.usersOnRolesOnCourses.upsert({
+            where: {
+              user_id_course_id: {
+                user_id : user.user_id,
+                course_id: courseId,
+              },
+            },
+            create: {
+              user_id: user.user_id,
+              course_id: courseId,
+              role_id: userData.roleId,
+            },
+            update: {
+              course_id: courseId,
+              role_id: userData.roleId,
+            },
+      })
 
       // Add users to project/course
       if (userData.roleId === STUDENT_ROLE_ID) {

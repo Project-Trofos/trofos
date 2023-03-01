@@ -20,9 +20,9 @@ const loginUser = async (req: express.Request, res: express.Response) => {
         .status(StatusCodes.UNAUTHORIZED)
         .send('Incorrect user credentials. Please double-check your credentials.');
     }
-
-    const userRoleInformation = await roleService.getUserRoleInformation(userEmail);
+    
     const userId = userAuth.userLoginInformation?.user_id as number;
+    const userRoleInformation = await roleService.getUserRoleInformation(userId);
     const sessionId = await sessionService.createUserSession(userEmail, userRoleInformation, userId);
 
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
@@ -51,7 +51,7 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
   try {
     const sessionInformation = await sessionService.getUserSession(sessionId);
     const userAccountInformation = await userService.get(sessionInformation.user_id);
-    const userRoleInformation = await roleService.getUserRoleInformation(sessionInformation.user_email);
+    const userRoleInformation = await roleService.getUserRoleInformation(sessionInformation.user_id);
 
     const userInformation = {
       userEmail: userAccountInformation.user_email,

@@ -33,7 +33,7 @@ export default function ProjectFeedbacks(): JSX.Element {
   const projectActions: string[] = Array.from(
     new Set([
       ...(projectRole
-        ?.filter((r) => r.user_email === userInfo?.userEmail)
+        ?.filter((r) => r.user_id === userInfo?.userId)
         .flatMap(
           (r) => actionOnRoles?.find((a) => a.id === r.role_id)?.actions.flatMap((action) => action.action) ?? [],
         ) ?? []),

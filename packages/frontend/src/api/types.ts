@@ -52,7 +52,6 @@ export type CreateUserRequest = {
 
 export type UserCourseRoleRequest = {
   id: number;
-  userEmail: string;
   userRole: number;
   userId: number;
 };
@@ -130,7 +129,7 @@ export type CourseData = Course & {
 
 export type UserOnRolesOnCourse = {
   id: number;
-  user_email: string;
+  user_id: number;
   role_id: number;
   course_id: number;
   role: {
@@ -219,7 +218,7 @@ export type BacklogHistory = {
 } & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
 
 export type UpdateUserRolePayload = {
-  userEmail: string;
+  userId: number;
   newRoleId: number;
 };
 

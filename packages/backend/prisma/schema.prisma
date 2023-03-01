@@ -248,8 +248,8 @@ model ActionsOnRoles {
 }
 
 model UsersOnRoles {
-  user_email String @unique @db.VarChar(320)
-  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  user_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 }
@@ -262,13 +262,13 @@ model ProjectGitLink {
 
 model UsersOnRolesOnCourses {
   id Int @id @default(autoincrement())
-  user_email String @db.VarChar(320)
-  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  user_id Int
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
   course_id Int
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  @@unique([user_email, course_id])
+  @@unique([user_id, course_id])
 }
 
 model Retrospective {
