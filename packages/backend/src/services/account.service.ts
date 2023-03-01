@@ -35,9 +35,9 @@ async function updateUser(userId: number, displayName: string): Promise<User> {
     where: {
       user_id: userId,
     },
-    data : {
+    data: {
       user_display_name: displayName,
-    }
+    },
   });
 
   return updatedUser;
@@ -45,5 +45,5 @@ async function updateUser(userId: number, displayName: string): Promise<User> {
 
 export default {
   changePassword,
-  updateUser
+  updateUser,
 };

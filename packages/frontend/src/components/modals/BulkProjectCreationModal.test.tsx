@@ -46,7 +46,7 @@ describe('test course creation modal', () => {
 
   const mockUserInfo: UserInfo = {
     userEmail: 'email',
-    userDisplayName: "User 1",
+    userDisplayName: 'User 1',
     userId: 1,
     userRoleActions: [],
   };

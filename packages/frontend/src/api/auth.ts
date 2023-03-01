@@ -81,9 +81,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         invalidatesTags: ['UserInfo'],
       }),
     }),
-
   }),
 });
 
-export const { useLoginUserMutation, useLogoutUserMutation, useGetUserInfoQuery, useChangePasswordMutation, useUpdateUserInfoMutation } =
-  extendedApi;
+export const {
+  useLoginUserMutation,
+  useLogoutUserMutation,
+  useGetUserInfoQuery,
+  useChangePasswordMutation,
+  useUpdateUserInfoMutation,
+} = extendedApi;

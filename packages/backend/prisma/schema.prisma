@@ -22,6 +22,8 @@ model User {
   courses       UsersOnCourses[]
   basicRoles UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
+
+  feedbacks Feedback[]
 }
 
 model UserSession {
@@ -82,6 +84,7 @@ model Project {
 
   sprints         Sprint[]
   backlogs        Backlog[]
+  backlogHistories BacklogHistory[]
   backlogStatuses BacklogStatus[]
 
   projectGitLink  ProjectGitLink?
@@ -114,13 +117,22 @@ model Milestone {
 
 model UsersOnProjects {
   project_id        Int
-  project           Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project           Project                   @relation(fields: [project_id], references: [id], onDelete: Cascade)
   user_id           Int
-  user              User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at        DateTime      @default(now())
-  reported_backlogs Backlog[]     @relation("ReportedBacklogs")
-  assigned_backlogs Backlog[]     @relation("AssignedBacklogs")
+  user              User                      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at        DateTime                  @default(now())
+  reported_backlogs Backlog[]                 @relation("ReportedBacklogs")
+  assigned_backlogs Backlog[]                 @relation("AssignedBacklogs")
   comments          Comment[]
+  settings          UsersOnProjectOnSettings[] 
+  @@id([project_id, user_id])
+}
+
+model UsersOnProjectOnSettings {
+  project_id            Int
+  user_id               Int
+  usersOnProjects       UsersOnProjects       @relation(fields: [project_id, user_id], references: [project_id, user_id], onDelete: Cascade)
+  email_notification    Boolean               @default(false)
   @@id([project_id, user_id])
 }
 
@@ -149,6 +161,7 @@ model Backlog {
 // Track history of backlog for analysis
 model BacklogHistory {
   project_id    Int
+  project       Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
   backlog_id    Int
 
   sprint_id     Int?
@@ -205,6 +218,18 @@ model Sprint {
   backlogs        Backlog[]
   backlog_history BacklogHistory[]
   retrospective   Retrospective[]
+  feedback        Feedback[]
+}
+
+model Feedback {
+  id            Int               @id @default(autoincrement())
+  user_id       Int?
+  user          User?             @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
+  sprint_id     Int               
+  sprint        Sprint            @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  content       String
+  created_at    DateTime          @default(now())
+  updated_at    DateTime?
 }
 
 model Role {
@@ -213,7 +238,6 @@ model Role {
   actions ActionsOnRoles[]
   basicRoles UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
-  
 }
 
 model ActionsOnRoles {
@@ -277,6 +301,11 @@ enum Action {
   read_project
   update_project
   delete_project
+  // Project feedback
+  create_feedback
+  read_feedback
+  update_feedback
+  delete_feedback
   // User related actions
   read_users
   create_users

@@ -197,7 +197,7 @@ export type Backlog = {
       user_email: string;
       user_display_name: string;
     };
-  };
+  } | null;
 };
 
 export type BacklogUpdatePayload = {
@@ -233,6 +233,12 @@ export type ProjectGitLinkData = {
   repoLink: string;
 };
 
+export type ProjectUserSettings = {
+  project_id: number;
+  user_id: number;
+  email_notification: boolean;
+};
+
 export type Settings = {
   current_year: number;
   current_sem: number;
@@ -264,3 +270,21 @@ export enum RetrospectiveVoteType {
   UP = 'up',
   DOWN = 'down',
 }
+
+export type CourseImportCsvPayload = {
+  courseId: number;
+  payload: FormData;
+};
+
+export type Feedback = {
+  id: number;
+  user_id?: number;
+  user: {
+    user_email: string;
+    user_display_name: string;
+  };
+  sprint_id: number;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+};

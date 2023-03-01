@@ -31,8 +31,8 @@ export default function ProjectsPage(): JSX.Element {
   }
 
   return (
-    <Container>
-      <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
+    <Container fullWidth noGap>
+      <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Title>Projects</Title>
         <ProjectCreationModal />
       </Space>

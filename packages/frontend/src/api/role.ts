@@ -54,7 +54,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
-    getCourseUserRoles: builder.query<UserOnRolesOnCourse[], number | undefined>({
+    getCourseUserRoles: builder.query<UserOnRolesOnCourse[], number>({
       query: (id) => ({
         url: `role/courseUserRoles/${id}`,
         credentials: 'include',

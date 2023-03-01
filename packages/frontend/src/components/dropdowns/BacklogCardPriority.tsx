@@ -14,16 +14,21 @@ const BACKLOG_PRIORITY_OPTIONS = [
   { value: 'very_low', label: 'Very Low' },
 ];
 
-export default function BacklogCardPriority(props: { backlogId: number; currentPriority: BacklogPriority }) {
-  const { currentPriority, backlogId } = props;
+type BacklogCardPriorityProps = {
+  backlogId: number;
+  currentPriority: BacklogPriority;
+  projectId?: number;
+};
+
+export default function BacklogCardPriority(props: BacklogCardPriorityProps) {
+  const { currentPriority, backlogId, projectId } = props;
   const params = useParams();
-  const projectId = Number(params.projectId);
   const [updateBacklog] = useUpdateBacklogMutation();
 
   const handlePriorityChange = async (updatedPriority: BacklogPriority | undefined) => {
     const payload = {
       backlogId,
-      projectId,
+      projectId: projectId ?? Number(params.projectId),
       fieldToUpdate: {
         priority: updatedPriority || null,
       },

@@ -3,20 +3,15 @@ import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 
-
-const USER_DISPLAY_NAME_MAX_LENGTH =  50;
+const USER_DISPLAY_NAME_MAX_LENGTH = 50;
 
 // Exclude keys from user
-function exclude<User, Key extends keyof User>(
-  user: User,
-  keys: Key[]
-): Omit<User, Key> {
-
+function exclude<User, Key extends keyof User>(user: User, keys: Key[]): Omit<User, Key> {
   const excludedUser = user;
 
-  keys.forEach(key => delete excludedUser[key]);
+  keys.forEach((key) => delete excludedUser[key]);
 
-  return excludedUser
+  return excludedUser;
 }
 
 export type Users = {
@@ -28,7 +23,7 @@ export type Users = {
   courseRoles: UsersOnRolesOnCourses[];
 };
 
-async function get(user_id : number) : Promise<User> {
+async function get(user_id: number): Promise<User> {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
       user_id,
@@ -38,7 +33,7 @@ async function get(user_id : number) : Promise<User> {
       courses: true,
       basicRoles: true,
       courseRoles: true,
-    }
+    },
   });
 
   return user;
@@ -54,7 +49,7 @@ async function getAll(): Promise<Users[]> {
     },
   });
 
-  const usersWithoutPassword = users.map(user => exclude(user, ['user_password_hash']));
+  const usersWithoutPassword = users.map((user) => exclude(user, ['user_password_hash']));
 
   return usersWithoutPassword;
 }

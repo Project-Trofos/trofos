@@ -7,12 +7,14 @@ import {
   User,
   UsersOnProjects,
   Settings,
+  UsersOnProjectOnSettings,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 import { INCLUDE_USERS_ID_EMAIL_COURSEROLE } from './helper';
 import { defaultBacklogStatus, FACULTY_ROLE_ID, STUDENT_ROLE_ID, SHADOW_COURSE_DATA } from '../helpers/constants';
+import { UserSettingsType } from './types/project.service.types';
 
 async function getAll(
   policyConstraint: AppAbility,
@@ -275,6 +277,9 @@ async function remove(id: number): Promise<Project> {
       where: {
         id,
       },
+      select: {
+        course: true,
+      },
     });
 
     const deletedProject = await tx.project.delete({
@@ -283,12 +288,14 @@ async function remove(id: number): Promise<Project> {
       },
     });
 
-    // Remove dangling shadow courses
-    await tx.course.delete({
-      where: {
-        id: project.course_id,
-      },
-    });
+    if (project.course.shadow_course) {
+      // Remove dangling shadow courses
+      await tx.course.delete({
+        where: {
+          id: project.course.id,
+        },
+      });
+    }
 
     return deletedProject;
   });
@@ -329,6 +336,13 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
     });
 
     const userOnProjects = await tx.usersOnProjects.create({
+      data: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    });
+
+    await tx.usersOnProjectOnSettings.create({
       data: {
         project_id: projectId,
         user_id: userId,
@@ -521,6 +535,39 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   return result;
 }
 
+async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectOnSettings | null> {
+  const result = await prisma.usersOnProjectOnSettings.findUnique({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+  });
+
+  return result;
+}
+
+async function updateUserSettings(
+  projectId: number,
+  userId: number,
+  updatedSettings: UserSettingsType,
+): Promise<UsersOnProjectOnSettings> {
+  const result = await prisma.usersOnProjectOnSettings.update({
+    where: {
+      project_id_user_id: {
+        project_id: projectId,
+        user_id: userId,
+      },
+    },
+    data: {
+      ...updatedSettings,
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getAll,
@@ -539,4 +586,6 @@ export default {
   addGitUrl,
   updateGitUrl,
   deleteGitUrl,
+  getUserSettings,
+  updateUserSettings,
 };

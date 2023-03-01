@@ -6,8 +6,8 @@ import { UserAuth } from '../../services/types/authentication.service.types';
 import { userData } from '../mocks/userData';
 
 describe('authentication.service tests', () => {
-  describe("validateUser", () => {
-    it("should return true if the user is valid", async () => {
+  describe('validateUser', () => {
+    it('should return true if the user is valid', async () => {
       const prismaResponseObject: User = {
         ...userData[0],
         user_password_hash: bcrypt.hashSync('testPassword', 10),
@@ -25,7 +25,7 @@ describe('authentication.service tests', () => {
       );
     });
 
-    it("should return false if there is no such user", async ()=> {
+    it('should return false if there is no such user', async () => {
       const responseObject = {
         isValidUser: false,
       } as UserAuth;
@@ -35,7 +35,7 @@ describe('authentication.service tests', () => {
       );
     });
 
-    it("should return false if the credentials supplied are invalid", async () => {
+    it('should return false if the credentials supplied are invalid', async () => {
       const prismaResponseObject: User = {
         ...userData[0],
         user_password_hash: bcrypt.hashSync('testPassword', 10),
@@ -53,7 +53,7 @@ describe('authentication.service tests', () => {
       );
     });
 
-    it("should return false if the user has an account but has not set a password", async () => {
+    it('should return false if the user has an account but has not set a password', async () => {
       const prismaResponseObject: User = {
         ...userData[0],
         user_password_hash: null,

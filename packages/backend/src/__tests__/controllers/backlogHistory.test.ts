@@ -3,6 +3,7 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import backlogHistoryService from '../../services/backlogHistory.service';
 import backlogHistoryController from '../../controllers/backlogHistory';
 import { backlogHistoryData } from '../mocks/backlogHistoryData';
+import projectConstraint from '../../policies/constraints/project.constraint';
 
 const spies = {
   getProjectBacklogHistory: jest.spyOn(backlogHistoryService, 'getProjectBacklogHistory'),
@@ -12,6 +13,26 @@ const spies = {
 describe('backlogHistory controller tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('getBacklogHistory', () => {
+    const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+    it('should return correct backlog history', async () => {
+      spies.getProjectBacklogHistory.mockResolvedValueOnce(backlogHistoryData);
+      const mockReq = createRequest({
+        params: {
+          projectId: backlogHistoryData[0].project_id,
+        },
+      });
+      const mockRes = createResponse();
+      mockRes.locals.policyConstraint = projectPolicyConstraint;
+
+      await backlogHistoryController.getProjectBacklogHistory(mockReq, mockRes);
+
+      expect(spies.getProjectBacklogHistory).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(backlogHistoryData));
+    });
   });
 
   describe('getProjectBacklogHistory', () => {

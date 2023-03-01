@@ -29,9 +29,18 @@ const newSprint = async (req: express.Request, res: express.Response) => {
 
 const listSprints = async (req: express.Request, res: express.Response) => {
   try {
+    const sprints: Sprint[] = await sprintService.listSprints(res.locals.policyConstraint);
+    return res.status(StatusCodes.OK).json(sprints);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const listSprintsByProjectId = async (req: express.Request, res: express.Response) => {
+  try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
-    const sprints: Sprint[] = await sprintService.listSprints(Number(projectId));
+    const sprints: Sprint[] = await sprintService.listSprintsByProjectId(Number(projectId));
     const unassignedBacklogs: Backlog[] = await backlogService.listUnassignedBacklogs(Number(projectId));
     return res.status(StatusCodes.OK).json({ sprints, unassignedBacklogs });
   } catch (error) {
@@ -170,6 +179,7 @@ const deleteRetrospectiveVote = async (req: express.Request, res: express.Respon
 export default {
   newSprint,
   listSprints,
+  listSprintsByProjectId,
   listActiveSprint,
   updateSprint,
   deleteSprint,

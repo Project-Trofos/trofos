@@ -3,6 +3,8 @@ import { Action } from '@prisma/client';
 import project from '../controllers/project';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
+import feedbackPolicy from '../policies/feedback.policy';
+import feedback from '../controllers/feedback';
 
 const router = express.Router();
 
@@ -88,6 +90,47 @@ router.delete(
   '/:projectId/gitLink',
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.deleteGitLink,
+);
+
+// Routes for getting and updating user settings for projects
+router.get(
+  '/:projectId/user/settings',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  project.getUserSettings,
+);
+
+router.put(
+  '/:projectId/user/settings',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.updateUserSettings,
+);
+
+// Get all feedbacks of a sprint of a project
+router.get(
+  `/:projectId/feedback/sprint/:sprintId`,
+  hasAuthForProject(Action.read_feedback, feedbackPolicy.POLICY_NAME),
+  feedback.listBySprintId,
+);
+
+// Create feedbacks of a sprint of a project
+router.post(
+  `/:projectId/feedback/`,
+  hasAuthForProject(Action.create_feedback, feedbackPolicy.POLICY_NAME),
+  feedback.create,
+);
+
+// Update feedbacks of a sprint of a project
+router.put(
+  `/:projectId/feedback/:feedbackId`,
+  hasAuthForProject(Action.update_feedback, feedbackPolicy.POLICY_NAME),
+  feedback.update,
+);
+
+// Delete feedbacks of a sprint of a project
+router.delete(
+  `/:projectId/feedback/:feedbackId`,
+  hasAuthForProject(Action.delete_feedback, feedbackPolicy.POLICY_NAME),
+  feedback.remove,
 );
 
 export default router;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Space, Row, Col, Input, Button, message } from 'antd';
 import { useGetUserInfoQuery, useUpdateUserInfoMutation } from '../../api/auth';
 import { getErrorMessage } from '../../helpers/error';
@@ -11,7 +11,7 @@ export default function UserInformationTab(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
   const [updateUserInfo] = useUpdateUserInfoMutation();
 
-  const [displayName, setDisplayName] = useState(userInfo?.userDisplayName)
+  const [displayName, setDisplayName] = useState(userInfo?.userDisplayName);
 
   useEffect(() => {
     setDisplayName(userInfo?.userDisplayName);
@@ -19,23 +19,22 @@ export default function UserInformationTab(): JSX.Element {
 
   const handleSave = () => {
     handleUpdateDisplayName();
-  }
+  };
 
-  const handleUpdateDisplayName =
-    async () => {
-      try {
-          if (displayName && userInfo) {
-            await updateUserInfo({
-              displayName,
-              userId: userInfo.userId,
-            }).unwrap();
-            message.success('Display name changed!');
-          }
-      } catch (e) {
-        console.error(getErrorMessage(e));
-        message.error('Failed to modify user display name');
+  const handleUpdateDisplayName = async () => {
+    try {
+      if (displayName && userInfo) {
+        await updateUserInfo({
+          displayName,
+          userId: userInfo.userId,
+        }).unwrap();
+        message.success('Display name changed!');
       }
+    } catch (e) {
+      console.error(getErrorMessage(e));
+      message.error('Failed to modify user display name');
     }
+  };
 
   return (
     <Row>
@@ -48,12 +47,11 @@ export default function UserInformationTab(): JSX.Element {
           </Space>
           <Space>
             <Typography.Title level={3}>Display Name:</Typography.Title>
-              <Input 
-                onChange={(e) => setDisplayName(e.target.value)}
-                value={displayName}
-              />
+            <Input onChange={(e) => setDisplayName(e.target.value)} value={displayName} />
           </Space>
-          <Button type="primary" onClick={handleSave}>Save</Button>
+          <Button type="primary" onClick={handleSave}>
+            Save
+          </Button>
         </Space>
       </Col>
     </Row>

@@ -3,10 +3,10 @@ import { Button, Space, Typography } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
-import ProjectsPage from './Projects';
 import FacultyDashboard from './FacultyDashboard';
 import conditionalRender from '../helpers/conditionalRender';
 import { UserPermissionActions } from '../helpers/constants';
+import UserDashboard from './UserDashboard';
 
 const { Title } = Typography;
 
@@ -26,10 +26,10 @@ export default function HomePage(): JSX.Element {
     );
   }
 
-  return (
-    conditionalRender(<FacultyDashboard userInfo={userInfo} />, userInfo.userRoleActions, [
-      UserPermissionActions.READ_COURSE,
-      UserPermissionActions.ADMIN,
-    ]) || <ProjectsPage />
+  return conditionalRender(
+    <FacultyDashboard userInfo={userInfo} />,
+    userInfo.userRoleActions,
+    [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],
+    <UserDashboard userInfo={userInfo} />,
   );
 }

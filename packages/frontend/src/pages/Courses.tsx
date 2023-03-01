@@ -32,8 +32,8 @@ export default function CoursesPage(): JSX.Element {
   }
 
   return (
-    <Container>
-      <Space style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
+    <Container fullWidth noGap>
+      <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Title>Courses</Title>
         <CourseCreationModal />
       </Space>

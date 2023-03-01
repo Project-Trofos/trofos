@@ -16,10 +16,12 @@ import {
   mockSprintToUpdate,
 } from '../mocks/sprintData';
 import { mockBacklogData } from '../mocks/backlogData';
+import projectConstraint from '../../policies/constraints/project.constraint';
 
 const sprintServiceSpies = {
   newSprint: jest.spyOn(sprintService, 'newSprint'),
   listSprints: jest.spyOn(sprintService, 'listSprints'),
+  listSprintsByProjectId: jest.spyOn(sprintService, 'listSprintsByProjectId'),
   listActiveSprint: jest.spyOn(sprintService, 'listActiveSprint'),
   updateSprint: jest.spyOn(sprintService, 'updateSprint'),
   deleteSprint: jest.spyOn(sprintService, 'deleteSprint'),
@@ -111,6 +113,30 @@ describe('sprintController tests', () => {
   });
 
   describe('list sprints', () => {
+    const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+    const mockRequest = createRequest();
+    const mockResponse = createResponse();
+    mockResponse.locals.policyConstraint = projectPolicyConstraint;
+
+    it('should return array of sprints and status 200 when called with valid policy constraint', async () => {
+      const expectedSprints: Sprint[] = [
+        mockSprintData,
+        {
+          ...mockSprintData,
+          id: 2,
+          name: 'Sprint 2',
+        },
+      ];
+      sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints);
+
+      await sprintController.listSprints(mockRequest, mockResponse);
+      expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(projectPolicyConstraint);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedSprints));
+    });
+  });
+
+  describe('list sprints by project id', () => {
     const mockProjectId = {
       projectId: 123,
     };
@@ -131,12 +157,12 @@ describe('sprintController tests', () => {
         ],
         unassignedBacklogs: [mockBacklogData],
       };
-      sprintServiceSpies.listSprints.mockResolvedValueOnce(expectedSprints.sprints);
+      sprintServiceSpies.listSprintsByProjectId.mockResolvedValueOnce(expectedSprints.sprints);
       backlogServiceSpies.listUnassignedBacklogs.mockResolvedValueOnce(expectedSprints.unassignedBacklogs);
       const mockResponse = createResponse();
 
-      await sprintController.listSprints(mockRequest, mockResponse);
-      expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(mockProjectId.projectId);
+      await sprintController.listSprintsByProjectId(mockRequest, mockResponse);
+      expect(sprintServiceSpies.listSprintsByProjectId).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(backlogServiceSpies.listUnassignedBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedSprints));
@@ -148,18 +174,30 @@ describe('sprintController tests', () => {
       });
       const mockResponse = createResponse();
 
-      await sprintController.listSprints(mockMissingProjectIdRequest, mockResponse);
-      expect(sprintServiceSpies.listSprints).not.toHaveBeenCalled();
+      await sprintController.listSprintsByProjectId(mockMissingProjectIdRequest, mockResponse);
+      expect(sprintServiceSpies.listSprintsByProjectId).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when sprints failed to be retrieved', async () => {
-      sprintServiceSpies.listSprints.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+      sprintServiceSpies.listSprintsByProjectId.mockRejectedValueOnce(
+        new PrismaClientValidationError('Test error msg'),
+      );
       const mockResponse = createResponse();
 
-      await sprintController.listSprints(mockRequest, mockResponse);
-      expect(sprintServiceSpies.listSprints).toHaveBeenCalledWith(mockProjectId.projectId);
+      await sprintController.listSprintsByProjectId(mockRequest, mockResponse);
+      expect(sprintServiceSpies.listSprintsByProjectId).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+  });
+
+  describe('list active sprints by project id', () => {
+    const mockProjectId = {
+      projectId: 123,
+    };
+
+    const mockRequest = createRequest({
+      params: mockProjectId,
     });
 
     it('should return active sprint and status 200 when called with valid projectId', async () => {

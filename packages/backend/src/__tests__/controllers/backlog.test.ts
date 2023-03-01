@@ -6,10 +6,12 @@ import backlogController from '../../controllers/backlog';
 import backlogService from '../../services/backlog.service';
 import { BacklogFields } from '../../helpers/types/backlog.service.types';
 import { mockBacklogData, mockBacklogFields } from '../mocks/backlogData';
+import projectConstraint from '../../policies/constraints/project.constraint';
 
 const backlogServiceSpies = {
   newBacklog: jest.spyOn(backlogService, 'newBacklog'),
   listBacklogs: jest.spyOn(backlogService, 'listBacklogs'),
+  listBacklogsByProjectId: jest.spyOn(backlogService, 'listBacklogsByProjectId'),
   getBacklog: jest.spyOn(backlogService, 'getBacklog'),
   updateBacklog: jest.spyOn(backlogService, 'updateBacklog'),
   deleteBacklog: jest.spyOn(backlogService, 'deleteBacklog'),
@@ -49,7 +51,7 @@ describe('backlogController tests', () => {
     });
   });
 
-  describe('list backlogs', () => {
+  describe('list backlogs by project id', () => {
     const mockProjectId = {
       projectId: 123,
     };
@@ -77,10 +79,10 @@ describe('backlogController tests', () => {
           status: 'todo',
         },
       ];
-      backlogServiceSpies.listBacklogs.mockResolvedValueOnce(expectedBacklogs);
+      backlogServiceSpies.listBacklogsByProjectId.mockResolvedValueOnce(expectedBacklogs);
 
-      await backlogController.listBacklogs(mockRequest, mockResponse);
-      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      await backlogController.listBacklogsByProjectId(mockRequest, mockResponse);
+      expect(backlogServiceSpies.listBacklogsByProjectId).toHaveBeenCalledWith(mockProjectId.projectId);
       expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
       expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
     });
@@ -89,16 +91,43 @@ describe('backlogController tests', () => {
       const mockMissingProjectIdRequest = createRequest({
         body: {},
       });
-      await backlogController.listBacklogs(mockMissingProjectIdRequest, mockResponse);
-      expect(backlogServiceSpies.listBacklogs).not.toHaveBeenCalled();
+      await backlogController.listBacklogsByProjectId(mockMissingProjectIdRequest, mockResponse);
+      expect(backlogServiceSpies.listBacklogsByProjectId).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
     it('should throw an error and return status 500 when backlogs failed to be retrieved', async () => {
-      backlogServiceSpies.listBacklogs.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+      backlogServiceSpies.listBacklogsByProjectId.mockRejectedValueOnce(
+        new PrismaClientValidationError('Test error msg'),
+      );
+
+      await backlogController.listBacklogsByProjectId(mockRequest, mockResponse);
+      expect(backlogServiceSpies.listBacklogsByProjectId).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    });
+  });
+
+  describe('list backlogs', () => {
+    const mockRequest = createRequest();
+
+    // Add a dummy policy
+    const mockResponse = createResponse();
+    mockResponse.locals.policyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+
+    it('should return array of backlogs and status 200 when called with valid projectId', async () => {
+      const expectedBacklogs: Backlog[] = [mockBacklogData];
+      backlogServiceSpies.listBacklogs.mockResolvedValueOnce(expectedBacklogs);
 
       await backlogController.listBacklogs(mockRequest, mockResponse);
-      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockProjectId.projectId);
+      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockResponse.locals.policyConstraint);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedBacklogs));
+    });
+
+    it('should throw an error and return status 500 when backlogs failed to be retrieved', async () => {
+      backlogServiceSpies.listBacklogs.mockRejectedValueOnce(new PrismaClientValidationError('Test error msg'));
+      await backlogController.listBacklogs(mockRequest, mockResponse);
+      expect(backlogServiceSpies.listBacklogs).toHaveBeenCalledWith(mockResponse.locals.policyConstraint);
       expect(mockResponse.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });

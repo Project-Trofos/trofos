@@ -137,6 +137,7 @@ export default function ProjectPage(): JSX.Element {
               { key: 'users', label: 'Users' },
               { key: 'sprint', label: 'Sprint' },
               { key: 'board', label: 'Board' },
+              { key: 'feedback', label: 'Feedback' },
               { key: 'settings', label: 'Settings' },
             ]}
             activeKey={selectedTab}
@@ -145,9 +146,9 @@ export default function ProjectPage(): JSX.Element {
           />
         }
       >
-        <Text>{project.description}</Text>
+        {project.description && <Text>{project.description}</Text>}
       </PageHeader>
-      <section className="project-section-container">
+      <section className="overflow-scroll-container">
         <Outlet />
       </section>
     </>
