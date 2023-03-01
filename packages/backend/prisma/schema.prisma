@@ -248,6 +248,7 @@ model ActionsOnRoles {
 }
 
 model UsersOnRoles {
+  user_id Int? @default(0)
   user_email String @unique @db.VarChar(320)
   user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
   role_id Int
@@ -262,6 +263,7 @@ model ProjectGitLink {
 
 model UsersOnRolesOnCourses {
   id Int @id @default(autoincrement())
+  user_id Int? @default(0)
   user_email String @db.VarChar(320)
   user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
   role_id Int

@@ -551,7 +551,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     });
 
     // For each user in usersOnProjects, we create a role for them in the new attached course
-    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
+    const queries: Omit<UsersOnRolesOnCourses, 'id'|'user_id'>[] = userInfo.map((user: User) => {
       return {
         user_email: user.user_email,
         course_id: courseId,
@@ -610,7 +610,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     });
 
     // For each user in usersOnProjects, we create a role for them in the new independent project
-    const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
+    const queries: Omit<UsersOnRolesOnCourses, 'id'|'user_id'>[] = userInfo.map((user: User) => {
       return {
         user_email: user.user_email,
         course_id: course.id,
