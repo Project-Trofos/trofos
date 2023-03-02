@@ -1,5 +1,4 @@
 import prisma from '../models/prismaClient';
-import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 
 async function patchMigration() {
 
@@ -8,6 +7,10 @@ async function patchMigration() {
   const usersOnRoles = await prisma.usersOnRoles.findMany();
 
   for (const userOnRoleOnCourse of usersOnRolesOnCourses) {
+    /*
+      For each entry in usersOnRolesOnCourses, find their user id from the list of all users
+      and update the UsersOnRolesOnCourses table with their user id
+    */
     const userId = allUsers.find(user => user.user_email === userOnRoleOnCourse.user_email)?.user_id;
     if (userId) {
       await prisma.usersOnRolesOnCourses.update({
@@ -25,6 +28,10 @@ async function patchMigration() {
   }
 
   for (const userOnRole of usersOnRoles) {
+    /*
+      For each entry in usersOnRoles, find their user id from the list of all users
+      and update the UsersOnRoles table with their user id
+    */
     const userId = allUsers.find(user => user.user_email === userOnRole.user_email)?.user_id;
     if (userId) {
       await prisma.usersOnRoles.update({
