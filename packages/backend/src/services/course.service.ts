@@ -3,7 +3,6 @@ import {
   Prisma,
   Project,
   User,
-  UsersOnCourses,
   UsersOnRolesOnCourses,
   UsersOnProjects,
   Settings,

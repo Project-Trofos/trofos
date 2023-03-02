@@ -19,7 +19,6 @@ model User {
   user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
-  courses       UsersOnCourses[]
   basicRoles UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
 
@@ -44,7 +43,6 @@ model Course {
   endSem        Int               
   cname         String            @db.VarChar(256)
   description   String?
-  users         UsersOnCourses[]
   projects      Project[]
   milestones    Milestone[]
   announcements Announcement[]
@@ -53,16 +51,6 @@ model Course {
   courseRoles UsersOnRolesOnCourses[]
   shadow_course Boolean           @default(false)
   @@unique([code, startYear, startSem])
-}
-
-model UsersOnCourses {
-  course_id               Int
-  course                  Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  user_id                 Int
-  user                    User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at              DateTime          @default(now())
-
-  @@id([course_id, user_id])
 }
 
 model Project {
