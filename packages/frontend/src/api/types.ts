@@ -123,7 +123,7 @@ export type Announcement = {
 export type CourseData = Course & {
   milestones: Milestone[];
   announcements: Announcement[];
-  users: UserData[];
+  courseRoles: UserData[];
 };
 
 export type UserOnRolesOnCourse = {

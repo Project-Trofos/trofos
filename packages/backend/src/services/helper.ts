@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 
+// NOTE: Cannot be used for courses
 export const INCLUDE_USERS_ID_EMAIL_COURSEROLE = {
   users: {
     select: {
@@ -15,8 +16,9 @@ export const INCLUDE_USERS_ID_EMAIL_COURSEROLE = {
   },
 };
 
+// NOTE: Can only be used for courses
 export const INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS = {
-  users: {
+  courseRoles: {
     select: {
       user: {
         select: {

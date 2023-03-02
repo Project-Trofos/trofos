@@ -23,7 +23,7 @@ describe('test course creation modal', () => {
     milestones: [],
     announcements: [],
     shadow_course: false,
-    users: [
+    courseRoles: [
       {
         user: {
           user_id: 1,

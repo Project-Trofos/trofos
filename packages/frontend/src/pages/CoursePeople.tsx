@@ -20,7 +20,7 @@ export default function CoursePeople(): JSX.Element {
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
         <UserTable
-          users={course?.users}
+          users={course?.courseRoles}
           userRoles={courseUserRoles}
           actionsOnRoles={actionsOnRoles}
           isLoading={isLoading}

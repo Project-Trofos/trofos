@@ -66,7 +66,7 @@ export default function BulkProjectCreationModal({
       return [];
     }
     // Users without project
-    const users = course.users.filter(
+    const users = course.courseRoles.filter(
       (u) => !projects.some((p) => p.users.some((pu) => pu.user.user_id === u.user.user_id)),
     );
     // Current user will not be included
