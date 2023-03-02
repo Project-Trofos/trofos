@@ -157,7 +157,7 @@ async function getUsers(req: express.Request, res: express.Response) {
 
     assertCourseIdIsValid(courseId);
 
-    const result = await course.getUsers(res.locals.policyConstraint, Number(courseId));
+    const result = await course.getUsers(Number(courseId));
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

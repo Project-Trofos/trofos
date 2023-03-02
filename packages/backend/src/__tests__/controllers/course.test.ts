@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes';
-import { User, UsersOnCourses } from '@prisma/client';
+import { User, UsersOnRolesOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
 import settings from '../../services/settings.service';
@@ -11,6 +11,7 @@ import coursePolicy from '../../policies/constraints/course.constraint';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
 import { BadRequestError } from '../../helpers/error';
+import { STUDENT_ROLE_ID } from '../../helpers/constants';
 
 const spies = {
   getAll: jest.spyOn(course, 'getAll'),
@@ -40,7 +41,7 @@ describe('course controller tests', () => {
   ];
 
   // Mock data for users on courses
-  const usersCourseData: UsersOnCourses[] = [{ course_id: 1, user_id: 1, created_at: new Date(Date.now()) }];
+  const usersCourseData: UsersOnRolesOnCourses[] = [{ id: 1, course_id: 1, user_id: 1, role_id: STUDENT_ROLE_ID }];
 
   const coursePolicyConstraint = coursePolicy.coursePolicyConstraint(1, true);
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);

@@ -28,7 +28,6 @@ export type User = {
   user_display_name: string;
   user_id: number;
   projects: Project[];
-  courses: Course[];
   basicRoles: BasicRoles[];
   courseRoles: CourseRoles[];
 };

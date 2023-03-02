@@ -1,4 +1,4 @@
-import { Course, Project, User, UsersOnCourses } from '@prisma/client';
+import { Course, Project, User, UsersOnRolesOnCourses } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import course from '../../services/course.service';
 import coursesData from '../mocks/courseData';
@@ -8,6 +8,7 @@ import projectPolicy from '../../policies/constraints/project.constraint';
 import mockBulkCreateBody from '../mocks/bulkCreateProjectBody';
 import { BadRequestError } from '../../helpers/error';
 import { userData } from '../mocks/userData';
+import { STUDENT_ROLE_ID } from '../../helpers/constants';
 
 describe('course.service tests', () => {
   // Mock data for projects
@@ -245,16 +246,17 @@ describe('course.service tests', () => {
     it('should return users in a course', async () => {
       const INDEX = 0;
       const targetCourse = coursesData[INDEX];
-      prismaMock.usersOnCourses.findMany.mockResolvedValueOnce(
+      prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce(
         userData.map((x) => ({
-          user: x,
+          id : 1,
+          user : x,
           course_id: targetCourse.id,
-          created_at: targetCourse.created_at,
           user_id: x.user_id,
+          role_id : 1
         })),
       );
 
-      const result = await course.getUsers(coursePolicyConstraint, targetCourse.id);
+      const result = await course.getUsers(targetCourse.id);
       expect(result).toEqual<User[]>(userData);
     });
   });
@@ -264,18 +266,17 @@ describe('course.service tests', () => {
       const INDEX = 0;
       const targetCourse = coursesData[INDEX];
       const USER_ID = 1;
-      const resultMock: UsersOnCourses = {
+      const resultMock: UsersOnRolesOnCourses = {
+        id: 1,
         course_id: targetCourse.id,
         user_id: USER_ID,
-        created_at: new Date(Date.now()),
+        role_id: STUDENT_ROLE_ID
       };
 
-      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
-      prismaMock.usersOnCourses.create.mockResolvedValueOnce(resultMock);
-      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
+      prismaMock.usersOnRolesOnCourses.create.mockResolvedValueOnce(resultMock);
 
       const result = await course.addUser(targetCourse.id, USER_ID);
-      expect(result).toEqual<UsersOnCourses>(resultMock);
+      expect(result).toEqual<UsersOnRolesOnCourses>(resultMock);
     });
   });
 
@@ -284,18 +285,17 @@ describe('course.service tests', () => {
       const INDEX = 0;
       const targetCourse = coursesData[INDEX];
       const USER_ID = 1;
-      const resultMock: UsersOnCourses = {
+      const resultMock: UsersOnRolesOnCourses = {
+        id: 1,
         course_id: targetCourse.id,
         user_id: USER_ID,
-        created_at: new Date(Date.now()),
+        role_id: STUDENT_ROLE_ID
       };
 
-      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
-      prismaMock.usersOnCourses.delete.mockResolvedValueOnce(resultMock);
-      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
+      prismaMock.usersOnRolesOnCourses.delete.mockResolvedValueOnce(resultMock);
 
       const result = await course.removeUser(targetCourse.id, USER_ID);
-      expect(result).toEqual<UsersOnCourses>(resultMock);
+      expect(result).toEqual<UsersOnRolesOnCourses>(resultMock);
     });
   });
 
