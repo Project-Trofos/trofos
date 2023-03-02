@@ -1,7 +1,7 @@
 import { Action, ActionsOnRoles, UsersOnRoles, Role } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { RoleInformation, UserRolesForCourse, UserRoleActionsForCourse } from './types/role.service.types';
-import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
+import { ADMIN_ROLE_ID } from '../helpers/constants';
 
 async function getUserRoleInformation(userId: number): Promise<RoleInformation> {
   const basicRoleQueryResult = await prisma.usersOnRoles.findFirstOrThrow({
