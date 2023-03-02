@@ -13,6 +13,7 @@ import {
   mockRetrospectiveVoteFields,
   mockSprintData,
   mockSprintFields,
+  mockSprintNotes,
   mockSprintToUpdate,
 } from '../mocks/sprintData';
 import { mockBacklogData } from '../mocks/backlogData';
@@ -30,6 +31,7 @@ const sprintServiceSpies = {
   addRetrospectiveVote: jest.spyOn(sprintService, 'addRetrospectiveVote'),
   updateRetrospectiveVote: jest.spyOn(sprintService, 'updateRetrospectiveVote'),
   deleteRetrospectiveVote: jest.spyOn(sprintService, 'deleteRetrospectiveVote'),
+  getSprintNotes: jest.spyOn(sprintService, 'getSprintNotes'),
 };
 
 const backlogServiceSpies = {
@@ -538,6 +540,26 @@ describe('sprintController tests', () => {
       await sprintController.deleteRetrospectiveVote(mockInvalidRequest, mockResponse);
       expect(sprintServiceSpies.deleteRetrospectiveVote).not.toHaveBeenCalled();
       expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('get sprint notes', () => {
+    const mockSprintId = 1;
+    const mockRequest = createRequest({
+      params: {
+        sprintId: mockSprintId,
+      },
+    });
+    const mockResponse = createResponse();
+
+    it('should return sprint notes', async () => {
+      const expectedSprintNotes = mockSprintNotes;
+      sprintServiceSpies.getSprintNotes.mockResolvedValueOnce(expectedSprintNotes);
+
+      await sprintController.getSprintNotes(mockRequest, mockResponse);
+      expect(sprintServiceSpies.getSprintNotes).toHaveBeenCalledWith(mockSprintId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedSprintNotes));
     });
   });
 });

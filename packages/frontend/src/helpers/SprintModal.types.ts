@@ -7,6 +7,7 @@ export interface SprintFormFields extends FormData {
   dates?: string[] | null;
   startDate?: string;
   goals?: string;
+  notes?: string;
 }
 
 export type SprintUpdatePayload = Partial<SprintFormFields> & {
