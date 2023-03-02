@@ -5,7 +5,7 @@ export function numberOrUndefined(maybeNumber: string | undefined): number | und
   return Number(maybeNumber);
 }
 
-// Exclude keys from user
+// Exclude keys from model
 export function exclude<T, Key extends keyof T>(model: T, keys: Key[]): Omit<T, Key> {
   const excludedModel = model;
 
