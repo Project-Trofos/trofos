@@ -1,13 +1,11 @@
 import React, { useRef } from 'react';
-import { Button, message, Modal } from 'antd';
+import { message, Modal } from 'antd';
 import { LexicalEditor } from 'lexical';
 import { useGetSprintNotesQuery, useUpdateSprintMutation } from '../../api/sprint';
 import Editor from '../editor/Editor';
 
 export default function SprintNotesModal(props: SprintNotesModalProps) {
   const { isOpen, setIsOpen, sprintId } = props;
-  // const params = useParams();
-  // const { Title } = Typography;
 
   // Ref to current editor instance
   const editorRef = useRef<LexicalEditor>(null);
