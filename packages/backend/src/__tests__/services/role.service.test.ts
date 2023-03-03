@@ -20,11 +20,6 @@ const projectResponseObject = {
   backlogStatuses: [],
 };
 
-const usersOnCoursesResponseObject = {
-  user_id: 1,
-  course_id: 1,
-  created_at: new Date('2022-08-31T15:19:39.104Z'),
-};
 const usersOnRolesOnCoursesResponseObject = {
   id: 1,
   user_id: 1,
