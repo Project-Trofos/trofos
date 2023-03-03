@@ -24,7 +24,6 @@ import CoursePeople from '../pages/CoursePeople';
 import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
-import SprintNotes from '../pages/SprintNotes';
 
 function App() {
   return (
@@ -39,7 +38,6 @@ function App() {
             <Route path="users" element={<ProjectPeople />} />
             <Route path="sprint" element={<ProjectSprints />} />
             <Route path="sprint/:sprintId/retrospective" element={<Retrospective />} />
-            <Route path="sprint/:sprintId/notes" element={<SprintNotes />} />
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="board" element={<ScrumBoard />} />

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import { useDeleteSprintMutation } from '../../api/socket/sprintHooks';
 
 function SprintMenu(props: {
@@ -9,8 +8,6 @@ function SprintMenu(props: {
   projectId: number;
   handleSprintOnClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
 }): JSX.Element {
-  const navigate = useNavigate();
-
   const { sprintId, projectId, handleSprintOnClick } = props;
   const [deleteSprint] = useDeleteSprintMutation();
 
@@ -34,10 +31,6 @@ function SprintMenu(props: {
     setIsDeleteModalOpen(false);
   };
 
-  const handleNotesClick = () => {
-    navigate(`/project/${projectId}/sprint/${sprintId}/notes`);
-  };
-
   const menuItems = {
     items: [
       {
@@ -46,10 +39,6 @@ function SprintMenu(props: {
       },
       {
         key: '2',
-        label: <div onClick={handleNotesClick}>Notes</div>,
-      },
-      {
-        key: '3',
         danger: true,
         label: <div onClick={openDeleteConfirmationModal}>Delete sprint</div>,
       },

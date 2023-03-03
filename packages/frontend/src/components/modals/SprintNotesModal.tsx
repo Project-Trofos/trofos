@@ -1,22 +1,18 @@
 import React, { useRef } from 'react';
-import { Button, message, Space, Typography } from 'antd';
-import { useParams } from 'react-router-dom';
+import { Button, message, Modal } from 'antd';
 import { LexicalEditor } from 'lexical';
-import { useGetSprintNotesQuery, useUpdateSprintMutation } from '../api/sprint';
-import Editor from '../components/editor/Editor';
-import Container from '../components/layouts/Container';
-import './SprintNotes.css';
+import { useGetSprintNotesQuery, useUpdateSprintMutation } from '../../api/sprint';
+import Editor from '../editor/Editor';
 
-export default function SprintNotes() {
-  const params = useParams();
-  const { Title } = Typography;
+export default function SprintNotesModal(props: SprintNotesModalProps) {
+  const { isOpen, setIsOpen, sprintId } = props;
+  // const params = useParams();
+  // const { Title } = Typography;
 
   // Ref to current editor instance
   const editorRef = useRef<LexicalEditor>(null);
 
-  const sprintId = Number(params.sprintId);
-
-  const { data: notesData } = useGetSprintNotesQuery(Number(params.sprintId));
+  const { data: notesData } = useGetSprintNotesQuery(Number(sprintId));
   const [updateSprint] = useUpdateSprintMutation();
 
   const handleSave = async () => {
@@ -37,17 +33,21 @@ export default function SprintNotes() {
     }
   };
 
+  const handleOnCancel = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Container>
-      <Title level={3}>Notes</Title>
+    <Modal title="Notes" open={isOpen} onOk={handleSave} onCancel={handleOnCancel} okText="Save">
       <div className="sprint-notes-editor">
         <Editor initialStateString={notesData?.notes} ref={editorRef} />
-        <div className="sprint-notes-button">
-          <Button onClick={handleSave} type="primary">
-            Save
-          </Button>
-        </div>
       </div>
-    </Container>
+    </Modal>
   );
 }
+
+type SprintNotesModalProps = {
+  isOpen: boolean;
+  setIsOpen(state: boolean): void;
+  sprintId: number;
+};

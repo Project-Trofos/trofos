@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Collapse, message } from 'antd';
+import { BookOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUpdateSprintMutation } from '../../api/socket/sprintHooks';
 import { Sprint } from '../../api/sprint';
 import BacklogList from '../lists/BacklogList';
 import SprintMenu from '../dropdowns/SprintMenu';
-import './SprintListingCard.css';
 import StrictModeDroppable from '../dnd/StrictModeDroppable';
+import SprintNotesModal from '../modals/SprintNotesModal';
+import './SprintListingCard.css';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
   const { Panel } = Collapse;
   const navigate = useNavigate();
+
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
 
   const params = useParams();
   const projectId = Number(params.projectId);
@@ -64,40 +68,55 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     navigate(`./${sprintId}/retrospective`);
   };
 
+  const openSprintNotesModal = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation();
+    setIsNotesOpen(true);
+  };
+
   return (
-    <StrictModeDroppable droppableId={sprint.id.toString()}>
-      {(provided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps}>
-          <Collapse>
-            <Panel
-              key={sprint.id}
-              header={
-                <div className="sprint-card-inner-container">
-                  <div className="sprint-card-name">{sprint.name}</div>
-                  <div className="sprint-status-button">{renderSprintStatusButton()}</div>
-                  {(sprint.status === 'completed' || sprint.status === 'closed') && (
-                    <div className="sprint-retro-button">
-                      <Button onClick={() => navigateToRetrospective(sprint.id)}>Retrospective</Button>
+    <>
+      <StrictModeDroppable droppableId={sprint.id.toString()}>
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            <Collapse>
+              <Panel
+                key={sprint.id}
+                header={
+                  <div className="sprint-card-inner-container">
+                    <div className="sprint-card-name">{sprint.name}</div>
+                    <div className="sprint-status-button">{renderSprintStatusButton()}</div>
+                    {(sprint.status === 'completed' || sprint.status === 'closed') && (
+                      <div className="sprint-retro-button">
+                        <Button onClick={() => navigateToRetrospective(sprint.id)}>Retrospective</Button>
+                      </div>
+                    )}
+                    {sprint.start_date && sprint.end_date && (
+                      <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
+                        'DD/MM/YYYY',
+                      )}`}</div>
+                    )}
+                    <div className="sprint-card-notes-icon">
+                      <BookOutlined onClick={openSprintNotesModal} style={{ fontSize: '18px' }} />
                     </div>
-                  )}
-                  {sprint.start_date && sprint.end_date && (
-                    <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(
-                      'DD/MM/YYYY',
-                    )}`}</div>
-                  )}
-                  <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
-                    <SprintMenu sprintId={sprint.id} projectId={projectId} handleSprintOnClick={handleSprintOnClick} />
+                    <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
+                      <SprintMenu
+                        sprintId={sprint.id}
+                        projectId={projectId}
+                        handleSprintOnClick={handleSprintOnClick}
+                      />
+                    </div>
                   </div>
-                </div>
-              }
-            >
-              <BacklogList backlogs={sprint.backlogs} />
-              {provided.placeholder}
-            </Panel>
-          </Collapse>
-        </div>
-      )}
-    </StrictModeDroppable>
+                }
+              >
+                <BacklogList backlogs={sprint.backlogs} />
+                {provided.placeholder}
+              </Panel>
+            </Collapse>
+          </div>
+        )}
+      </StrictModeDroppable>
+      {isNotesOpen && <SprintNotesModal isOpen={isNotesOpen} setIsOpen={setIsNotesOpen} sprintId={sprint.id} />}
+    </>
   );
 }
 
