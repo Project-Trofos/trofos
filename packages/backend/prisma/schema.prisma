@@ -215,6 +215,7 @@ model Sprint {
   project_id      Int
   goals           String?
   status          SprintStatus      @default(upcoming)
+  notes           String?
   backlogs        Backlog[]
   backlog_history BacklogHistory[]
   retrospective   Retrospective[]
