@@ -6,8 +6,12 @@ import { Sprint } from '../../api/sprint';
 import { Backlog } from '../../api/types';
 import useGroupSprintBacklog from './useGroupSprintBacklog';
 
-export default function SprintBacklogPieChart(props: { sprints: Sprint[]; unassignedBacklog: Backlog[] }) {
-  const { sprints, unassignedBacklog } = props;
+export default function SprintBacklogPieChart(props: {
+  sprints: Sprint[];
+  unassignedBacklog: Backlog[];
+  showButton?: boolean;
+}) {
+  const { sprints, unassignedBacklog, showButton } = props;
   const data = useGroupSprintBacklog(sprints, unassignedBacklog);
   const navigate = useNavigate();
 
@@ -36,9 +40,11 @@ export default function SprintBacklogPieChart(props: { sprints: Sprint[]; unassi
   if (data.length === 0) {
     return (
       <Empty style={{ flex: '1' }} description="You have no issues in the current sprint...">
-        <Button type="primary" onClick={() => navigate('../sprint')}>
-          View Sprint
-        </Button>
+        {showButton && (
+          <Button type="primary" onClick={() => navigate('../sprint')}>
+            View Sprint
+          </Button>
+        )}
       </Empty>
     );
   }

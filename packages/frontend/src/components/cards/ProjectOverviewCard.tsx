@@ -45,7 +45,7 @@ export default function ProjectOverviewCard(props: {
             <Col xs={24} md={12}>
               <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
                 <Subheading>Active Sprint Issue Types</Subheading>
-                <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} />
+                <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} showButton />
               </Space>
             </Col>
             <Col xs={24} md={12}>
@@ -53,6 +53,7 @@ export default function ProjectOverviewCard(props: {
                 <Subheading>Daily Completed Story Points</Subheading>
                 <DailyCompletedPointsBarGraph
                   backlogHistory={backlogHistory.filter((b) => b.sprint_id === activeSprint.id)}
+                  showButton
                 />
               </Space>
             </Col>
