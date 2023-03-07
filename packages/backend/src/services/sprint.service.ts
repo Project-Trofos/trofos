@@ -12,6 +12,11 @@ import prisma from '../models/prismaClient';
 import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
+import { exclude } from '../helpers/common';
+
+function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
+  return sprints.map((sprint) => exclude(sprint, ['notes']));
+}
 
 async function newSprint(sprintFields: SprintFields): Promise<Sprint> {
   const { projectId, name, dates, duration, goals } = sprintFields;
@@ -34,7 +39,7 @@ async function newSprint(sprintFields: SprintFields): Promise<Sprint> {
   return sprint;
 }
 
-async function listSprints(policyConstraint: AppAbility): Promise<Sprint[]> {
+async function listSprints(policyConstraint: AppAbility): Promise<Omit<Sprint, 'notes'>[]> {
   const sprints = await prisma.sprint.findMany({
     where: {
       project: {
@@ -59,10 +64,12 @@ async function listSprints(policyConstraint: AppAbility): Promise<Sprint[]> {
     },
   });
 
-  return sprints;
+  const sprintsWithoutNotes = removeNotesFromSprints(sprints);
+
+  return sprintsWithoutNotes;
 }
 
-async function listSprintsByProjectId(projectId: number): Promise<Sprint[]> {
+async function listSprintsByProjectId(projectId: number): Promise<Omit<Sprint, 'notes'>[]> {
   const sprints = await prisma.sprint.findMany({
     where: {
       project_id: projectId,
@@ -85,10 +92,25 @@ async function listSprintsByProjectId(projectId: number): Promise<Sprint[]> {
     },
   });
 
-  return sprints;
+  const sprintsWithoutNotes = removeNotesFromSprints(sprints);
+
+  return sprintsWithoutNotes;
 }
 
-async function listActiveSprint(projectId: number): Promise<Sprint | null> {
+async function getSprintNotes(sprintId: number): Promise<Pick<Sprint, 'notes'>> {
+  const notes = await prisma.sprint.findFirstOrThrow({
+    where: {
+      id: sprintId,
+    },
+    select: {
+      notes: true,
+    },
+  });
+
+  return notes;
+}
+
+async function listActiveSprint(projectId: number): Promise<Omit<Sprint, 'notes'> | null> {
   const sprint = await prisma.sprint.findFirst({
     where: {
       project_id: projectId,
@@ -112,13 +134,19 @@ async function listActiveSprint(projectId: number): Promise<Sprint | null> {
     },
   });
 
-  return sprint;
+  if (!sprint) {
+    return null;
+  }
+
+  const sprintsWithoutNotes = removeNotesFromSprints([sprint]);
+
+  return sprintsWithoutNotes[0];
 }
 
 async function updateSprint(
   sprintToUpdate: Partial<Omit<SprintFields, 'projectId' | 'status'>> & { sprintId: number },
 ): Promise<Sprint> {
-  const { sprintId, name, dates, duration, goals } = sprintToUpdate;
+  const { sprintId, name, dates, duration, goals, notes } = sprintToUpdate;
   const updatedSprint = await prisma.sprint.update({
     where: {
       id: sprintId,
@@ -127,6 +155,7 @@ async function updateSprint(
       name,
       duration,
       goals,
+      notes,
       ...(dates !== undefined
         ? {
             start_date: dates ? new Date(dates[0]) : null,
@@ -354,4 +383,5 @@ export default {
   addRetrospectiveVote,
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
+  getSprintNotes,
 };

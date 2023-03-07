@@ -9,6 +9,7 @@ export const mockSprintData: Sprint = {
   end_date: new Date('2022-10-16 07:03:56'),
   project_id: 123,
   goals: 'Some test goals',
+  notes: '',
   status: 'upcoming',
 };
 
@@ -52,4 +53,8 @@ export const mockRetrospectiveVoteFields = {
   retroId: 1,
   userId: 1,
   type: RetrospectiveVoteType.up,
+};
+
+export const mockSprintNotes = {
+  notes: 'This is a test sprint note',
 };

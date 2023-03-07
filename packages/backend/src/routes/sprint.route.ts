@@ -25,4 +25,6 @@ router.delete(
   sprint.deleteRetrospectiveVote,
 );
 
+router.get('/notes/:sprintId', hasAuth(Action.read_project, null), sprint.getSprintNotes);
+
 export default router;

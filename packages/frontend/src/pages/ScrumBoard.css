@@ -1,7 +1,12 @@
+.scrum-board-container {
+  background-color: white;
+  display: inline-block;
+  min-width: 100%;
+  min-height: 100%;
+}
+
 .scrum-board-drag-drop-context {
   background: #fff;
-  min-height: 100%;
-  overflow-x: auto;
   padding-bottom: 40px;
 }
 
