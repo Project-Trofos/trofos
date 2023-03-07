@@ -235,7 +235,7 @@ export const useCourse = (courseId?: string) => {
     async (userId: number) => {
       try {
         if (course) {
-          if (!course.courseRoles.some((u) => u.user.user_id === userId)) {
+          if (!course.users.some((u) => u.user.user_id === userId)) {
             message.error('No such user to remove!');
             return;
           }
@@ -254,7 +254,7 @@ export const useCourse = (courseId?: string) => {
     async (userId: number) => {
       try {
         if (course) {
-          if (course.courseRoles.some((u) => u.user.user_id === userId)) {
+          if (course.users.some((u) => u.user.user_id === userId)) {
             message.error('User already in this course!');
             return;
           }

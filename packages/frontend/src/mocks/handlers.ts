@@ -52,7 +52,7 @@ export const MSW_COURSE: CourseData = {
       updated_at: '2022-09-15',
     },
   ],
-  courseRoles: [],
+  users: [],
   public: false,
   created_at: '2022-09-14T03:33:34.960Z',
 };

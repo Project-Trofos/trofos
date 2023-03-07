@@ -5,7 +5,7 @@ import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
 
 type UserTableProps = {
-  users: CourseData['courseRoles'] | undefined;
+  users: CourseData['users'] | undefined;
   userRoles: UserOnRolesOnCourse[] | undefined;
   actionsOnRoles: ActionsOnRoles[] | undefined;
   isLoading: boolean;

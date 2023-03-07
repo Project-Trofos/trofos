@@ -120,10 +120,15 @@ export type Announcement = {
   updated_at?: string;
 };
 
+// CourseData type returned by BE api. We perform transformResponse to convert the data into type CourseData
+export type CourseDataResponse = Omit<CourseData, 'users'> & {
+  courseRoles : UserData[]
+}
+
 export type CourseData = Course & {
   milestones: Milestone[];
   announcements: Announcement[];
-  courseRoles: UserData[];
+  users: UserData[];
 };
 
 export type UserOnRolesOnCourse = {

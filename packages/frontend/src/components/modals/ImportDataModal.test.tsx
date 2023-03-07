@@ -23,13 +23,12 @@ const mockCourseData: CourseData = {
   milestones: [],
   announcements: [],
   shadow_course: false,
-  courseRoles: [
+  users: [
     {
       user: {
         user_display_name: 'user',
         user_id: 1,
         user_email: 'email',
-        user_display_name: 'testUser',
         courses: [
           {
             id: 1,
