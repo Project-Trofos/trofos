@@ -21,7 +21,7 @@ const loginUser = async (req: express.Request, res: express.Response) => {
         .send('Incorrect user credentials. Please double-check your credentials.');
     }
     
-    const userId = userAuth.userLoginInformation?.user_id as number;
+    const userId = userAuth.userLoginInformation.user_id;
     const userRoleInformation = await roleService.getUserRoleInformation(userId);
     const sessionId = await sessionService.createUserSession(userEmail, userRoleInformation, userId);
 
