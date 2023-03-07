@@ -16,7 +16,7 @@ function BacklogMenu(props: { projectId: number; backlogId: number }): JSX.Eleme
     try {
       await deleteBacklog({ projectId, backlogId }).unwrap();
       message.success('Backlog deleted');
-      navigate(`/project/${projectId}/backlog`);
+      navigate(`/project/${projectId}/sprint`);
     } catch (e) {
       message.error('Failed to delete backlog');
       console.error(e);
