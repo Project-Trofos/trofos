@@ -353,16 +353,28 @@ async function getUsers(id: number): Promise<User[]> {
   return result.map((x) => x.user);
 }
 
-async function addUser(courseId: number, userId: number): Promise<UsersOnRolesOnCourses> {
-  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
-    data: {
-      course_id: courseId,
-      user_id: userId,
-      role_id: STUDENT_ROLE_ID,
-    },
-  });
+async function addUser(courseId: number, userEmail: string): Promise<UsersOnRolesOnCourses> {
 
-  return usersOnRolesOnCourses
+  return await prisma.$transaction<UsersOnRolesOnCourses>(async (tx: Prisma.TransactionClient) => {
+    const user = await tx.user.findUniqueOrThrow({
+      where : {
+        user_email : userEmail
+      }
+    });
+    
+    const usersOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
+      data: {
+        course_id: courseId,
+        user_id: user.user_id,
+        role_id: STUDENT_ROLE_ID,
+      },
+    });
+  
+    return usersOnRolesOnCourses
+  })
+
+
+
 }
 
 async function removeUser(courseId: number, userId: number): Promise<UsersOnRolesOnCourses> {

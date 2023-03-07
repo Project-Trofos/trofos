@@ -415,7 +415,7 @@ describe('course controller tests', () => {
           courseId: coursesData[0].id,
         },
         body: {
-          userId: usersData[0].user_id.toString(),
+          userEmail: usersData[0].user_email,
         },
       });
       const mockRes = createResponse();
@@ -427,7 +427,7 @@ describe('course controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(usersCourseData[0]));
     });
 
-    it('should return error if no userId given', async () => {
+    it('should return error if no userEmail given', async () => {
       spies.addUser.mockResolvedValueOnce(usersCourseData[0]);
       const mockReq = createRequest({
         params: {

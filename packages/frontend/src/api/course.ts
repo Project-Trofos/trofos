@@ -95,12 +95,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     // Invalidate course
-    addCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userId: number }>({
+    addCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userEmail: string }>({
       query: (param) => ({
         url: `course/${param.id}/user`,
         method: 'POST',
         body: {
-          userId: param.userId,
+          userEmail: param.userEmail,
         },
         credentials: 'include',
       }),

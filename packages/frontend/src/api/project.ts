@@ -73,12 +73,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     // Adding a user in a project will invalidate that project
-    addProjectUser: builder.mutation<Project, Pick<Project, 'id'> & { userId: number }>({
+    addProjectUser: builder.mutation<Project, Pick<Project, 'id'> & { userEmail: string }>({
       query: (param) => ({
         url: `project/${param.id}/user`,
         method: 'POST',
         body: {
-          userId: param.userId,
+          userEmail: param.userEmail,
         },
         credentials: 'include',
       }),
