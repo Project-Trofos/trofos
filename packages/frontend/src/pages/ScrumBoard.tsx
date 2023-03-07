@@ -145,7 +145,7 @@ export default function ScrumBoard(): JSX.Element {
   };
 
   return (
-    <Container noGap fullWidth style={{ backgroundColor: 'white', display: 'inline-block' }}>
+    <Container noGap fullWidth className="scrum-board-container">
       <div className="scrum-board-drag-drop-context">
         {!backlogs && (
           <Alert
