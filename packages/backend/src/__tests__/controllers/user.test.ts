@@ -22,7 +22,7 @@ describe('user.controller tests', () => {
           user_id: 1,
           projects: [],
           basicRoles: [],
-          courseRoles: [],
+          courses: [],
         },
       ];
       spies.userServiceGetAllUsers.mockResolvedValueOnce(userServiceResponseObject);

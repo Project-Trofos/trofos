@@ -19,7 +19,7 @@ export type Users = {
   user_id: number;
   projects: UsersOnProjects[];
   basicRoles: UsersOnRoles[];
-  courseRoles: UsersOnRolesOnCourses[];
+  courses: UsersOnRolesOnCourses[];
 };
 
 async function get(user_id: number): Promise<User> {
@@ -30,7 +30,7 @@ async function get(user_id: number): Promise<User> {
     include: {
       projects: true,
       basicRoles: true,
-      courseRoles: true,
+      courses: true,
     },
   });
 
@@ -42,7 +42,7 @@ async function getAll(): Promise<Users[]> {
     include: {
       projects: true,
       basicRoles: true,
-      courseRoles: true,
+      courses: true,
     },
   });
 

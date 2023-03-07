@@ -28,8 +28,8 @@ export type User = {
   user_display_name: string;
   user_id: number;
   projects: Project[];
+  courses: CourseRoles[];
   basicRoles: BasicRoles[];
-  courseRoles: CourseRoles[];
 };
 
 export type BasicRoles = {
@@ -90,7 +90,7 @@ export type UserData = {
     user_id: number;
     user_email: string;
     user_display_name: string;
-    courseRoles: CourseRoles[];
+    courses: CourseRoles[];
   };
 };
 

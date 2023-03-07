@@ -29,7 +29,7 @@ describe('test course creation modal', () => {
           user_id: 1,
           user_email: 'email',
           user_display_name: 'User 1',
-          courseRoles: [
+          courses: [
             {
               id: 1,
               user_email: 'email',

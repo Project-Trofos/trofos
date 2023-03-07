@@ -123,7 +123,7 @@ async function processImportCourseData(
               role_id: STUDENT_ROLE_ID, // Default role of a new user
             },
           },
-          courseRoles: {
+          courses: {
             create: {
               course_id: courseId,
               role_id: userData.roleId,

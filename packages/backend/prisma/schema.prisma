@@ -19,9 +19,8 @@ model User {
   user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
+  courses UsersOnRolesOnCourses[]
   basicRoles UsersOnRoles[]
-  courseRoles UsersOnRolesOnCourses[]
-
   feedbacks Feedback[]
 }
 
