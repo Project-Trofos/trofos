@@ -36,6 +36,6 @@
 }
 
 .logo:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(0 0 0 / 20%);
   cursor: pointer;
 }

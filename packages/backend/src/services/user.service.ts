@@ -2,17 +2,9 @@ import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@pri
 import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
+import { exclude } from '../helpers/common';
 
 const USER_DISPLAY_NAME_MAX_LENGTH = 50;
-
-// Exclude keys from user
-function exclude<User, Key extends keyof User>(user: User, keys: Key[]): Omit<User, Key> {
-  const excludedUser = user;
-
-  keys.forEach((key) => delete excludedUser[key]);
-
-  return excludedUser;
-}
 
 export type Users = {
   user_email: string;

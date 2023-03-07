@@ -145,7 +145,7 @@ function Backlog(): JSX.Element {
               <div className="backlog-description-container">
                 <p>Description:</p>
                 <Form.Item name="description">
-                  <BacklogTextArea onBlur={handleDescriptionFieldUpdate} autoSize={{ minRows: 1, maxRows: 11 }} />
+                  <BacklogTextArea onBlur={handleDescriptionFieldUpdate} autoSize={{ minRows: 12, maxRows: 12 }} />
                 </Form.Item>
               </div>
             </div>

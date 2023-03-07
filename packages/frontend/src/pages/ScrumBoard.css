@@ -1,7 +1,5 @@
 .scrum-board-drag-drop-context {
   background: #fff;
-  min-height: 100%;
-  overflow-x: auto;
   padding-bottom: 40px;
 }
 

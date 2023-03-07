@@ -1,6 +1,7 @@
 .overflow-scroll-container {
-  height: 0px;
+  height: 0;
   flex-grow: 1;
+  background-color: white;
   overflow: auto;
 }
 

@@ -35,3 +35,7 @@ li.sprint-card-container.ant-list-item {
 .sprint-retro-button {
   margin-right: 10px;
 }
+
+.sprint-card-notes-icon {
+  padding-left: 6px;
+}
