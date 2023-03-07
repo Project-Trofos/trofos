@@ -29,7 +29,7 @@ import {
   ProjectIdRequestBody,
   UserRequestBody,
 } from './requestTypes';
-import numberOrUndefined from '../helpers/common';
+import { numberOrUndefined } from '../helpers/common';
 import csvService from '../services/csv.service';
 
 async function getAll(req: express.Request, res: express.Response) {

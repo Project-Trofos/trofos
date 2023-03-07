@@ -29,7 +29,7 @@ const newSprint = async (req: express.Request, res: express.Response) => {
 
 const listSprints = async (req: express.Request, res: express.Response) => {
   try {
-    const sprints: Sprint[] = await sprintService.listSprints(res.locals.policyConstraint);
+    const sprints: Omit<Sprint, 'notes'>[] = await sprintService.listSprints(res.locals.policyConstraint);
     return res.status(StatusCodes.OK).json(sprints);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -40,9 +40,20 @@ const listSprintsByProjectId = async (req: express.Request, res: express.Respons
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
-    const sprints: Sprint[] = await sprintService.listSprintsByProjectId(Number(projectId));
+    const sprints: Omit<Sprint, 'notes'>[] = await sprintService.listSprintsByProjectId(Number(projectId));
     const unassignedBacklogs: Backlog[] = await backlogService.listUnassignedBacklogs(Number(projectId));
     return res.status(StatusCodes.OK).json({ sprints, unassignedBacklogs });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const getSprintNotes = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    assertSprintIdIsValid(sprintId);
+    const notes: Pick<Sprint, 'notes'> = await sprintService.getSprintNotes(Number(sprintId));
+    return res.status(StatusCodes.OK).json(notes);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -52,7 +63,7 @@ const listActiveSprint = async (req: express.Request, res: express.Response) => 
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
-    const sprint: Sprint | null = await sprintService.listActiveSprint(Number(projectId));
+    const sprint: Omit<Sprint, 'notes'> | null = await sprintService.listActiveSprint(Number(projectId));
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -181,6 +192,7 @@ export default {
   listSprints,
   listSprintsByProjectId,
   listActiveSprint,
+  getSprintNotes,
   updateSprint,
   deleteSprint,
   addRetrospective,

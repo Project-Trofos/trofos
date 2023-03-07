@@ -9,6 +9,7 @@ import {
   mockRetrospectiveVoteFields,
   mockSprintData,
   mockSprintFields,
+  mockSprintNotes,
   mockSprintToUpdate,
 } from '../mocks/sprintData';
 import { BadRequestError } from '../../helpers/error';
@@ -246,6 +247,16 @@ describe('sprint.service tests', () => {
       await expect(
         sprintService.deleteRetrospectiveVote(mockRetrospectiveVoteFields.retroId, mockRetrospectiveVoteFields.userId),
       ).resolves.toEqual(mockReturnedRetrospectiveVote);
+    });
+  });
+
+  describe('get sprint notes', () => {
+    it('should return sprint notes', async () => {
+      const mockReturnedSprintNotes = { ...mockSprintData, ...mockSprintNotes };
+      const mockSprintId = 1;
+
+      prismaMock.sprint.findFirstOrThrow.mockResolvedValueOnce(mockReturnedSprintNotes);
+      await expect(sprintService.getSprintNotes(mockSprintId)).resolves.toEqual(mockReturnedSprintNotes);
     });
   });
 });
