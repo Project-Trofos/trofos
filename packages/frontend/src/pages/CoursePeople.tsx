@@ -27,9 +27,9 @@ export default function CoursePeople(): JSX.Element {
           myUserId={userInfo?.userId}
           control={
             <InputWithButton
-              handleClick={(v) => handleAddUser(Number(v))}
+              handleClick={(v) => handleAddUser(v)}
               buttonText="Add"
-              inputPlaceholder="Add user by id"
+              inputPlaceholder="Add user by email"
             />
           }
           handleRemoveUser={handleRemoveUser}

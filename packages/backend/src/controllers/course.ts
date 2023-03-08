@@ -27,7 +27,8 @@ import {
   CourseRequestBody,
   OptionRequestBody,
   ProjectIdRequestBody,
-  UserRequestBody,
+  UserEmailRequestBody,
+  UserIdRequestBody,
 } from './requestTypes';
 import { numberOrUndefined } from '../helpers/common';
 import csvService from '../services/csv.service';
@@ -168,12 +169,12 @@ async function getUsers(req: express.Request, res: express.Response) {
 async function addUser(req: express.Request, res: express.Response) {
   try {
     const { courseId } = req.params;
-    const body = req.body as UserRequestBody;
+    const body = req.body as UserEmailRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertUserIdIsValid(body.userId);
+    assertInputIsNotEmpty(body.userEmail, "User email");
 
-    const result = await course.addUser(Number(courseId), Number(body.userId));
+    const result = await course.addUser(Number(courseId), body.userEmail);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -184,7 +185,7 @@ async function addUser(req: express.Request, res: express.Response) {
 async function removeUser(req: express.Request, res: express.Response) {
   try {
     const { courseId } = req.params;
-    const body = req.body as UserRequestBody;
+    const body = req.body as UserIdRequestBody;
 
     assertCourseIdIsValid(courseId);
     assertUserIdIsValid(body.userId);

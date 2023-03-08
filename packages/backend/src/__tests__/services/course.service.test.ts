@@ -265,18 +265,19 @@ describe('course.service tests', () => {
     it('should return added user', async () => {
       const INDEX = 0;
       const targetCourse = coursesData[INDEX];
-      const USER_ID = 1;
-      const resultMock: UsersOnRolesOnCourses = {
+      const usersOnRolesOnCoursesMock: UsersOnRolesOnCourses = {
         id: 1,
         course_id: targetCourse.id,
-        user_id: USER_ID,
+        user_id: userData[INDEX].user_id,
         role_id: STUDENT_ROLE_ID
       };
 
-      prismaMock.usersOnRolesOnCourses.create.mockResolvedValueOnce(resultMock);
+      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
+      prismaMock.usersOnRolesOnCourses.create.mockResolvedValueOnce(usersOnRolesOnCoursesMock);
+      prismaMock.$transaction.mockResolvedValueOnce(usersOnRolesOnCoursesMock);
 
-      const result = await course.addUser(targetCourse.id, USER_ID);
-      expect(result).toEqual<UsersOnRolesOnCourses>(resultMock);
+      const result = await course.addUser(targetCourse.id, userData[INDEX].user_email);
+      expect(result).toEqual<UsersOnRolesOnCourses>(usersOnRolesOnCoursesMock);
     });
   });
 

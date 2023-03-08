@@ -311,8 +311,14 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
   return result.map((x) => x.user);
 }
 
-async function addUser(projectId: number, userId: number): Promise<UsersOnProjects> {
+async function addUser(projectId: number, userEmail: string): Promise<UsersOnProjects> {
   return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
+    const userInfo = await tx.user.findUniqueOrThrow({
+      where: {
+        user_email : userEmail
+      }
+    });
+
     const projectInfo = await tx.project.findFirstOrThrow({
       where: {
         id: projectId,
@@ -322,21 +328,21 @@ async function addUser(projectId: number, userId: number): Promise<UsersOnProjec
     const userOnProjects = await tx.usersOnProjects.create({
       data: {
         project_id: projectId,
-        user_id: userId,
+        user_id: userInfo.user_id,
       },
     });
 
     await tx.usersOnProjectOnSettings.create({
       data: {
         project_id: projectId,
-        user_id: userId,
+        user_id: userInfo.user_id,
       },
     });
 
     await tx.usersOnRolesOnCourses.create({
       data: {
         course_id: projectInfo.course_id,
-        user_id: userId,
+        user_id: userInfo.user_id,
         role_id: STUDENT_ROLE_ID,
       },
     });
