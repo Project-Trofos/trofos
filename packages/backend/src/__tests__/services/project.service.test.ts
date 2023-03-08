@@ -144,7 +144,7 @@ describe('project.service tests', () => {
         user_id: userData[INDEX].user_id,
         created_at: new Date(Date.now()),
       };
-      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
+      prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.create.mockResolvedValueOnce(resultMock);
       prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 

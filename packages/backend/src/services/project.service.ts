@@ -313,7 +313,7 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
 
 async function addUser(projectId: number, userEmail: string): Promise<UsersOnProjects> {
   return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
-    const userInfo = await tx.user.findFirstOrThrow({
+    const userInfo = await tx.user.findUniqueOrThrow({
       where: {
         user_email : userEmail
       }
