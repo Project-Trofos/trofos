@@ -172,7 +172,7 @@ async function addUser(req: express.Request, res: express.Response) {
     const body = req.body as UserEmailRequestBody;
 
     assertCourseIdIsValid(courseId);
-    assertUserIdIsValid(body.userEmail);
+    assertInputIsNotEmpty(body.userEmail, "User email");
 
     const result = await course.addUser(Number(courseId), body.userEmail);
 
