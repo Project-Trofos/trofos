@@ -139,14 +139,14 @@ export const useProject = (projectId: number) => {
   );
 
   const handleAddUser = useCallback(
-    async (userId: number) => {
+    async (userEmail: string) => {
       try {
         if (project) {
-          if (project.users.some((u) => u.user.user_id === userId)) {
+          if (project.users.some((u) => u.user.user_email === userEmail)) {
             message.error('User already in this course!');
             return;
           }
-          await addUser({ id: project.id, userId }).unwrap();
+          await addUser({ id: project.id, userEmail }).unwrap();
           message.success('User added!');
         }
       } catch (e) {
@@ -158,12 +158,11 @@ export const useProject = (projectId: number) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number, userId: number) => {
+    async (roleId: number, userId: number) => {
       try {
         if (project) {
           await updateUserProjectRole({
             id: projectId,
-            userEmail: userEmail,
             userRole: roleId,
             userId: userId,
           }).unwrap();
@@ -252,14 +251,14 @@ export const useCourse = (courseId?: string) => {
   );
 
   const handleAddUser = useCallback(
-    async (userId: number) => {
+    async (userEmail: string) => {
       try {
         if (course) {
-          if (course.users.some((u) => u.user.user_id === userId)) {
+          if (course.users.some((u) => u.user.user_email === userEmail)) {
             message.error('User already in this course!');
             return;
           }
-          await addUser({ id: course?.id, userId }).unwrap();
+          await addUser({ id: course?.id, userEmail }).unwrap();
           message.success('User added!');
         }
       } catch (e) {
@@ -271,12 +270,11 @@ export const useCourse = (courseId?: string) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number, userId: number) => {
+    async (roleId: number, userId: number) => {
       try {
         if (course) {
           await updateUserCourseRole({
             id: course.id,
-            userEmail: userEmail,
             userRole: roleId,
             userId: userId,
           }).unwrap();

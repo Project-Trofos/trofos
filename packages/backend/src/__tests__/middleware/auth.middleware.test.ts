@@ -36,7 +36,7 @@ const sessionServiceResponseObject = {
 };
 const roleServiceUserRoleActionsForCourseObject: UserRoleActionsForCourse = {
   id: 1,
-  user_email: 'testUser@test.com',
+  user_id: 1,
   role_id: 1,
   course_id: 1,
   role: {
@@ -238,7 +238,7 @@ describe('auth.middleware tests', () => {
       const mockNext = jest.fn() as express.NextFunction;
       await hasAuthForCourse(Action.create_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith(1, 1);
       expect(policyEngineSpy).not.toHaveBeenCalled();
       expect(mockNext).not.toHaveBeenCalled();
     });
@@ -260,7 +260,7 @@ describe('auth.middleware tests', () => {
       const mockNext = jest.fn() as express.NextFunction;
       await hasAuthForCourse(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(roleServiceGetUserRoleActionsForCourse).toHaveBeenCalledWith(1, 1);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
       expect(mockNext).toHaveBeenCalled();
     });
@@ -280,7 +280,7 @@ describe('auth.middleware tests', () => {
       const mockNext = jest.fn() as express.NextFunction;
       await hasAuthForProject(Action.read_project, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith(1, 1);
       expect(policyEngineSpy).not.toHaveBeenCalled();
       expect(mockNext).not.toHaveBeenCalled();
     });
@@ -302,7 +302,7 @@ describe('auth.middleware tests', () => {
       const mockNext = jest.fn() as express.NextFunction;
       await hasAuthForProject(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
       expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
-      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith('testUser@test.com', 1);
+      expect(roleServiceGetUserRoleActionsForProject).toHaveBeenCalledWith(1, 1);
       expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'TEST_POLICY');
       expect(mockNext).toHaveBeenCalled();
     });

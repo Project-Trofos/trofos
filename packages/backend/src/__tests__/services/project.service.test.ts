@@ -20,6 +20,7 @@ import projectPolicy from '../../policies/constraints/project.constraint';
 import { userData } from '../mocks/userData';
 
 describe('project.service tests', () => {
+
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
 
   describe('getAll', () => {
@@ -138,17 +139,16 @@ describe('project.service tests', () => {
     it('should return added user', async () => {
       const INDEX = 0;
       const PROJECT_ID = 1;
-      const USER_ID = 1;
       const resultMock: UsersOnProjects = {
         project_id: PROJECT_ID,
-        user_id: USER_ID,
+        user_id: userData[INDEX].user_id,
         created_at: new Date(Date.now()),
       };
-      prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
+      prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(userData[INDEX]);
       prismaMock.usersOnProjects.create.mockResolvedValueOnce(resultMock);
       prismaMock.$transaction.mockResolvedValueOnce(resultMock);
 
-      const result = await project.addUser(PROJECT_ID, USER_ID);
+      const result = await project.addUser(PROJECT_ID, userData[INDEX].user_email);
       expect(result).toEqual<UsersOnProjects>(resultMock);
     });
   });

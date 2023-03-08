@@ -20,7 +20,7 @@ function feedbackPolicyConstraint(userId: number, isUserAdmin: boolean) {
       sprint: {
         project: {
           course: {
-            users: {
+            courseRoles: {
               some: {
                 user_id: userId,
               },

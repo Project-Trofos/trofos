@@ -28,9 +28,8 @@ export type User = {
   user_display_name: string;
   user_id: number;
   projects: Project[];
-  courses: Course[];
+  courses: CourseRoles[];
   basicRoles: BasicRoles[];
-  courseRoles: CourseRoles[];
 };
 
 export type BasicRoles = {
@@ -52,7 +51,6 @@ export type CreateUserRequest = {
 
 export type UserCourseRoleRequest = {
   id: number;
-  userEmail: string;
   userRole: number;
   userId: number;
 };
@@ -92,7 +90,7 @@ export type UserData = {
     user_id: number;
     user_email: string;
     user_display_name: string;
-    courseRoles: CourseRoles[];
+    courses: CourseRoles[];
   };
 };
 
@@ -122,6 +120,11 @@ export type Announcement = {
   updated_at?: string;
 };
 
+// CourseData type returned by BE api. We perform transformResponse to convert the data into type CourseData
+export type CourseDataResponse = Omit<CourseData, 'users'> & {
+  courseRoles : UserData[]
+}
+
 export type CourseData = Course & {
   milestones: Milestone[];
   announcements: Announcement[];
@@ -130,7 +133,7 @@ export type CourseData = Course & {
 
 export type UserOnRolesOnCourse = {
   id: number;
-  user_email: string;
+  user_id: number;
   role_id: number;
   course_id: number;
   role: {
@@ -219,7 +222,7 @@ export type BacklogHistory = {
 } & Omit<Backlog, 'assignee' | 'summary' | 'description'>;
 
 export type UpdateUserRolePayload = {
-  userEmail: string;
+  userId: number;
   newRoleId: number;
 };
 

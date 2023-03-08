@@ -1,6 +1,8 @@
 import { User } from '@prisma/client';
 
 export type UserAuth = {
-  isValidUser: boolean;
-  userLoginInformation?: User;
+  isValidUser: false;
+} | {
+  isValidUser: true;
+  userLoginInformation: User;
 };

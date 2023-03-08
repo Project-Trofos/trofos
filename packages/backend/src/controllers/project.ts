@@ -12,7 +12,12 @@ import {
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import settings from '../services/settings.service';
-import { OptionRequestBody, ProjectRequestBody, UserRequestBody } from './requestTypes';
+import { 
+  OptionRequestBody,
+  ProjectRequestBody,
+  UserEmailRequestBody,
+  UserIdRequestBody 
+} from './requestTypes';
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
   try {
@@ -114,12 +119,12 @@ async function getUsers(req: express.Request, res: express.Response) {
 async function addUser(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const body = req.body as UserRequestBody;
+    const body = req.body as UserEmailRequestBody;
 
     assertProjectIdIsValid(projectId);
-    assertUserIdIsValid(body.userId);
+    assertUserIdIsValid(body.userEmail);
 
-    const result = await project.addUser(Number(projectId), Number(body.userId));
+    const result = await project.addUser(Number(projectId), body.userEmail);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -130,7 +135,7 @@ async function addUser(req: express.Request, res: express.Response) {
 async function removeUser(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const body = req.body as UserRequestBody;
+    const body = req.body as UserIdRequestBody;
 
     assertProjectIdIsValid(projectId);
     assertUserIdIsValid(body.userId);

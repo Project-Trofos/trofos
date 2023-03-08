@@ -3,35 +3,35 @@ import { PrismaClient } from '@prisma/client';
 import {
   FACULTY_ROLE_ID,
   STUDENT_ROLE_ID,
-  BACKLOG_USER_1_EMAIL,
-  BACKLOG_USER_2_EMAIL,
-  USER_1_EMAIL,
-  USER_2_EMAIL,
-  USER_3_EMAIL,
   ADMIN_ROLE_ID,
+  BACKLOG_USER_1_ID,
+  BACKLOG_USER_2_ID,
+  USER_1_ID,
+  USER_2_ID,
+  USER_3_ID,
 } from './constants';
 
 async function createUsersOnRolesTableSeed(prisma: PrismaClient) {
   const usersOnRoles = await prisma.usersOnRoles.createMany({
     data: [
       {
-        user_email: BACKLOG_USER_1_EMAIL,
+        user_id: BACKLOG_USER_1_ID,
         role_id: STUDENT_ROLE_ID,
       },
       {
-        user_email: BACKLOG_USER_2_EMAIL,
+        user_id: BACKLOG_USER_2_ID,
         role_id: FACULTY_ROLE_ID,
       },
       {
-        user_email: USER_1_EMAIL,
+        user_id: USER_1_ID,
         role_id: STUDENT_ROLE_ID,
       },
       {
-        user_email: USER_2_EMAIL,
+        user_id: USER_2_ID,
         role_id: FACULTY_ROLE_ID,
       },
       {
-        user_email: USER_3_EMAIL,
+        user_id: USER_3_ID,
         role_id: ADMIN_ROLE_ID,
       },
     ],

@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import { PickRename } from '../helpers/types';
-import { Course, CourseData, CourseImportCsvPayload, Project } from './types';
+import { Course, CourseData, CourseDataResponse, CourseImportCsvPayload, Project } from './types';
 
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -10,12 +10,28 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'course/',
         credentials: 'include',
       }),
+      transformResponse: (response : CourseDataResponse[]) => {
+        const transformedResponse : CourseData[] = response.map((courseData) => {
+          return {
+            ...courseData,
+            users : courseData.courseRoles
+          }
+        })
+        return transformedResponse;
+      },
       providesTags: (result, error, arg) =>
         result ? [...result.map(({ id }) => ({ type: 'Course' as const, id })), 'Course'] : ['Course'],
     }),
 
     getCourse: builder.query<CourseData, Pick<Course, 'id'>>({
       query: ({ id }) => `course//${id}`,
+      transformResponse: (response : CourseDataResponse) => {
+          const transformedResponse : CourseData = {
+            ...response,
+            users : response.courseRoles
+          }
+          return transformedResponse;
+      },
       providesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
 
@@ -79,12 +95,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     // Invalidate course
-    addCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userId: number }>({
+    addCourseUser: builder.mutation<Course, Pick<Course, 'id'> & { userEmail: string }>({
       query: (param) => ({
         url: `course/${param.id}/user`,
         method: 'POST',
         body: {
-          userId: param.userId,
+          userEmail: param.userEmail,
         },
         credentials: 'include',
       }),

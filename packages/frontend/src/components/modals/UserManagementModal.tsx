@@ -37,7 +37,7 @@ export default function UserManagementModal(props: UserManagement): JSX.Element 
 
     try {
       const payload: UpdateUserRolePayload = {
-        userEmail: user.user_email,
+        userId: user.user_id,
         newRoleId,
       };
       await updateUserRole(payload).unwrap();

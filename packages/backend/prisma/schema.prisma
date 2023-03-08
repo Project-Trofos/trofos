@@ -19,10 +19,8 @@ model User {
   user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
-  courses       UsersOnCourses[]
+  courses UsersOnRolesOnCourses[]
   basicRoles UsersOnRoles[]
-  courseRoles UsersOnRolesOnCourses[]
-
   feedbacks Feedback[]
 }
 
@@ -44,7 +42,6 @@ model Course {
   endSem        Int               
   cname         String            @db.VarChar(256)
   description   String?
-  users         UsersOnCourses[]
   projects      Project[]
   milestones    Milestone[]
   announcements Announcement[]
@@ -53,17 +50,6 @@ model Course {
   courseRoles UsersOnRolesOnCourses[]
   shadow_course Boolean           @default(false)
   @@unique([code, startYear, startSem])
-}
-
-model UsersOnCourses {
-  course_id               Int
-  course                  Course            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  user_id                 Int
-  user                    User              @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at              DateTime          @default(now())
-
-  created_announcements   Announcement[]
-  @@id([course_id, user_id])
 }
 
 model Project {
@@ -98,7 +84,7 @@ model Announcement {
   course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   user_id        Int?
-  user           UsersOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
+  user           UsersOnRolesOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
 
   created_at     DateTime         @default(now())
   updated_at     DateTime?
@@ -249,8 +235,8 @@ model ActionsOnRoles {
 }
 
 model UsersOnRoles {
-  user_email String @unique @db.VarChar(320)
-  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  user_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 }
@@ -263,13 +249,14 @@ model ProjectGitLink {
 
 model UsersOnRolesOnCourses {
   id Int @id @default(autoincrement())
-  user_email String @db.VarChar(320)
-  user User @relation(fields: [user_email], references: [user_email], onDelete: Cascade)
+  user_id Int
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   role_id Int
   role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
   course_id Int
   course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  @@unique([user_email, course_id])
+  created_announcements   Announcement[]
+  @@unique([user_id, course_id])
 }
 
 model Retrospective {

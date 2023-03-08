@@ -13,7 +13,11 @@ export type OptionRequestBody = {
   option: 'all' | 'past' | 'current' | 'future';
 };
 
-export type UserRequestBody = {
+export type UserEmailRequestBody = {
+  userEmail: string;
+}
+
+export type UserIdRequestBody = {
   userId: string;
 };
 
@@ -45,7 +49,7 @@ export type AddProjectAndCourseRequestBody = {
 
 export type BulkCreateProjectBody = {
   courseId?: string;
-  projects: (ProjectRequestBody & { users: UserRequestBody[] })[];
+  projects: (ProjectRequestBody & { users: UserIdRequestBody[] })[];
 };
 
 export type MilestoneRequestBody = {

@@ -3,7 +3,6 @@ import {
   Prisma,
   Project,
   User,
-  UsersOnCourses,
   UsersOnRolesOnCourses,
   UsersOnProjects,
   Settings,
@@ -201,13 +200,6 @@ async function create(
 
   try {
     return await prisma.$transaction<Course>(async (tx: Prisma.TransactionClient) => {
-      // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-      // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-      const userInfo = await tx.user.findFirstOrThrow({
-        where: {
-          user_id: userId,
-        },
-      });
 
       const course = await tx.course.create({
         data: {
@@ -219,19 +211,12 @@ async function create(
           cname: name,
           public: isPublic,
           description,
-          users: {
+          courseRoles: {
             create: {
               user_id: userId,
+              role_id : FACULTY_ROLE_ID
             },
           },
-        },
-      });
-
-      await tx.usersOnRolesOnCourses.create({
-        data: {
-          user_email: userInfo.user_email,
-          course_id: course.id,
-          role_id: FACULTY_ROLE_ID,
         },
       });
 
@@ -251,6 +236,7 @@ async function create(
  * Bulk create projects in a course. Throw error if course specified does not exist.
  */
 async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Course> {
+
   const current = await prisma.course.findFirst({
     where: {
       id: Number(course.courseId),
@@ -286,6 +272,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
       },
     }),
   );
+
   await prisma.$transaction(projects);
 
   return current;
@@ -353,15 +340,10 @@ async function remove(id: number): Promise<Course> {
   return result;
 }
 
-async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
-  const result = await prisma.usersOnCourses.findMany({
+async function getUsers(id: number): Promise<User[]> {
+  const result = await prisma.usersOnRolesOnCourses.findMany({
     where: {
-      AND: [
-        accessibleBy(policyConstraint).Course,
-        {
-          id,
-        },
-      ],
+      course_id : id
     },
     select: {
       user: true,
@@ -371,65 +353,41 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
   return result.map((x) => x.user);
 }
 
-async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-    const userInfo = await tx.user.findFirstOrThrow({
-      where: {
-        user_id: userId,
-      },
-    });
+async function addUser(courseId: number, userEmail: string): Promise<UsersOnRolesOnCourses> {
 
-    const userOnCourses = await tx.usersOnCourses.create({
+  return await prisma.$transaction<UsersOnRolesOnCourses>(async (tx: Prisma.TransactionClient) => {
+    const user = await tx.user.findUniqueOrThrow({
+      where : {
+        user_email : userEmail
+      }
+    });
+    
+    const usersOnRolesOnCourses = await tx.usersOnRolesOnCourses.create({
       data: {
         course_id: courseId,
-        user_id: userId,
-      },
-    });
-
-    await tx.usersOnRolesOnCourses.create({
-      data: {
-        course_id: courseId,
-        user_email: userInfo.user_email,
+        user_id: user.user_id,
         role_id: STUDENT_ROLE_ID,
       },
     });
+  
+    return usersOnRolesOnCourses
+  })
 
-    return userOnCourses;
-  });
+
+
 }
 
-async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    // User info needs to be fetched for creating an entry on the UsersOnRolesOnCourses table
-    // TODO (kishen) : Roles tables should be refactored to make use of userId instead for better performance.
-    const userInfo = await tx.user.findFirstOrThrow({
-      where: {
+async function removeUser(courseId: number, userId: number): Promise<UsersOnRolesOnCourses> {
+  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.delete({
+    where: {
+      user_id_course_id: {
+        course_id: courseId,
         user_id: userId,
       },
-    });
-
-    const userOnCourses = await tx.usersOnCourses.delete({
-      where: {
-        course_id_user_id: {
-          course_id: courseId,
-          user_id: userId,
-        },
-      },
-    });
-
-    await tx.usersOnRolesOnCourses.delete({
-      where: {
-        user_email_course_id: {
-          course_id: courseId,
-          user_email: userInfo.user_email,
-        },
-      },
-    });
-
-    return userOnCourses;
+    },
   });
+
+  return usersOnRolesOnCourses;
 }
 
 // Get project by course id
@@ -487,9 +445,10 @@ async function addProjectAndCourse(
             endSem: courseSem,
             public: isProjectPublic,
             description: courseDesc,
-            users: {
+            courseRoles: {
               create: {
                 user_id: userId,
+                role_id : STUDENT_ROLE_ID,
               },
             },
           },
@@ -553,7 +512,7 @@ async function addProject(courseId: number, projectId: number): Promise<Project>
     // For each user in usersOnProjects, we create a role for them in the new attached course
     const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
       return {
-        user_email: user.user_email,
+        user_id: user.user_id,
         course_id: courseId,
         role_id: STUDENT_ROLE_ID,
       };
@@ -612,7 +571,7 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
     // For each user in usersOnProjects, we create a role for them in the new independent project
     const queries: Omit<UsersOnRolesOnCourses, 'id'>[] = userInfo.map((user: User) => {
       return {
-        user_email: user.user_email,
+        user_id: user.user_id,
         course_id: course.id,
         role_id: STUDENT_ROLE_ID,
       };

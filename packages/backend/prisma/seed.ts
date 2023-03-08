@@ -10,7 +10,6 @@ import { createBacklogHistoryTableSeed } from './backlogHistory.seed';
 import { createRoleTableSeed } from './role.seed';
 import { createActionsOnRolesTableSeed } from './actionsOnRoles.seed';
 import { createCourseTableSeed } from './course.seed';
-import { createUsersOnCoursesTableSeed } from './usersOnCourses.seed';
 import { createMilestoneTableSeed } from './milestone.seed';
 import { createSettingsTableSeed } from './setting.seed';
 import { createUsersOnRolesOnCoursesTableSeed } from './usersOnRolesOnCourses.seed';
@@ -24,7 +23,6 @@ async function main() {
   await createUsersOnRolesTableSeed(prisma);
   await createSettingsTableSeed(prisma);
   await createCourseTableSeed(prisma);
-  await createUsersOnCoursesTableSeed(prisma);
   await createMilestoneTableSeed(prisma);
   await createProjectTableSeed(prisma);
   await createUsersOnProjectsTableSeed(prisma);

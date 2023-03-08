@@ -73,7 +73,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: `role/courseUserRoles/${userCourseRole.id}`,
         method: 'POST',
         body: {
-          userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
           userId: userCourseRole.userId,
         },
@@ -86,7 +85,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: `role/projectUserRoles/${userCourseRole.id}`,
         method: 'POST',
         body: {
-          userEmail: userCourseRole.userEmail,
           userRole: userCourseRole.userRole,
           userId: userCourseRole.userId,
         },
@@ -100,7 +98,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
         method: 'POST',
         body: {
-          userEmail: userRole.userEmail,
+          userId: userRole.userId,
           newRoleId: userRole.newRoleId,
         },
       }),
