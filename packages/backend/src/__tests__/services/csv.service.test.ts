@@ -259,11 +259,6 @@ describe('csv.service.tests', () => {
     it('should add a user to a course when they are non students', async () => {
       userDetailsMap.set(facultyOne.email, facultyOne);
       prismaMock.user.upsert.mockResolvedValueOnce(facultyOnePrismaUserUpsertMock);
-      prismaMock.usersOnCourses.upsert.mockResolvedValueOnce({
-        course_id: 1,
-        user_id: facultyOne.id as number,
-        created_at: new Date(Date.now()),
-      });
       prismaMock.$transaction.mockResolvedValueOnce(true);
       await expect(
         csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap),

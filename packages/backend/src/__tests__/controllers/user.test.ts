@@ -20,10 +20,9 @@ describe('user.controller tests', () => {
         {
           user_email: 'testEmail@test.com',
           user_id: 1,
-          courses: [],
           projects: [],
           basicRoles: [],
-          courseRoles: [],
+          courses: [],
         },
       ];
       spies.userServiceGetAllUsers.mockResolvedValueOnce(userServiceResponseObject);

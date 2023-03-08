@@ -123,7 +123,7 @@ async function processImportCourseData(
               role_id: STUDENT_ROLE_ID, // Default role of a new user
             },
           },
-          courseRoles: {
+          courses: {
             create: {
               course_id: courseId,
               role_id: userData.roleId,
@@ -167,22 +167,6 @@ async function processImportCourseData(
         } else {
           throw new Error(`${userEmail}: userGroup undefined`);
         }
-      } else {
-        // ASSUMPTION : non-STUDENT roles will not be added to projects
-        // On repeated CSV submissions, there may already be an entry for the course
-        await tx.usersOnCourses.upsert({
-          where: {
-            course_id_user_id: {
-              user_id: user.user_id,
-              course_id: courseId,
-            },
-          },
-          update: {}, // If the record already exists, we do nothing.
-          create: {
-            user_id: user.user_id,
-            course_id: courseId,
-          },
-        });
       }
     });
 

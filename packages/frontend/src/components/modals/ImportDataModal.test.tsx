@@ -29,8 +29,7 @@ const mockCourseData: CourseData = {
         user_display_name: 'user',
         user_id: 1,
         user_email: 'email',
-        user_display_name: 'testUser',
-        courseRoles: [
+        courses: [
           {
             id: 1,
             user_email: 'email',

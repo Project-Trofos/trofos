@@ -3,7 +3,6 @@ import {
   Prisma,
   Project,
   User,
-  UsersOnCourses,
   UsersOnRolesOnCourses,
   UsersOnProjects,
   Settings,
@@ -212,19 +211,12 @@ async function create(
           cname: name,
           public: isPublic,
           description,
-          users: {
+          courseRoles: {
             create: {
               user_id: userId,
+              role_id : FACULTY_ROLE_ID
             },
           },
-        },
-      });
-
-      await tx.usersOnRolesOnCourses.create({
-        data: {
-          user_id: userId,
-          course_id: course.id,
-          role_id: FACULTY_ROLE_ID,
         },
       });
 
@@ -244,6 +236,7 @@ async function create(
  * Bulk create projects in a course. Throw error if course specified does not exist.
  */
 async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Course> {
+
   const current = await prisma.course.findFirst({
     where: {
       id: Number(course.courseId),
@@ -279,6 +272,7 @@ async function bulkCreate(course: Required<BulkCreateProjectBody>): Promise<Cour
       },
     }),
   );
+
   await prisma.$transaction(projects);
 
   return current;
@@ -346,15 +340,10 @@ async function remove(id: number): Promise<Course> {
   return result;
 }
 
-async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[]> {
-  const result = await prisma.usersOnCourses.findMany({
+async function getUsers(id: number): Promise<User[]> {
+  const result = await prisma.usersOnRolesOnCourses.findMany({
     where: {
-      AND: [
-        accessibleBy(policyConstraint).Course,
-        {
-          id,
-        },
-      ],
+      course_id : id
     },
     select: {
       user: true,
@@ -364,49 +353,29 @@ async function getUsers(policyConstraint: AppAbility, id: number): Promise<User[
   return result.map((x) => x.user);
 }
 
-async function addUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    const userOnCourses = await tx.usersOnCourses.create({
-      data: {
-        course_id: courseId,
-        user_id: userId,
-      },
-    });
-
-    await tx.usersOnRolesOnCourses.create({
-      data: {
-        course_id: courseId,
-        user_id: userId,
-        role_id: STUDENT_ROLE_ID,
-      },
-    });
-
-    return userOnCourses;
+async function addUser(courseId: number, userId: number): Promise<UsersOnRolesOnCourses> {
+  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.create({
+    data: {
+      course_id: courseId,
+      user_id: userId,
+      role_id: STUDENT_ROLE_ID,
+    },
   });
+
+  return usersOnRolesOnCourses
 }
 
-async function removeUser(courseId: number, userId: number): Promise<UsersOnCourses> {
-  return prisma.$transaction<UsersOnCourses>(async (tx: Prisma.TransactionClient) => {
-    const userOnCourses = await tx.usersOnCourses.delete({
-      where: {
-        course_id_user_id: {
-          course_id: courseId,
-          user_id: userId,
-        },
+async function removeUser(courseId: number, userId: number): Promise<UsersOnRolesOnCourses> {
+  const usersOnRolesOnCourses = await prisma.usersOnRolesOnCourses.delete({
+    where: {
+      user_id_course_id: {
+        course_id: courseId,
+        user_id: userId,
       },
-    });
-
-    await tx.usersOnRolesOnCourses.delete({
-      where: {
-        user_id_course_id: {
-          course_id: courseId,
-          user_id: userId,
-        },
-      },
-    });
-
-    return userOnCourses;
+    },
   });
+
+  return usersOnRolesOnCourses;
 }
 
 // Get project by course id
@@ -464,9 +433,10 @@ async function addProjectAndCourse(
             endSem: courseSem,
             public: isProjectPublic,
             description: courseDesc,
-            users: {
+            courseRoles: {
               create: {
                 user_id: userId,
+                role_id : STUDENT_ROLE_ID,
               },
             },
           },

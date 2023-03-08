@@ -20,11 +20,6 @@ const projectResponseObject = {
   backlogStatuses: [],
 };
 
-const usersOnCoursesResponseObject = {
-  user_id: 1,
-  course_id: 1,
-  created_at: new Date('2022-08-31T15:19:39.104Z'),
-};
 const usersOnRolesOnCoursesResponseObject = {
   id: 1,
   user_id: 1,
@@ -364,13 +359,11 @@ describe('role.service tests', () => {
         code: 'testError',
         clientVersion: 'testVersion',
       });
-      prismaMock.usersOnCourses.create.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
-      prismaMock.usersOnCourses.delete.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 2, 1));
     });
@@ -402,14 +395,12 @@ describe('role.service tests', () => {
         clientVersion: 'testVersion',
       });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
-      prismaMock.usersOnCourses.create.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
-      prismaMock.usersOnCourses.delete.mockResolvedValueOnce(usersOnCoursesResponseObject);
       prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 1, 1));
     });

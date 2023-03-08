@@ -1,4 +1,4 @@
-import { User, UsersOnCourses, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@prisma/client';
+import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
@@ -9,10 +9,9 @@ const USER_DISPLAY_NAME_MAX_LENGTH = 50;
 export type Users = {
   user_email: string;
   user_id: number;
-  courses: UsersOnCourses[];
   projects: UsersOnProjects[];
   basicRoles: UsersOnRoles[];
-  courseRoles: UsersOnRolesOnCourses[];
+  courses: UsersOnRolesOnCourses[];
 };
 
 async function get(user_id: number): Promise<User> {
@@ -22,9 +21,8 @@ async function get(user_id: number): Promise<User> {
     },
     include: {
       projects: true,
-      courses: true,
       basicRoles: true,
-      courseRoles: true,
+      courses: true,
     },
   });
 
@@ -34,10 +32,9 @@ async function get(user_id: number): Promise<User> {
 async function getAll(): Promise<Users[]> {
   const users = await prisma.user.findMany({
     include: {
-      courses: true,
       projects: true,
       basicRoles: true,
-      courseRoles: true,
+      courses: true,
     },
   });
 
