@@ -8,7 +8,7 @@ type UserRoleManagement = {
   userEmail: string | undefined;
   userId: number | undefined;
   roles: ActionsOnRoles[] | undefined;
-  handleRoleChange: (userEmail: string, roleId: number, userId: number) => void;
+  handleRoleChange: (roleId: number, userId: number) => void;
 };
 
 export default function UserTableRoleManagementModal(props: UserRoleManagement): JSX.Element {
@@ -33,7 +33,7 @@ export default function UserTableRoleManagementModal(props: UserRoleManagement):
       return;
     }
 
-    await handleRoleChange(userEmail, currentRole, userId);
+    await handleRoleChange(currentRole, userId);
 
     setIsModalOpen(false);
   };

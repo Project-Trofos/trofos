@@ -37,7 +37,7 @@ async function canUserPerformActionForProject(
     return true;
   }
 
-  const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_email, projectId);
+  const userActions = await roleService.getUserRoleActionsForProject(sessionInformation.user_id, projectId);
 
   const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
 
@@ -54,7 +54,7 @@ async function canUserPerformActionForCourse(
     return true;
   }
 
-  const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_email, courseId);
+  const userActions = await roleService.getUserRoleActionsForCourse(sessionInformation.user_id, courseId);
 
   const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
 

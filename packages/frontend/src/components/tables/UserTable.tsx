@@ -13,7 +13,7 @@ type UserTableProps = {
   control?: React.ReactNode;
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
-  handleUpdateUserRole?: (userEmail: string, roleId: number, userId: number) => void;
+  handleUpdateUserRole?: (roleId: number, userId: number) => void;
 };
 
 /**
@@ -30,6 +30,7 @@ export default function UserTable({
   handleRemoveUser,
   handleUpdateUserRole,
 }: UserTableProps) {
+
   return (
     <Card className="table-card">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -68,9 +69,9 @@ export default function UserTable({
                 )}
                 {handleUpdateUserRole && (
                   <UserTableRoleManagementModal
-                    userRoleId={userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.id}
+                    userRoleId={userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.id}
                     userRoleName={
-                      userRoles?.find((userRole) => userRole.user_email === record.user.user_email)?.role.role_name
+                      userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.role_name
                     }
                     userEmail={record.user.user_email}
                     userId={record.user.user_id}

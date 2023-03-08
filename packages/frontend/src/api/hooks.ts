@@ -158,12 +158,11 @@ export const useProject = (projectId: number) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number, userId: number) => {
+    async (roleId: number, userId: number) => {
       try {
         if (project) {
           await updateUserProjectRole({
             id: projectId,
-            userEmail: userEmail,
             userRole: roleId,
             userId: userId,
           }).unwrap();
@@ -271,12 +270,11 @@ export const useCourse = (courseId?: string) => {
   );
 
   const handleUpdateUserRole = useCallback(
-    async (userEmail: string, roleId: number, userId: number) => {
+    async (roleId: number, userId: number) => {
       try {
         if (course) {
           await updateUserCourseRole({
             id: course.id,
-            userEmail: userEmail,
             userRole: roleId,
             userId: userId,
           }).unwrap();

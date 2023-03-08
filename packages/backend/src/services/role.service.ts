@@ -3,10 +3,10 @@ import prisma from '../models/prismaClient';
 import { RoleInformation, UserRolesForCourse, UserRoleActionsForCourse } from './types/role.service.types';
 import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 
-async function getUserRoleInformation(userEmail: string): Promise<RoleInformation> {
+async function getUserRoleInformation(userId: number): Promise<RoleInformation> {
   const basicRoleQueryResult = await prisma.usersOnRoles.findFirstOrThrow({
     where: {
-      user_email: userEmail,
+      user_id: userId,
     },
     include: {
       role: {
@@ -19,7 +19,7 @@ async function getUserRoleInformation(userEmail: string): Promise<RoleInformatio
 
   const specificRoleQueryResult = await prisma.usersOnRolesOnCourses.findMany({
     where: {
-      user_email: userEmail,
+      user_id: userId,
     },
     include: {
       role: {
@@ -48,10 +48,10 @@ async function getUserRoleInformation(userEmail: string): Promise<RoleInformatio
   return userRoleInformation;
 }
 
-async function getUserRoleId(userEmail: string): Promise<number> {
+async function getUserRoleId(userId: number): Promise<number> {
   const userRoleId = await prisma.usersOnRoles.findUniqueOrThrow({
     where: {
-      user_email: userEmail,
+      user_id: userId,
     },
   });
 
@@ -126,10 +126,10 @@ async function removeActionFromRole(roleId: number, action: Action): Promise<Act
   return actionOnRole;
 }
 
-async function getUserRoleActionsForCourse(userEmail: string, courseId: number): Promise<UserRoleActionsForCourse> {
+async function getUserRoleActionsForCourse(userId: number, courseId: number): Promise<UserRoleActionsForCourse> {
   const userRoleForCourse = await prisma.usersOnRolesOnCourses.findFirstOrThrow({
     where: {
-      user_email: userEmail,
+      user_id: userId,
       course_id: courseId,
     },
     include: {
@@ -143,7 +143,7 @@ async function getUserRoleActionsForCourse(userEmail: string, courseId: number):
   return userRoleForCourse;
 }
 
-async function getUserRoleActionsForProject(userEmail: string, projectId: number): Promise<UserRoleActionsForCourse> {
+async function getUserRoleActionsForProject(userId: number, projectId: number): Promise<UserRoleActionsForCourse> {
   const projectInformation = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
@@ -152,7 +152,7 @@ async function getUserRoleActionsForProject(userEmail: string, projectId: number
 
   const userRoleForProject = await prisma.usersOnRolesOnCourses.findFirstOrThrow({
     where: {
-      user_email: userEmail,
+      user_id: userId,
       course_id: projectInformation?.course_id as number,
     },
     include: {
@@ -223,11 +223,11 @@ async function updateUserOnCoursePermissions(userId: number, courseId: number, r
   }
 }
 
-async function updateUserRoleForCourse(courseId: number, userEmail: string, userRole: number, userId: number) {
+async function updateUserRoleForCourse(courseId: number, userRole: number, userId: number) {
   await prisma.usersOnRolesOnCourses.update({
     where: {
-      user_email_course_id: {
-        user_email: userEmail,
+      user_id_course_id: {
+        user_id: userId,
         course_id: courseId,
       },
     },
@@ -239,7 +239,7 @@ async function updateUserRoleForCourse(courseId: number, userEmail: string, user
   await updateUserOnCoursePermissions(userId, courseId, userRole);
 }
 
-async function updateUserRoleForProject(projectId: number, userEmail: string, userRole: number, userId: number) {
+async function updateUserRoleForProject(projectId: number, userRole: number, userId: number) {
   const projectInformation = await prisma.project.findFirstOrThrow({
     where: {
       id: projectId,
@@ -248,8 +248,8 @@ async function updateUserRoleForProject(projectId: number, userEmail: string, us
 
   await prisma.usersOnRolesOnCourses.update({
     where: {
-      user_email_course_id: {
-        user_email: userEmail,
+      user_id_course_id: {
+        user_id: userId,
         course_id: projectInformation.course_id as number,
       },
     },
@@ -261,10 +261,10 @@ async function updateUserRoleForProject(projectId: number, userEmail: string, us
   await updateUserOnCoursePermissions(userId, Number(projectInformation.course_id), userRole);
 }
 
-async function updateUserRole(roleId: number, userEmail: string): Promise<UsersOnRoles> {
+async function updateUserRole(roleId: number, userId: number): Promise<UsersOnRoles> {
   const userOnRole = await prisma.usersOnRoles.update({
     where: {
-      user_email: userEmail,
+      user_id: userId,
     },
     data: {
       role_id: roleId,
