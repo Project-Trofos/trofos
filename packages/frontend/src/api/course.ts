@@ -104,7 +104,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }, { type: 'CourseRoles', id }],
     }),
 
     // Invalidate course
