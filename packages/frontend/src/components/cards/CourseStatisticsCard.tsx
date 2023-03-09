@@ -8,7 +8,7 @@ import SprintBacklogPieChart from '../visualization/SprintBacklogPieChart';
 import TeamIssuesComparisonBarGraph from '../visualization/TeamIssuesComparisonBarGraph';
 import ProjectTable from '../tables/ProjectTable';
 import SprintTable from '../tables/SprintTable';
-import SimpleModal from '../modals/ProjectTableModal';
+import SimpleModal from '../modals/SimpleModal';
 
 export default function CourseStatisticsCard(props: {
   projects: ProjectData[];

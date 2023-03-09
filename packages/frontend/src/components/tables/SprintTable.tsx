@@ -17,7 +17,7 @@ type SprintTableProps = {
 };
 
 /**
- * Table for listing projects
+ * Table for listing sprints
  */
 export default function SprintTable({ sprints, projects, isLoading, heading, control }: SprintTableProps) {
   const projectIdToName = useMemo(() => {

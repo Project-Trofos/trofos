@@ -8,7 +8,7 @@ const UserPermissionActions = {
   ADMIN: 'admin',
 } as const;
 
-export type UserPermissionActionsType = typeof UserPermissionActions[keyof typeof UserPermissionActions];
+type UserPermissionActionsType = typeof UserPermissionActions[keyof typeof UserPermissionActions];
 
 const COURSE_MANAGER_ACTIONS: UserPermissionActionsType[] = [
   UserPermissionActions.ADMIN,

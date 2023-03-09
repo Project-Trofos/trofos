@@ -8,7 +8,7 @@ import { COURSE_MANAGER_ACTIONS, UserPermissionActions } from './constants';
 import { useGetUserInfoQuery } from '../api/auth';
 
 /**
- * A react component protect a route again users who are not course manager.
+ * A react component that protects a route against users who are not course manager.
  * Course ID is derived from url parameter.
  */
 export function CourseManagerProtected({ children }: { children: JSX.Element }): JSX.Element {
@@ -34,7 +34,7 @@ export function CourseManagerProtected({ children }: { children: JSX.Element }):
 }
 
 /**
- * A react component protect a route again users who are not admins.
+ * A react component that protects a route against users who are not admins.
  */
 export function AdminProtected({ children }: { children: JSX.Element }): JSX.Element {
   const { data: userInfo, isLoading } = useGetUserInfoQuery();

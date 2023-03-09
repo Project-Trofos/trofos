@@ -29,7 +29,7 @@ export default function HomePage(): JSX.Element {
   return conditionalRender(
     <FacultyDashboard userInfo={userInfo} />,
     userInfo.userRoleActions,
-    [UserPermissionActions.UPDATE_COURSE, UserPermissionActions.ADMIN],
+    [UserPermissionActions.CREATE_COURSE, UserPermissionActions.ADMIN],
     <UserDashboard userInfo={userInfo} />,
   );
 }
