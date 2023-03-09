@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Typography, Tabs, Space } from 'antd';
+import { Typography, Tabs, Space, Spin } from 'antd';
 
 import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCurrentAndPastProjects } from '../api/hooks';
@@ -27,7 +27,7 @@ export default function ProjectsPage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <main style={{ margin: '48px' }}>Loading...</main>;
+    return <Spin />;
   }
 
   return (

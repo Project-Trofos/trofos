@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Typography, Space, Tabs } from 'antd';
+import { Typography, Space, Tabs, Spin } from 'antd';
 
 import CourseCreationModal from '../components/modals/CourseCreationModal';
 import { useCurrentAndPastCourses } from '../api/hooks';
@@ -28,7 +28,7 @@ export default function CoursesPage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <main style={{ margin: '48px' }}>Loading...</main>;
+    return <Spin />;
   }
 
   return (
