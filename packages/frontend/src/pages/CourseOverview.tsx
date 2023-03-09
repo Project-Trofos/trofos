@@ -8,8 +8,7 @@ import MilestoneCard from '../components/cards/MilestoneCard';
 import Container from '../components/layouts/Container';
 import BulkProjectCreationModal from '../components/modals/BulkProjectCreationModal';
 import ProjectTable from '../components/tables/ProjectTable';
-import { canDisplay } from '../helpers/conditionalRender';
-import { UserPermissionActions } from '../helpers/constants';
+import { useIsCourseManager } from '../helpers/conditionalRender';
 
 export default function CourseOverview(): JSX.Element {
   const params = useParams();
@@ -18,25 +17,27 @@ export default function CourseOverview(): JSX.Element {
     params.courseId,
   );
 
-  const showEdit = canDisplay(userInfo?.userRoleActions || [], [
-    UserPermissionActions.ADMIN,
-    UserPermissionActions.UPDATE_COURSE,
-  ]);
+  const { isCourseManager } = useIsCourseManager();
 
   return (
     <Container>
       <AnnouncementCard
         course={course}
-        showEdit={showEdit}
+        showEdit={isCourseManager}
         handleDeleteAnnouncement={handleDeleteAnnouncement}
         handleUpdateAnnouncement={handleUpdateAnnouncement}
       />
-      {course && <MilestoneCard course={course} showEdit={showEdit} />}
+      {course && <MilestoneCard course={course} showEdit={isCourseManager} />}
       <Card>
         <ProjectTable
           projects={filteredProjects}
           isLoading={isLoading}
-          control={<BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />}
+          control={
+            isCourseManager && (
+              <BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />
+            )
+          }
+          showActions={isCourseManager ? undefined : ['GOTO']}
         />
       </Card>
     </Container>

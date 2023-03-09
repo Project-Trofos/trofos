@@ -25,6 +25,7 @@ import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
 import CourseStatistics from '../pages/CourseStatistics';
+import { CourseManagerProtected } from '../helpers/conditionalRender';
 
 function App() {
   return (
@@ -51,8 +52,22 @@ function App() {
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
             <Route path="users" element={<CoursePeople />} />
-            <Route path="statistics" element={<CourseStatistics />} />
-            <Route path="settings" element={<CourseSettings />} />
+            <Route
+              path="statistics"
+              element={
+                <CourseManagerProtected>
+                  <CourseStatistics />
+                </CourseManagerProtected>
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <CourseManagerProtected>
+                  <CourseSettings />
+                </CourseManagerProtected>
+              }
+            />
           </Route>
           <Route path="account" element={<Account />} />
           <Route path="admin" element={<Admin />} />

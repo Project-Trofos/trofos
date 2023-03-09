@@ -17,14 +17,20 @@ export default function CourseStatisticsCard(props: {
   backlogHistory: BacklogHistory[];
 }) {
   const { sprints, unassignedBacklogs, backlogHistory, projects } = props;
+
   const activeSprints = sprints.filter((s) => s.status === 'current');
+
   const incompleteSprints = sprints
     .filter((s) => s.status === 'completed' || s.status === 'closed')
     .filter((s) => s.backlogs.find((b) => b.status !== BacklogStatus.DONE) !== undefined);
+
   const projectsWithIncompleteSprints = projects.filter(
     (p) => incompleteSprints.find((s) => s.project_id === p.id) !== undefined,
   );
-  const projectWithoutSprint = projects.filter((p) => activeSprints.find((s) => s.project_id === p.id) === undefined);
+
+  const projectsWithoutActiveSprint = projects.filter(
+    (p) => activeSprints.find((s) => s.project_id === p.id) === undefined,
+  );
 
   return (
     <Card>
@@ -40,10 +46,10 @@ export default function CourseStatisticsCard(props: {
             title={
               <Space>
                 No Active Sprint
-                {projectWithoutSprint.length > 0 && (
+                {projectsWithoutActiveSprint.length > 0 && (
                   <SimpleModal buttonName="Show" modalProps={{ width: 1000 }}>
                     <ProjectTable
-                      projects={projectWithoutSprint}
+                      projects={projectsWithoutActiveSprint}
                       isLoading={false}
                       heading="Projects without active sprint"
                       showActions={['GOTO']}
@@ -52,7 +58,7 @@ export default function CourseStatisticsCard(props: {
                 )}
               </Space>
             }
-            value={projectWithoutSprint.length}
+            value={projectsWithoutActiveSprint.length}
           />
         </Col>
         <Col sm={6} xs={24}>

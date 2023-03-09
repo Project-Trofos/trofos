@@ -1,17 +1,13 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetUserInfoQuery } from '../api/auth';
 import { useGetBacklogHistoryQuery, useGetBacklogsQuery } from '../api/backlog';
 import { useCourse } from '../api/hooks';
 import { useGetSprintsQuery } from '../api/sprint';
 import CourseStatisticsCard from '../components/cards/CourseStatisticsCard';
 import Container from '../components/layouts/Container';
-import { canDisplay } from '../helpers/conditionalRender';
-import { UserPermissionActions } from '../helpers/constants';
 
 export default function CourseStatistics(): JSX.Element {
   const params = useParams();
-  const { data: userInfo } = useGetUserInfoQuery();
   const { filteredProjects } = useCourse(params.courseId);
 
   const { data: backlogs } = useGetBacklogsQuery();
@@ -44,21 +40,14 @@ export default function CourseStatistics(): JSX.Element {
     return backlogHistory.filter((b) => b.sprint_id && sprintIds.includes(b.sprint_id));
   }, [sprintsInCourse, backlogHistory]);
 
-  const isCourseAdmin = canDisplay(userInfo?.userRoleActions || [], [
-    UserPermissionActions.ADMIN,
-    UserPermissionActions.UPDATE_COURSE,
-  ]);
-
   return (
     <Container>
-      {isCourseAdmin && (
-        <CourseStatisticsCard
-          projects={filteredProjects}
-          sprints={sprintsInCourse}
-          unassignedBacklogs={unassignedBacklogsInCourse}
-          backlogHistory={backlogHistoryInCourse}
-        />
-      )}
+      <CourseStatisticsCard
+        projects={filteredProjects}
+        sprints={sprintsInCourse}
+        unassignedBacklogs={unassignedBacklogsInCourse}
+        backlogHistory={backlogHistoryInCourse}
+      />
     </Container>
   );
 }

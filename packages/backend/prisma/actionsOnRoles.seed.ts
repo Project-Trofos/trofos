@@ -59,6 +59,10 @@ async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
       },
       {
         role_id: STUDENT_ROLE_ID,
+        action: Action.read_course,
+      },
+      {
+        role_id: STUDENT_ROLE_ID,
         action: Action.create_project,
       },
       {

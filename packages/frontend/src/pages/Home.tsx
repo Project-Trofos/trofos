@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Space, Typography } from 'antd';
+import { Button, Space, Spin, Typography } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
@@ -29,7 +29,7 @@ export default function HomePage(): JSX.Element {
   return conditionalRender(
     <FacultyDashboard userInfo={userInfo} />,
     userInfo.userRoleActions,
-    [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],
+    [UserPermissionActions.UPDATE_COURSE, UserPermissionActions.ADMIN],
     <UserDashboard userInfo={userInfo} />,
   );
 }
