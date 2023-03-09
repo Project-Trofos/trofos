@@ -25,7 +25,7 @@ import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
 import CourseStatistics from '../pages/CourseStatistics';
-import { CourseManagerProtected } from '../helpers/conditionalRender';
+import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
 
 function App() {
   return (
@@ -70,7 +70,14 @@ function App() {
             />
           </Route>
           <Route path="account" element={<Account />} />
-          <Route path="admin" element={<Admin />} />
+          <Route
+            path="admin"
+            element={
+              <AdminProtected>
+                <Admin />
+              </AdminProtected>
+            }
+          />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route

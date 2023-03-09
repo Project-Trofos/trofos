@@ -7,7 +7,7 @@ import { useCourse } from '../api/hooks';
 import InputWithButton from '../components/fields/InputWithButton';
 import Container from '../components/layouts/Container';
 import UserTable from '../components/tables/UserTable';
-import { useIsCourseManager } from '../helpers/conditionalRender';
+import { useIsCourseManager } from '../api/hooks/roleHooks';
 
 export default function CoursePeople(): JSX.Element {
   const params = useParams();

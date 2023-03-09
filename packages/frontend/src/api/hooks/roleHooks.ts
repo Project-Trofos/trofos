@@ -1,4 +1,7 @@
 import { SkipToken, skipToken } from '@reduxjs/toolkit/dist/query';
+import { useParams } from 'react-router-dom';
+import { canDisplay } from '../../helpers/conditionalRender';
+import { COURSE_MANAGER_ACTIONS } from '../../helpers/constants';
 import { useGetUserInfoQuery } from '../auth';
 import { useGetActionsOnRolesQuery, useGetCourseUserRolesQuery, useGetProjectUserRolesQuery } from '../role';
 import { UserOnRolesOnCourse } from '../types';
@@ -50,4 +53,17 @@ function useActionHookHOF({
   );
 
   return { actions, isLoading: isGetUserRoleQueryLoading || isActionsOnRolesLoading };
+}
+
+/**
+ * Returns a flag whether the current user is a course manager.
+ */
+export function useIsCourseManager(courseId?: number) {
+  const params = useParams();
+  const cid = courseId ?? Number(params.courseId);
+  const { actions } = useCourseActions({ courseId: cid });
+
+  const isCourseManager = canDisplay(actions || [], COURSE_MANAGER_ACTIONS);
+
+  return { isCourseManager };
 }

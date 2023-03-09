@@ -8,7 +8,7 @@ import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCourse } from '../api/hooks';
 import PageHeader from '../components/pageheader/PageHeader';
 import ImportDataModal from '../components/modals/ImportDataModal';
-import { useIsCourseManager } from '../helpers/conditionalRender';
+import { useIsCourseManager } from '../api/hooks/roleHooks';
 
 const { Text } = Typography;
 
