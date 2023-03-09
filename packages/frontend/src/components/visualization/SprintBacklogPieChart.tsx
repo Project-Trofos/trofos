@@ -19,7 +19,6 @@ export default function SprintBacklogPieChart(props: {
     data,
     angleField: 'value',
     colorField: 'type',
-    width: 400,
     height: 300,
     radius: 0.8,
     label: {

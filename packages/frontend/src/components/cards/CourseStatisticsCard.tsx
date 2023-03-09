@@ -78,22 +78,18 @@ export default function CourseStatisticsCard(props: {
       </Row>
       <Divider />
       <Row>
-        <Col xs={24} md={12}>
-          <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
-            <Subheading>Active Sprint Issue Types</Subheading>
-            <SprintBacklogPieChart sprints={activeSprints} unassignedBacklog={unassignedBacklogs} />
-          </Space>
+        <Col xs={24} md={12} style={{ padding: '20px' }}>
+          <Subheading style={{ textAlign: 'center' }}>Active Sprint Issue Types</Subheading>
+          <SprintBacklogPieChart sprints={activeSprints} unassignedBacklog={unassignedBacklogs} />
         </Col>
-        <Col xs={24} md={12}>
-          <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
-            <Subheading>Daily Completed Story Points</Subheading>
-            <DailyCompletedPointsBarGraph backlogHistory={backlogHistory} />
-          </Space>
+        <Col xs={24} md={12} style={{ padding: '20px' }}>
+          <Subheading style={{ textAlign: 'center' }}>Daily Completed Story Points</Subheading>
+          <DailyCompletedPointsBarGraph backlogHistory={backlogHistory} />
         </Col>
       </Row>
       <Divider />
       <Row>
-        <Col xs={24} md={24} style={{ display: 'flex', flexDirection: 'column', padding: '10px' }}>
+        <Col xs={24} md={24} style={{ padding: '20px' }}>
           <Subheading style={{ textAlign: 'center' }}>Active Sprint Team Issues</Subheading>
           <TeamIssuesComparisonBarGraph activeSprints={activeSprints} projects={projects} />
         </Col>

@@ -18,7 +18,6 @@ export default function DailyCompletedPointsBarGraph(props: {
     data,
     xField: 'date',
     yField: 'value',
-    width: 400,
     height: 300,
     meta: {
       values: {
