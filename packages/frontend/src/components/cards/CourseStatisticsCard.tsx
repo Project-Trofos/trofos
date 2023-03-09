@@ -10,7 +10,7 @@ import ProjectTable from '../tables/ProjectTable';
 import SprintTable from '../tables/SprintTable';
 import SimpleModal from '../modals/ProjectTableModal';
 
-export default function CourseOverviewCard(props: {
+export default function CourseStatisticsCard(props: {
   projects: ProjectData[];
   sprints: Sprint[];
   unassignedBacklogs: Backlog[];

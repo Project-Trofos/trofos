@@ -7,7 +7,7 @@ import { Subheading } from '../typography';
 import DailyCompletedPointsBarGraph from '../visualization/DailyCompletedPointsBarGraph';
 import SprintBacklogPieChart from '../visualization/SprintBacklogPieChart';
 
-export default function ProjectOverviewCard(props: {
+export default function ProjectStatisticsCard(props: {
   sprints: Sprint[];
   unassignedBacklogs: Backlog[];
   backlogHistory: BacklogHistory[];

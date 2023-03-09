@@ -4,7 +4,7 @@ import { useGetUserInfoQuery } from '../api/auth';
 import { useGetBacklogHistoryQuery, useGetBacklogsQuery } from '../api/backlog';
 import { useCourse } from '../api/hooks';
 import { useGetSprintsQuery } from '../api/sprint';
-import CourseOverviewCard from '../components/cards/CourseOverviewCard';
+import CourseStatisticsCard from '../components/cards/CourseStatisticsCard';
 import Container from '../components/layouts/Container';
 import { canDisplay } from '../helpers/conditionalRender';
 import { UserPermissionActions } from '../helpers/constants';
@@ -52,7 +52,7 @@ export default function CourseStatistics(): JSX.Element {
   return (
     <Container>
       {isCourseAdmin && (
-        <CourseOverviewCard
+        <CourseStatisticsCard
           projects={filteredProjects}
           sprints={sprintsInCourse}
           unassignedBacklogs={unassignedBacklogsInCourse}

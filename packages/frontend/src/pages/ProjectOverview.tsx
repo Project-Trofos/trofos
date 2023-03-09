@@ -7,7 +7,7 @@ import MilestoneCard from '../components/cards/MilestoneCard';
 import VisualizationCard from '../components/cards/VisualizationCard';
 import Container from '../components/layouts/Container';
 import { useGetProjectBacklogHistoryQuery } from '../api/backlog';
-import ProjectOverviewCard from '../components/cards/ProjectOverviewCard';
+import ProjectStatisticsCard from '../components/cards/ProjectStatisticsCard';
 
 export default function Overview(): JSX.Element {
   const params = useParams();
@@ -22,7 +22,7 @@ export default function Overview(): JSX.Element {
     <Container>
       {course && <MilestoneCard course={course} showEdit={false} />}
       {sprintsData && backlogHistory && (
-        <ProjectOverviewCard
+        <ProjectStatisticsCard
           sprints={sprintsData.sprints}
           unassignedBacklogs={sprintsData.unassignedBacklogs}
           backlogHistory={backlogHistory}

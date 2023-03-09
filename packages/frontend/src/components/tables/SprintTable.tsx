@@ -78,6 +78,12 @@ export default function SprintTable({ sprints, projects, isLoading, heading, con
           sorter={(a: Sprint, b: Sprint) => (new Date(a.end_date) >= new Date(b.end_date) ? 1 : -1)}
         />
         <Table.Column
+          width={80}
+          title="Status"
+          dataIndex="status"
+          sorter={(a: Sprint, b: Sprint) => a.status.localeCompare(b.status)}
+        />
+        <Table.Column
           width={50}
           title="Incomplete Issues"
           render={(_, record) => {
