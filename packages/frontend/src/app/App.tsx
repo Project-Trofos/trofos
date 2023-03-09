@@ -24,6 +24,7 @@ import CoursePeople from '../pages/CoursePeople';
 import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
+import CourseStatistics from '../pages/CourseStatistics';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
             <Route path="users" element={<CoursePeople />} />
+            <Route path="statistics" element={<CourseStatistics />} />
             <Route path="settings" element={<CourseSettings />} />
           </Route>
           <Route path="account" element={<Account />} />

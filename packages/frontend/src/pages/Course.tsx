@@ -90,6 +90,7 @@ export default function CoursePage(): JSX.Element {
             items={[
               { key: 'overview', label: 'Overview' },
               { key: 'users', label: 'Users' },
+              { key: 'statistics', label: 'Statistics' },
               { key: 'settings', label: 'Settings' },
             ]}
             activeKey={selectedTab}
