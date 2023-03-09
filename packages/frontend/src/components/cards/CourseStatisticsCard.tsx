@@ -93,8 +93,8 @@ export default function CourseStatisticsCard(props: {
       </Row>
       <Divider />
       <Row>
-        <Col xs={24} md={24} style={{ display: 'flex', flexDirection: 'column' }}>
-          <Subheading>Active Sprint Team Issues Comparison</Subheading>
+        <Col xs={24} md={24} style={{ display: 'flex', flexDirection: 'column', padding: '10px' }}>
+          <Subheading style={{ textAlign: 'center' }}>Active Sprint Team Issues</Subheading>
           <TeamIssuesComparisonBarGraph activeSprints={activeSprints} projects={projects} />
         </Col>
       </Row>
