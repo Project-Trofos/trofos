@@ -13,7 +13,7 @@ import Admin from '../pages/Admin';
 
 import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklogs from '../pages/ProjectBacklogs';
-import ScrumBoard from '../pages/ScrumBoard';
+import ScrumBoard, { SprintScrumBoardPage } from '../pages/ScrumBoardPage';
 
 import './App.css';
 import ProjectSettings from '../pages/ProjectSettings';
@@ -41,6 +41,7 @@ function App() {
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="board" element={<ScrumBoard />} />
+            <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
             <Route path="feedback" element={<ProjectFeedbacks />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>

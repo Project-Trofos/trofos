@@ -92,7 +92,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           }
           // update from drag and drop on the scrum board
         } else if (patch.fieldToUpdate.assignee_id !== undefined && patch.fieldToUpdate.status !== undefined) {
-          const patchResult = dispatch(
+          const patchResult1 = dispatch(
             sprintApi.util.updateQueryData('getActiveSprint', projectId, (draft) => {
               const updatedDraft = {
                 ...draft,
@@ -109,10 +109,38 @@ const extendedApi = trofosApiSlice.injectEndpoints({
               Object.assign(draft, updatedDraft);
             }),
           );
+
+          // Update getSprintByProjectId as well so that non-active sprints are also optimistically updated
+          const patchResult2 = dispatch(
+            sprintApi.util.updateQueryData('getSprintsByProjectId', projectId, (draft) => {
+              const sprint = draft.sprints.find((s) => s.id === patch.srcSprintId);
+              const updatedDraft = {
+                sprints: [
+                  ...draft.sprints.filter((s) => s.id !== patch.srcSprintId),
+                  {
+                    ...sprint,
+                    backlogs: sprint?.backlogs.map((b) => {
+                      if (b.project_id === projectId && b.backlog_id === backlogId) {
+                        return {
+                          ...b,
+                          ...patch.fieldToUpdate,
+                        };
+                      }
+                      return b;
+                    }),
+                  },
+                ],
+                unassignedBacklogs: draft.unassignedBacklogs,
+              };
+              Object.assign(draft, updatedDraft);
+            }),
+          );
+
           try {
             await queryFulfilled;
           } catch {
-            patchResult.undo();
+            patchResult1.undo();
+            patchResult2.undo();
           }
         }
       },
