@@ -7,7 +7,9 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { LexicalEditor } from 'lexical';
 
 // Nodes
@@ -32,6 +34,7 @@ import LoadInitialContentPlugin from './plugins/LoadInitialContentPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
 
 import './Editor.css';
+import { MaxLengthPlugin } from './plugins/MaxLengthPlugin';
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
@@ -65,10 +68,11 @@ type EditorProps = {
   initialStateString?: string;
   isEditable?: boolean;
   hideToolbar?: boolean;
+  maxLength?: number;
 };
 
 const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
-  const { initialStateString, isEditable = true, hideToolbar = false } = props;
+  const { initialStateString, isEditable = true, hideToolbar = false, maxLength } = props;
 
   const initialConfig: InitialConfigType = {
     ...baseInitialConfig,
@@ -88,6 +92,8 @@ const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
           placeholder={null}
           ErrorBoundary={LexicalErrorBoundary}
         />
+        <HistoryPlugin />
+        <TablePlugin />
         <TabIndentationPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <PlaygroundAutoLinkPlugin />
@@ -97,6 +103,7 @@ const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
         <CheckListPlugin />
         <LexicalEditorRefPlugin ref={ref} />
         <LoadInitialContentPlugin editorStateString={initialStateString} />
+        {maxLength && isEditable && <MaxLengthPlugin maxLength={maxLength} />}
       </div>
     </LexicalComposer>
   );

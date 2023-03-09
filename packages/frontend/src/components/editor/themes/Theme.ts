@@ -1,4 +1,6 @@
-const theme = {
+import { EditorThemeClasses } from 'lexical';
+
+const theme: EditorThemeClasses = {
   ltr: 'ltr',
   rtl: 'rtl',
   placeholder: 'editor-placeholder',
@@ -26,8 +28,6 @@ const theme = {
   text: {
     bold: 'editor-text-bold',
     italic: 'editor-text-italic',
-    overflowed: 'editor-text-overflowed',
-    hashtag: 'editor-text-hashtag',
     underline: 'editor-text-underline',
     strikethrough: 'editor-text-strikethrough',
     underlineStrikethrough: 'editor-text-underlineStrikethrough',
@@ -66,6 +66,8 @@ const theme = {
     url: 'editor-tokenOperator',
     variable: 'editor-tokenVariable',
   },
+  table: 'editor-table',
+  tableCell: 'editor-tableCell',
 };
 
 export default theme;

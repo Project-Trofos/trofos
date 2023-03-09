@@ -235,3 +235,20 @@
   transform: rotate(45deg);
   border-width: 0 2px 2px 0;
 }
+
+.editor-tableCell {
+  border: 1px solid #bbb;
+  min-width: 75px;
+  vertical-align: top;
+  padding: 6px;
+}
+
+.editor-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  max-width: 100%;
+  overflow-y: scroll;
+  table-layout: fixed;
+  width: calc(100% - 25px);
+  margin: 30px 0;
+}
