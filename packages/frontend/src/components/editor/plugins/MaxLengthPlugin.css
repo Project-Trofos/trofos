@@ -4,4 +4,7 @@
   bottom: 10px;
   pointer-events: none;
   color: red;
+  padding: 5px 8px;
+  background-color: white;
+  outline: gray solid 1px;
 }
