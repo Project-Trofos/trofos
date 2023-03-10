@@ -12,7 +12,7 @@ import { filterDropdown } from './helper';
 
 type ProjectTableProps = {
   projects: Project[] | undefined;
-  isLoading: boolean;
+  isLoading?: boolean;
   heading?: string;
   control?: React.ReactNode;
   showCourseColumn?: boolean;

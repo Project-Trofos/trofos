@@ -50,7 +50,6 @@ export default function CourseStatisticsCard(props: {
                   <SimpleModal buttonName="Show" modalProps={{ width: 1000 }}>
                     <ProjectTable
                       projects={projectsWithoutActiveSprint}
-                      isLoading={false}
                       heading="Projects without active sprint"
                       showActions={['GOTO']}
                     />
@@ -71,7 +70,6 @@ export default function CourseStatisticsCard(props: {
                     <SprintTable
                       sprints={incompleteSprints}
                       projects={projectsWithIncompleteSprints}
-                      isLoading={false}
                       heading="Projects with incomplete sprint"
                     />
                   </SimpleModal>

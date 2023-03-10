@@ -11,7 +11,7 @@ import { BacklogStatus, Project } from '../../api/types';
 type SprintTableProps = {
   sprints: Sprint[] | undefined;
   projects: Project[] | undefined;
-  isLoading: boolean;
+  isLoading?: boolean;
   heading?: string;
   control?: React.ReactNode;
 };
