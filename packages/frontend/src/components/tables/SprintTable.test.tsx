@@ -15,14 +15,20 @@ describe('test SprintTable', () => {
     return { baseElement, debug };
   };
 
-  it('should render table with correct fields', () => {
-    const { baseElement } = setup();
+  it('should render table with correct fields', async () => {
+    const { baseElement, debug } = setup();
 
     expect(screen.getByText('Sprints')).toBeInTheDocument();
 
     // Ensure columns are present
     expect(screen.getByText('Project Name')).toBeInTheDocument();
+    screen.getAllByText(MSW_PROJECT.pname);
+
     expect(screen.getByText('Sprint Name')).toBeInTheDocument();
+    MSW_SPRINT.forEach((s) => {
+      screen.getByText(s.name);
+    });
+
     expect(screen.getByText('End Date')).toBeInTheDocument();
     expect(screen.getByText('Incomplete Issues')).toBeInTheDocument();
     expect(screen.getByText('Action')).toBeInTheDocument();

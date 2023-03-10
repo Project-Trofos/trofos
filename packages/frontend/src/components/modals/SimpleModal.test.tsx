@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SimpleModal from './SimpleModal';
 
-describe('test ProjectCreationModal', () => {
+describe('test SimpleModal', () => {
   // Antd modal is rendered outside of `root` div and does not get unmounted after closing
   const expectModalInvisible = async (baseElement: HTMLElement) => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
