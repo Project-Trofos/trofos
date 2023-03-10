@@ -36,9 +36,9 @@ export default function SprintNotesModal(props: SprintNotesModalProps) {
   };
 
   return (
-    <Modal title="Notes" open={isOpen} onOk={handleSave} onCancel={handleOnCancel} okText="Save">
+    <Modal width={800} title="Notes" open={isOpen} onOk={handleSave} onCancel={handleOnCancel} okText="Save">
       <div className="sprint-notes-editor">
-        <Editor initialStateString={notesData?.notes} ref={editorRef} />
+        <Editor initialStateString={notesData?.notes} ref={editorRef} maxLength={2500} />
       </div>
     </Modal>
   );

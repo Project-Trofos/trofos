@@ -33,7 +33,7 @@ export default function CoursePage(): JSX.Element {
     return split[3];
   }, [location.pathname]);
 
-  const { course, filteredProjects } = useCourse(params.courseId);
+  const { course, filteredProjects, isLoading } = useCourse(params.courseId);
   const { isCourseManager } = useIsCourseManager();
 
   const handleMenuClick = useCallback(
@@ -47,6 +47,10 @@ export default function CoursePage(): JSX.Element {
     },
     [course, navigate, removeCourse],
   );
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   if (!params.courseId || !course) {
     return (

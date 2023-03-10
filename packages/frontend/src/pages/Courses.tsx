@@ -33,7 +33,7 @@ export default function CoursesPage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <main style={{ margin: '48px' }}>Loading...</main>;
+    return <Spin />;
   }
 
   return (

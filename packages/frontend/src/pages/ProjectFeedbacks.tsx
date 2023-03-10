@@ -124,7 +124,7 @@ function FeedbackEditor(props: {
       {viewState === 'view' && feedback && (
         <Editor initialStateString={feedback?.content} ref={editorRef} hideToolbar isEditable={false} />
       )}
-      {viewState === 'edit' && <Editor initialStateString={feedback?.content} ref={editorRef} />}
+      {viewState === 'edit' && <Editor initialStateString={feedback?.content} ref={editorRef} maxLength={2500} />}
 
       <Space className="feedback-button-group">
         {viewState === 'view' && (

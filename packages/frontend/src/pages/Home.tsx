@@ -11,7 +11,11 @@ import UserDashboard from './UserDashboard';
 const { Title } = Typography;
 
 export default function HomePage(): JSX.Element {
-  const { data: userInfo } = useGetUserInfoQuery();
+  const { data: userInfo, isLoading } = useGetUserInfoQuery();
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   // User is not logged in
   if (!userInfo) {
