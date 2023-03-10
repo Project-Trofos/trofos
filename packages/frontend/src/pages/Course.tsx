@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Spin, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveCourseMutation } from '../api/course';
 import { confirmDeleteCourse } from '../components/modals/confirm';
@@ -32,7 +32,7 @@ export default function CoursePage(): JSX.Element {
     return split[3];
   }, [location.pathname]);
 
-  const { course, filteredProjects } = useCourse(params.courseId);
+  const { course, filteredProjects, isLoading } = useCourse(params.courseId);
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -45,6 +45,10 @@ export default function CoursePage(): JSX.Element {
     },
     [course, navigate, removeCourse],
   );
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   if (!params.courseId || !course) {
     return (
