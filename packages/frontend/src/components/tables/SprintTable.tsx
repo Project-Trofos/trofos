@@ -75,7 +75,7 @@ export default function SprintTable({ sprints, projects, isLoading, heading, con
           render={(_, record) => {
             return dayjs(record.start_date).format('DD/MM/YYYY');
           }}
-          sorter={(a: Sprint, b: Sprint) => (new Date(a.end_date) >= new Date(b.end_date) ? 1 : -1)}
+          sorter={(a: Sprint, b: Sprint) => dayjs(a.end_date).diff(dayjs(b.end_date))}
         />
         <Table.Column
           width={80}
