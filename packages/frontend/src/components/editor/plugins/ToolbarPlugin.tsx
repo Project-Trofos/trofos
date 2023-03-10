@@ -11,10 +11,11 @@ import {
   MoreOutlined,
   OrderedListOutlined,
   StrikethroughOutlined,
+  TableOutlined,
   UnderlineOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import { Dropdown } from 'antd';
+import { Button, Dropdown, InputNumber, Popover, Space } from 'antd';
 
 import {
   $getSelection,
@@ -22,12 +23,14 @@ import {
   COMMAND_PRIORITY_CRITICAL,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
+  LexicalEditor,
   SELECTION_CHANGE_COMMAND,
 } from 'lexical';
 import { INSERT_CHECK_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 import './ToolbarPlugin.css';
+import { INSERT_TABLE_COMMAND } from '@lexical/table';
 
 export default function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -158,6 +161,48 @@ export default function ToolbarPlugin() {
       />
 
       <CheckOutlined title="Check list" onClick={() => editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)} />
+
+      <TableButton editor={editor} />
     </div>
+  );
+}
+
+function TableButton({ editor }: { editor: LexicalEditor }) {
+  const [open, setOpen] = useState(false);
+  const [rows, setRows] = useState(1);
+  const [cols, setCols] = useState(1);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+  };
+
+  return (
+    <Popover
+      content={
+        <Space>
+          <InputNumber size="small" min={1} max={6} value={rows} onChange={(v) => setRows(v ?? 1)} />
+          <InputNumber size="small" min={1} max={6} value={cols} onChange={(v) => setCols(v ?? 1)} />
+          <Button
+            type="primary"
+            size="small"
+            onClick={() =>
+              editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+                rows: rows.toString(),
+                columns: cols.toString(),
+                includeHeaders: false,
+              })
+            }
+          >
+            Insert
+          </Button>
+        </Space>
+      }
+      title="Insert Table"
+      trigger="click"
+      open={open}
+      onOpenChange={handleOpenChange}
+    >
+      <TableOutlined title="table" />
+    </Popover>
   );
 }

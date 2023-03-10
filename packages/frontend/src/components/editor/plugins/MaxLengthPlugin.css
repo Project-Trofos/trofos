@@ -1,0 +1,10 @@
+.editor-char-limit-text {
+  position: absolute;
+  right: 30px;
+  bottom: 10px;
+  pointer-events: none;
+  color: red;
+  padding: 5px 8px;
+  background-color: white;
+  outline: gray solid 1px;
+}
