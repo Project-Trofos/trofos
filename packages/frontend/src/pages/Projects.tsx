@@ -5,11 +5,16 @@ import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';
 import getPane from '../helpers/getPane';
+import { useGetUserInfoQuery } from '../api/auth';
+import conditionalRender from '../helpers/conditionalRender';
+import { UserPermissionActions } from '../helpers/constants';
 
 const { Title } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
   const { currentProjects, pastProjects, futureProjects, isLoading } = useCurrentAndPastProjects();
+
+  const { data: userInfo } = useGetUserInfoQuery();
 
   const currentProjectTabPane = useMemo(
     () => getPane(currentProjects, 'Current Projects', 'There are no current projects.'),
@@ -34,9 +39,11 @@ export default function ProjectsPage(): JSX.Element {
     <Container fullWidth noGap>
       <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Title>Projects</Title>
-        <ProjectCreationModal />
+        {conditionalRender(<ProjectCreationModal />, userInfo?.userRoleActions ?? [], [
+          UserPermissionActions.ADMIN,
+          UserPermissionActions.CREATE_PROJECT,
+        ])}
       </Space>
-
       <Tabs items={[currentProjectTabPane, pastProjectTabPane, futureProjectTabPane]} />
     </Container>
   );

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Row, Col, Statistic, Divider, Space, Typography, Empty } from 'antd';
+import { Card, Row, Col, Statistic, Divider, Typography } from 'antd';
 import Countdown from 'antd/es/statistic/Countdown';
 import { Sprint } from '../../api/sprint';
-import { Backlog, BacklogHistory } from '../../api/types';
+import { Backlog, BacklogHistory, BacklogStatus } from '../../api/types';
 import { Subheading } from '../typography';
 import DailyCompletedPointsBarGraph from '../visualization/DailyCompletedPointsBarGraph';
 import SprintBacklogPieChart from '../visualization/SprintBacklogPieChart';
 
-export default function ProjectOverviewCard(props: {
+export default function ProjectStatisticsCard(props: {
   sprints: Sprint[];
   unassignedBacklogs: Backlog[];
   backlogHistory: BacklogHistory[];
@@ -25,7 +25,7 @@ export default function ProjectOverviewCard(props: {
             <Col sm={6} xs={24}>
               <Statistic
                 title="Completed Issues"
-                value={activeSprint.backlogs.filter((b) => b.status === 'Done').length}
+                value={activeSprint.backlogs.filter((b) => b.status === BacklogStatus.DONE).length}
                 suffix={`/ ${activeSprint.backlogs.length}`}
               />
             </Col>
@@ -42,19 +42,16 @@ export default function ProjectOverviewCard(props: {
           </Row>
           <Divider />
           <Row>
-            <Col xs={24} md={12}>
-              <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
-                <Subheading>Active Sprint Issue Types</Subheading>
-                <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} />
-              </Space>
+            <Col xs={24} md={12} style={{ padding: '20px' }}>
+              <Subheading style={{ textAlign: 'center' }}>Active Sprint Issue Types</Subheading>
+              <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} showButton />
             </Col>
-            <Col xs={24} md={12}>
-              <Space direction="vertical" style={{ width: '100%', alignItems: 'center' }}>
-                <Subheading>Daily Completed Story Points</Subheading>
-                <DailyCompletedPointsBarGraph
-                  backlogHistory={backlogHistory.filter((b) => b.sprint_id === activeSprint.id)}
-                />
-              </Space>
+            <Col xs={24} md={12} style={{ padding: '20px' }}>
+              <Subheading style={{ textAlign: 'center' }}>Daily Completed Story Points</Subheading>
+              <DailyCompletedPointsBarGraph
+                backlogHistory={backlogHistory.filter((b) => b.sprint_id === activeSprint.id)}
+                showButton
+              />
             </Col>
           </Row>
         </>

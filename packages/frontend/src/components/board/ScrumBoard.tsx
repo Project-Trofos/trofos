@@ -1,22 +1,19 @@
 import React from 'react';
 import { Alert, message, Typography } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { useParams } from 'react-router-dom';
-import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
-import { useGetBacklogStatusQuery, useGetProjectQuery } from '../api/project';
-import { useGetActiveSprintQuery } from '../api/sprint';
-import type { Backlog, ScrumBoardUserData } from '../api/types';
-import ScrumBoardCard from '../components/cards/ScrumBoardCard';
-import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
+
+import { useUpdateBacklogMutation } from '../../api/backlog';
+import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../api/project';
+import { Backlog, BacklogUpdatePayload, ScrumBoardUserData } from '../../api/types';
+import ScrumBoardCard from '../cards/ScrumBoardCard';
+import StrictModeDroppable from '../dnd/StrictModeDroppable';
+import { Sprint } from '../../api/sprint';
+
 import './ScrumBoard.css';
-import Container from '../components/layouts/Container';
 
 const { Title } = Typography;
 
-export default function ScrumBoard(): JSX.Element {
-  const params = useParams();
-  const projectId = Number(params.projectId);
-  const { data: activeSprint } = useGetActiveSprintQuery(projectId);
+export default function ScrumBoard({ projectId, sprint }: { projectId: number; sprint?: Sprint }): JSX.Element {
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const { data: projectData } = useGetProjectQuery({ id: projectId });
 
@@ -42,7 +39,7 @@ export default function ScrumBoard(): JSX.Element {
     return updatedUsers;
   };
 
-  const backlogs = processBacklogs(activeSprint?.backlogs);
+  const backlogs = processBacklogs(sprint?.backlogs);
   const users = addUnassignedUser(projectData?.users);
 
   // Generate an object to keep track of the droppableId to the respective user and status
@@ -77,9 +74,10 @@ export default function ScrumBoard(): JSX.Element {
     }
 
     try {
-      const payload = {
+      const payload: BacklogUpdatePayload = {
         projectId,
         backlogId: Number(draggableId),
+        srcSprintId: sprint?.id,
         fieldToUpdate: {
           assignee_id: droppableIdMapping[destination.droppableId].user,
           status: droppableIdMapping[destination.droppableId].status,
@@ -145,25 +143,23 @@ export default function ScrumBoard(): JSX.Element {
   };
 
   return (
-    <Container noGap fullWidth className="scrum-board-container">
-      <div className="scrum-board-drag-drop-context">
-        {!backlogs && (
-          <Alert
-            className="scrum-board-warning"
-            message="No Active Sprint"
-            description="You have not started a sprint. To display backlogs on the scrum board, you will need to start a sprint first."
-            type="warning"
-          />
-        )}
-        <div className="scrum-board-status-container">
-          {backlogStatus?.map((status) => (
-            <div key={status.name} className="scrum-board-status">
-              <Title level={5}>{status.name} </Title>
-            </div>
-          ))}
-        </div>
-        <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
+    <div className="scrum-board-drag-drop-context">
+      {!backlogs && (
+        <Alert
+          className="scrum-board-warning"
+          message="No Active Sprint"
+          description="You have not started a sprint. To display backlogs on the scrum board, you will need to start a sprint first."
+          type="warning"
+        />
+      )}
+      <div className="scrum-board-status-container">
+        {backlogStatus?.map((status) => (
+          <div key={status.name} className="scrum-board-status">
+            <Title level={5}>{status.name} </Title>
+          </div>
+        ))}
       </div>
-    </Container>
+      <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
+    </div>
   );
 }

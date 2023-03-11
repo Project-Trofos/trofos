@@ -13,7 +13,7 @@ import Admin from '../pages/Admin';
 
 import ProjectOverview from '../pages/ProjectOverview';
 import ProjectBacklogs from '../pages/ProjectBacklogs';
-import ScrumBoard from '../pages/ScrumBoard';
+import ScrumBoard, { SprintScrumBoardPage } from '../pages/ScrumBoardPage';
 
 import './App.css';
 import ProjectSettings from '../pages/ProjectSettings';
@@ -24,6 +24,8 @@ import CoursePeople from '../pages/CoursePeople';
 import ProjectPeople from '../pages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
+import CourseStatistics from '../pages/CourseStatistics';
+import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
 
 function App() {
   return (
@@ -41,6 +43,7 @@ function App() {
             <Route path="backlog" element={<ProjectBacklogs />} />
             <Route path="backlog/:backlogId" element={<Backlog />} />
             <Route path="board" element={<ScrumBoard />} />
+            <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
             <Route path="feedback" element={<ProjectFeedbacks />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
@@ -49,10 +52,32 @@ function App() {
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
             <Route path="users" element={<CoursePeople />} />
-            <Route path="settings" element={<CourseSettings />} />
+            <Route
+              path="statistics"
+              element={
+                <CourseManagerProtected>
+                  <CourseStatistics />
+                </CourseManagerProtected>
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <CourseManagerProtected>
+                  <CourseSettings />
+                </CourseManagerProtected>
+              }
+            />
           </Route>
           <Route path="account" element={<Account />} />
-          <Route path="admin" element={<Admin />} />
+          <Route
+            path="admin"
+            element={
+              <AdminProtected>
+                <Admin />
+              </AdminProtected>
+            }
+          />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route

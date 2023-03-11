@@ -68,6 +68,10 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     navigate(`./${sprintId}/retrospective`);
   };
 
+  const navigateToBoard = (sprintId: number) => {
+    navigate(`../board/${sprintId}`);
+  };
+
   const openSprintNotesModal = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.stopPropagation();
     setIsNotesOpen(true);
@@ -85,8 +89,13 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                   <div className="sprint-card-inner-container">
                     <div className="sprint-card-name">{sprint.name}</div>
                     <div className="sprint-status-button">{renderSprintStatusButton()}</div>
+                    {sprint.status !== 'current' && (
+                      <div className="sprint-card-button">
+                        <Button onClick={() => navigateToBoard(sprint.id)}>View Board</Button>
+                      </div>
+                    )}
                     {(sprint.status === 'completed' || sprint.status === 'closed') && (
-                      <div className="sprint-retro-button">
+                      <div className="sprint-card-button">
                         <Button onClick={() => navigateToRetrospective(sprint.id)}>Retrospective</Button>
                       </div>
                     )}

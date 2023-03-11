@@ -7,6 +7,7 @@ import { useCourse } from '../api/hooks';
 import InputWithButton from '../components/fields/InputWithButton';
 import Container from '../components/layouts/Container';
 import UserTable from '../components/tables/UserTable';
+import { useIsCourseManager } from '../api/hooks/roleHooks';
 
 export default function CoursePeople(): JSX.Element {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function CoursePeople(): JSX.Element {
   );
   const { data: userInfo } = useGetUserInfoQuery();
   const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
+  const { isCourseManager } = useIsCourseManager();
 
   return (
     <Container>
@@ -26,14 +28,17 @@ export default function CoursePeople(): JSX.Element {
           isLoading={isLoading}
           myUserId={userInfo?.userId}
           control={
-            <InputWithButton
-              handleClick={(v) => handleAddUser(v)}
-              buttonText="Add"
-              inputPlaceholder="Add user by email"
-            />
+            isCourseManager && (
+              <InputWithButton
+                handleClick={(v) => handleAddUser(v)}
+                buttonText="Add"
+                inputPlaceholder="Add user by email"
+              />
+            )
           }
           handleRemoveUser={handleRemoveUser}
           handleUpdateUserRole={handleUpdateUserRole}
+          onlyShowActions={isCourseManager ? undefined : []}
         />
       </Space>
     </Container>

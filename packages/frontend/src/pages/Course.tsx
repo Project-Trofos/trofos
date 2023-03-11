@@ -8,6 +8,7 @@ import ProjectCreationModal from '../components/modals/ProjectCreationModal';
 import { useCourse } from '../api/hooks';
 import PageHeader from '../components/pageheader/PageHeader';
 import ImportDataModal from '../components/modals/ImportDataModal';
+import { useIsCourseManager } from '../api/hooks/roleHooks';
 
 const { Text } = Typography;
 
@@ -33,6 +34,7 @@ export default function CoursePage(): JSX.Element {
   }, [location.pathname]);
 
   const { course, filteredProjects, isLoading } = useCourse(params.courseId);
+  const { isCourseManager } = useIsCourseManager();
 
   const handleMenuClick = useCallback(
     async (key: string) => {
@@ -82,11 +84,15 @@ export default function CoursePage(): JSX.Element {
       <PageHeader
         title={course.cname}
         subTitle={<Tag>{course.code}</Tag>}
-        extra={[
-          <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
-          <ProjectCreationModal key="create-project" course={course} />,
-          <DropdownMenu key="more" courseMenu={courseMenu} />,
-        ]}
+        extra={
+          isCourseManager
+            ? [
+                <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
+                <ProjectCreationModal key="create-project" course={course} />,
+                <DropdownMenu key="more" courseMenu={courseMenu} />,
+              ]
+            : undefined
+        }
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
         footer={
@@ -94,7 +100,12 @@ export default function CoursePage(): JSX.Element {
             items={[
               { key: 'overview', label: 'Overview' },
               { key: 'users', label: 'Users' },
-              { key: 'settings', label: 'Settings' },
+              ...(isCourseManager
+                ? [
+                    { key: 'statistics', label: 'Statistics' },
+                    { key: 'settings', label: 'Settings' },
+                  ]
+                : []),
             ]}
             activeKey={selectedTab}
             className="footer-tabs"

@@ -1,6 +1,5 @@
 import { AbilityBuilder } from '@casl/ability';
 import { createPrismaAbility, accessibleBy } from '@casl/prisma';
-import { STUDENT_ROLE_ID } from '../../helpers/constants';
 import prisma from '../../models/prismaClient';
 import { AppAbility } from '../policyTypes';
 
@@ -18,14 +17,11 @@ function coursePolicyConstraint(userId: number, isUserAdmin: boolean) {
   } else {
     // Handles the case where we are checking a list of courses
     can('manage', 'Course', {
-      courseRoles : {
-        some : {
-          user_id : userId, // User must be part of the course and not be a student
-          role_id : {
-            not : STUDENT_ROLE_ID
-          }
+      courseRoles: {
+        some: {
+          user_id: userId,
         },
-      }
+      },
     });
   }
 

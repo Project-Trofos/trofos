@@ -66,6 +66,18 @@ exports[`SprintCard test renders sprint card with correct details 1`] = `
                     </span>
                   </button>
                 </div>
+                <div
+                  class="sprint-card-button"
+                >
+                  <button
+                    class="ant-btn ant-btn-default"
+                    type="button"
+                  >
+                    <span>
+                      View Board
+                    </span>
+                  </button>
+                </div>
                 <div>
                   09/10/2022 - 16/10/2022
                 </div>

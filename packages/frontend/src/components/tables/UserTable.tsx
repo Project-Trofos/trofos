@@ -11,6 +11,7 @@ type UserTableProps = {
   isLoading: boolean;
   heading?: string;
   control?: React.ReactNode;
+  onlyShowActions?: ('REMOVE' | 'ROLE_BUTTON')[];
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
@@ -26,11 +27,11 @@ export default function UserTable({
   isLoading,
   heading,
   control,
+  onlyShowActions,
   myUserId,
   handleRemoveUser,
   handleUpdateUserRole,
 }: UserTableProps) {
-
   return (
     <Card className="table-card">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -62,23 +63,26 @@ export default function UserTable({
             dataIndex="action"
             render={(_, record: UserData) => (
               <Space size="middle">
-                {handleRemoveUser && (
+                {handleRemoveUser && (!onlyShowActions || onlyShowActions.includes('REMOVE')) && (
                   <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
                     Remove
                   </Button>
                 )}
-                {handleUpdateUserRole && (
-                  <UserTableRoleManagementModal
-                    userRoleId={userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.id}
-                    userRoleName={
-                      userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.role_name
-                    }
-                    userEmail={record.user.user_email}
-                    userId={record.user.user_id}
-                    roles={actionsOnRoles}
-                    handleRoleChange={handleUpdateUserRole}
-                  />
-                )}
+                {handleUpdateUserRole &&
+                  (!onlyShowActions || onlyShowActions.includes('ROLE_BUTTON') ? (
+                    <UserTableRoleManagementModal
+                      userRoleId={userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.id}
+                      userRoleName={
+                        userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.role_name
+                      }
+                      userEmail={record.user.user_email}
+                      userId={record.user.user_id}
+                      roles={actionsOnRoles}
+                      handleRoleChange={handleUpdateUserRole}
+                    />
+                  ) : (
+                    userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.role_name
+                  ))}
               </Space>
             )}
           />
