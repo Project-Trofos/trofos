@@ -37,7 +37,7 @@ export default function CourseOverview(): JSX.Element {
               <BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />
             )
           }
-          showActions={isCourseManager ? undefined : ['GOTO']}
+          onlyShowActions={isCourseManager ? undefined : ['GOTO']}
         />
       </Card>
     </Container>

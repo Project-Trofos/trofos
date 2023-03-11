@@ -11,7 +11,7 @@ type UserTableProps = {
   isLoading: boolean;
   heading?: string;
   control?: React.ReactNode;
-  showActions?: ('REMOVE' | 'ROLE_BUTTON')[];
+  onlyShowActions?: ('REMOVE' | 'ROLE_BUTTON')[];
   myUserId?: number | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
@@ -27,7 +27,7 @@ export default function UserTable({
   isLoading,
   heading,
   control,
-  showActions,
+  onlyShowActions,
   myUserId,
   handleRemoveUser,
   handleUpdateUserRole,
@@ -63,13 +63,13 @@ export default function UserTable({
             dataIndex="action"
             render={(_, record: UserData) => (
               <Space size="middle">
-                {handleRemoveUser && (!showActions || showActions.includes('REMOVE')) && (
+                {handleRemoveUser && (!onlyShowActions || onlyShowActions.includes('REMOVE')) && (
                   <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
                     Remove
                   </Button>
                 )}
                 {handleUpdateUserRole &&
-                  (!showActions || showActions.includes('ROLE_BUTTON') ? (
+                  (!onlyShowActions || onlyShowActions.includes('ROLE_BUTTON') ? (
                     <UserTableRoleManagementModal
                       userRoleId={userRoles?.find((userRole) => userRole.user_id === record.user.user_id)?.role.id}
                       userRoleName={

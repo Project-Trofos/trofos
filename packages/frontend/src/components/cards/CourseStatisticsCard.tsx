@@ -51,7 +51,7 @@ export default function CourseStatisticsCard(props: {
                     <ProjectTable
                       projects={projectsWithoutActiveSprint}
                       heading="Projects without active sprint"
-                      showActions={['GOTO']}
+                      onlyShowActions={['GOTO']}
                     />
                   </SimpleModal>
                 )}

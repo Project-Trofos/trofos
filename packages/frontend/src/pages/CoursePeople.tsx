@@ -38,7 +38,7 @@ export default function CoursePeople(): JSX.Element {
           }
           handleRemoveUser={handleRemoveUser}
           handleUpdateUserRole={handleUpdateUserRole}
-          showActions={isCourseManager ? undefined : []}
+          onlyShowActions={isCourseManager ? undefined : []}
         />
       </Space>
     </Container>

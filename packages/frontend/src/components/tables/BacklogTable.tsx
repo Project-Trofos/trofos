@@ -13,7 +13,7 @@ type BacklogTableProps = {
   isLoading?: boolean;
   heading?: string;
   control?: React.ReactNode;
-  showActions?: ('GOTO' | 'DELETE' | 'DETACH')[];
+  onlyShowActions?: ('GOTO' | 'DELETE' | 'DETACH')[];
   projects?: Project[];
 };
 
@@ -25,7 +25,7 @@ export default function BacklogTable({
   isLoading,
   heading,
   control,
-  showActions,
+  onlyShowActions,
   projects,
 }: BacklogTableProps) {
   return (
@@ -94,7 +94,7 @@ export default function BacklogTable({
           dataIndex="action"
           render={(_, record: Backlog) => (
             <Space size="middle">
-              {(!showActions || showActions?.includes('GOTO')) && (
+              {(!onlyShowActions || onlyShowActions?.includes('GOTO')) && (
                 <Link to={`project/${record.project_id}/backlog/${record.backlog_id}/`}>Go to</Link>
               )}
             </Space>

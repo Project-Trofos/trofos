@@ -68,7 +68,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
                 projects={currentProjects}
                 isLoading={isProjectLoading}
                 heading="My Projects"
-                showActions={['GOTO']}
+                onlyShowActions={['GOTO']}
               />
             </Card>
           </Col>
