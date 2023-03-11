@@ -102,6 +102,7 @@ export default function CoursePage(): JSX.Element {
               { key: 'users', label: 'Users' },
               ...(isCourseManager
                 ? [
+                    { key: 'milestones', label: 'Milestones' },
                     { key: 'statistics', label: 'Statistics' },
                     { key: 'settings', label: 'Settings' },
                   ]

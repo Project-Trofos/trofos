@@ -26,6 +26,7 @@ import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/ProjectFeedbacks';
 import CourseStatistics from '../pages/CourseStatistics';
 import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
+import CourseMilestones from '../pages/CourseMilestones';
 
 function App() {
   return (
@@ -52,6 +53,14 @@ function App() {
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />
             <Route path="users" element={<CoursePeople />} />
+            <Route
+              path="milestones"
+              element={
+                <CourseManagerProtected>
+                  <CourseMilestones />
+                </CourseManagerProtected>
+              }
+            />
             <Route
               path="statistics"
               element={
