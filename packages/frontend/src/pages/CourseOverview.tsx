@@ -27,7 +27,7 @@ export default function CourseOverview(): JSX.Element {
         handleDeleteAnnouncement={handleDeleteAnnouncement}
         handleUpdateAnnouncement={handleUpdateAnnouncement}
       />
-      {course && <MilestoneCard course={course} showEdit={isCourseManager} />}
+      {course && <MilestoneCard course={course} />}
       <Card>
         <ProjectTable
           projects={filteredProjects}

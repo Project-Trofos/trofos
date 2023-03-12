@@ -70,10 +70,19 @@ export default function SprintTable({ sprints, projects, isLoading, heading, con
         />
         <Table.Column
           width={80}
+          title="Start Date"
+          dataIndex="start_date"
+          render={(_, record) => {
+            return dayjs(record.start_date).format('DD/MM/YYYY');
+          }}
+          sorter={(a: Sprint, b: Sprint) => dayjs(a.start_date).diff(dayjs(b.start_date))}
+        />
+        <Table.Column
+          width={80}
           title="End Date"
           dataIndex="end_date"
           render={(_, record) => {
-            return dayjs(record.start_date).format('DD/MM/YYYY');
+            return dayjs(record.end_date).format('DD/MM/YYYY');
           }}
           sorter={(a: Sprint, b: Sprint) => dayjs(a.end_date).diff(dayjs(b.end_date))}
         />
