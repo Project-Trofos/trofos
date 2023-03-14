@@ -33,7 +33,9 @@ export default function CourseOverview(): JSX.Element {
           projects={filteredProjects}
           isLoading={isLoading}
           control={
-            isCourseManager && (
+            isCourseManager &&
+            course &&
+            userInfo && (
               <BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />
             )
           }

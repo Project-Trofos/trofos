@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import '../../mocks/antd';
 
@@ -51,7 +51,7 @@ describe('test course creation modal', () => {
     userRoleActions: [],
   };
 
-  const setup = (course: CourseData | undefined, currentUserInfo: UserInfo | undefined, projects: ProjectData[]) => {
+  const setup = (course: CourseData, currentUserInfo: UserInfo, projects: ProjectData[]) => {
     const { baseElement, debug } = render(
       <Provider store={store}>
         <BulkProjectCreationModal course={course} currentUserInfo={currentUserInfo} projects={projects} />
@@ -71,6 +71,7 @@ describe('test course creation modal', () => {
 
     // Ensure fields are present
     expect(screen.getByText(/Number of students in a project:/i)).toBeInTheDocument();
+    expect(screen.getByText(/You have selected \d+ user\(s\)./i, { exact: false })).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
@@ -80,11 +81,17 @@ describe('test course creation modal', () => {
     setup(mockCourseData, mockUserInfo, mockProjectData);
 
     expect(screen.queryByText(/Number of students in a project:/i)).toBeNull();
+    expect(screen.queryByText(/You have selected \d+ user\(s\)./i, { exact: false })).toBeNull();
   });
 
   it('should be able to generate groups', async () => {
     // Use a different ID
     setup(mockCourseData, { ...mockUserInfo, userId: 2 }, mockProjectData);
+
+    const checkboxes = screen.getAllByRole('checkbox');
+
+    // Click select all checkbox
+    fireEvent.click(checkboxes[0]);
 
     const input = screen.getByRole('spinbutton');
 
@@ -94,7 +101,10 @@ describe('test course creation modal', () => {
 
     fireEvent.click(button);
 
+    // Group listed correctly
     await screen.findByText(/Group 1/i);
-    expect(screen.getByText(mockUserInfo.userDisplayName)).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('bulk-project-creation-list')).getByText(mockUserInfo.userDisplayName),
+    ).toBeInTheDocument();
   });
 });

@@ -7,6 +7,8 @@ import { shuffleArray } from '../../helpers/random';
 import './BulkProjectCreationModal.css';
 import { UserInfo } from '../../api/auth';
 import { getErrorMessage } from '../../helpers/error';
+import UserTable from '../tables/UserTable';
+import { useCourse } from '../../api/hooks';
 
 type ProjectAllocation = {
   name: string;
@@ -21,14 +23,18 @@ export default function BulkProjectCreationModal({
   projects,
   currentUserInfo,
 }: {
-  course: CourseData | undefined;
-  projects: ProjectData[] | undefined;
-  currentUserInfo: UserInfo | undefined;
+  course: CourseData;
+  projects: ProjectData[];
+  currentUserInfo: UserInfo;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allocations, setAllocations] = useState<ProjectAllocation>([]);
   const [usersPerGroup, setUsersPerGroup] = useState<number | null>(null);
   const [bulkCreateProject] = useBulkCreateProjectsMutation();
+
+  const { courseUserRoles } = useCourse(course.id.toString());
+
+  const [selectedUsers, setSelectedUsers] = useState<React.Key[]>([]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -36,7 +42,7 @@ export default function BulkProjectCreationModal({
 
   const handleOk = async () => {
     try {
-      if (!course || allocations.length === 0) {
+      if (allocations.length === 0) {
         setIsModalOpen(false);
         return;
       }
@@ -53,7 +59,7 @@ export default function BulkProjectCreationModal({
       message.success('Projects created!');
     } catch (e) {
       console.error(getErrorMessage(e));
-      message.error('Unable to create projects! Please contact system administrator.');
+      message.error('Unable to create projects!');
     }
   };
 
@@ -62,22 +68,19 @@ export default function BulkProjectCreationModal({
   };
 
   const usersWithoutProject: UserData[] = useMemo(() => {
-    if (!course || !projects) {
-      return [];
-    }
     // Users without project
     const users = course.users.filter(
       (u) => !projects.some((p) => p.users.some((pu) => pu.user.user_id === u.user.user_id)),
     );
-    // Current user will not be included
     return users.filter((u) => u.user.user_id !== currentUserInfo?.userId);
   }, [course, projects, currentUserInfo]);
 
-  const generate = useCallback(() => {
-    if (!course || !usersPerGroup) {
+  const generate = () => {
+    if (!usersPerGroup) {
       return [];
     }
-    const shuffledUsers = shuffleArray(usersWithoutProject);
+    const targetUsers = usersWithoutProject.filter((u) => selectedUsers.map((s) => Number(s)).includes(u.user.user_id));
+    const shuffledUsers = shuffleArray(targetUsers);
 
     const groups: ProjectAllocation = [];
     let index = 0;
@@ -95,26 +98,35 @@ export default function BulkProjectCreationModal({
       groupIndex += 1;
     }
     return groups;
-  }, [course, usersPerGroup, usersWithoutProject]);
+  };
 
   return (
     <>
       <Button onClick={showModal}>Bulk Create</Button>
       <Modal title="Bulk Project Creation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Typography.Paragraph>Students without a project will be assigned a project randomly.</Typography.Paragraph>
-          {usersWithoutProject.length === 0 ? (
-            <Space>
-              <Typography.Text>There are no students without a project!</Typography.Text>
-            </Space>
-          ) : (
-            <>
+        {usersWithoutProject.length === 0 ? (
+          <Space>
+            <Typography.Text>There are no students without a project!</Typography.Text>
+          </Space>
+        ) : (
+          <>
+            <UserTable
+              users={usersWithoutProject}
+              userRoles={courseUserRoles}
+              onlyShowActions={['ROLE']}
+              showSelect
+              onSelectChange={(e) => setSelectedUsers(e)}
+              footer={`You have selected ${selectedUsers.length} user(s).`}
+            />
+            <Space direction="vertical" style={{ width: '100%' }}>
               <Space>
                 <Typography.Text>Number of students in a project:</Typography.Text>
-                <InputNumber min={1} onChange={(value) => setUsersPerGroup(value)} />
-                <Button onClick={() => setAllocations(generate())}>Generate</Button>
+                <InputNumber size="small" min={1} onChange={(value) => setUsersPerGroup(value)} />
+                <Button size="small" onClick={() => setAllocations(generate())}>
+                  Generate
+                </Button>
               </Space>
-              {allocations.map((a, index) => (
+              {allocations.map((a) => (
                 <List
                   className="bulk-project-creation-modal-list"
                   header={a.name}
@@ -122,11 +134,12 @@ export default function BulkProjectCreationModal({
                   key={a.name}
                   dataSource={a.users}
                   renderItem={(item) => <List.Item>{item.user.user_display_name}</List.Item>}
+                  data-testid="bulk-project-creation-list"
                 />
               ))}
-            </>
-          )}
-        </Space>
+            </Space>
+          </>
+        )}
       </Modal>
     </>
   );

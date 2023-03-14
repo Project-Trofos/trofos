@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space } from 'antd';
+import { Card, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
 import { useGetActionsOnRolesQuery } from '../api/role';
@@ -21,25 +21,28 @@ export default function CoursePeople(): JSX.Element {
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <UserTable
-          users={course?.users}
-          userRoles={courseUserRoles}
-          actionsOnRoles={actionsOnRoles}
-          isLoading={isLoading}
-          myUserId={userInfo?.userId}
-          control={
-            isCourseManager && (
-              <InputWithButton
-                handleClick={(v) => handleAddUser(v)}
-                buttonText="Add"
-                inputPlaceholder="Add user by email"
-              />
-            )
-          }
-          handleRemoveUser={handleRemoveUser}
-          handleUpdateUserRole={handleUpdateUserRole}
-          onlyShowActions={isCourseManager ? undefined : []}
-        />
+        <Card>
+          <UserTable
+            heading="Users"
+            users={course?.users}
+            userRoles={courseUserRoles}
+            actionsOnRoles={actionsOnRoles}
+            isLoading={isLoading}
+            myUserId={userInfo?.userId}
+            control={
+              isCourseManager && (
+                <InputWithButton
+                  handleClick={(v) => handleAddUser(v)}
+                  buttonText="Add"
+                  inputPlaceholder="Add user by email"
+                />
+              )
+            }
+            handleRemoveUser={handleRemoveUser}
+            handleUpdateUserRole={handleUpdateUserRole}
+            onlyShowActions={isCourseManager ? undefined : []}
+          />
+        </Card>
       </Space>
     </Container>
   );
