@@ -39,7 +39,7 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
       <Space direction="vertical" style={{ width: '100%' }}>
         <Heading>Home</Heading>
         <WelcomeMessage username={userInfo.userEmail} />
-        <Card className="table-card">
+        <Card>
           <CourseTable
             courses={isPastCourse ? pastCourses : currentCourses}
             isLoading={isCourseLoading}

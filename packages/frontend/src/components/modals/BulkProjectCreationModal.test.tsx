@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import '../../mocks/antd';
 
@@ -7,8 +7,20 @@ import store from '../../app/store';
 import BulkProjectCreationModal from './BulkProjectCreationModal';
 import { CourseData, ProjectData } from '../../api/types';
 import { UserInfo } from '../../api/auth';
+import server from '../../mocks/server';
 
 describe('test course creation modal', () => {
+  // Establish API mocking before all tests.
+  beforeAll(() => server.listen());
+
+  // Reset any request handlers that we may add during the tests,
+  // so they don't affect other tests.
+
+  afterEach(() => server.resetHandlers());
+
+  // Clean up after the tests are finished.
+  afterAll(() => server.close());
+
   const mockCourseData: CourseData = {
     id: 1,
     code: 'course_id',
@@ -51,10 +63,10 @@ describe('test course creation modal', () => {
     userRoleActions: [],
   };
 
-  const setup = (course: CourseData | undefined, currentUserInfo: UserInfo | undefined, projects: ProjectData[]) => {
+  const setup = (course: CourseData, projects: ProjectData[]) => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <BulkProjectCreationModal course={course} currentUserInfo={currentUserInfo} projects={projects} />
+        <BulkProjectCreationModal course={course} projects={projects} />
       </Provider>,
     );
 
@@ -65,26 +77,39 @@ describe('test course creation modal', () => {
     return { baseElement, debug };
   };
 
-  it('should render fields if there are users without project', () => {
+  it('should render fields if there are users without project', async () => {
     // Use a different ID
-    const { baseElement } = setup(mockCourseData, { ...mockUserInfo, userId: 2 }, mockProjectData);
+    const { baseElement } = setup(mockCourseData, mockProjectData);
 
     // Ensure fields are present
-    expect(screen.getByText(/Number of students in a project:/i)).toBeInTheDocument();
+    await screen.findByText(/Number of students in a project:/i);
+    await screen.findByText(/You have selected \d+ user\(s\)./i, { exact: false });
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
   });
 
   it('should not render fields if there no user without a project', () => {
-    setup(mockCourseData, mockUserInfo, mockProjectData);
+    setup(
+      {
+        ...mockCourseData,
+        users: [],
+      },
+      mockProjectData,
+    );
 
     expect(screen.queryByText(/Number of students in a project:/i)).toBeNull();
+    expect(screen.queryByText(/You have selected \d+ user\(s\)./i, { exact: false })).toBeNull();
   });
 
   it('should be able to generate groups', async () => {
     // Use a different ID
-    setup(mockCourseData, { ...mockUserInfo, userId: 2 }, mockProjectData);
+    setup(mockCourseData, mockProjectData);
+
+    const checkboxes = await screen.findAllByRole('checkbox');
+
+    // Click select all checkbox
+    fireEvent.click(checkboxes[0]);
 
     const input = screen.getByRole('spinbutton');
 
@@ -94,7 +119,10 @@ describe('test course creation modal', () => {
 
     fireEvent.click(button);
 
+    // Group listed correctly
     await screen.findByText(/Group 1/i);
-    expect(screen.getByText(mockUserInfo.userDisplayName)).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId('bulk-project-creation-list')).getByText(mockUserInfo.userDisplayName),
+    ).toBeInTheDocument();
   });
 });
