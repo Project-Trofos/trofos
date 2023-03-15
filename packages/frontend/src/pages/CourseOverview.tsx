@@ -12,7 +12,6 @@ import ProjectTable from '../components/tables/ProjectTable';
 
 export default function CourseOverview(): JSX.Element {
   const params = useParams();
-  const { data: userInfo } = useGetUserInfoQuery();
   const { course, filteredProjects, isLoading, handleDeleteAnnouncement, handleUpdateAnnouncement } = useCourse(
     params.courseId,
   );
@@ -33,11 +32,7 @@ export default function CourseOverview(): JSX.Element {
           projects={filteredProjects}
           isLoading={isLoading}
           control={
-            isCourseManager &&
-            course &&
-            userInfo && (
-              <BulkProjectCreationModal course={course} projects={filteredProjects} currentUserInfo={userInfo} />
-            )
+            isCourseManager && course && <BulkProjectCreationModal course={course} projects={filteredProjects} />
           }
           onlyShowActions={isCourseManager ? undefined : ['GOTO']}
         />

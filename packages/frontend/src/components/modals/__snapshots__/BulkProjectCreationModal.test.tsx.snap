@@ -399,7 +399,9 @@ exports[`test course creation modal should render fields if there are users with
                                     </td>
                                     <td
                                       class="ant-table-cell"
-                                    />
+                                    >
+                                      STUDENT
+                                    </td>
                                   </tr>
                                 </tbody>
                               </table>

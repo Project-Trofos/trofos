@@ -1,14 +1,14 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, InputNumber, List, message, Modal, Space, Typography } from 'antd';
 import { CourseData, ProjectData, UserData } from '../../api/types';
 import { useBulkCreateProjectsMutation } from '../../api/course';
 import { shuffleArray } from '../../helpers/random';
 
 import './BulkProjectCreationModal.css';
-import { UserInfo } from '../../api/auth';
 import { getErrorMessage } from '../../helpers/error';
 import UserTable from '../tables/UserTable';
 import { useCourse } from '../../api/hooks';
+import { STUDENT_ROLE_ID } from '../../api/role';
 
 type ProjectAllocation = {
   name: string;
@@ -21,11 +21,9 @@ type ProjectAllocation = {
 export default function BulkProjectCreationModal({
   course,
   projects,
-  currentUserInfo,
 }: {
   course: CourseData;
   projects: ProjectData[];
-  currentUserInfo: UserInfo;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allocations, setAllocations] = useState<ProjectAllocation>([]);
@@ -67,19 +65,24 @@ export default function BulkProjectCreationModal({
     setIsModalOpen(false);
   };
 
-  const usersWithoutProject: UserData[] = useMemo(() => {
+  const studentsWithoutProject: UserData[] = useMemo(() => {
     // Users without project
     const users = course.users.filter(
       (u) => !projects.some((p) => p.users.some((pu) => pu.user.user_id === u.user.user_id)),
     );
-    return users.filter((u) => u.user.user_id !== currentUserInfo?.userId);
-  }, [course, projects, currentUserInfo]);
+    // Only users with student role
+    return users.filter((u) =>
+      courseUserRoles?.find((c) => c.role_id === STUDENT_ROLE_ID && c.user_id === u.user.user_id),
+    );
+  }, [course, projects, courseUserRoles]);
 
   const generate = () => {
     if (!usersPerGroup) {
       return [];
     }
-    const targetUsers = usersWithoutProject.filter((u) => selectedUsers.map((s) => Number(s)).includes(u.user.user_id));
+    const targetUsers = studentsWithoutProject.filter((u) =>
+      selectedUsers.map((s) => Number(s)).includes(u.user.user_id),
+    );
     const shuffledUsers = shuffleArray(targetUsers);
 
     const groups: ProjectAllocation = [];
@@ -104,14 +107,14 @@ export default function BulkProjectCreationModal({
     <>
       <Button onClick={showModal}>Bulk Create</Button>
       <Modal title="Bulk Project Creation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        {usersWithoutProject.length === 0 ? (
+        {studentsWithoutProject.length === 0 ? (
           <Space>
             <Typography.Text>There are no students without a project!</Typography.Text>
           </Space>
         ) : (
           <>
             <UserTable
-              users={usersWithoutProject}
+              users={studentsWithoutProject}
               userRoles={courseUserRoles}
               onlyShowActions={['ROLE']}
               showSelect
