@@ -77,7 +77,7 @@ export default function ProjectPage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <Spin size="large" />;
+    return <Spin />;
   }
 
   if (!params.projectId || !project) {

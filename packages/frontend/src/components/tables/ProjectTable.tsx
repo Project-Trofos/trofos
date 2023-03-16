@@ -12,11 +12,11 @@ import { filterDropdown } from './helper';
 
 type ProjectTableProps = {
   projects: Project[] | undefined;
-  isLoading: boolean;
+  isLoading?: boolean;
   heading?: string;
   control?: React.ReactNode;
   showCourseColumn?: boolean;
-  showActions?: ('GOTO' | 'DELETE' | 'DETACH')[];
+  onlyShowActions?: ('GOTO' | 'DELETE' | 'DETACH')[];
 };
 
 /**
@@ -28,7 +28,7 @@ export default function ProjectTable({
   heading,
   control,
   showCourseColumn,
-  showActions,
+  onlyShowActions,
 }: ProjectTableProps) {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
@@ -108,15 +108,15 @@ export default function ProjectTable({
           dataIndex="action"
           render={(_, record: Project) => (
             <Space size="middle">
-              {(!showActions || showActions?.includes('GOTO')) && (
+              {(!onlyShowActions || onlyShowActions?.includes('GOTO')) && (
                 <Link to={`/project/${record.id}/overview`}>Go to</Link>
               )}
-              {(!showActions || showActions?.includes('DELETE')) && (
+              {(!onlyShowActions || onlyShowActions?.includes('DELETE')) && (
                 <Button size="small" onClick={() => handleDeleteProject(record)}>
                   Delete
                 </Button>
               )}
-              {(!showActions || showActions?.includes('DELETE')) && record.course_id && (
+              {(!onlyShowActions || onlyShowActions?.includes('DELETE')) && record.course_id && (
                 <Button size="small" onClick={() => handleRemoveProjectFromCourse(record)}>
                   Detach
                 </Button>

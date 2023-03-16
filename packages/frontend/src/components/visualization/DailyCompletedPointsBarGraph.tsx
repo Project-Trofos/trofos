@@ -5,8 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { BacklogHistory } from '../../api/types';
 import useDailyCompletedPoints from './useDailyCompletedBacklog';
 
-export default function DailyCompletedPointsBarGraph(props: { backlogHistory: BacklogHistory[] }) {
-  const { backlogHistory } = props;
+export default function DailyCompletedPointsBarGraph(props: {
+  backlogHistory: BacklogHistory[];
+  showButton?: boolean;
+}) {
+  const { backlogHistory, showButton } = props;
   const navigate = useNavigate();
 
   const data = useDailyCompletedPoints(backlogHistory);
@@ -15,7 +18,6 @@ export default function DailyCompletedPointsBarGraph(props: { backlogHistory: Ba
     data,
     xField: 'date',
     yField: 'value',
-    width: 400,
     height: 300,
     meta: {
       values: {
@@ -27,9 +29,11 @@ export default function DailyCompletedPointsBarGraph(props: { backlogHistory: Ba
   if (data.length === 0) {
     return (
       <Empty description="There are no completed issues in this sprint yet...">
-        <Button type="primary" onClick={() => navigate('../board')}>
-          View Board
-        </Button>
+        {showButton && (
+          <Button type="primary" onClick={() => navigate('../board')}>
+            View Board
+          </Button>
+        )}
       </Empty>
     );
   }

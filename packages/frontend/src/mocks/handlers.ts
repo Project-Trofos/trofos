@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
+import { STUDENT_ROLE_ID } from '../api/role';
 import { Sprint } from '../api/sprint';
-import { BacklogHistory, BacklogHistoryType, CourseData, ProjectData } from '../api/types';
+import { BacklogHistory, BacklogHistoryType, CourseData, ProjectData, UserOnRolesOnCourse } from '../api/types';
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
@@ -242,6 +243,19 @@ export const MSW_PROJECT: ProjectData = {
   users: [],
 };
 
+export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [
+  {
+    course_id: 1,
+    id: 1,
+    role: {
+      id: STUDENT_ROLE_ID,
+      role_name: 'STUDENT',
+    },
+    role_id: STUDENT_ROLE_ID,
+    user_id: 1,
+  },
+];
+
 const handlers = [
   // Handles GET on /project
   rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
@@ -268,6 +282,11 @@ const handlers = [
   // Handles post on announcement route
   rest.post(`${BASE_URL}/course/:courseId/announcement`, (req, res, ctx) =>
     res(ctx.status(200), ctx.body(JSON.stringify({}))),
+  ),
+
+  // Course roles
+  rest.get(`${BASE_URL}/role/courseUserRoles/:id`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.body(JSON.stringify(MSW_COURSE_ROLES))),
   ),
 ];
 

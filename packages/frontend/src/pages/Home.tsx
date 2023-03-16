@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Space, Typography } from 'antd';
+import { Button, Space, Spin, Typography } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
@@ -11,7 +11,11 @@ import UserDashboard from './UserDashboard';
 const { Title } = Typography;
 
 export default function HomePage(): JSX.Element {
-  const { data: userInfo } = useGetUserInfoQuery();
+  const { data: userInfo, isLoading } = useGetUserInfoQuery();
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   // User is not logged in
   if (!userInfo) {
@@ -29,7 +33,7 @@ export default function HomePage(): JSX.Element {
   return conditionalRender(
     <FacultyDashboard userInfo={userInfo} />,
     userInfo.userRoleActions,
-    [UserPermissionActions.READ_COURSE, UserPermissionActions.ADMIN],
+    [UserPermissionActions.CREATE_COURSE, UserPermissionActions.ADMIN],
     <UserDashboard userInfo={userInfo} />,
   );
 }

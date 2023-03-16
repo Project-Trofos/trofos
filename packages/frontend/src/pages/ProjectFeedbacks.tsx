@@ -8,7 +8,6 @@ import { useProject } from '../api/hooks';
 import Container from '../components/layouts/Container';
 import Editor from '../components/editor/Editor';
 import { useGetSprintsByProjectIdQuery } from '../api/sprint';
-import { useGetUserInfoQuery } from '../api/auth';
 import conditionalRender from '../helpers/conditionalRender';
 import confirm from '../components/modals/confirm';
 import Timestamp from '../components/common/Timestamp';
@@ -17,7 +16,7 @@ import { useFeedbackBySprint as useFeedbackBySprintId } from '../api/hooks/feedb
 import { Feedback } from '../api/types';
 
 import './ProjectFeedbacks.css';
-import { useGetActionsOnRolesQuery, useGetProjectUserRolesQuery } from '../api/role';
+import { useProjectActions } from '../api/hooks/roleHooks';
 
 const { Panel } = Collapse;
 
@@ -26,21 +25,7 @@ export default function ProjectFeedbacks(): JSX.Element {
   const { project } = useProject(Number(params.projectId) ? Number(params.projectId) : -1);
   const { data: sprints } = useGetSprintsByProjectIdQuery(project?.id ?? skipToken);
 
-  // TODO (Luoyi): Use API for fetching user project actions
-  const { data: projectRole } = useGetProjectUserRolesQuery(project?.id ?? skipToken);
-  const { data: actionOnRoles } = useGetActionsOnRolesQuery();
-  const { data: userInfo } = useGetUserInfoQuery();
-  const projectActions: string[] = Array.from(
-    new Set([
-      ...(projectRole
-        ?.filter((r) => r.user_id === userInfo?.userId)
-        .flatMap(
-          (r) => actionOnRoles?.find((a) => a.id === r.role_id)?.actions.flatMap((action) => action.action) ?? [],
-        ) ?? []),
-      // Add admin action from basic role action if applicable
-      ...(userInfo?.userRoleActions.includes('admin') ? ['admin'] : []),
-    ]),
-  );
+  const { actions: projectActions } = useProjectActions({ projectId: project?.id });
 
   return (
     <Container>
@@ -139,7 +124,7 @@ function FeedbackEditor(props: {
       {viewState === 'view' && feedback && (
         <Editor initialStateString={feedback?.content} ref={editorRef} hideToolbar isEditable={false} />
       )}
-      {viewState === 'edit' && <Editor initialStateString={feedback?.content} ref={editorRef} />}
+      {viewState === 'edit' && <Editor initialStateString={feedback?.content} ref={editorRef} maxLength={2500} />}
 
       <Space className="feedback-button-group">
         {viewState === 'view' && (
