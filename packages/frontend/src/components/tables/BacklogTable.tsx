@@ -83,6 +83,7 @@ export default function BacklogTable({
                 backlogId={record.backlog_id}
                 currentPriority={record.priority}
                 projectId={record.project_id}
+                editable={false}
               />
             );
           }}
