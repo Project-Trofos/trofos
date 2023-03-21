@@ -138,6 +138,7 @@ export default function ProjectPage(): JSX.Element {
               { key: 'sprint', label: 'Sprint' },
               { key: 'board', label: 'Board' },
               { key: 'feedback', label: 'Feedback' },
+              { key: 'statistics', label: 'Statistics' },
               { key: 'settings', label: 'Settings' },
             ]}
             activeKey={selectedTab}

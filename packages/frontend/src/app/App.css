@@ -27,3 +27,8 @@ h6 {
 .ant-card {
   box-shadow: var(--default-box-shadow);
 }
+
+/* Make antd table more responsive */
+.ant-card-body {
+  overflow-x: auto;
+}

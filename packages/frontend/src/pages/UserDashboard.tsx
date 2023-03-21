@@ -76,6 +76,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
             <Card>
               <BacklogTable
                 heading="Issues for me to do"
+                removeRows={['Assignee']}
                 backlogs={userAssignedBacklogs.filter((b) => b.status !== 'Done')}
                 isLoading={isBacklogsLoading}
                 projects={projects}
@@ -86,6 +87,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
             <Card>
               <BacklogTable
                 heading="Unassigned Issues"
+                removeRows={['Assignee']}
                 backlogs={backlogsForUser.filter((b) => b.assignee_id === null)}
                 isLoading={isBacklogsLoading}
                 projects={projects}
