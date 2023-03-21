@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { BacklogHistory, BacklogHistoryType } from '../../api/types';
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 export default function useDailyCompletedPoints(backlogHistory: BacklogHistory[]) {
   const data = useMemo(() => {
     if (!backlogHistory) {
@@ -29,8 +31,8 @@ export default function useDailyCompletedPoints(backlogHistory: BacklogHistory[]
           if (groupSortedDesc[i - 1].status !== groupSortedDesc[i].status) {
             if (groupSortedDesc[i - 1].status === 'Done' && groupSortedDesc[i].status !== 'Done') {
               // The last change is to Done
-              const current = dailyCompletion.get(dayjs(groupSortedDesc[i - 1].date).format('DD/MM/YYYY')) ?? 0;
-              dailyCompletion.set(dayjs(groupSortedDesc[i - 1].date).format('DD/MM/YYYY'), current + lastPoint);
+              const current = dailyCompletion.get(dayjs(groupSortedDesc[i - 1].date).format(DATE_FORMAT)) ?? 0;
+              dailyCompletion.set(dayjs(groupSortedDesc[i - 1].date).format(DATE_FORMAT), current + lastPoint);
               break;
             } else {
               // The last change is not to Done
@@ -41,7 +43,24 @@ export default function useDailyCompletedPoints(backlogHistory: BacklogHistory[]
       }
     }
 
-    return Array.from(dailyCompletion.entries()).map((e) => ({ date: e[0], value: e[1] }));
+    const filledResult: { date: string; value: number }[] = [];
+
+    Array.from(dailyCompletion.entries()).forEach((e) => {
+      // Fill 0 entries between actual daily completion entries
+      if (filledResult.length > 0) {
+        const lastEntryDate = dayjs(filledResult[filledResult.length - 1].date);
+        const dateDiff = dayjs(e[0]).diff(lastEntryDate, 'day');
+        for (let i = 1; i < dateDiff; i += 1) {
+          filledResult.push({
+            date: lastEntryDate.add(i, 'day').format(DATE_FORMAT),
+            value: 0,
+          });
+        }
+      }
+      filledResult.push({ date: e[0], value: e[1] });
+    });
+
+    return filledResult;
   }, [backlogHistory]);
 
   return data;

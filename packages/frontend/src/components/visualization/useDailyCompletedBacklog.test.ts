@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import dayjs from 'dayjs';
 import { BacklogHistory, BacklogHistoryType } from '../../api/types';
 import useDailyCompletedPoints from './useDailyCompletedBacklog';
 
@@ -37,7 +38,7 @@ describe('test useDailyCompletedBacklog hook', () => {
       const { result, rerender } = renderHook(() => useDailyCompletedPoints(history));
 
       // Backlog completed
-      expect(result.current).toStrictEqual([{ date: '02/01/2023', value: 10 }]);
+      expect(result.current).toStrictEqual([{ date: '2023-01-02', value: 10 }]);
 
       history = [history[0]];
       rerender();
@@ -66,6 +67,34 @@ describe('test useDailyCompletedBacklog hook', () => {
 
       // Backlog deleted
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('should fill the gap between daily completed backlogs with zero entries', () => {
+      const GAP = 10;
+      const history = [
+        ...validBacklogHistory,
+        ...validBacklogHistory.map((v) => ({
+          ...v,
+          backlog_id: 2,
+          date: dayjs(v.date).add(GAP, 'day').toISOString(),
+        })),
+      ];
+
+      const { result } = renderHook(() => useDailyCompletedPoints(history));
+
+      expect(result.current).toHaveLength(1 + GAP);
+
+      // Expect values are correct
+      expect(result.current[0].value).toBe(10);
+      for (let i = 1; i < GAP; i += 1) {
+        expect(result.current[i].value).toBe(0);
+      }
+      expect(result.current[GAP].value).toBe(10);
+
+      // Expect dates have no gaps
+      for (let i = 0; i <= GAP; i += 1) {
+        expect(result.current[i].date).toBe(dayjs(validBacklogHistory[1].date).add(i, 'day').format('YYYY-MM-DD'));
+      }
     });
   });
 });
