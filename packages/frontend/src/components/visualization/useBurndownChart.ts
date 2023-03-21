@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { BacklogHistory, BacklogHistoryType, BacklogStatus } from '../../api/types';
 
@@ -9,7 +10,11 @@ export type StoryPointData = {
   backlog_id: number;
 };
 
-export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: number | undefined) {
+export function useBurndownChart(
+  backlogHistory: BacklogHistory[],
+  sprintId: number | undefined,
+  sprintEndDate?: string,
+) {
   // When a backlog is moved to another sprint, add a dummy delete history
   const backlogHistoryAddMove = useMemo(() => {
     const backlogSorted = [...backlogHistory].sort((a, b) => (new Date(a.date) > new Date(b.date) ? 1 : -1));
@@ -149,8 +154,8 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
       }
     }
 
-    // Add a dummy end point
-    if (backlogFiltered.length > 0) {
+    // Add a dummy end point if today is before end of sprint
+    if (backlogFiltered.length > 0 && (!sprintEndDate || dayjs(sprintEndDate).isAfter(new Date()))) {
       // Have an artificial gap
       data.push({
         date: new Date(),
@@ -162,7 +167,7 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
     }
 
     return data;
-  }, [backlogGrouped, backlogFiltered]);
+  }, [backlogGrouped, backlogFiltered, sprintEndDate]);
 
   return { storyPointData, backlogGrouped, backlogSorted: backlogFiltered };
 }

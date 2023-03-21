@@ -11,7 +11,7 @@ type BurnDownChartProps = {
 
 export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint } = props;
-  const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id);
+  const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
 
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
