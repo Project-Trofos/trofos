@@ -108,6 +108,12 @@ export default function BacklogTable({
           sorter={(a: Backlog, b: Backlog) => compareBacklogPriority(a.priority, b.priority)}
         />
         <Table.Column
+          width={50}
+          title="Points"
+          dataIndex="points"
+          sorter={(a: Backlog, b: Backlog) => (a.points ?? 0) - (b.points ?? 0)}
+        />
+        <Table.Column
           width={100}
           title="Status"
           dataIndex="status"

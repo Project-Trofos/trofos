@@ -9,13 +9,13 @@ export default function VelocityGraph(props: { sprints: Sprint[] }) {
   const data = useMemo(() => {
     const commitmentBySprint = sprints.map((s) => ({
       sprintName: s.name,
-      value: s.backlogs.length,
+      value: s.backlogs.reduce((n, b) => n + (b.points ?? 0), 0),
       type: 'Commitment',
     }));
 
     const doneBySprint = sprints.map((s) => ({
       sprintName: s.name,
-      value: s.backlogs.filter((b) => b.status === 'Done').length,
+      value: s.backlogs.filter((b) => b.status === 'Done').reduce((n, b) => n + (b.points ?? 0), 0),
       type: 'Completed',
     }));
 

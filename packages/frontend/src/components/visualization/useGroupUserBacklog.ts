@@ -20,7 +20,7 @@ export default function useGroupUserBacklog(sprints: Sprint[], users: UserData[]
     for (const sprint of sprints) {
       for (const item of sprint.backlogs) {
         if (item.assignee_id !== null) {
-          map.set(item.assignee_id, (map.get(item.assignee_id) ?? 0) + 1);
+          map.set(item.assignee_id, (map.get(item.assignee_id) ?? 0) + (item.points ?? 0));
         }
       }
     }

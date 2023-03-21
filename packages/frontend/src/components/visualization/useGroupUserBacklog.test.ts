@@ -12,7 +12,7 @@ describe('test useGroupUserBacklog hook', () => {
       expect(result.current).toHaveLength(1);
       expect(result.current).toContainEqual({
         type: user.user_display_name,
-        value: sprint.backlogs.filter((b) => b.assignee_id === user.user_id).length,
+        value: sprint.backlogs.filter((b) => b.assignee_id === user.user_id).reduce((n, b) => n + (b.points ?? 0), 0),
       });
     });
   });

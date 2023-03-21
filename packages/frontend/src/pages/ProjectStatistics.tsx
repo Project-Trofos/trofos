@@ -3,7 +3,7 @@ import { skipToken } from '@reduxjs/toolkit/dist/query/react';
 import { useParams } from 'react-router-dom';
 import { Card, Col, Divider, Empty, Row, Segmented, Select, Space, Statistic, Switch } from 'antd';
 import dayjs from 'dayjs';
-import { useCourse, useProject } from '../api/hooks';
+import { useProject } from '../api/hooks';
 import { useGetSprintsByProjectIdQuery } from '../api/sprint';
 import Container from '../components/layouts/Container';
 import { useGetProjectBacklogHistoryQuery } from '../api/backlog';
@@ -75,7 +75,7 @@ export default function ProjectStatistics(): JSX.Element {
           <Card>
             <Row>
               <Col xs={24} xl={12}>
-                <Subheading>Overall Contribution by Issues</Subheading>
+                <Subheading>Overall Contribution by Story Points</Subheading>
               </Col>
               <Col xs={24} xl={12} style={{ display: 'flex', justifyContent: 'end' }}>
                 <Space>
@@ -126,7 +126,7 @@ export default function ProjectStatistics(): JSX.Element {
             <Card>
               <Row>
                 <Col xs={24} xl={12}>
-                  <Subheading>Sprint Contribution by Issues</Subheading>
+                  <Subheading>Sprint Contribution by Story Points</Subheading>
                 </Col>
                 <Col xs={24} xl={12} style={{ display: 'flex', justifyContent: 'end' }}>
                   <Space>
