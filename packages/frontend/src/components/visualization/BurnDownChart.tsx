@@ -56,6 +56,10 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
     return <div>Please select a sprint to display.</div>;
   }
 
+  if (storyPointData.length === 0) {
+    return <div>No data to display.</div>;
+  }
+
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <Line {...config} />;
 }

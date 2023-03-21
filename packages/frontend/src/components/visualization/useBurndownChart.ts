@@ -67,6 +67,20 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
     const data: StoryPointData[] = [];
     let currentPoint = 0;
 
+    // Add a dummy start point
+    if (backlogFiltered.length > 0) {
+      // Have an artificial gap
+      const oneMinuteBefore = new Date(backlogFiltered[0].date);
+      oneMinuteBefore.setMinutes(oneMinuteBefore.getMinutes() - 1);
+      data.push({
+        date: oneMinuteBefore,
+        point: 0,
+        type: BacklogHistoryType.CREATE,
+        message: 'Start',
+        backlog_id: backlogFiltered[0].backlog_id,
+      });
+    }
+
     for (const backlog of backlogFiltered) {
       const prevIndex = backlogIndices[backlog.backlog_id];
       const prevBacklog = prevIndex === -1 ? undefined : backlogGrouped[backlog.backlog_id][prevIndex];
@@ -133,6 +147,18 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId: num
           backlog_id: backlog.backlog_id,
         });
       }
+    }
+
+    // Add a dummy end point
+    if (backlogFiltered.length > 0) {
+      // Have an artificial gap
+      data.push({
+        date: new Date(),
+        point: currentPoint,
+        type: BacklogHistoryType.CREATE,
+        message: 'Now',
+        backlog_id: backlogFiltered[backlogFiltered.length - 1].backlog_id,
+      });
     }
 
     return data;
