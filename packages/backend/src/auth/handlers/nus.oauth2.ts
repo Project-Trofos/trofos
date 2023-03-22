@@ -9,17 +9,17 @@ const RESOURCE = "sg_edu_nus_oauth";
 const TOKEN_EMAIL_ADDRESS_KEY = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
 
 async function handleLogin(code: string, callbackUrl: string) {
-    var data = new URLSearchParams();
+    const data = new URLSearchParams();
     data.append('grant_type', GRANT_TYPE);
     data.append('client_id', CLIENT_ID);
     data.append('resource', RESOURCE);
     data.append('code', code);
     data.append('redirect_uri', callbackUrl);
 
-    var config = {
+    const config = {
         method: 'post',
         url: BASE_URL,
-        data : data
+        data
       };
       
 
