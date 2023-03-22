@@ -69,8 +69,7 @@ describe('test ProjectCreationModal', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  // ! Flaky in CI, disabled.
-  it.skip('should require project name', async () => {
+  it('should require project name', async () => {
     await setup();
 
     const button = screen.getByText('Create Project');

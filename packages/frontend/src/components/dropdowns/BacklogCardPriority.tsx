@@ -18,10 +18,11 @@ type BacklogCardPriorityProps = {
   backlogId: number;
   currentPriority: BacklogPriority;
   projectId?: number;
+  editable?: boolean;
 };
 
 export default function BacklogCardPriority(props: BacklogCardPriorityProps) {
-  const { currentPriority, backlogId, projectId } = props;
+  const { currentPriority, backlogId, projectId, editable = true } = props;
   const params = useParams();
   const [updateBacklog] = useUpdateBacklogMutation();
 
@@ -53,6 +54,7 @@ export default function BacklogCardPriority(props: BacklogCardPriorityProps) {
       dropdownMatchSelectWidth={false}
       allowClear
       showArrow={false}
+      disabled={!editable}
     />
   );
 }
