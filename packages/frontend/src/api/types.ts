@@ -291,3 +291,9 @@ export type Feedback = {
   created_at: string;
   updated_at?: string;
 };
+
+export type OAuth2Payload = {
+  code : string;
+  state : string;
+  callbackUrl : string;
+}

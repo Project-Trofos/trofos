@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, FormProps, Input, message } from 'antd';
+import { Button, Form, FormProps, Input, message, Space } from 'antd';
 import './Login.css';
+import Title from 'antd/es/typography/Title';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
+import NusSsoButton from '../components/button/NusSsoButton';
 
 export default function LoginPage(): JSX.Element {
   const [loginUser] = useLoginUserMutation();
@@ -24,33 +26,38 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <div className="main">
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 18 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item label="Email" name="userEmail" rules={[{ required: true, message: 'Please input your username!' }]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Password"
-          name="userPassword"
-          rules={[{ required: true, message: 'Please input your password!' }]}
+      <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+        <Form
+          name="basic"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          layout='vertical'
         >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item label="Email" name="userEmail" rules={[{ required: true, message: 'Please input your username!' }]}>
+            <Input />
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Password"
+            name="userPassword"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{width:'100%'}}>
+              Sign in
+            </Button>
+          </Form.Item>
+        </Form>
+        <div className="sso">
+          <p>Sign in with</p>
+          <NusSsoButton />
+        </div>
+      </Space>
     </div>
   );
 }

@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('/login', account.loginUser);
 
+router.post('/login/oauth2', account.oauth2Login);
+
 router.post('/logout', hasAuth(null, null), account.logoutUser);
 
 router.get('/userInfo', hasAuth(null, null), account.getUserInfo);
