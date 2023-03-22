@@ -46,8 +46,7 @@ const oauth2Login = async (req: express.Request, res: express.Response) => {
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
     return res.status(StatusCodes.OK).send();
   } catch (e) {
-    console.error(e);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+    return getDefaultErrorRes(e, res);
   }
 }
 

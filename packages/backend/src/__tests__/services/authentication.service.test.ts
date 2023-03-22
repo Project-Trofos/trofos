@@ -4,6 +4,19 @@ import { prismaMock } from '../../models/mock/mockPrismaClient';
 import authenticationService from '../../services/authentication.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import { userData } from '../mocks/userData';
+import engineOauth2 from '../../auth/engine.oauth2';
+
+const MOCK_CODE  = "mockCode";
+const MOCK_STATE = "mockState";
+const MOCK_CALLBACK_URL = "mockUrl";
+
+const spies = {
+  outh2EngineExecute: jest.spyOn(engineOauth2, 'execute')
+};
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('authentication.service tests', () => {
   describe('validateUser', () => {
@@ -67,4 +80,25 @@ describe('authentication.service tests', () => {
       );
     });
   });
+
+  describe('oauth2Handler', () => {
+    it('should throw an error if the token could not be fetched', async () => {
+      const expectedError = new Error("Error while fetching token from server");
+      spies.outh2EngineExecute.mockRejectedValueOnce(expectedError);
+      await expect(authenticationService.oauth2Handler(MOCK_CODE, MOCK_STATE, MOCK_CALLBACK_URL)).rejects.toThrow(expectedError);
+    });
+
+    it('should throw an error if the token could not be decoded', async () => {
+      const expectedError = new Error("Error while decoding access token");
+      spies.outh2EngineExecute.mockRejectedValueOnce(expectedError);
+      await expect(authenticationService.oauth2Handler(MOCK_CODE, MOCK_STATE, MOCK_CALLBACK_URL)).rejects.toThrow(expectedError);
+    })
+
+    it('should return the user information if the token was fetched and decoded', async () => {
+      const expectedUserEmail = userData[0].user_email;
+      spies.outh2EngineExecute.mockResolvedValue(expectedUserEmail);
+      prismaMock.user.upsert.mockResolvedValueOnce(userData[0]);
+      await expect(authenticationService.oauth2Handler(MOCK_CODE, MOCK_STATE, MOCK_CALLBACK_URL)).resolves.toEqual(userData[0]);
+    })
+  })
 });
