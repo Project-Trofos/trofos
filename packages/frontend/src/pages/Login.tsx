@@ -5,6 +5,7 @@ import './Login.css';
 import Title from 'antd/es/typography/Title';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 import NusSsoButton from '../components/button/NusSsoButton';
+import { Heading } from '../components/typography';
 
 export default function LoginPage(): JSX.Element {
   const [loginUser] = useLoginUserMutation();
@@ -27,6 +28,10 @@ export default function LoginPage(): JSX.Element {
   return (
     <div className="main">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+      <div className="sso">
+        <Heading>
+          Trofos
+        </Heading>
         <Form
           name="basic"
           initialValues={{ remember: true }}
@@ -53,7 +58,6 @@ export default function LoginPage(): JSX.Element {
             </Button>
           </Form.Item>
         </Form>
-        <div className="sso">
           <p>Sign in with</p>
           <NusSsoButton />
         </div>
