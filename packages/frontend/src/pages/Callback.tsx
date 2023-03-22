@@ -36,11 +36,12 @@ export default function Callback() : JSX.Element {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             const url = new URL(window.location.href);
+            const callbackUrl = `${url.host}${url.pathname}`;
             const { pathname, searchParams} = url;
     
             // There are only a few types of sso workflows so an if-else block would suffice
             if (pathname.includes("oauth2")) {
-                handleOAuth2(searchParams, url.href);
+                handleOAuth2(searchParams, callbackUrl);
             } else {
                 message.error("SSO return type not supported");
                 navigate("/login")
