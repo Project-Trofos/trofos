@@ -28,36 +28,38 @@ export default function LoginPage(): JSX.Element {
   return (
     <div className="main">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      <div className="sso">
-        <Heading>
-          Trofos
-        </Heading>
-        <Form
-          name="basic"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-          layout='vertical'
-        >
-          <Form.Item label="Email" name="userEmail" rules={[{ required: true, message: 'Please input your username!' }]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="userPassword"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+        <div className="sso">
+          <Heading>Trofos</Heading>
+          <Form
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            layout="vertical"
           >
-            <Input.Password />
-          </Form.Item>
+            <Form.Item
+              label="Email"
+              name="userEmail"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" style={{width:'100%'}}>
-              Sign in
-            </Button>
-          </Form.Item>
-        </Form>
+            <Form.Item
+              label="Password"
+              name="userPassword"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                Sign in
+              </Button>
+            </Form.Item>
+          </Form>
           <p>Sign in with</p>
           <NusSsoButton />
         </div>

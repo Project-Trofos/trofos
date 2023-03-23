@@ -11,13 +11,13 @@ import userService from '../../services/user.service';
 import { userData } from '../mocks/userData';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
-const MOCK_CODE  = "mockCode";
-const MOCK_STATE = "mockState";
-const MOCK_CALLBACK_URL = "mockUrl";
+const MOCK_CODE = 'mockCode';
+const MOCK_STATE = 'mockState';
+const MOCK_CALLBACK_URL = 'mockUrl';
 
 const spies = {
   authenticationServiceValidateUser: jest.spyOn(authenticationService, 'validateUser'),
-  authenticationServiceOauth2Handler : jest.spyOn(authenticationService, 'oauth2Handler'),
+  authenticationServiceOauth2Handler: jest.spyOn(authenticationService, 'oauth2Handler'),
   sessionServiceCreateUserSession: jest.spyOn(sessionService, 'createUserSession'),
   sessionServiceDeleteUserSession: jest.spyOn(sessionService, 'deleteUserSession'),
   sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
@@ -135,7 +135,7 @@ describe('account.controller tests', () => {
       const mockRes = createResponse();
       mockReq.body = {
         state: MOCK_STATE,
-        callbackUrl : MOCK_CALLBACK_URL
+        callbackUrl: MOCK_CALLBACK_URL,
       };
       await authentication.oauth2Login(mockReq, mockRes);
       expect(spies.authenticationServiceOauth2Handler).toHaveBeenCalledTimes(0);
@@ -147,7 +147,7 @@ describe('account.controller tests', () => {
       const mockRes = createResponse();
       mockReq.body = {
         code: MOCK_CODE,
-        callbackUrl : MOCK_CALLBACK_URL
+        callbackUrl: MOCK_CALLBACK_URL,
       };
       await authentication.oauth2Login(mockReq, mockRes);
       expect(spies.authenticationServiceOauth2Handler).toHaveBeenCalledTimes(0);
@@ -164,7 +164,7 @@ describe('account.controller tests', () => {
       await authentication.oauth2Login(mockReq, mockRes);
       expect(spies.authenticationServiceOauth2Handler).toHaveBeenCalledTimes(0);
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    })
+    });
 
     it('should return status 500 INTERNAL SERVER ERROR if there was an error', async () => {
       const mockReq = createRequest();
@@ -173,13 +173,13 @@ describe('account.controller tests', () => {
       mockReq.body = {
         code: MOCK_CODE,
         state: MOCK_STATE,
-        callbackUrl : MOCK_CALLBACK_URL
+        callbackUrl: MOCK_CALLBACK_URL,
       };
-      spies.authenticationServiceOauth2Handler.mockRejectedValueOnce(expectedError)
+      spies.authenticationServiceOauth2Handler.mockRejectedValueOnce(expectedError);
       await authentication.oauth2Login(mockReq, mockRes);
-      
+
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-    })
+    });
 
     it('should return status 200 OK if the user successfully logs in', async () => {
       const sessionId = 'testSession';
@@ -196,16 +196,20 @@ describe('account.controller tests', () => {
       mockReq.body = {
         code: MOCK_CODE,
         state: MOCK_STATE,
-        callbackUrl : MOCK_CALLBACK_URL
+        callbackUrl: MOCK_CALLBACK_URL,
       };
       await authentication.oauth2Login(mockReq, mockRes);
-      
+
       expect(spies.authenticationServiceOauth2Handler).toHaveBeenCalledWith(MOCK_CODE, MOCK_STATE, MOCK_CALLBACK_URL);
-      expect(spies.roleServiceGetRoleInformation).toHaveBeenCalledWith(userData[0].user_id)
-      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(userData[0].user_email, roleInformation, userData[0].user_id);
+      expect(spies.roleServiceGetRoleInformation).toHaveBeenCalledWith(userData[0].user_id);
+      expect(spies.sessionServiceCreateUserSession).toHaveBeenCalledWith(
+        userData[0].user_email,
+        roleInformation,
+        userData[0].user_id,
+      );
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-    })
-  })
+    });
+  });
 
   describe('logoutUser', () => {
     it('should return status 500 INTERNAL SERVER ERROR if an error occurs while deleting the session', async () => {

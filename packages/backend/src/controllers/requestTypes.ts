@@ -15,7 +15,7 @@ export type OptionRequestBody = {
 
 export type UserEmailRequestBody = {
   userEmail: string;
-}
+};
 
 export type UserIdRequestBody = {
   userId: string;

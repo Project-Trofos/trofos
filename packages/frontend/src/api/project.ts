@@ -82,7 +82,11 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course', { type: 'ProjectRoles', id : arg.id}],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Project', id: arg.id },
+        'Course',
+        { type: 'ProjectRoles', id: arg.id },
+      ],
     }),
 
     // Removing a user in a project will invalidate that project

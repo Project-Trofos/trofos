@@ -20,7 +20,7 @@ const loginUser = async (req: express.Request, res: express.Response) => {
         .status(StatusCodes.UNAUTHORIZED)
         .send('Incorrect user credentials. Please double-check your credentials.');
     }
-    
+
     const userId = userAuth.userLoginInformation.user_id;
     const userRoleInformation = await roleService.getUserRoleInformation(userId);
     const sessionId = await sessionService.createUserSession(userEmail, userRoleInformation, userId);
@@ -42,13 +42,17 @@ const oauth2Login = async (req: express.Request, res: express.Response) => {
 
     const userInfo = await authenticationService.oauth2Handler(code, state, callbackUrl);
     const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
-    const sessionId = await sessionService.createUserSession(userInfo.user_email, userRoleInformation, userInfo.user_id);
+    const sessionId = await sessionService.createUserSession(
+      userInfo.user_email,
+      userRoleInformation,
+      userInfo.user_id,
+    );
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
     return res.status(StatusCodes.OK).send();
   } catch (e) {
     return getDefaultErrorRes(e, res);
   }
-}
+};
 
 const logoutUser = async (req: express.Request, res: express.Response) => {
   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
@@ -123,5 +127,5 @@ export default {
   getUserInfo,
   changePassword,
   updateUser,
-  oauth2Login
+  oauth2Login,
 };

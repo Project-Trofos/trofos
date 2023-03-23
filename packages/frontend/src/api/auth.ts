@@ -89,7 +89,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: oauthInfo,
         credentials: 'include',
       }),
-    })
+    }),
   }),
 });
 
@@ -99,5 +99,5 @@ export const {
   useGetUserInfoQuery,
   useChangePasswordMutation,
   useUpdateUserInfoMutation,
-  useOauth2LoginMutation
+  useOauth2LoginMutation,
 } = extendedApi;

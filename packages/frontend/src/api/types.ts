@@ -122,8 +122,8 @@ export type Announcement = {
 
 // CourseData type returned by BE api. We perform transformResponse to convert the data into type CourseData
 export type CourseDataResponse = Omit<CourseData, 'users'> & {
-  courseRoles : UserData[]
-}
+  courseRoles: UserData[];
+};
 
 export type CourseData = Course & {
   milestones: Milestone[];
@@ -293,7 +293,7 @@ export type Feedback = {
 };
 
 export type OAuth2Payload = {
-  code : string;
-  state : string;
-  callbackUrl : string;
-}
+  code: string;
+  state: string;
+  callbackUrl: string;
+};

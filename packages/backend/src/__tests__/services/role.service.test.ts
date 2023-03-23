@@ -230,9 +230,7 @@ describe('role.service tests', () => {
         },
       };
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockResolvedValueOnce(prismaResponseObject);
-      await expect(roleService.getUserRoleActionsForCourse(1, 1)).resolves.toEqual(
-        prismaResponseObject,
-      );
+      await expect(roleService.getUserRoleActionsForCourse(1, 1)).resolves.toEqual(prismaResponseObject);
     });
   });
 
@@ -279,9 +277,7 @@ describe('role.service tests', () => {
       };
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
       prismaMock.usersOnRolesOnCourses.findFirstOrThrow.mockResolvedValueOnce(userOnRolesOnCoursesResponseObject);
-      await expect(roleService.getUserRoleActionsForCourse(1, 1)).resolves.toEqual(
-        userOnRolesOnCoursesResponseObject,
-      );
+      await expect(roleService.getUserRoleActionsForCourse(1, 1)).resolves.toEqual(userOnRolesOnCoursesResponseObject);
     });
   });
 
