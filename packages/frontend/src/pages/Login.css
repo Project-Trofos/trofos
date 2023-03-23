@@ -6,3 +6,11 @@
   width: 100vw;
   height: 100vh;
 }
+
+.sso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+}

@@ -20,7 +20,6 @@ import projectPolicy from '../../policies/constraints/project.constraint';
 import { userData } from '../mocks/userData';
 
 describe('project.service tests', () => {
-
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
 
   describe('getAll', () => {

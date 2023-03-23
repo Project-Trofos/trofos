@@ -231,7 +231,6 @@ async function updateUserRoleForProject(projectId: number, userRole: number, use
       role_id: userRole,
     },
   });
-
 }
 
 async function updateUserRole(roleId: number, userId: number): Promise<UsersOnRoles> {

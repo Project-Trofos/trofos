@@ -135,22 +135,22 @@ async function processImportCourseData(
       // We must incur another db query here because we cannot access userId in the update clause of the query above
       // A tradeoff is that if the user is created above, this query is unnecessary
       await tx.usersOnRolesOnCourses.upsert({
-            where: {
-              user_id_course_id: {
-                user_id : user.user_id,
-                course_id: courseId,
-              },
-            },
-            create: {
-              user_id: user.user_id,
-              course_id: courseId,
-              role_id: userData.roleId,
-            },
-            update: {
-              course_id: courseId,
-              role_id: userData.roleId,
-            },
-      })
+        where: {
+          user_id_course_id: {
+            user_id: user.user_id,
+            course_id: courseId,
+          },
+        },
+        create: {
+          user_id: user.user_id,
+          course_id: courseId,
+          role_id: userData.roleId,
+        },
+        update: {
+          course_id: courseId,
+          role_id: userData.roleId,
+        },
+      });
 
       // Add users to project/course
       if (userData.roleId === STUDENT_ROLE_ID) {

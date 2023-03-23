@@ -10,13 +10,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: 'course/',
         credentials: 'include',
       }),
-      transformResponse: (response : CourseDataResponse[]) => {
-        const transformedResponse : CourseData[] = response.map((courseData) => {
+      transformResponse: (response: CourseDataResponse[]) => {
+        const transformedResponse: CourseData[] = response.map((courseData) => {
           return {
             ...courseData,
-            users : courseData.courseRoles
-          }
-        })
+            users: courseData.courseRoles,
+          };
+        });
         return transformedResponse;
       },
       providesTags: (result, error, arg) =>
@@ -25,12 +25,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 
     getCourse: builder.query<CourseData, Pick<Course, 'id'>>({
       query: ({ id }) => `course//${id}`,
-      transformResponse: (response : CourseDataResponse) => {
-          const transformedResponse : CourseData = {
-            ...response,
-            users : response.courseRoles
-          }
-          return transformedResponse;
+      transformResponse: (response: CourseDataResponse) => {
+        const transformedResponse: CourseData = {
+          ...response,
+          users: response.courseRoles,
+        };
+        return transformedResponse;
       },
       providesTags: (result, error, { id }) => [{ type: 'Course', id }],
     }),
@@ -104,7 +104,10 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Course', id }, { type: 'CourseRoles', id }],
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Course', id },
+        { type: 'CourseRoles', id },
+      ],
     }),
 
     // Invalidate course

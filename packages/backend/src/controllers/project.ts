@@ -12,12 +12,7 @@ import {
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import settings from '../services/settings.service';
-import { 
-  OptionRequestBody,
-  ProjectRequestBody,
-  UserEmailRequestBody,
-  UserIdRequestBody 
-} from './requestTypes';
+import { OptionRequestBody, ProjectRequestBody, UserEmailRequestBody, UserIdRequestBody } from './requestTypes';
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
   try {

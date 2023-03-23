@@ -315,8 +315,8 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
   return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     const userInfo = await tx.user.findUniqueOrThrow({
       where: {
-        user_email : userEmail
-      }
+        user_email: userEmail,
+      },
     });
 
     const projectInfo = await tx.project.findFirstOrThrow({
