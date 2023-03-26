@@ -1,11 +1,12 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import user from '@testing-library/user-event';
 import server from '../../mocks/server';
 import ImportDataModal from './ImportDataModal';
 import store from '../../app/store';
 import { CourseData, ProjectData } from '../../api/types';
+import { act } from 'react-dom/test-utils';
 
 const mockFile = new File(['hello'], 'hello.png', { type: 'image/png' });
 
@@ -105,17 +106,25 @@ describe('test import data modal', () => {
   it('should enable the import button when a file is selected to be uploaded', async () => {
     setup(mockCourseData, [mockProjectData]);
     const input = screen.getByTestId('upload-button');
-    user.upload(input, mockFile);
+    await act(async () => {
+      await waitFor(() => {
+        user.upload(input, mockFile);
+      });
+    });
 
     const button = screen.getByRole('button', { name: /^import$/i });
     expect(button).toBeEnabled();
   });
 
   it('should prevent the user from uploading a csv if the course has projects', async () => {
+
     setup(mockCourseData, [mockProjectData]);
     const input = screen.getByTestId('upload-button');
-    user.upload(input, mockFile);
-    /* eslint-enable */
+    await act(async () => {
+      await waitFor(() => {
+        user.upload(input, mockFile);
+      });
+    });
 
     const button = screen.getByText(/^import$/i);
     fireEvent.click(button);
