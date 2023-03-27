@@ -323,7 +323,30 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
       where: {
         id: projectId,
       },
+      include : {
+        course : true
+      }
     });
+
+    if (!projectInfo.course.shadow_course) {
+      // A user can only be added if they are already part of the parent course
+      await tx.usersOnRolesOnCourses.findUniqueOrThrow({
+        where: {
+          user_id_course_id : {
+            course_id: projectInfo.course_id,
+            user_id: userInfo.user_id,
+          }
+        },
+      });
+    } else {
+      await tx.usersOnRolesOnCourses.create({
+        data: {
+          course_id: projectInfo.course_id,
+          user_id: userInfo.user_id,
+          role_id: STUDENT_ROLE_ID,
+        },
+      });
+    }
 
     const userOnProjects = await tx.usersOnProjects.create({
       data: {
@@ -339,14 +362,6 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
       },
     });
 
-    await tx.usersOnRolesOnCourses.create({
-      data: {
-        course_id: projectInfo.course_id,
-        user_id: userInfo.user_id,
-        role_id: STUDENT_ROLE_ID,
-      },
-    });
-
     return userOnProjects;
   });
 }
@@ -357,6 +372,9 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       where: {
         id: projectId,
       },
+      include : {
+        course : true
+      }
     });
 
     const userOnProjects = await tx.usersOnProjects.delete({
@@ -368,14 +386,18 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       },
     });
 
-    await tx.usersOnRolesOnCourses.delete({
-      where: {
-        user_id_course_id: {
-          course_id: projectInfo.course_id,
-          user_id: userId,
+    // If the project is not independent, the user remains in the parent course
+    if (projectInfo.course.shadow_course) {
+      await tx.usersOnRolesOnCourses.delete({
+        where: {
+          user_id_course_id: {
+            course_id: projectInfo.course_id,
+            user_id: userId,
+          },
         },
-      },
-    });
+      });
+    }
+
 
     return userOnProjects;
   });
