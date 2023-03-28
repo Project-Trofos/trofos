@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button, Space, Table, Tag } from 'antd';
+import { Button, message, Space, Table, Tag } from 'antd';
 import { CourseData, UserData, UserOnRolesOnCourse, ActionsOnRoles } from '../../api/types';
 import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
@@ -131,7 +131,9 @@ export default function UserTable(props: UserTableProps) {
             render={(_, record: UserData) => (
               <Space size="middle">
                 {handleRemoveUser && (
-                  <Button size="small" onClick={() => handleRemoveUser(record.user.user_id)}>
+                  <Button size="small" onClick={() => users?.length === 1 ?
+                                                      message.error("There must be atleast one user in a project") :
+                                                      handleRemoveUser(record.user.user_id)}>
                     Remove
                   </Button>
                 )}

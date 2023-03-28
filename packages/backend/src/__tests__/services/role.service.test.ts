@@ -346,7 +346,7 @@ describe('role.service tests', () => {
         code: 'testError',
         clientVersion: 'testVersion',
       });
-      prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
+      prismaMock.usersOnRolesOnCourses.upsert.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
@@ -355,12 +355,12 @@ describe('role.service tests', () => {
         code: 'testError',
         clientVersion: 'testVersion',
       });
-      prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
+      prismaMock.usersOnRolesOnCourses.upsert.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForCourse(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
-      prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
+      prismaMock.usersOnRolesOnCourses.upsert.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 2, 1));
     });
   });
@@ -381,7 +381,7 @@ describe('role.service tests', () => {
         clientVersion: 'testVersion',
       });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
-      prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
+      prismaMock.usersOnRolesOnCourses.upsert.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
@@ -391,13 +391,13 @@ describe('role.service tests', () => {
         clientVersion: 'testVersion',
       });
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
-      prismaMock.usersOnRolesOnCourses.update.mockRejectedValueOnce(prismaError);
+      prismaMock.usersOnRolesOnCourses.upsert.mockRejectedValueOnce(prismaError);
       await expect(roleService.updateUserRoleForProject(1, 1, 1)).rejects.toThrow(prismaError);
     });
 
     it('should execute successfully if the UserOnRolesOnCourses and UserOnCourses updates were successful', async () => {
       prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(projectResponseObject);
-      prismaMock.usersOnRolesOnCourses.update.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
+      prismaMock.usersOnRolesOnCourses.upsert.mockResolvedValueOnce(usersOnRolesOnCoursesResponseObject);
       await expect(roleService.updateUserRoleForCourse(1, 1, 1));
     });
   });

@@ -34,7 +34,7 @@ export default function Callback(): JSX.Element {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       const url = new URL(window.location.href);
-      const callbackUrl = `${url.host}${url.pathname}`;
+      const callbackUrl = `${url.protocol}//${url.host}${url.pathname}`;
       const { pathname, searchParams } = url;
 
       // There are only a few types of sso workflows so an if-else block would suffice

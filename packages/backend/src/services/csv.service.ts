@@ -116,6 +116,7 @@ async function processImportCourseData(
         },
         update: {}, // This ensures that the user always exists
         create: {
+          user_display_name: userData.name ?? userData.email,
           user_email: userData.email,
           user_password_hash: userData.password,
           basicRoles: {
