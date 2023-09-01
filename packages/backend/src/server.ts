@@ -15,7 +15,7 @@ import settingsRouter from './routes/settings.route';
 const app = express();
 
 export const port = 3001;
-export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
+export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost';
 
 export const corsOptions = {
   origin: frontendUrl,

@@ -57,10 +57,10 @@
   },
   "eslintConfig": {
     "extends": [
-      "../../.eslintrc.json",
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "root": false
   },
   "browserslist": {
     "production": [

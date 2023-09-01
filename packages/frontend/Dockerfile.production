@@ -1,31 +1,38 @@
 # Base image
 FROM node:16.17.0-alpine as base
 
-# Expose port to access server
-EXPOSE 3000
-
 # Make folder to put our files in
 RUN mkdir -p /usr/src/app/frontend
 
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/frontend
 
-# Copy package json and install dependencies
-COPY package*.json ./
+COPY . .
+
+RUN npm ci
 
 # Test stage for CI
 FROM base as test
-RUN npm ci
-# Copy our app
-COPY . .
 # Run unit test
 RUN npm test
+
 ENTRYPOINT ["npm", "start"]
 
+# Build stage 
+FROM base as build
+# Build the app
+RUN npm run build
+
 # Production stage
-FROM base as prod
-RUN npm ci
-# Copy our app
-COPY . .
+FROM nginx:alpine as prod
+
+EXPOSE 80
+
+WORKDIR /usr/share/nginx/html
+
+RUN rm -rf ./*
+
+# Copy built app
+COPY --from=build /usr/src/app/frontend/build .
 # Command to run our app
-ENTRYPOINT ["npm", "run", "start-dev"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

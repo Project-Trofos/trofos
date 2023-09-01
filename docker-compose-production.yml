@@ -6,11 +6,9 @@ services:
       dockerfile: Dockerfile.production
       target: prod
     ports:
-      - '3000:3000'
+      - '80:80'
     container_name: trofos-frontend-production
     restart: always
-    links:
-      - backend
   backend:
     build:
       context: ./packages/backend
@@ -20,8 +18,10 @@ services:
       - '3001:3001'
     container_name: trofos-backend-production
     restart: always
-    links:
+    depends_on:
       - postgres
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/trofos?schema=public
   postgres:
     image: postgres:14.1-alpine
     restart: always
