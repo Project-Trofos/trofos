@@ -11,7 +11,7 @@ type BurnDownChartProps = {
 
 export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint } = props;
-  const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id);
+  const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
 
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
@@ -54,6 +54,10 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
 
   if (!sprint) {
     return <div>Please select a sprint to display.</div>;
+  }
+
+  if (storyPointData.length === 0) {
+    return <div>No data to display.</div>;
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading

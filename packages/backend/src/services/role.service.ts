@@ -200,16 +200,22 @@ async function getUserRolesForProject(projectId: number): Promise<UserRolesForCo
 }
 
 async function updateUserRoleForCourse(courseId: number, userRole: number, userId: number) {
-  await prisma.usersOnRolesOnCourses.update({
+  // We use upsert to prevent any unforseen edge cases
+  await prisma.usersOnRolesOnCourses.upsert({
     where: {
       user_id_course_id: {
         user_id: userId,
         course_id: courseId,
       },
     },
-    data: {
+    update: {
       role_id: userRole,
     },
+    create : {
+      user_id : userId,
+      course_id : courseId,
+      role_id : userRole
+    }
   });
 }
 
@@ -220,18 +226,23 @@ async function updateUserRoleForProject(projectId: number, userRole: number, use
     },
   });
 
-  await prisma.usersOnRolesOnCourses.update({
+  // We use upsert to prevent any unforseen edge cases
+  await prisma.usersOnRolesOnCourses.upsert({
     where: {
       user_id_course_id: {
         user_id: userId,
         course_id: projectInformation.course_id as number,
       },
     },
-    data: {
+    update: {
       role_id: userRole,
     },
+    create : {
+      user_id : userId,
+      course_id : projectInformation.course_id as number,
+      role_id : userRole
+    }
   });
-
 }
 
 async function updateUserRole(roleId: number, userId: number): Promise<UsersOnRoles> {

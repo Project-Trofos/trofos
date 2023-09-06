@@ -248,11 +248,11 @@ describe('course.service tests', () => {
       const targetCourse = coursesData[INDEX];
       prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce(
         userData.map((x) => ({
-          id : 1,
-          user : x,
+          id: 1,
+          user: x,
           course_id: targetCourse.id,
           user_id: x.user_id,
-          role_id : 1
+          role_id: 1,
         })),
       );
 
@@ -269,7 +269,7 @@ describe('course.service tests', () => {
         id: 1,
         course_id: targetCourse.id,
         user_id: userData[INDEX].user_id,
-        role_id: STUDENT_ROLE_ID
+        role_id: STUDENT_ROLE_ID,
       };
 
       prismaMock.user.findFirstOrThrow.mockResolvedValueOnce(userData[INDEX]);
@@ -290,7 +290,7 @@ describe('course.service tests', () => {
         id: 1,
         course_id: targetCourse.id,
         user_id: USER_ID,
-        role_id: STUDENT_ROLE_ID
+        role_id: STUDENT_ROLE_ID,
       };
 
       prismaMock.usersOnRolesOnCourses.delete.mockResolvedValueOnce(resultMock);

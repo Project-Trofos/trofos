@@ -240,7 +240,16 @@ export const MSW_PROJECT: ProjectData = {
   course: MSW_COURSE,
   backlogStatuses: [],
   sprints: MSW_SPRINT,
-  users: [],
+  users: [
+    {
+      user: {
+        courses: [],
+        user_display_name: 'User 1',
+        user_email: 'test@test.com',
+        user_id: 1,
+      },
+    },
+  ],
 };
 
 export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [

@@ -184,9 +184,10 @@ describe('useBurndownChart hook test', () => {
       const history: BacklogHistory[] = [baseHistory];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData[0].point).toBe(baseHistory.points);
-      expect(result.current.storyPointData[0].date).toStrictEqual(new Date(baseHistory.date));
-      expect(result.current.storyPointData[0].type).toStrictEqual(BacklogHistoryType.CREATE);
+      // Skip the first dummy points
+      expect(result.current.storyPointData[1].point).toBe(baseHistory.points);
+      expect(result.current.storyPointData[1].date).toStrictEqual(new Date(baseHistory.date));
+      expect(result.current.storyPointData[1].type).toStrictEqual(BacklogHistoryType.CREATE);
     });
 
     it('returns the correct story point array for update backlog (no change)', () => {
@@ -205,8 +206,11 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(1);
-      expect(result.current.storyPointData[0].point).toBe(baseHistory.points);
+      // Includes 2 dummy points
+      expect(result.current.storyPointData.length).toBe(1 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(baseHistory.points);
+      expect(result.current.storyPointData[2].point).toBe(baseHistory.points);
     });
 
     it('returns the correct story point array for update backlog (To do => Done)', () => {
@@ -221,25 +225,31 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(2);
-      expect(result.current.storyPointData[0].point).toBe(1);
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(2 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(1);
       // The story point in the end should be 0
-      expect(result.current.storyPointData[1].point).toBe(0);
+      expect(result.current.storyPointData[2].point).toBe(0);
+      expect(result.current.storyPointData[3].point).toBe(0);
     });
 
     it('returns the correct story point array for update backlog (To do => Done => To do)', () => {
       const history: BacklogHistory[] = [
         { ...baseHistory, date: prevDay },
         { ...baseHistory, history_type: BacklogHistoryType.UPDATE, status: BacklogStatus.DONE },
-        { ...baseHistory, history_type: BacklogHistoryType.UPDATE, date: nextDay },
+        { ...baseHistory, history_type: BacklogHistoryType.UPDATE, date: nextDay, status: BacklogStatus.TODO },
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(3);
-      expect(result.current.storyPointData[0].point).toBe(1);
-      expect(result.current.storyPointData[1].point).toBe(0);
-      // Story point back to 2
-      expect(result.current.storyPointData[2].point).toBe(1);
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(3 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(1);
+      expect(result.current.storyPointData[2].point).toBe(0);
+      // Story point back to 1
+      expect(result.current.storyPointData[3].point).toBe(1);
+      expect(result.current.storyPointData[4].point).toBe(1);
     });
 
     it('returns the correct story point array for update backlog (To do => In progress)', () => {
@@ -249,10 +259,13 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(2);
-      expect(result.current.storyPointData[0].point).toBe(1);
-      // Same point
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(2 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
       expect(result.current.storyPointData[1].point).toBe(1);
+      // Same point
+      expect(result.current.storyPointData[2].point).toBe(1);
+      expect(result.current.storyPointData[3].point).toBe(1);
     });
 
     it('returns the correct story point array for update backlog (Increase point)', () => {
@@ -267,10 +280,13 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(2);
-      expect(result.current.storyPointData[0].point).toBe(1);
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(2 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(1);
       // Added one point
-      expect(result.current.storyPointData[1].point).toBe(2);
+      expect(result.current.storyPointData[2].point).toBe(2);
+      expect(result.current.storyPointData[3].point).toBe(2);
     });
 
     it('returns the correct story point array for update backlog (Decrease point)', () => {
@@ -285,10 +301,13 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(2);
-      expect(result.current.storyPointData[0].point).toBe(1);
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(2 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(1);
       // Minus one point
-      expect(result.current.storyPointData[1].point).toBe(0);
+      expect(result.current.storyPointData[2].point).toBe(0);
+      expect(result.current.storyPointData[3].point).toBe(0);
     });
 
     it('returns the correct story point array for delete backlog', () => {
@@ -298,9 +317,12 @@ describe('useBurndownChart hook test', () => {
       ];
       const { result } = renderHook(() => useBurndownChart(history, mockSprintId));
 
-      expect(result.current.storyPointData.length).toBe(2);
-      expect(result.current.storyPointData[0].point).toBe(1);
-      expect(result.current.storyPointData[1].point).toBe(0);
+      // Include 2 dummy points
+      expect(result.current.storyPointData.length).toBe(2 + 2);
+      expect(result.current.storyPointData[0].point).toBe(0);
+      expect(result.current.storyPointData[1].point).toBe(1);
+      expect(result.current.storyPointData[2].point).toBe(0);
+      expect(result.current.storyPointData[3].point).toBe(0);
     });
   });
 });

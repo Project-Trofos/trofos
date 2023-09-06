@@ -1,4 +1,5 @@
 import trofosApiSlice from '.';
+import { OAuth2Payload } from './types';
 
 export enum UserRole {
   FACULTY = 1,
@@ -81,6 +82,14 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         invalidatesTags: ['UserInfo'],
       }),
     }),
+    oauth2Login: builder.mutation<void, OAuth2Payload>({
+      query: (oauthInfo) => ({
+        url: '/account/login/oauth2',
+        method: 'POST',
+        body: oauthInfo,
+        credentials: 'include',
+      }),
+    }),
   }),
 });
 
@@ -90,4 +99,5 @@ export const {
   useGetUserInfoQuery,
   useChangePasswordMutation,
   useUpdateUserInfoMutation,
+  useOauth2LoginMutation,
 } = extendedApi;

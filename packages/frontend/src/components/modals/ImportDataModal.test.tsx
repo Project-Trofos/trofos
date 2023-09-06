@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import user from '@testing-library/user-event';
 import server from '../../mocks/server';
@@ -104,18 +104,32 @@ describe('test import data modal', () => {
 
   it('should enable the import button when a file is selected to be uploaded', async () => {
     setup(mockCourseData, [mockProjectData]);
-    const input = screen.getByTestId('upload-button');
-    user.upload(input, mockFile);
+    const input = screen.getByTestId('upload-button') as HTMLInputElement;
+    /* eslint-disable testing-library/no-unnecessary-act */
+    await act(async () => {
+      fireEvent.change(input, {target: {files: [mockFile]}});
+    })
+    /* eslint-enable */
+
+    expect(input.files![0]).toStrictEqual(mockFile);
+    expect(input.files).toHaveLength(1);
 
     const button = screen.getByRole('button', { name: /^import$/i });
     expect(button).toBeEnabled();
   });
 
   it('should prevent the user from uploading a csv if the course has projects', async () => {
+
     setup(mockCourseData, [mockProjectData]);
-    const input = screen.getByTestId('upload-button');
-    user.upload(input, mockFile);
+    const input = screen.getByTestId('upload-button') as HTMLInputElement;
+    /* eslint-disable testing-library/no-unnecessary-act */
+    await act(async () => {
+      fireEvent.change(input, {target: {files: [mockFile]}});
+    })
     /* eslint-enable */
+
+    expect(input.files![0]).toStrictEqual(mockFile);
+    expect(input.files).toHaveLength(1);
 
     const button = screen.getByText(/^import$/i);
     fireEvent.click(button);

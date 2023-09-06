@@ -28,14 +28,14 @@ function projectPolicyConstraint(userId: number, isUserAdmin: boolean) {
 
     can('manage', 'Project', {
       course: {
-        courseRoles : {
-          some : {
-            user_id : userId, // User must be part of the course and not be a student
-            role_id : {
-              not : STUDENT_ROLE_ID
-            }
-          }
-        }
+        courseRoles: {
+          some: {
+            user_id: userId, // User must be part of the course and not be a student
+            role_id: {
+              not: STUDENT_ROLE_ID,
+            },
+          },
+        },
       },
     });
   }

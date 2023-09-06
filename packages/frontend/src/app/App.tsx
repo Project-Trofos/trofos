@@ -27,6 +27,9 @@ import ProjectFeedbacks from '../pages/ProjectFeedbacks';
 import CourseStatistics from '../pages/CourseStatistics';
 import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
 import CourseMilestones from '../pages/CourseMilestones';
+import Callback from '../pages/Callback';
+import ProjectStatistics from '../pages/ProjectStatistics';
+
 
 function App() {
   return (
@@ -46,6 +49,7 @@ function App() {
             <Route path="board" element={<ScrumBoard />} />
             <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
             <Route path="feedback" element={<ProjectFeedbacks />} />
+            <Route path="statistics" element={<ProjectStatistics />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
           <Route path="courses" element={<Courses />} />
@@ -89,6 +93,7 @@ function App() {
           />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/callback/*" element={<Callback />} />
         <Route
           path="*"
           element={
