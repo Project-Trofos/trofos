@@ -8,7 +8,7 @@ describe('test InputWithButton', () => {
     const PLACEHOLDER = 'placeholder';
 
     const setup = () => {
-      const handleClickFunc = jest.fn();
+      const handleClickFunc = vi.fn();
       const utils = render(
         <InputWithButton handleClick={handleClickFunc} buttonText={BUTTON_TEXT} inputPlaceholder={PLACEHOLDER} />,
       );

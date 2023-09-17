@@ -11,7 +11,7 @@ describe('test announcement update modal', () => {
   const initialTitle = 'INITIAL_TITLE';
 
   const setup = () => {
-    const updateFunc = jest.fn();
+    const updateFunc = vi.fn();
     const { baseElement, debug } = render(
       <Provider store={store}>
         <AnnouncementUpdateModal

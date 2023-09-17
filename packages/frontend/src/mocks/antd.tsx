@@ -3,8 +3,8 @@ import { Select as AntdSelect, DatePicker as AntdDatePicker } from 'antd';
 import mockDayjs from 'dayjs';
 
 // Mock certain antd component to simplify testing in React Testing Library
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd');
+vi.mock('antd', async () => { 
+  const antd: any = await vi.importActual('antd');
   antd.theme.defaultConfig.hashed = false;
 
   function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {

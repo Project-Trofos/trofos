@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test button form modal modal should appear when button is pressed 1`] = `
+exports[`test button form modal > modal should appear when button is pressed 1`] = `
 <body>
   <div>
     <button
@@ -151,7 +151,7 @@ exports[`test button form modal modal should appear when button is pressed 1`] =
 </body>
 `;
 
-exports[`test button form modal render modal correctly 1`] = `
+exports[`test button form modal > render modal correctly 1`] = `
 <body>
   <div>
     <button

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ProjectBacklogStatusForm test when rendering should render according to the snapshot 1`] = `
+exports[`ProjectBacklogStatusForm test > when rendering > should render according to the snapshot 1`] = `
 <body>
   <div>
     <form

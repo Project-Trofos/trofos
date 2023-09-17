@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test milestone creation modal when rendering should render correct fields 1`] = `
+exports[`test milestone creation modal > when rendering > should render correct fields 1`] = `
 <body>
   <div>
     <div

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test Timestamp when rendering should render edited timestamp correctly 1`] = `
+exports[`test Timestamp > when rendering > should render edited timestamp correctly 1`] = `
 <body>
   <div>
     <div>
@@ -18,7 +18,7 @@ exports[`test Timestamp when rendering should render edited timestamp correctly 
 </body>
 `;
 
-exports[`test Timestamp when rendering should render normal timestamp correctly 1`] = `
+exports[`test Timestamp > when rendering > should render normal timestamp correctly 1`] = `
 <body>
   <div>
     <div>

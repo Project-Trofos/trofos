@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test course creation modal should render fields if there are users without project 1`] = `
+exports[`test course creation modal > should render fields if there are users without project 1`] = `
 <body>
   <div>
     <button

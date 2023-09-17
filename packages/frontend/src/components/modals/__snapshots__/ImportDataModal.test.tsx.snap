@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test import data modal should display the components correctly 1`] = `
+exports[`test import data modal > should display the components correctly 1`] = `
 <body>
   <div>
     <button

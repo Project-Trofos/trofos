@@ -8,8 +8,8 @@ describe('SprintModal tests', () => {
   it('renders new sprint modal with correct fields', () => {
     const mockSprintCreationModalProps = {
       isModalVisible: true,
-      setIsModalVisible: jest.fn(),
-      setSprint: jest.fn(),
+      setIsModalVisible: vi.fn(),
+      setSprint: vi.fn(),
       latestSprint: {
         name: 'Sprint 1',
         dates: undefined,
