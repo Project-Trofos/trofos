@@ -4,7 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import matchers from '@testing-library/jest-dom/matchers';
+import * as matchers from '@testing-library/jest-dom/matchers'
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { expect } from 'vitest';
