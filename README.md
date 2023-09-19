@@ -1,7 +1,10 @@
+## Prerequisites
+Install pnpm with `npm install -g pnpm`
+
 ### Setup project
 
-`npm install`
+`pnpm install`
 
 ### Start backend & frontend
 
-`npm start`
+`pnpm start`
