@@ -53,6 +53,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
+    "host": "vite --host",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
     "generate-package-lock": "pnpm i --package-lock-only --ignore-scripts"

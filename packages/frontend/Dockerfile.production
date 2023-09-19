@@ -24,4 +24,4 @@ ENTRYPOINT ["pnpm", "start"]
 # Production stage
 FROM base as prod
 # Command to run our app
-ENTRYPOINT ["pnpm", "run", "start"]
+ENTRYPOINT ["pnpm", "run", "host"]
