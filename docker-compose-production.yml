@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile.production
       target: prod
     ports:
-      - '3000:3000'
+      - '5173:5173'
     container_name: trofos-frontend-production
     restart: always
     links:

@@ -19,7 +19,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 'lts/hydrogen'
       - name: Install wait-on
         run: npm i -g wait-on@6.0.1
       - name: Setup Postgres container
