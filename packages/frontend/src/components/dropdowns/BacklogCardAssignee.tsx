@@ -1,8 +1,8 @@
 import React from 'react';
-import { Avatar, message, Select } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
+import { UserAvatar } from '../avatar/UserAvatar';
 import { UserData } from '../../api/types';
 import './BacklogCardAssignee.css';
 
@@ -47,7 +47,11 @@ export default function BacklogCardAssignee(props: {
     >
       {projectUsers?.map((user) => (
         <Option key={user.user.user_id} value={user.user.user_id}>
-          <Avatar className="assignee-avatar" style={{ backgroundColor: '#85041C' }} icon={<UserOutlined />} />
+          <UserAvatar
+            className="assignee-avatar"
+            userDisplayName={user.user.user_display_name}
+            userHashString={user.user.user_email}
+          />
           <span className="assignee-display-name">{user.user.user_display_name}</span>
         </Option>
       ))}
