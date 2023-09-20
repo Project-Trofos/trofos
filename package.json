@@ -54,9 +54,5 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": true,
-  "dependencies": {
-    "prisma": "4.8.1",
-    "@prisma/client": "4.8.1"
-  }
+  "private": true
 }
