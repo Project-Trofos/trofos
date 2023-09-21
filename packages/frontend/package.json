@@ -51,6 +51,7 @@
   },
   "scripts": {
     "start": "vite",
+    "start-dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "host": "vite --host",

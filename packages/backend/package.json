@@ -5,9 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "prisma-generate": "dotenv -e .env.production.local -- npx prisma generate",
+    "prisma-seed-dev": "pnpm exec prisma db seed",
     "prisma-db-push": "dotenv -e .env.development.local -- npx prisma db push",
     "prisma-migrate-prod": "dotenv -e .env.production.local -- npx prisma migrate deploy",
     "prisma-migrate-dev": "dotenv -e .env.development.local -- npx prisma migrate dev",
+    "prisma-migrate-reset": "dotenv -e .env.development.local -- npx prisma migrate reset --force",
     "prisma-migrate-ci": "npx prisma migrate reset --force && npx prisma generate",
     "build": "tsc --project tsconfig.build.json",
     "start-prod": "pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
