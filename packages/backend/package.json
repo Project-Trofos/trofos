@@ -14,7 +14,7 @@
     "prisma-migrate-ci": "npx prisma migrate reset --force && npx prisma generate",
     "build": "tsc --project tsconfig.build.json",
     "start-prod": "pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
-    "start-dev": "pnpm run build && dotenv -e .env.development.local -- node dist/index.js",
+    "start-dev": "pnpm run build && dotenv -e .env.development.local -- nodemon",
     "start": "pnpm run build && node dist/index.js",
     "start:nodemon": "nodemon",
     "test": "jest --colors --detectOpenHandles --coverage --testPathIgnorePatterns=src/__tests__/e2e/*",
