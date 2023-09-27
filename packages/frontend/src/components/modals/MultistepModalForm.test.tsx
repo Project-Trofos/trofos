@@ -25,7 +25,7 @@ describe('test button form modal', () => {
     const BUTTON_NAME = 'button-name';
     const LABEL = 'label';
     const ATTR_NAME = 'attrName';
-    const onSubmitFunction = jest.fn();
+    const onSubmitFunction = vi.fn();
 
     const { baseElement } = render(
       <FormWrapper

@@ -16,7 +16,7 @@ export default function StrictModeDroppable({ children, ...props }: DroppablePro
     };
   }, []);
 
-  if (!enabled && process.env.NODE_ENV !== 'test') {
+  if (!enabled && import.meta.env.NODE_ENV !== 'test') {
     return null;
   }
 

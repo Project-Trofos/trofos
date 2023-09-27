@@ -4,8 +4,15 @@
 // learn more: https://github.com/testing-library/jest-dom
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import '@testing-library/jest-dom';
+import * as matchers from '@testing-library/jest-dom/matchers'
+import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/react';
+import { expect } from 'vitest';
 
+expect.extend(matchers);
+afterEach(() => {
+  cleanup();
+});
 // https://github.com/ant-design/ant-design/issues/21096
 Object.defineProperty(window, 'matchMedia', {
   value: () => ({
@@ -17,8 +24,8 @@ Object.defineProperty(window, 'matchMedia', {
 
 // https://github.com/ant-design/ant-design/blob/master/tests/setupAfterEnv.ts#L5-L26
 // Disable antd V5 `css-dev-only-do-not-override` hashing
-jest.mock('antd', () => {
-  const antd = jest.requireActual('antd');
+vi.mock('antd', async () => {
+  const antd: any = await vi.importActual('antd');
   antd.theme.defaultConfig.hashed = false;
 
   return antd;
@@ -40,7 +47,7 @@ class Worker {
     this.onmessage(msg);
   }
 }
-global.URL.createObjectURL = jest.fn();
+global.URL.createObjectURL = vi.fn();
 window.Worker = Worker as unknown as typeof window.Worker;
 
 // Resolve the issue where socket.io has a dependency using setImmediate

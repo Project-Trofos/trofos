@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import FormWrapper from './__testutils__/FormRenderHelper.test';
+import FormWrapper from './__testutils__/FormRenderHelper';
 import ProjectNameFormInput from './ProjectNameFormItem';
 
 describe('ProjectNameFormItem test', () => {

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import UserEmailFormItem from './UserEmailFormItem';
-import FormWrapper from './__testutils__/FormRenderHelper.test';
+import FormWrapper from './__testutils__/FormRenderHelper';
 
 describe('UserEmailFormItem test', () => {
   function renderForm() {

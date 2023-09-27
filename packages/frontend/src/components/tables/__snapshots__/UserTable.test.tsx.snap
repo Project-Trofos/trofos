@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test UserTable should render table with correct fields 1`] = `
+exports[`test UserTable > should render table with correct fields 1`] = `
 <body>
   <div>
     <div
