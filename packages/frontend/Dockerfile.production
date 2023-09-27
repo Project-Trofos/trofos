@@ -1,6 +1,7 @@
 # Base image
 FROM node:lts-alpine3.17 as base
 RUN npm install -g pnpm
+ENV CI=true
 
 # Expose port to access server
 EXPOSE 3000
@@ -13,13 +14,13 @@ WORKDIR /usr/src/app/frontend
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-RUN CI=true pnpm i
+RUN pnpm i --frozen-lockfile
 COPY . .
 # Test stage for CI
 FROM base as test
 # Run unit test
-RUN pnpm test
-ENTRYPOINT ["pnpm", "start"]
+RUN pnpm run test
+ENTRYPOINT ["pnpm", "run", "start"]
 
 # Production stage
 FROM base as prod
