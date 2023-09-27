@@ -21,14 +21,14 @@ describe('SprintCard test', () => {
   };
 
   const mockSprintListingCardProps = {
-    setSprint: jest.fn(),
-    setIsModalVisible: jest.fn(),
+    setSprint: vi.fn(),
+    setIsModalVisible: vi.fn(),
   };
 
   const { baseElement } = render(
     <BrowserRouter>
       <Provider store={store}>
-        <DragDropContext onDragEnd={jest.fn()}>
+        <DragDropContext onDragEnd={vi.fn()}>
           <SprintListingCard
             sprint={mockSprint}
             setIsModalVisible={mockSprintListingCardProps.setIsModalVisible}

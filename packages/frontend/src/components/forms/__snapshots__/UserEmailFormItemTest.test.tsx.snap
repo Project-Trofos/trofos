@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UserEmailFormItem test when rendering should have the correct fields 1`] = `
+exports[`UserEmailFormItem test > when rendering > should have the correct fields 1`] = `
 <body>
   <div>
     <form

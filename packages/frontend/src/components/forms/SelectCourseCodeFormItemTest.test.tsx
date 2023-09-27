@@ -2,7 +2,7 @@ import React from 'react';
 import '../../mocks/antd';
 import { render, screen } from '@testing-library/react';
 import { Select } from 'antd';
-import FormWrapper from './__testutils__/FormRenderHelper.test';
+import FormWrapper from './__testutils__/FormRenderHelper';
 import SelectCourseCodeFormItem from './SelectCourseCodeFormItem';
 
 describe('SelectCourseCodeFormItem test', () => {

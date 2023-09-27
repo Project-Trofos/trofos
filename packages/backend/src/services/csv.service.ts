@@ -14,7 +14,7 @@ import {
   INVALID_TEAM_NAME,
   MESSAGE_SPACE,
 } from './types/csv.service.types';
-import { ROLE_ID_MAP, STUDENT_ROLE_ID } from '../helpers/constants';
+import { ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 
 function validateTeamName(data: ImportCourseDataCsv): boolean {
@@ -92,7 +92,13 @@ async function processImportCourseData(
           pname: groupData.projectName,
           pkey: groupData.teamName,
           course_id: groupData.courseId,
+          backlogStatuses: {
+            createMany: {
+              data: defaultBacklogStatus,
+            },
+          },
         },
+        
       });
       groupData.projectId = project.id;
       groupDetailsMap.set(groupName, groupData);

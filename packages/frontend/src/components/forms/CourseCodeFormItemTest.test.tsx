@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import CourseCodeFormItem from './CourseCodeFormItem';
-import FormWrapper from './__testutils__/FormRenderHelper.test';
+import FormWrapper from './__testutils__/FormRenderHelper';
 
 describe('CourseCodeFormItem test', () => {
   function renderForm(required?: boolean) {

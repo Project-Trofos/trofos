@@ -38,7 +38,7 @@ describe('ScrumBoardCard test', () => {
   const { baseElement } = render(
     <Provider store={store}>
       <BrowserRouter>
-        <DragDropContext onDragEnd={jest.fn()}>
+        <DragDropContext onDragEnd={vi.fn()}>
           <StrictModeDroppable droppableId={mockDroppableId}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>

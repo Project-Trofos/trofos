@@ -1,5 +1,6 @@
 # Base image
-FROM node:16.17.0-alpine as base
+FROM node:lts-alpine3.17 as base
+RUN npm install -g pnpm
 
 # Expose port to access server
 EXPOSE 3000
@@ -10,22 +11,17 @@ RUN mkdir -p /usr/src/app/frontend
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/frontend
 
-# Copy package json and install dependencies
-COPY package*.json ./
-
+COPY package.json .
+COPY pnpm-lock.yaml .
+RUN CI=true pnpm i
+COPY . .
 # Test stage for CI
 FROM base as test
-RUN npm ci
-# Copy our app
-COPY . .
 # Run unit test
-RUN npm test
-ENTRYPOINT ["npm", "start"]
+RUN pnpm test
+ENTRYPOINT ["pnpm", "start"]
 
 # Production stage
 FROM base as prod
-RUN npm ci
-# Copy our app
-COPY . .
 # Command to run our app
-ENTRYPOINT ["npm", "run", "start-dev"]
+ENTRYPOINT ["pnpm", "run", "host"]
