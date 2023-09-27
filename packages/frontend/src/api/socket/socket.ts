@@ -16,9 +16,9 @@ type ClientToServerEvents = {
 };
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  import.meta.env.REACT_APP_SOCKET_IO_BASE_URL || 'http://localhost:3001',
+  import.meta.env.VITE_SOCKET_IO_BASE_URL || 'http://localhost:3001',
   {
-    path: import.meta.env.REACT_APP_SOCKET_IO_PATH || '/socket.io/',
+    path: import.meta.env.VITE_SOCKET_IO_PATH || '/socket.io/',
     withCredentials: true,
     transports: ['websocket'],
   },
