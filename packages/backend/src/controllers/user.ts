@@ -17,10 +17,10 @@ async function create(req: express.Request, res: express.Response) {
   try {
     const { userEmail, newPassword } = req.body;
 
-    assertInputIsNotEmpty(userEmail, 'User Email');
-    assertInputIsNotEmpty(newPassword, 'User Password');
+    assertInputIsNotEmpty<string>(userEmail, 'User Email');
+    assertInputIsNotEmpty<string>(newPassword, 'User Password');
 
-    await userService.create(userEmail, newPassword);
+    await userService.create(userEmail.toLowerCase(), newPassword);
 
     return res.status(StatusCodes.OK).json({ message: 'User successfully created' });
   } catch (error) {

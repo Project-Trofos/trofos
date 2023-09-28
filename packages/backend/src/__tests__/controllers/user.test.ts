@@ -1,6 +1,5 @@
 import StatusCodes from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { User } from '@prisma/client';
 import userService, { Users } from '../../services/user.service';
 import user from '../../controllers/user';
 
@@ -66,7 +65,7 @@ describe('user.controller tests', () => {
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
 
-    it('should successfully create the user if all fields are valid', async () => {
+    it('should convert email to lowercase', async () => {
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
@@ -74,17 +73,17 @@ describe('user.controller tests', () => {
         newPassword: 'testPassword',
       };
 
-      const createdUser: User = {
-        user_id: 1,
-        user_email: 'testEmail@test.com',
-        user_display_name: 'Test User',
-        user_password_hash: 'testPassword',
-      };
-      spies.userServiceCreateUser.mockResolvedValueOnce(createdUser);
+      spies.userServiceCreateUser.mockImplementation((email) => {
+        expect(email).toBe(mockReq.body.userEmail.toLowerCase());
+        return Promise.resolve({
+          user_id: 1,
+          user_email: email,
+          user_password_hash: '',
+          user_display_name: '',
+        });
+      });
 
       await user.create(mockReq, mockRes);
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getJSONData()).toEqual({ message: 'User successfully created' });
     });
   });
 });

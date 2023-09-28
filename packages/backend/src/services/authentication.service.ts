@@ -9,7 +9,7 @@ async function validateUser(userEmail: string, userPassword: string): Promise<Us
   let userAuth: UserAuth;
   const userLoginInformation = await prisma.user.findUnique({
     where: {
-      user_email: userEmail,
+      user_email: userEmail.toLowerCase(),
     },
   });
 
