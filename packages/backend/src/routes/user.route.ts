@@ -10,4 +10,6 @@ router.get('/', hasAuth(Action.read_users, null), user.getAll);
 
 router.post('/', hasAuth(Action.create_users, null), user.create);
 
+router.delete('/:userId', hasAuth(Action.create_users, null), user.remove)
+
 export default router;

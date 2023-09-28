@@ -1,6 +1,10 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { assertInputIsNotEmpty, getErrorMessage } from '../helpers/error';
+import { assertInputIsNotEmpty, 
+         getErrorMessage,
+         assertUserIdIsValid,
+         getDefaultErrorRes } 
+from '../helpers/error';
 import userService from '../services/user.service';
 
 async function getAll(req: express.Request, res: express.Response) {
@@ -29,7 +33,23 @@ async function create(req: express.Request, res: express.Response) {
   }
 }
 
+async function remove(req: express.Request, res: express.Response) {
+  try {
+    const { userId } = req.params;
+    console.log(`userId in controller is: ${userId}`);
+    assertUserIdIsValid(userId);
+    console.log("userId is valid!");
+
+    const result = await userService.remove(Number(userId));
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   create,
+  remove,
 };
