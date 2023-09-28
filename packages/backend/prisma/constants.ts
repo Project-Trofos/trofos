@@ -13,11 +13,11 @@ export const BACKLOG_USER_1_DISPLAY_NAME = 'Backlog User 1';
 export const BACKLOG_USER_2_DISPLAY_NAME = 'Backlog User 2';
 
 // User Emails
-export const USER_1_EMAIL = 'testUser@test.com';
-export const USER_2_EMAIL = 'testFaculty@test.com';
-export const USER_3_EMAIL = 'testAdmin@test.com';
-export const BACKLOG_USER_1_EMAIL = 'testBacklogUser1@test.com';
-export const BACKLOG_USER_2_EMAIL = 'testBacklogUser2@test.com';
+export const USER_1_EMAIL = 'testuser@test.com';
+export const USER_2_EMAIL = 'testfaculty@test.com';
+export const USER_3_EMAIL = 'testadmin@test.com';
+export const BACKLOG_USER_1_EMAIL = 'testbackloguser1@test.com';
+export const BACKLOG_USER_2_EMAIL = 'testbackloguser2@test.com';
 
 // Role Id
 export const FACULTY_ROLE_ID = 1;
