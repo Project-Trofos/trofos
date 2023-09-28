@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { ROLE_ID_MAP } from '../../helpers/constants';
 
 export const IMPORT_COURSE_DATA_CONFIG = {

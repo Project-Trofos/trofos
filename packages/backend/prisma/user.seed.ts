@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import {
   USER_1_EMAIL,
   USER_2_EMAIL,

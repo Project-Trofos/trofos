@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import prisma from '../models/prismaClient';
 
 async function changePassword(userId: number, oldUserPassword: string, newUserPassword: string): Promise<User> {
