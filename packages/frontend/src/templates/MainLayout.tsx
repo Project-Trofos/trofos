@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Switch } from 'antd';
 import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,8 @@ import conditionalRender from '../helpers/conditionalRender';
 import AvatarButton from '../components/button/AvatarButton';
 
 import './MainLayout.css';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { toggleTheme } from '../app/themeSlice';
 
 const { Header, Sider, Content } = Layout;
 
@@ -59,6 +61,8 @@ function LoggedOutHeader() {
 
 function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const accountMenuItems = [
     {
@@ -81,6 +85,9 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
 
   return (
     <>
+      <Col>
+        <Switch checked={isDarkTheme} onClick={() => dispatch(toggleTheme())} />
+      </Col>
       <Col>
         <GlobalSearch />
       </Col>

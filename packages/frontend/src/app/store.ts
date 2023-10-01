@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     [trofosApiSlice.reducerPath]: trofosApiSlice.reducer,
     [nusmodsApiSlice.reducerPath]: nusmodsApiSlice.reducer,
-    themeSlice: themeSlice,
+    themeSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(trofosApiSlice.middleware).concat(nusmodsApiSlice.middleware),
