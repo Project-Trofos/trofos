@@ -11,17 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#32a2ac',
-            colorLink: '#32a2ac',
-            colorLinkHover: '#3ac1cd',
-          },
-        }}
-      >
         <App />
-      </ConfigProvider>
     </Provider>
   </React.StrictMode>,
 );
