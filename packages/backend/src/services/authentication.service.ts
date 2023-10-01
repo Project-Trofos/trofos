@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import oauth2Engine from '../auth/engine.oauth2';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 import prisma from '../models/prismaClient';

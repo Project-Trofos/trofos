@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import accountService from '../../services/account.service';
 import { userData } from '../mocks/userData';

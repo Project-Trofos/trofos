@@ -1,5 +1,5 @@
 import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 import { exclude } from '../helpers/common';
