@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons/lib/icons';
-import { AutoComplete, Input, InputRef } from 'antd';
+import { AutoComplete, Button, Input, InputRef, Switch } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllCoursesQuery } from '../../api/course';
 import { useGetAllProjectsQuery } from '../../api/project';
@@ -85,7 +85,7 @@ export default function GlobalSearch(): JSX.Element {
     <div className="search-container">
       <SearchOutlined className="search-icon" onClick={handleClick} />
       <AutoComplete
-        className={isInputHidden ? 'search-input-hidden' : 'search-input'}
+        // className={`search-input  ${isInputHidden ? 'search-input-hidden' : ''} `}
         options={allOptions}
         value={searchString}
         onSelect={handleSelect}
