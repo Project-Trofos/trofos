@@ -29,19 +29,11 @@ import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRout
 import CourseMilestones from '../pages/CourseMilestones';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/ProjectStatistics';
-import { ConfigProvider } from 'antd';
+import ThemeProvider from '../components/theming/ThemeProvider';
 
 function App() {
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#32a2ac',
-          colorLink: '#32a2ac',
-          colorLinkHover: '#3ac1cd',
-        },
-      }}
-    >
+    <ThemeProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout />}>
@@ -113,7 +105,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
-    </ConfigProvider>
+    </ThemeProvider>
   );
 }
 

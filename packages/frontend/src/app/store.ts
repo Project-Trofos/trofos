@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import trofosApiSlice, { nusmodsApiSlice } from '../api';
+import themeSlice from './themeSlice';
 
 const store = configureStore({
   reducer: {
     [trofosApiSlice.reducerPath]: trofosApiSlice.reducer,
     [nusmodsApiSlice.reducerPath]: nusmodsApiSlice.reducer,
+    themeSlice: themeSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(trofosApiSlice.middleware).concat(nusmodsApiSlice.middleware),
