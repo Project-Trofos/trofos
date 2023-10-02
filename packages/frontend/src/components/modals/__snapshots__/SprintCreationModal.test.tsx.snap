@@ -160,10 +160,11 @@ exports[`SprintModal tests > renders new sprint modal with correct fields 1`] = 
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="duration_list_0"
                                   aria-autocomplete="list"
                                   aria-controls="duration_list"
+                                  aria-expanded="false"
                                   aria-haspopup="listbox"
+                                  aria-label="Search"
                                   aria-owns="duration_list"
                                   aria-required="true"
                                   autocomplete="off"
@@ -316,7 +317,7 @@ exports[`SprintModal tests > renders new sprint modal with correct fields 1`] = 
                           <textarea
                             class="ant-input"
                             id="goals"
-                            style="height: -54px; resize: none; min-height: -30px; max-height: -54px;"
+                            style="resize: none; height: -54px; min-height: -30px; max-height: -54px;"
                           />
                         </div>
                       </div>
@@ -350,7 +351,7 @@ exports[`SprintModal tests > renders new sprint modal with correct fields 1`] = 
   </div>
   <textarea
     aria-hidden="true"
-    style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;
+    style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;white-space:pre-wrap;
   min-height:0 !important;
   max-height:none !important;
   height:0 !important;

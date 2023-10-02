@@ -4,15 +4,14 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
 <body>
   <div>
     <div
-      class="ant-space ant-space-vertical"
+      class="ant-space ant-space-vertical ant-space-gap-row-middle ant-space-gap-col-middle"
       style="display: flex;"
     >
       <div
         class="ant-space-item"
-        style="margin-bottom: 16px;"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
           style="display: flex; justify-content: space-between;"
         >
           <div
@@ -96,12 +95,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -120,7 +120,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -158,12 +158,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -182,7 +183,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -220,12 +221,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -244,7 +246,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -282,12 +284,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -306,7 +309,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -344,12 +347,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -368,7 +372,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -406,12 +410,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
                               >
                                 <span
+                                  aria-hidden="true"
                                   class="ant-table-column-sorter-inner"
                                 >
                                   <span
                                     aria-label="caret-up"
                                     class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -430,7 +435,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                   <span
                                     aria-label="caret-down"
                                     class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                    role="presentation"
+                                    role="img"
                                   >
                                     <svg
                                       aria-hidden="true"
@@ -474,12 +479,13 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
                                   >
                                     <span
+                                      aria-hidden="true"
                                       class="ant-table-column-sorter-inner"
                                     >
                                       <span
                                         aria-label="caret-up"
                                         class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                        role="presentation"
+                                        role="img"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -498,7 +504,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                                       <span
                                         aria-label="caret-down"
                                         class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                        role="presentation"
+                                        role="img"
                                       >
                                         <svg
                                           aria-hidden="true"
@@ -599,7 +605,7 @@ exports[`test CourseTable > should render table with correct fields 1`] = `
                             class="ant-table-cell"
                           >
                             <div
-                              class="ant-space ant-space-horizontal ant-space-align-center"
+                              class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-middle ant-space-gap-col-middle"
                             >
                               <div
                                 class="ant-space-item"

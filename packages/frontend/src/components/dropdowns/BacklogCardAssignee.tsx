@@ -43,7 +43,7 @@ export default function BacklogCardAssignee(props: {
       onChange={handleAssigneeChange}
       dropdownMatchSelectWidth={false}
       allowClear
-      showArrow={false}
+      suffixIcon={false}
     >
       {projectUsers?.map((user) => (
         <Option key={user.user.user_id} value={user.user.user_id}>
