@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons/lib/icons';
-import { AutoComplete, Button, Input, InputRef, Switch } from 'antd';
+import { AutoComplete, Button, Input, InputRef, Space, Switch } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllCoursesQuery } from '../../api/course';
 import { useGetAllProjectsQuery } from '../../api/project';
@@ -82,7 +82,7 @@ export default function GlobalSearch(): JSX.Element {
   };
 
   return (
-    <div className="search-container">
+    <Space size={"small"}>
       <SearchOutlined className="search-icon" onClick={handleClick} />
       <AutoComplete
         // className={`search-input  ${isInputHidden ? 'search-input-hidden' : ''} `}
@@ -94,7 +94,7 @@ export default function GlobalSearch(): JSX.Element {
       >
         <Input placeholder="type to search" onChange={handleChange} ref={inputRef} onBlur={handleBlur} />
       </AutoComplete>
-    </div>
+    </Space>
   );
 }
 

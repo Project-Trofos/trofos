@@ -94,7 +94,6 @@ export default function CoursePage(): JSX.Element {
             : undefined
         }
         breadcrumb={breadCrumbs}
-        style={{ backgroundColor: '#FFF' }}
         footer={
           <Tabs
             items={[

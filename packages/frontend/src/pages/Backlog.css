@@ -14,7 +14,7 @@
 }
 
 .backlog-page-container {
-  background: #fff;
+  /* background: #fff; */
   height: 100%;
 }
 
@@ -35,7 +35,7 @@
 
 .backlog-data-container textarea.ant-input.summary-input:hover,
 .backlog-data-container textarea.ant-input.backlog-textarea:hover {
-  background-color: #efefef;
+  /* background-color: #efefef; */
 }
 
 .backlog-data-container .backlog-description-container {

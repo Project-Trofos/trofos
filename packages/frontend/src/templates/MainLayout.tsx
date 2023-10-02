@@ -86,7 +86,13 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   return (
     <>
       <Col>
-        <Switch checked={isDarkTheme} onClick={() => dispatch(toggleTheme())} />
+        {/* TODO: change icons */}
+        <Switch
+          checkedChildren={'L'}
+          unCheckedChildren={'D'}
+          checked={isDarkTheme}
+          onClick={() => dispatch(toggleTheme())}
+        />
       </Col>
       <Col>
         <GlobalSearch />
@@ -223,7 +229,7 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: '0 16px' }}>
+        <Header style={{ padding: '0 16px', borderBottom: '1px solid gray' }}>
           <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
             {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
           </Row>

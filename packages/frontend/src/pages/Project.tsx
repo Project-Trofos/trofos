@@ -129,7 +129,6 @@ export default function ProjectPage(): JSX.Element {
         }
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
-        style={{ backgroundColor: '#FFF' }}
         footer={
           <Tabs
             items={[
