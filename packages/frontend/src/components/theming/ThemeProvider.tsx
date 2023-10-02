@@ -9,7 +9,7 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
   return (
     <ConfigProvider
       theme={{
-        algorithm: !isDarkTheme ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+        algorithm: isDarkTheme ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
         token: {
           colorPrimary,
           colorLink: colorPrimary
