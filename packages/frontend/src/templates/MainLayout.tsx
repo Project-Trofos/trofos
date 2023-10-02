@@ -15,6 +15,7 @@ import AvatarButton from '../components/button/AvatarButton';
 import './MainLayout.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { toggleTheme } from '../app/themeSlice';
+import ThemeSwitch from '../components/theming/ThemeSwitch';
 
 const { Header, Sider, Content } = Layout;
 
@@ -61,8 +62,6 @@ function LoggedOutHeader() {
 
 function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const accountMenuItems = [
     {
@@ -86,13 +85,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   return (
     <>
       <Col>
-        {/* TODO: change icons */}
-        <Switch
-          checkedChildren={'L'}
-          unCheckedChildren={'D'}
-          checked={isDarkTheme}
-          onClick={() => dispatch(toggleTheme())}
-        />
+      <ThemeSwitch />
       </Col>
       <Col>
         <GlobalSearch />
