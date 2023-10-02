@@ -31,10 +31,6 @@
   text-align: center;
 }
 
-.scrum-board-card-points.points-active {
-  background-color: #ededed;
-}
-
 .scrum-board-card-priority {
   width: 60px;
   border-radius: 8px;
