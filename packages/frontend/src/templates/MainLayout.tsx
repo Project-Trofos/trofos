@@ -229,7 +229,7 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: '0 16px', borderBottom: '1px solid gray' }}>
+        <Header style={{ padding: '0 16px' }}>
           <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
             {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
           </Row>
