@@ -52,10 +52,6 @@
   display: none !important;
 }
 
-.backlog-data-container div.ant-input-number.backlog-inputnumber {
-  border: none;
-}
-
 .backlog-menu-container {
   text-align: right;
   margin: 15px 10px;
