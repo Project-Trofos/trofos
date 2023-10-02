@@ -12,7 +12,8 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
         algorithm: isDarkTheme ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
         token: {
           colorPrimary,
-          colorLink: colorPrimary
+          colorLink: colorPrimary,
+          colorBgBase: isDarkTheme ? "rgb(10, 10, 10)" : "#FFF"
         },
         components: {
           Layout: {
