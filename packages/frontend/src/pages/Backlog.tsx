@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, message, Typography } from 'antd';
+import { Card, Form, message, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetBacklogQuery } from '../api/backlog';
 import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
@@ -153,44 +153,44 @@ function Backlog(): JSX.Element {
               <Form.Item name="status">
                 <BacklogStatusSelect status={projectData?.backlogStatuses || []} />
               </Form.Item>
-              <div className="backlog-panel-container">
+              <Card className="backlog-panel-container">
                 <div>
-                  <span>Assignee</span>
+                  <label>Assignee</label>
                   <Form.Item name="assignee_id">
                     <BacklogUserSelect options={projectData?.users || []} allowClear />
                   </Form.Item>
                 </div>
                 <div>
-                  <span>Type</span>
+                  <label>Type</label>
                   <Form.Item name="type" rules={[{ required: true }]}>
                     <BacklogSelect options={TYPES} />
                   </Form.Item>
                 </div>
                 <div>
-                  <span>Priority</span>
+                  <label>Priority</label>
                   <Form.Item name="priority">
                     <BacklogSelect options={PRIORITIES} allowClear />
                   </Form.Item>
                 </div>
                 <div>
-                  <span>Sprint</span>
+                  <label>Sprint</label>
                   <Form.Item name="sprint_id">
                     <BacklogSelect options={projectData?.sprints || []} allowClear />
                   </Form.Item>
                 </div>
                 <div>
-                  <span>Point(s)</span>
+                  <label>Point(s)</label>
                   <Form.Item name="points">
                     <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
                   </Form.Item>
                 </div>
                 <div>
-                  <span>Reporter</span>
+                  <label>Reporter</label>
                   <Form.Item name="reporter_id" rules={[{ required: true }]}>
                     <BacklogUserSelect options={projectData?.users || []} />
                   </Form.Item>
                 </div>
-              </div>
+              </Card>
               <div className="backlog-menu-container">
                 <BacklogMenu projectId={projectId} backlogId={backlogId} />
               </div>
