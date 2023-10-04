@@ -13,6 +13,7 @@ import conditionalRender from '../helpers/conditionalRender';
 import AvatarButton from '../components/button/AvatarButton';
 
 import './MainLayout.css';
+import ProjectTabs from '../components/tabs/ProjectTabs';
 
 const { Header, Sider, Content } = Layout;
 
@@ -51,9 +52,9 @@ function LogoutText() {
 
 function LoggedOutHeader() {
   return (
-    <Col>
+    <>
       <Link to="/login">Log in</Link>
-    </Col>
+    </>
   );
 }
 
@@ -80,10 +81,8 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <>
-      <Col>
-        <GlobalSearch />
-      </Col>
+    <Row>
+      <GlobalSearch />
       {/* TODO: To be implemented */}
       {/* <Col>
           <QuestionCircleOutlined />
@@ -91,14 +90,12 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <Col>
           <BellOutlined />
         </Col> */}
-      <Col>
-        <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
-          <div className="avatar-group">
-            <AvatarButton userInfo={userInfo} />
-          </div>
-        </Dropdown>
-      </Col>
-    </>
+      <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
+        <div className="avatar-group">
+          <AvatarButton userInfo={userInfo} />
+        </div>
+      </Dropdown>
+    </Row>
   );
 }
 
@@ -217,9 +214,13 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
-          <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
+          {/* <Row>
+              <ProjectTabs />
             {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
-          </Row>
+          </Row> */}
+
+          <ProjectTabs />
+          {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
           <Outlet />

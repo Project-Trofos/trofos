@@ -14,6 +14,7 @@ import useSocket from '../api/socket/useSocket';
 import trofosApiSlice from '../api';
 import store from '../app/store';
 import { UpdateType } from '../api/socket/socket';
+import ProjectTabs from '../components/tabs/ProjectTabs';
 
 const { Text } = Typography;
 
@@ -127,22 +128,7 @@ export default function ProjectPage(): JSX.Element {
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
-        footer={
-          <Tabs
-            items={[
-              { key: 'overview', label: 'Overview' },
-              { key: 'users', label: 'Users' },
-              { key: 'sprint', label: 'Sprint' },
-              { key: 'board', label: 'Board' },
-              { key: 'feedback', label: 'Feedback' },
-              { key: 'statistics', label: 'Statistics' },
-              { key: 'settings', label: 'Settings' },
-            ]}
-            activeKey={selectedTab}
-            className="footer-tabs"
-            onChange={(key) => navigate(`/project/${project.id}/${key}`)}
-          />
-        }
+        footer={<ProjectTabs />}
       >
         {project.description && <Text>{project.description}</Text>}
       </PageHeader>
