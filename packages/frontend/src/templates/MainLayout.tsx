@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space } from 'antd';
 import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -81,7 +81,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <Row>
+    <Space>
       <GlobalSearch />
       {/* TODO: To be implemented */}
       {/* <Col>
@@ -95,7 +95,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
           <AvatarButton userInfo={userInfo} />
         </div>
       </Dropdown>
-    </Row>
+    </Space>
   );
 }
 
@@ -218,9 +218,12 @@ export default function MainLayout() {
               <ProjectTabs />
             {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
           </Row> */}
-
-          <ProjectTabs />
-          {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
+          <Row justify={'space-between'}>
+            <Col span={12}>
+              <ProjectTabs />
+            </Col>
+            <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
+          </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
           <Outlet />
