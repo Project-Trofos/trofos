@@ -20,7 +20,7 @@ const { Text } = Typography;
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['menu'] }) {
   return (
     <Dropdown key="more" menu={projectMenu} placement="bottomRight">
-      <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
+      <Button size="small" type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
 }
@@ -107,26 +107,23 @@ export default function ProjectPage(): JSX.Element {
   const breadCrumbs = (
     <Breadcrumb>
       <Breadcrumb.Item>
-        <Link to="/projects">Project</Link>
+        {course ? (
+          <>
+            <Link to={`/course/${project.course_id}/overview`}>{project.course.cname}</Link>
+          </>
+        ) : (
+          <span>Independent Project</span>
+        )}
       </Breadcrumb.Item>
-      <Breadcrumb.Item>{project.pname}</Breadcrumb.Item>
+      <Breadcrumb.Item>
+        <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>
+      </Breadcrumb.Item>
     </Breadcrumb>
   );
 
   return (
     <>
       <PageHeader
-        title={project.pname}
-        subTitle={
-          course ? (
-            <>
-              <Tag>{course?.code}</Tag>
-              <span>{course?.cname}</span>
-            </>
-          ) : (
-            <Tag>Independent Project</Tag>
-          )
-        }
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}

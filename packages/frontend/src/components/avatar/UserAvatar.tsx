@@ -48,7 +48,7 @@ const withColorAndTooltip = (WrappedAvatar: React.ComponentType<AvatarProps>): R
     const fontColor: string = getContrastYIQ(bgColor);
     return (
       <Tooltip title={userDisplayName}>
-        <WrappedAvatar style={{ backgroundColor: bgColor, color: fontColor }} {...restProps}>
+        <WrappedAvatar size="small" style={{ backgroundColor: bgColor, color: fontColor }} {...restProps}>
           {userInitials}
         </WrappedAvatar>
       </Tooltip>

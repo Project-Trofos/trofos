@@ -75,7 +75,9 @@ export default function CoursePage(): JSX.Element {
       <Breadcrumb.Item>
         <Link to="/courses">Courses</Link>
       </Breadcrumb.Item>
-      <Breadcrumb.Item>{course.cname}</Breadcrumb.Item>
+      <Breadcrumb.Item>
+        <Link to={`/courses/${course.id}/overview`}>{course.cname}</Link>
+      </Breadcrumb.Item>
     </Breadcrumb>
   );
 
