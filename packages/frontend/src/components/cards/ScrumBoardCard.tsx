@@ -1,9 +1,9 @@
 import React from 'react';
-import { Avatar, Card } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Card } from 'antd';
 import { Draggable } from 'react-beautiful-dnd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
+import { UserAvatar } from '../avatar/UserAvatar';
 import type { Backlog } from '../../api/types';
 import './ScrumBoardCard.css';
 
@@ -32,12 +32,12 @@ function ScrumBoardCard(props: { backlog: Backlog; projectKey: string | null | u
               <div className={`scrum-board-card-points ${backlog.points ? 'points-active' : ''}`}>{backlog.points}</div>
               <div className={`scrum-board-card-priority ${backlog.priority}-priority`}>{backlog.priority}</div>
               <div className="scrum-board-card-assignee">
-                {backlog.assignee_id && (
-                  <Avatar
+                {backlog.assignee && (
+                  <UserAvatar
                     className="assignee-avatar"
                     size="small"
-                    style={{ backgroundColor: '#85041C' }}
-                    icon={<UserOutlined />}
+                    userHashString={backlog.assignee.user.user_email}
+                    userDisplayName={backlog.assignee.user.user_display_name}
                   />
                 )}
               </div>
