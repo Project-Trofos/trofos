@@ -19,11 +19,14 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 'lts/hydrogen'
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8  
       - name: Install wait-on
-        run: npm i -g wait-on@6.0.1
+        run: pnpm i -g wait-on@6.0.1
       - name: Setup Postgres container
-        run: npm run setup:ci
+        run: pnpm run setup:ci
       - name: Build and test backend
         run: docker compose -f docker-compose-ci.yml build backend
       - name: Build and test frontend
@@ -39,7 +42,7 @@ jobs:
       #   run: docker exec backend npm run test-e2e
       - name: Clean up containers
         if: always()
-        run: npm run cleanup:ci
+        run: pnpm run cleanup:ci
       - name: Send notification on failure
         if: failure()
         run: |

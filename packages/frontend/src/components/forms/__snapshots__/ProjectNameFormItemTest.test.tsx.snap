@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ProjectNameFormItem test when rendering should have correct fields 1`] = `
+exports[`ProjectNameFormItem test > when rendering > should have correct fields 1`] = `
 <body>
   <div>
     <form

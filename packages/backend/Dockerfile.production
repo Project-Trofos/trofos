@@ -1,5 +1,7 @@
 # Base image
-FROM node:16.17.0-alpine as base
+FROM node:lts-alpine3.17 as base
+
+RUN npm i -g pnpm 
 
 # Expose port to access server
 EXPOSE 3001
@@ -11,55 +13,29 @@ RUN mkdir -p /usr/src/app/backend
 WORKDIR /usr/src/app/backend
 
 # Copy package json and install dependencies
-COPY package*.json ./
+COPY package.json .
+COPY pnpm-lock.yaml .
+RUN CI=true pnpm i
+COPY . .
 
 # Test stage for CI
 FROM base as test
 # Install ChromeDriver
 RUN apk update && apk add --no-cache bash \
-        alsa-lib \
-        at-spi2-atk \
-        atk \
-        cairo \
-        cups-libs \
-        dbus-libs \
-        eudev-libs \
-        expat \
-        flac \
-        gdk-pixbuf \
-        glib \
-        libgcc \
-        libjpeg-turbo \
-        libpng \
-        libwebp \
-        libx11 \
-        libxcomposite \
-        libxdamage \
-        libxext \
-        libxfixes \
-        tzdata \
-        libexif \
-        udev \
-        xvfb \
-        zlib-dev \
         chromium \
         chromium-chromedriver
 # Install dependencies
-RUN npm ci
 COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 ARG CI
 ENV CI=$CI
 # Run unit test
-RUN npm run prisma-migrate-ci
-RUN npm run test
-ENTRYPOINT ["npm", "start"]
+RUN pnpm run prisma-migrate-ci
+RUN pnpm run test
+ENTRYPOINT ["pnpm", "start"]
 
 # Production stage
 FROM base as prod
-RUN npm ci
-# Copy our app
-COPY . .
 # Command to run our app
-ENTRYPOINT ["sh", "-c", "npm run prisma-generate; npm run prisma-migrate-prod; npm run start-prod"]
+ENTRYPOINT ["sh", "-c", "pnpm run prisma-generate; pnpm run prisma-migrate-prod; pnpm run start-prod"]

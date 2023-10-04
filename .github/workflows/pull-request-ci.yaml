@@ -16,14 +16,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 'lts/hydrogen'
+          cache: 'pnpm'
       - name: Install dependencies
-        run: npm ci
+        run: pnpm i
       - name: Install wait-on
-        run: npm i -g wait-on@6.0.1
+        run: pnpm i -g wait-on@6.0.1
       - name: Setup Postgres
         run: docker compose -f docker-compose-ci.yml up -d postgres
       - name: Wait for Postgres to start
@@ -33,9 +37,9 @@ jobs:
       - name: Setup Prisma client
         run: |-
           cd packages/backend
-          npm run prisma-migrate-ci
+          pnpm run prisma-migrate-ci
       - name: Run test
-        run: npm run test
+        run: pnpm run test
       # e2e test currently removed from CI as it is unstable
       # - name: Start backend and frontend
       #   run: npm start &
@@ -47,7 +51,7 @@ jobs:
       #     npm run test-e2e
       - name: Clean up container
         if: always()
-        run: npm run cleanup:ci
+        run: pnpm run cleanup:ci
       - name: Send notification on failure
         if: failure()
         run: |

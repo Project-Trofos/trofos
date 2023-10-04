@@ -7,7 +7,7 @@ describe('test socket helper', () => {
   const OTHER_VAL1 = 'a';
   const OTHER_VAL2 = 'b';
   const getTestHook = () => {
-    const hookFunc = jest.fn((args: ArgType) => Promise.resolve());
+    const hookFunc = vi.fn((args: ArgType) => Promise.resolve());
     const testHook = () => {
       return [hookFunc, OTHER_VAL1, OTHER_VAL2] as const;
     };
@@ -16,7 +16,7 @@ describe('test socket helper', () => {
   describe('attachFunctionToRtkHookHOF', () => {
     it('should call the attached function', async () => {
       const { testHook, hookFunc } = getTestHook();
-      const functionToAttach = jest.fn();
+      const functionToAttach = vi.fn();
       const newHook = attachFunctionToRtkHookHOF(testHook, functionToAttach);
 
       const { result } = renderHook(() => newHook());
@@ -34,7 +34,7 @@ describe('test socket helper', () => {
 
     it('should retain other hook return values', () => {
       const { testHook } = getTestHook();
-      const functionToAttach = jest.fn();
+      const functionToAttach = vi.fn();
       const newHook = attachFunctionToRtkHookHOF(testHook, functionToAttach);
 
       const { result } = renderHook(() => newHook());

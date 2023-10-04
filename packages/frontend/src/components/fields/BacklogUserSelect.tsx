@@ -1,6 +1,6 @@
 import React from 'react';
-import { Avatar, Select } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Select } from 'antd';
+import { UserAvatar } from '../avatar/UserAvatar';
 import type { BacklogUserSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogUserSelect.css';
 
@@ -29,7 +29,11 @@ function BacklogUserSelect(props: BacklogUserSelectPropsTypes): JSX.Element {
     >
       {options.map((option) => (
         <Option key={option.user.user_id} value={option.user.user_id}>
-          <Avatar className="user-select-avatar" style={{ backgroundColor: '#ccc' }} icon={<UserOutlined />} />
+          <UserAvatar
+            className="user-select-avatar"
+            userDisplayName={option.user.user_display_name}
+            userHashString={option.user.user_email}
+          />
           <span className="user-select-username-text">{option.user.user_display_name}</span>
         </Option>
       ))}

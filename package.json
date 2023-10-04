@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start-prod": "docker-compose -f docker-compose-production.yml --env-file .\\.env  up -d",
-    "start-dev": "docker-compose -f docker-compose-development.yml --env-file .\\.env  up -d && lerna run --parallel start-dev",
+    "generate": "lerna run prisma-generate-dev --scope=backend",
+    "migrate:reset": "lerna run prisma-migrate-reset --scope=backend",
+    "seed": "lerna run prisma-seed-dev --scope=backend",
+    "start-prod": "docker compose -f docker-compose-production.yml --env-file .env  up -d",
+    "start-dev": "docker compose -f docker-compose-development.yml --env-file .env  up -d && lerna run --parallel start-dev",
     "start": "lerna run --parallel start",
     "test": "lerna run test --stream",
     "setup:ci": "docker compose -f docker-compose-ci.yml up -d postgres",
+    "cleanup:prod": "docker compose -f docker-compose-production.yml down",
+    "cleanup:dev": "docker compose -f docker-compose-development.yml down",
     "cleanup:ci": "docker compose -f docker-compose-ci.yml down && docker stop frontend || true && docker stop backend || true",
     "commit": "cz",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix && stylelint **/*.css --fix",
-    "postinstall": "npm run generate-package-lock --workspaces",
     "prettier": "prettier --write .",
-    "format": "npm run lint && npm run prettier"
+    "format": "pnpm run lint && pnpm run prettier"
   },
   "repository": {
     "type": "git",

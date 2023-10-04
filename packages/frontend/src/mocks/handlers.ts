@@ -4,7 +4,7 @@ import { STUDENT_ROLE_ID } from '../api/role';
 import { Sprint } from '../api/sprint';
 import { BacklogHistory, BacklogHistoryType, CourseData, ProjectData, UserOnRolesOnCourse } from '../api/types';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
+const BASE_URL = import.meta.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:3001';
 const NUSMODS_URL = 'https://api.nusmods.com/v2/2022-2023/moduleList.json';
 
 export const MSW_COURSE: CourseData = {

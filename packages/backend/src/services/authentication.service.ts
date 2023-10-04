@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import oauth2Engine from '../auth/engine.oauth2';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 import prisma from '../models/prismaClient';
@@ -9,7 +9,7 @@ async function validateUser(userEmail: string, userPassword: string): Promise<Us
   let userAuth: UserAuth;
   const userLoginInformation = await prisma.user.findUnique({
     where: {
-      user_email: userEmail,
+      user_email: userEmail.toLowerCase(),
     },
   });
 

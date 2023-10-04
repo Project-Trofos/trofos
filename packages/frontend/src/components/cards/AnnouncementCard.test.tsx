@@ -8,8 +8,8 @@ describe('test AnnouncementCard', () => {
     it('should render correctly', () => {
       const { baseElement } = render(
         <AnnouncementCard
-          handleDeleteAnnouncement={jest.fn()}
-          handleUpdateAnnouncement={jest.fn()}
+          handleDeleteAnnouncement={vi.fn()}
+          handleUpdateAnnouncement={vi.fn()}
           course={MSW_COURSE}
         />,
       );
