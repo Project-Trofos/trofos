@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Spin, Tabs } from 'antd';
+import { Menu, Spin, Tabs } from 'antd';
 import { useProject } from '../../api/hooks';
 
-export default function ProjectTabs(): JSX.Element {
+export default function ProjectMenu(): JSX.Element {
   const params = useParams();
 
   const navigate = useNavigate();
@@ -24,7 +24,8 @@ export default function ProjectTabs(): JSX.Element {
   }
 
   return (
-    <Tabs
+    <Menu
+      mode="horizontal"
       items={[
         { key: 'overview', label: 'Overview' },
         { key: 'users', label: 'Users' },
@@ -34,9 +35,8 @@ export default function ProjectTabs(): JSX.Element {
         { key: 'statistics', label: 'Statistics' },
         { key: 'settings', label: 'Settings' },
       ]}
-      activeKey={selectedTab}
-      className="footer-tabs"
-      onChange={(key) => navigate(`/project/${project.id}/${key}`)}
+      selectedKeys={[selectedTab]}
+      onClick={(e) => navigate(`/project/${project.id}/${e.key}`)}
     />
   );
 }

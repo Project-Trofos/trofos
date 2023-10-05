@@ -14,7 +14,6 @@ import useSocket from '../api/socket/useSocket';
 import trofosApiSlice from '../api';
 import store from '../app/store';
 import { UpdateType } from '../api/socket/socket';
-import ProjectTabs from '../components/tabs/ProjectTabs';
 
 const { Text } = Typography;
 
@@ -128,7 +127,6 @@ export default function ProjectPage(): JSX.Element {
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
-        footer={<ProjectTabs />}
       >
         {project.description && <Text>{project.description}</Text>}
       </PageHeader>

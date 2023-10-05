@@ -11,9 +11,9 @@ import GlobalSearch from '../components/search/GlobalSearch';
 import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
 import AvatarButton from '../components/button/AvatarButton';
+import MenuSwitch from '../components/menu/MenuSwitch';
 
 import './MainLayout.css';
-import ProjectTabs from '../components/tabs/ProjectTabs';
 
 const { Header, Sider, Content } = Layout;
 
@@ -103,6 +103,8 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
  * Main layout of the application.
  */
 export default function MainLayout() {
+  const [isBroken, setIsBroken] = useState(false);
+
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
@@ -200,7 +202,7 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider breakpoint="lg" collapsedWidth="0" className="main-layout-sider">
+      <Sider breakpoint="lg" collapsedWidth="0" onBreakpoint={setIsBroken} className="main-layout-sider">
         <Link to="/">
           <div className="logo">Trofos</div>
         </Link>
@@ -214,15 +216,12 @@ export default function MainLayout() {
       </Sider>
       <Layout>
         <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
-          {/* <Row>
-              <ProjectTabs />
-            {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
-          </Row> */}
           <Row justify={'space-between'}>
-            <Col span={12}>
-              <ProjectTabs />
+            <Col span={isBroken ? 1 : 0}></Col>
+            <Col span={isBroken ? 21 : 22}>
+              <MenuSwitch />
             </Col>
-            <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
+            <Col span={2}> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
           </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
