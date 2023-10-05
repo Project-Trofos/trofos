@@ -1,0 +1,42 @@
+import React, { useMemo } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Menu, Spin, Tabs } from 'antd';
+import { useProject } from '../../api/hooks';
+
+export default function ProjectMenu(): JSX.Element {
+  const params = useParams();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const projectId = Number(params.projectId) || -1;
+
+  const { project, isLoading } = useProject(projectId);
+
+  const selectedTab = useMemo(() => {
+    // Current location split [project, :projectId, :tabName]
+    const split = location.pathname.split('/');
+    return split[3];
+  }, [location.pathname]);
+
+  if (isLoading || !params.projectId || !project) {
+    return <Spin />;
+  }
+
+  return (
+    <Menu
+      mode="horizontal"
+      items={[
+        { key: 'overview', label: 'Overview' },
+        { key: 'users', label: 'Users' },
+        { key: 'sprint', label: 'Sprint' },
+        { key: 'board', label: 'Board' },
+        { key: 'feedback', label: 'Feedback' },
+        { key: 'statistics', label: 'Statistics' },
+        { key: 'settings', label: 'Settings' },
+      ]}
+      selectedKeys={[selectedTab]}
+      onClick={(e) => navigate(`/project/${project.id}/${e.key}`)}
+    />
+  );
+}

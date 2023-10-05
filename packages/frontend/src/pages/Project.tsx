@@ -20,7 +20,7 @@ const { Text } = Typography;
 function DropdownMenu({ projectMenu }: { projectMenu: DropdownProps['menu'] }) {
   return (
     <Dropdown key="more" menu={projectMenu} placement="bottomRight">
-      <Button type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
+      <Button size="small" type="text" icon={<MoreOutlined style={{ fontSize: 20 }} />} />
     </Dropdown>
   );
 }
@@ -107,45 +107,26 @@ export default function ProjectPage(): JSX.Element {
   const breadCrumbs = (
     <Breadcrumb>
       <Breadcrumb.Item>
-        <Link to="/projects">Project</Link>
+        {course ? (
+          <>
+            <Link to={`/course/${project.course_id}/overview`}>{project.course.cname}</Link>
+          </>
+        ) : (
+          <span>Independent Project</span>
+        )}
       </Breadcrumb.Item>
-      <Breadcrumb.Item>{project.pname}</Breadcrumb.Item>
+      <Breadcrumb.Item>
+        <Link to={`/project/${project.id}/overview`}>{project.pname}</Link>
+      </Breadcrumb.Item>
     </Breadcrumb>
   );
 
   return (
     <>
       <PageHeader
-        title={project.pname}
-        subTitle={
-          course ? (
-            <>
-              <Tag>{course?.code}</Tag>
-              <span>{course?.cname}</span>
-            </>
-          ) : (
-            <Tag>Independent Project</Tag>
-          )
-        }
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
         style={{ backgroundColor: '#FFF' }}
-        footer={
-          <Tabs
-            items={[
-              { key: 'overview', label: 'Overview' },
-              { key: 'users', label: 'Users' },
-              { key: 'sprint', label: 'Sprint' },
-              { key: 'board', label: 'Board' },
-              { key: 'feedback', label: 'Feedback' },
-              { key: 'statistics', label: 'Statistics' },
-              { key: 'settings', label: 'Settings' },
-            ]}
-            activeKey={selectedTab}
-            className="footer-tabs"
-            onChange={(key) => navigate(`/project/${project.id}/${key}`)}
-          />
-        }
       >
         {project.description && <Text>{project.description}</Text>}
       </PageHeader>
