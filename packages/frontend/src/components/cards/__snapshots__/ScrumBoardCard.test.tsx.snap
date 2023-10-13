@@ -57,7 +57,7 @@ exports[`ScrumBoardCard test > renders scrum board card with correct details 1`]
               >
                 <span
                   class="ant-avatar ant-avatar-sm ant-avatar-circle assignee-avatar"
-                  style="background-color: rgb(105, 193, 165); color: white;"
+                  style="background-color: rgb(105, 193, 165); color: black;"
                 >
                   <span
                     class="ant-avatar-string"

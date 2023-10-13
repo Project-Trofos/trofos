@@ -4,12 +4,11 @@ exports[`test InputWithButton > when rendering > should render correct fields 1`
 <body>
   <div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center"
+      class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
       style="display: flex;"
     >
       <div
         class="ant-space-item"
-        style="margin-right: 8px;"
       >
         <input
           class="ant-input"

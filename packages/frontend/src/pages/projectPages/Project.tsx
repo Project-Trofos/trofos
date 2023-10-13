@@ -120,7 +120,6 @@ export default function ProjectPage(): JSX.Element {
       <PageHeader
         extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
         breadcrumb={breadCrumbs}
-        style={{ backgroundColor: '#FFF' }}
       >
         {project.description && <Text>{project.description}</Text>}
       </PageHeader>

@@ -35,90 +35,93 @@ import FutureProjects from '../pages/projectsPages/FutureProjects';
 import CurrentCourses from '../pages/coursesPages/CurrentCourses';
 import PastCourses from '../pages/coursesPages/PastCourses';
 import FutureCourses from '../pages/coursesPages/FutureCourses';
+import ThemeProvider from '../components/theming/ThemeProvider';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route path="" element={<Home />} />
-          <Route path="projects" element={<Projects />}>
-            <Route path="" element={<Navigate to="current" />} />
-            <Route path="current" element={<CurrentProjects />} />
-            <Route path="past" element={<PastProjects />} />
-            <Route path="future" element={<FutureProjects />} />
-          </Route>
-          <Route path="project/:projectId" element={<Project />}>
-            <Route path="" element={<Navigate to="overview" />} />
-            <Route path="overview" element={<ProjectOverview />} />
-            <Route path="users" element={<ProjectPeople />} />
-            <Route path="sprint" element={<ProjectSprints />} />
-            <Route path="sprint/:sprintId/retrospective" element={<Retrospective />} />
-            <Route path="backlog" element={<ProjectBacklogs />} />
-            <Route path="backlog/:backlogId" element={<Backlog />} />
-            <Route path="board" element={<ScrumBoard />} />
-            <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
-            <Route path="feedback" element={<ProjectFeedbacks />} />
-            <Route path="statistics" element={<ProjectStatistics />} />
-            <Route path="settings" element={<ProjectSettings />} />
-          </Route>
-          <Route path="courses" element={<Courses />}>
-            <Route path="" element={<Navigate to="current" />} />
-            <Route path="current" element={<CurrentCourses />} />
-            <Route path="past" element={<PastCourses />} />
-            <Route path="future" element={<FutureCourses />} />
-          </Route>
-          <Route path="course/:courseId" element={<Course />}>
-            <Route path="" element={<Navigate to="overview" />} />
-            <Route path="overview" element={<CourseOverview />} />
-            <Route path="users" element={<CoursePeople />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route path="" element={<Home />} />
+            <Route path="projects" element={<Projects />}>
+              <Route path="" element={<Navigate to="current" />} />
+              <Route path="current" element={<CurrentProjects />} />
+              <Route path="past" element={<PastProjects />} />
+              <Route path="future" element={<FutureProjects />} />
+            </Route>
+            <Route path="project/:projectId" element={<Project />}>
+              <Route path="" element={<Navigate to="overview" />} />
+              <Route path="overview" element={<ProjectOverview />} />
+              <Route path="users" element={<ProjectPeople />} />
+              <Route path="sprint" element={<ProjectSprints />} />
+              <Route path="sprint/:sprintId/retrospective" element={<Retrospective />} />
+              <Route path="backlog" element={<ProjectBacklogs />} />
+              <Route path="backlog/:backlogId" element={<Backlog />} />
+              <Route path="board" element={<ScrumBoard />} />
+              <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
+              <Route path="feedback" element={<ProjectFeedbacks />} />
+              <Route path="statistics" element={<ProjectStatistics />} />
+              <Route path="settings" element={<ProjectSettings />} />
+            </Route>
+            <Route path="courses" element={<Courses />}>
+              <Route path="" element={<Navigate to="current" />} />
+              <Route path="current" element={<CurrentCourses />} />
+              <Route path="past" element={<PastCourses />} />
+              <Route path="future" element={<FutureCourses />} />
+            </Route>
+            <Route path="course/:courseId" element={<Course />}>
+              <Route path="" element={<Navigate to="overview" />} />
+              <Route path="overview" element={<CourseOverview />} />
+              <Route path="users" element={<CoursePeople />} />
+              <Route
+                path="milestones"
+                element={
+                  <CourseManagerProtected>
+                    <CourseMilestones />
+                  </CourseManagerProtected>
+                }
+              />
+              <Route
+                path="statistics"
+                element={
+                  <CourseManagerProtected>
+                    <CourseStatistics />
+                  </CourseManagerProtected>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <CourseManagerProtected>
+                    <CourseSettings />
+                  </CourseManagerProtected>
+                }
+              />
+            </Route>
+            <Route path="account" element={<Account />} />
             <Route
-              path="milestones"
+              path="admin"
               element={
-                <CourseManagerProtected>
-                  <CourseMilestones />
-                </CourseManagerProtected>
+                <AdminProtected>
+                  <Admin />
+                </AdminProtected>
               }
             />
-            <Route
-              path="statistics"
-              element={
-                <CourseManagerProtected>
-                  <CourseStatistics />
-                </CourseManagerProtected>
-              }
-            />
-            <Route
-              path="settings"
-              element={
-                <CourseManagerProtected>
-                  <CourseSettings />
-                </CourseManagerProtected>
-              }
-            />
           </Route>
-          <Route path="account" element={<Account />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/callback/*" element={<Callback />} />
           <Route
-            path="admin"
+            path="*"
             element={
-              <AdminProtected>
-                <Admin />
-              </AdminProtected>
+              <main style={{ padding: '1rem' }}>
+                <p>404</p>
+              </main>
             }
           />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/callback/*" element={<Callback />} />
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: '1rem' }}>
-              <p>404</p>
-            </main>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

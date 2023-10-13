@@ -142,10 +142,11 @@ exports[`SettingsForm test > when rendering > should render according to the sna
                       class="ant-select-selection-search"
                     >
                       <input
-                        aria-activedescendant="current-semester_list_0"
                         aria-autocomplete="list"
                         aria-controls="current-semester_list"
+                        aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Search"
                         aria-owns="current-semester_list"
                         aria-required="true"
                         autocomplete="off"

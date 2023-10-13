@@ -14,7 +14,7 @@
 }
 
 .backlog-page-container {
-  background: #fff;
+  /* background: #fff; */
   height: 100%;
 }
 
@@ -33,36 +33,16 @@
   border-radius: 8px;
 }
 
-.backlog-data-container textarea.ant-input.summary-input:hover,
-.backlog-data-container textarea.ant-input.backlog-textarea:hover {
-  background-color: #efefef;
-}
-
-.backlog-data-container .backlog-description-container {
-  margin-top: 20px;
-}
-
 .backlog-data-container .backlog-description-container > p {
   font-weight: 600;
   padding-left: 11px;
 }
 
-.backlog-data-container .backlog-panel-container {
-  border: 1px solid #cfcfcf;
-  padding: 10px;
-  background: #fff;
+.backlog-data-container .backlog-panel-container > div > div{
+  display: flex;
 }
 
-.backlog-data-container .backlog-panel-container .ant-form-item {
-  display: inline-block;
-  margin-bottom: 0;
-}
-
-.backlog-data-container .backlog-panel-container > div {
-  margin: 20px;
-}
-
-.backlog-data-container .backlog-panel-container > div > span {
+.backlog-data-container .backlog-panel-container label {
   min-width: 78px;
   display: inline-block;
   font-weight: 600;
@@ -70,10 +50,6 @@
 
 .backlog-data-container .ant-select-arrow {
   display: none !important;
-}
-
-.backlog-data-container div.ant-input-number.backlog-inputnumber {
-  border: none;
 }
 
 .backlog-menu-container {

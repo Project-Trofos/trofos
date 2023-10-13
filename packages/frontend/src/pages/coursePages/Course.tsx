@@ -96,7 +96,6 @@ export default function CoursePage(): JSX.Element {
             : undefined
         }
         breadcrumb={breadCrumbs}
-        style={{ backgroundColor: '#FFF' }}
       >
         {course.description && <Text>{course.description}</Text>}
       </PageHeader>

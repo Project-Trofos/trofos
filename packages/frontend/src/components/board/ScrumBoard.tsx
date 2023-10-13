@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, message, Typography } from 'antd';
+import { Alert, message, Typography, Card, Space } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 import { useUpdateBacklogMutation } from '../../api/backlog';
@@ -105,19 +105,21 @@ export default function ScrumBoard({ projectId, sprint }: { projectId: number; s
         userDroppables.push(
           <StrictModeDroppable key={key.count} droppableId={key.count.toString()}>
             {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {backlogs
-                  ?.filter((backlog) => backlog.status === status.name && backlog.assignee_id === userId)
-                  ?.map((backlog, index) => (
-                    <ScrumBoardCard
-                      key={backlog.backlog_id}
-                      backlog={backlog}
-                      projectKey={projectData?.pkey}
-                      index={index}
-                    />
-                  ))}
-                {provided.placeholder}
-              </div>
+              <Card bodyStyle={{ padding: 8 }} ref={provided.innerRef} {...provided.droppableProps}>
+                <Space direction='vertical' style={{width: "100%"}}>
+                  {backlogs
+                    ?.filter((backlog) => backlog.status === status.name && backlog.assignee_id === userId)
+                    ?.map((backlog, index) => (
+                      <ScrumBoardCard
+                        key={backlog.backlog_id}
+                        backlog={backlog}
+                        projectKey={projectData?.pkey}
+                        index={index}
+                      />
+                    ))}
+                  {provided.placeholder}
+                </Space>
+              </Card>
             )}
           </StrictModeDroppable>,
         );
@@ -154,9 +156,9 @@ export default function ScrumBoard({ projectId, sprint }: { projectId: number; s
       )}
       <div className="scrum-board-status-container">
         {backlogStatus?.map((status) => (
-          <div key={status.name} className="scrum-board-status">
+          <Card bodyStyle={{ padding: '0' }} key={status.name} className="scrum-board-status">
             <Title level={5}>{status.name} </Title>
-          </div>
+          </Card>
         ))}
       </div>
       <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
