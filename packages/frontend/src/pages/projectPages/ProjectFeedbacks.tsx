@@ -3,20 +3,20 @@ import { Button, Collapse, Empty, Space } from 'antd';
 import { LexicalEditor } from 'lexical';
 import { useParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
-import { useProject } from '../api/hooks';
+import { useProject } from '../../api/hooks';
 
-import Container from '../components/layouts/Container';
-import Editor from '../components/editor/Editor';
-import { useGetSprintsByProjectIdQuery } from '../api/sprint';
-import conditionalRender from '../helpers/conditionalRender';
-import confirm from '../components/modals/confirm';
-import Timestamp from '../components/common/Timestamp';
-import AvatarWithName from '../components/avatar/AvatarWithName';
-import { useFeedbackBySprint as useFeedbackBySprintId } from '../api/hooks/feedbackHooks';
-import { Feedback } from '../api/types';
+import Container from '../../components/layouts/Container';
+import Editor from '../../components/editor/Editor';
+import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import conditionalRender from '../../helpers/conditionalRender';
+import confirm from '../../components/modals/confirm';
+import Timestamp from '../../components/common/Timestamp';
+import AvatarWithName from '../../components/avatar/AvatarWithName';
+import { useFeedbackBySprint as useFeedbackBySprintId } from '../../api/hooks/feedbackHooks';
+import { Feedback } from '../../api/types';
 
 import './ProjectFeedbacks.css';
-import { useProjectActions } from '../api/hooks/roleHooks';
+import { useProjectActions } from '../../api/hooks/roleHooks';
 
 const { Panel } = Collapse;
 

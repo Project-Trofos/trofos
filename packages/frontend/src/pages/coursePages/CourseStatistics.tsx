@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetBacklogHistoryQuery, useGetBacklogsQuery } from '../api/backlog';
-import { useCourse } from '../api/hooks';
-import { useGetSprintsQuery } from '../api/sprint';
-import CourseStatisticsCard from '../components/cards/CourseStatisticsCard';
-import Container from '../components/layouts/Container';
+import { useGetBacklogHistoryQuery, useGetBacklogsQuery } from '../../api/backlog';
+import { useCourse } from '../../api/hooks';
+import { useGetSprintsQuery } from '../../api/sprint';
+import CourseStatisticsCard from '../../components/cards/CourseStatisticsCard';
+import Container from '../../components/layouts/Container';
 
 export default function CourseStatistics(): JSX.Element {
   const params = useParams();

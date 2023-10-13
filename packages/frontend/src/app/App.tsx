@@ -3,33 +3,38 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import MainLayout from '../templates/MainLayout';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
-import Project from '../pages/Project';
-import Projects from '../pages/Projects';
-import Courses from '../pages/Courses';
-import Course from '../pages/Course';
+import Project from '../pages/projectPages/Project';
+import Projects from '../pages/projectsPages/Projects';
+import Courses from '../pages/coursesPages/Courses';
+import Course from '../pages/coursePages/Course';
 import Backlog from '../pages/Backlog';
 import Account from '../pages/Account';
 import Admin from '../pages/Admin';
 
-import ProjectOverview from '../pages/ProjectOverview';
-import ProjectBacklogs from '../pages/ProjectBacklogs';
-import ScrumBoard, { SprintScrumBoardPage } from '../pages/ScrumBoardPage';
+import ProjectOverview from '../pages/projectPages/ProjectOverview';
+import ProjectBacklogs from '../pages/projectPages/ProjectBacklogs';
+import ScrumBoard, { SprintScrumBoardPage } from '../pages/projectPages/ScrumBoardPage';
 
 import './App.css';
-import ProjectSettings from '../pages/ProjectSettings';
-import CourseOverview from '../pages/CourseOverview';
-import CourseSettings from '../pages/CourseSettings';
-import ProjectSprints from '../pages/ProjectSprints';
-import CoursePeople from '../pages/CoursePeople';
-import ProjectPeople from '../pages/ProjectPeople';
+import ProjectSettings from '../pages/projectPages/ProjectSettings';
+import CourseOverview from '../pages/coursePages/CourseOverview';
+import CourseSettings from '../pages/coursePages/CourseSettings';
+import ProjectSprints from '../pages/projectPages/ProjectSprints';
+import CoursePeople from '../pages/coursePages/CoursePeople';
+import ProjectPeople from '../pages/projectPages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
-import ProjectFeedbacks from '../pages/ProjectFeedbacks';
-import CourseStatistics from '../pages/CourseStatistics';
+import ProjectFeedbacks from '../pages/projectPages/ProjectFeedbacks';
+import CourseStatistics from '../pages/coursePages/CourseStatistics';
 import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
-import CourseMilestones from '../pages/CourseMilestones';
+import CourseMilestones from '../pages/coursePages/CourseMilestones';
 import Callback from '../pages/Callback';
-import ProjectStatistics from '../pages/ProjectStatistics';
-
+import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
+import CurrentProjects from '../pages/projectsPages/CurrentProjects';
+import PastProjects from '../pages/projectsPages/PastProjects';
+import FutureProjects from '../pages/projectsPages/FutureProjects';
+import CurrentCourses from '../pages/coursesPages/CurrentCourses';
+import PastCourses from '../pages/coursesPages/PastCourses';
+import FutureCourses from '../pages/coursesPages/FutureCourses';
 
 function App() {
   return (
@@ -37,7 +42,12 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path="" element={<Home />} />
-          <Route path="projects" element={<Projects />} />
+          <Route path="projects" element={<Projects />}>
+            <Route path="" element={<Navigate to="current" />} />
+            <Route path="current" element={<CurrentProjects />} />
+            <Route path="past" element={<PastProjects />} />
+            <Route path="future" element={<FutureProjects />} />
+          </Route>
           <Route path="project/:projectId" element={<Project />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<ProjectOverview />} />
@@ -52,7 +62,12 @@ function App() {
             <Route path="statistics" element={<ProjectStatistics />} />
             <Route path="settings" element={<ProjectSettings />} />
           </Route>
-          <Route path="courses" element={<Courses />} />
+          <Route path="courses" element={<Courses />}>
+            <Route path="" element={<Navigate to="current" />} />
+            <Route path="current" element={<CurrentCourses />} />
+            <Route path="past" element={<PastCourses />} />
+            <Route path="future" element={<FutureCourses />} />
+          </Route>
           <Route path="course/:courseId" element={<Course />}>
             <Route path="" element={<Navigate to="overview" />} />
             <Route path="overview" element={<CourseOverview />} />

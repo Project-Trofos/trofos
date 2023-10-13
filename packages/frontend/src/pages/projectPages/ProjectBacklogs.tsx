@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography } from 'antd';
-import { useGetBacklogsByProjectIdQuery } from '../api/backlog';
-import BacklogCreationModal from '../components/modals/BacklogCreationModal';
-import BacklogList from '../components/lists/BacklogList';
+import { useGetBacklogsByProjectIdQuery } from '../../api/backlog';
+import BacklogCreationModal from '../../components/modals/BacklogCreationModal';
+import BacklogList from '../../components/lists/BacklogList';
 import './ProjectBacklogs.css';
 
 function ProjectBacklog(): JSX.Element {

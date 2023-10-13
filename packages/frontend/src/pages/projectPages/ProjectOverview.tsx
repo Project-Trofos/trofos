@@ -1,13 +1,13 @@
 import React from 'react';
 import { skipToken } from '@reduxjs/toolkit/dist/query/react';
 import { useParams } from 'react-router-dom';
-import { useCourse, useProject } from '../api/hooks';
-import { useGetSprintsByProjectIdQuery } from '../api/sprint';
-import MilestoneCard from '../components/cards/MilestoneCard';
-import VisualizationCard from '../components/cards/VisualizationCard';
-import Container from '../components/layouts/Container';
-import { useGetProjectBacklogHistoryQuery } from '../api/backlog';
-import ProjectStatisticsCard from '../components/cards/ProjectStatisticsCard';
+import { useCourse, useProject } from '../../api/hooks';
+import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import MilestoneCard from '../../components/cards/MilestoneCard';
+import VisualizationCard from '../../components/cards/VisualizationCard';
+import Container from '../../components/layouts/Container';
+import { useGetProjectBacklogHistoryQuery } from '../../api/backlog';
+import ProjectStatisticsCard from '../../components/cards/ProjectStatisticsCard';
 
 export default function Overview(): JSX.Element {
   const params = useParams();

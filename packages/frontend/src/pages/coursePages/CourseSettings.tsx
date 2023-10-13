@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
-import { useUpdateCourseMutation } from '../api/course';
-import { useCourse } from '../api/hooks';
-import CourseCodeFormItem from '../components/forms/CourseCodeFormItem';
-import CourseNameFormItem from '../components/forms/CourseNameFormItem';
-import DefaultForm from '../components/forms/DefaultForm';
-import Container from '../components/layouts/Container';
-import { Subheading } from '../components/typography';
-import { getErrorMessage } from '../helpers/error';
-import CourseYearSemFormItems from '../components/forms/CourseYearSemFormItems';
+import { useUpdateCourseMutation } from '../../api/course';
+import { useCourse } from '../../api/hooks';
+import CourseCodeFormItem from '../../components/forms/CourseCodeFormItem';
+import CourseNameFormItem from '../../components/forms/CourseNameFormItem';
+import DefaultForm from '../../components/forms/DefaultForm';
+import Container from '../../components/layouts/Container';
+import { Subheading } from '../../components/typography';
+import { getErrorMessage } from '../../helpers/error';
+import CourseYearSemFormItems from '../../components/forms/CourseYearSemFormItems';
 
 export default function CourseSettings(): JSX.Element {
   const params = useParams();

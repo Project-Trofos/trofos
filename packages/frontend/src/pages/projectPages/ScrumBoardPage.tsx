@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../api/sprint';
-import Container from '../components/layouts/Container';
-import ScrumBoard from '../components/board/ScrumBoard';
-import { Heading } from '../components/typography';
+import { useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import Container from '../../components/layouts/Container';
+import ScrumBoard from '../../components/board/ScrumBoard';
+import { Heading } from '../../components/typography';
 
 import './ScrumBoardPage.css';
 

@@ -2,13 +2,13 @@ import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Spin, Tabs, Tag, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useRemoveCourseMutation } from '../api/course';
-import { confirmDeleteCourse } from '../components/modals/confirm';
-import ProjectCreationModal from '../components/modals/ProjectCreationModal';
-import { useCourse } from '../api/hooks';
-import PageHeader from '../components/pageheader/PageHeader';
-import ImportDataModal from '../components/modals/ImportDataModal';
-import { useIsCourseManager } from '../api/hooks/roleHooks';
+import { useRemoveCourseMutation } from '../../api/course';
+import { confirmDeleteCourse } from '../../components/modals/confirm';
+import ProjectCreationModal from '../../components/modals/ProjectCreationModal';
+import { useCourse } from '../../api/hooks';
+import PageHeader from '../../components/pageheader/PageHeader';
+import ImportDataModal from '../../components/modals/ImportDataModal';
+import { useIsCourseManager } from '../../api/hooks/roleHooks';
 
 const { Text } = Typography;
 

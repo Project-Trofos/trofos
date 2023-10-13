@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Form, Input, message, Space } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useProject } from '../api/hooks';
-import { useGetUserSettingsQuery, useUpdateProjectMutation } from '../api/project';
-import DefaultForm from '../components/forms/DefaultForm';
-import ProjectKeyFormInput from '../components/forms/ProjectKeyFormItem';
-import ProjectNameFormInput from '../components/forms/ProjectNameFormItem';
-import Container from '../components/layouts/Container';
-import { Subheading } from '../components/typography';
-import { getErrorMessage } from '../helpers/error';
-import ProjectBacklogStatusForm from '../components/forms/ProjectBacklogStatusForm';
-import ProjectGitLinkForm from '../components/forms/ProjectGitLinkForm';
-import ProjectUserSettingsForm from '../components/forms/ProjectUserSettingsForm';
+import { useProject } from '../../api/hooks';
+import { useGetUserSettingsQuery, useUpdateProjectMutation } from '../../api/project';
+import DefaultForm from '../../components/forms/DefaultForm';
+import ProjectKeyFormInput from '../../components/forms/ProjectKeyFormItem';
+import ProjectNameFormInput from '../../components/forms/ProjectNameFormItem';
+import Container from '../../components/layouts/Container';
+import { Subheading } from '../../components/typography';
+import { getErrorMessage } from '../../helpers/error';
+import ProjectBacklogStatusForm from '../../components/forms/ProjectBacklogStatusForm';
+import ProjectGitLinkForm from '../../components/forms/ProjectGitLinkForm';
+import ProjectUserSettingsForm from '../../components/forms/ProjectUserSettingsForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
