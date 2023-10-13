@@ -16,13 +16,15 @@ const stringToColour = (str: string): string => {
 };
 /* eslint-enable no-bitwise */
 
-const BRIGHTNESS_THRESHOLD = 164;
+const BRIGHTNESS_THRESHOLD = 160;
 const getContrastYIQ = (hexcolorstr: string): string => {
   const hexcolor = hexcolorstr.replace('#', '');
   const r = parseInt(hexcolor.substring(0, 2), 16);
-  const g = parseInt(hexcolor.substring(2, 2), 16);
-  const b = parseInt(hexcolor.substring(4, 2), 16);
+  const g = parseInt(hexcolor.substring(2, 4), 16);
+  const b = parseInt(hexcolor.substring(4, 6), 16);
+
   const perceivedBrightness = (r * 299 + g * 587 + b * 114) / 1000;
+  
   return perceivedBrightness >= BRIGHTNESS_THRESHOLD ? 'black' : 'white';
 };
 
