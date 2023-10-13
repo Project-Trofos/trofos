@@ -9,7 +9,7 @@ describe('useMilestone hook', () => {
       name: 'In Progress',
       course_id: 1,
       start_date: '2022-01-19T16:00:00.000Z',
-      deadline: '2024-10-10T16:00:00.000Z',
+      deadline: new Date(Date.now() + (3600 * 1000 * 24)).toString(),
       created_at: '2022-12-18T17:06:07.072Z',
     },
     {

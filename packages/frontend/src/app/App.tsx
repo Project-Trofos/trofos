@@ -29,81 +29,83 @@ import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRout
 import CourseMilestones from '../pages/CourseMilestones';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/ProjectStatistics';
-
+import ThemeProvider from '../components/theming/ThemeProvider';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route path="" element={<Home />} />
-          <Route path="projects" element={<Projects />} />
-          <Route path="project/:projectId" element={<Project />}>
-            <Route path="" element={<Navigate to="overview" />} />
-            <Route path="overview" element={<ProjectOverview />} />
-            <Route path="users" element={<ProjectPeople />} />
-            <Route path="sprint" element={<ProjectSprints />} />
-            <Route path="sprint/:sprintId/retrospective" element={<Retrospective />} />
-            <Route path="backlog" element={<ProjectBacklogs />} />
-            <Route path="backlog/:backlogId" element={<Backlog />} />
-            <Route path="board" element={<ScrumBoard />} />
-            <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
-            <Route path="feedback" element={<ProjectFeedbacks />} />
-            <Route path="statistics" element={<ProjectStatistics />} />
-            <Route path="settings" element={<ProjectSettings />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route path="" element={<Home />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="project/:projectId" element={<Project />}>
+              <Route path="" element={<Navigate to="overview" />} />
+              <Route path="overview" element={<ProjectOverview />} />
+              <Route path="users" element={<ProjectPeople />} />
+              <Route path="sprint" element={<ProjectSprints />} />
+              <Route path="sprint/:sprintId/retrospective" element={<Retrospective />} />
+              <Route path="backlog" element={<ProjectBacklogs />} />
+              <Route path="backlog/:backlogId" element={<Backlog />} />
+              <Route path="board" element={<ScrumBoard />} />
+              <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
+              <Route path="feedback" element={<ProjectFeedbacks />} />
+              <Route path="statistics" element={<ProjectStatistics />} />
+              <Route path="settings" element={<ProjectSettings />} />
+            </Route>
+            <Route path="courses" element={<Courses />} />
+            <Route path="course/:courseId" element={<Course />}>
+              <Route path="" element={<Navigate to="overview" />} />
+              <Route path="overview" element={<CourseOverview />} />
+              <Route path="users" element={<CoursePeople />} />
+              <Route
+                path="milestones"
+                element={
+                  <CourseManagerProtected>
+                    <CourseMilestones />
+                  </CourseManagerProtected>
+                }
+              />
+              <Route
+                path="statistics"
+                element={
+                  <CourseManagerProtected>
+                    <CourseStatistics />
+                  </CourseManagerProtected>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <CourseManagerProtected>
+                    <CourseSettings />
+                  </CourseManagerProtected>
+                }
+              />
+            </Route>
+            <Route path="account" element={<Account />} />
+            <Route
+              path="admin"
+              element={
+                <AdminProtected>
+                  <Admin />
+                </AdminProtected>
+              }
+            />
           </Route>
-          <Route path="courses" element={<Courses />} />
-          <Route path="course/:courseId" element={<Course />}>
-            <Route path="" element={<Navigate to="overview" />} />
-            <Route path="overview" element={<CourseOverview />} />
-            <Route path="users" element={<CoursePeople />} />
-            <Route
-              path="milestones"
-              element={
-                <CourseManagerProtected>
-                  <CourseMilestones />
-                </CourseManagerProtected>
-              }
-            />
-            <Route
-              path="statistics"
-              element={
-                <CourseManagerProtected>
-                  <CourseStatistics />
-                </CourseManagerProtected>
-              }
-            />
-            <Route
-              path="settings"
-              element={
-                <CourseManagerProtected>
-                  <CourseSettings />
-                </CourseManagerProtected>
-              }
-            />
-          </Route>
-          <Route path="account" element={<Account />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/callback/*" element={<Callback />} />
           <Route
-            path="admin"
+            path="*"
             element={
-              <AdminProtected>
-                <Admin />
-              </AdminProtected>
+              <main style={{ padding: '1rem' }}>
+                <p>404</p>
+              </main>
             }
           />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/callback/*" element={<Callback />} />
-        <Route
-          path="*"
-          element={
-            <main style={{ padding: '1rem' }}>
-              <p>404</p>
-            </main>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

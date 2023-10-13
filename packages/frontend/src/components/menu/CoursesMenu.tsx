@@ -24,6 +24,7 @@ export default function CoursesMenu(): JSX.Element {
 
   return (
     <Menu
+      style={{ border: 'none' }}
       mode="horizontal"
       items={[
         { key: 'overview', label: 'Overview' },

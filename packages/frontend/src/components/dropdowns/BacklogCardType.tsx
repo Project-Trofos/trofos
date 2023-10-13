@@ -44,7 +44,7 @@ export default function BacklogCardType(props: { backlogId: number; currentType:
       onClick={(e) => e.stopPropagation()}
       onChange={handleTypeChange}
       dropdownMatchSelectWidth={false}
-      showArrow={false}
+      suffixIcon={false}
     />
   );
 }

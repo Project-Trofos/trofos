@@ -1,6 +1,5 @@
 .project-backlog-status-draggable {
   padding-right: 22px;
-  background-color: lightblue;
   display: flex;
   margin-bottom: 16px;
   position: relative;
@@ -11,28 +10,13 @@
   width: 100%;
 }
 
+.project-backlog-status-draggable .ant-input-group-addon:last-child {
+  background-color: red;
+}
+
 .project-backlog-status-delete-button {
   display: flex;
   align-items: center;
   padding: 0 2px;
   cursor: pointer;
-}
-
-.project-backlog-status-delete-button span {
-  visibility: hidden;
-}
-
-.project-backlog-status-delete-button:hover {
-  background-color: red;
-}
-
-.project-backlog-status-delete-button:hover span {
-  visibility: visible;
-}
-
-.project-backlog-status-move-button {
-  padding: 0 2px;
-  position: absolute;
-  right: 2px;
-  top: 3px;
 }

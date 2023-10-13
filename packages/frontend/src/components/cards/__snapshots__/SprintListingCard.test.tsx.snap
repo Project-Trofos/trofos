@@ -110,7 +110,7 @@ exports[`SprintCard test > renders sprint card with correct details 1`] = `
                   class="sprint-card-setting-icon"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center ant-dropdown-trigger sprint-menu-dropdown"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small ant-dropdown-trigger sprint-menu-dropdown"
                   >
                     <div
                       class="ant-space-item"

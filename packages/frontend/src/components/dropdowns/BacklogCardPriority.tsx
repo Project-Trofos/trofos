@@ -53,7 +53,7 @@ export default function BacklogCardPriority(props: BacklogCardPriorityProps) {
       onChange={handlePriorityChange}
       dropdownMatchSelectWidth={false}
       allowClear
-      showArrow={false}
+      suffixIcon={false}
       disabled={!editable}
     />
   );

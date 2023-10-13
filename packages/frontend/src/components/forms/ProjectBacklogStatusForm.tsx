@@ -175,17 +175,23 @@ export default function ProjectBacklogStatusForm(props: { statuses: StatusesProp
                           key={status.name}
                           rules={[{ required: true }]}
                         >
-                          <Input onBlur={handleBacklogStatusUpdate} />
+                          <Input
+                            onBlur={handleBacklogStatusUpdate}
+                            addonBefore={
+                              <div className="project-backlog-status-move-button">
+                                <DragOutlined />
+                              </div>
+                            }
+                            addonAfter={
+                              <div
+                                className="project-backlog-status-delete-button"
+                                onClick={() => handleDeleteStatus(status.name)}
+                              >
+                                <CloseOutlined />
+                              </div>
+                            }
+                          />
                         </Form.Item>
-                        <div
-                          className="project-backlog-status-delete-button"
-                          onClick={() => handleDeleteStatus(status.name)}
-                        >
-                          <CloseOutlined />
-                        </div>
-                        <div className="project-backlog-status-move-button">
-                          <DragOutlined />
-                        </div>
                       </div>
                     )}
                   </Draggable>

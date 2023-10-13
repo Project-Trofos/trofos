@@ -2,10 +2,6 @@
   width: 72px;
 }
 
-.backlog-card-type.ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border: none;
-}
-
 .backlog-card-type.ant-select-single.ant-select-show-arrow .ant-select-selection-item {
   padding-right: 0;
 }

@@ -115,10 +115,11 @@ exports[`CourseYearSemesterFormItem test > when rendering > should have correct 
                       class="ant-select-selection-search"
                     >
                       <input
-                        aria-activedescendant="courseSem_list_0"
                         aria-autocomplete="list"
                         aria-controls="courseSem_list"
+                        aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Search"
                         aria-owns="courseSem_list"
                         aria-required="true"
                         autocomplete="off"

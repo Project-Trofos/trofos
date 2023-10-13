@@ -14,6 +14,9 @@ import AvatarButton from '../components/button/AvatarButton';
 import MenuSwitch from '../components/menu/MenuSwitch';
 
 import './MainLayout.css';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { toggleTheme } from '../app/themeSlice';
+import ThemeSwitch from '../components/theming/ThemeSwitch';
 
 const { Header, Sider, Content } = Layout;
 
@@ -82,7 +85,12 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
 
   return (
     <Space>
-      <GlobalSearch />
+      <Col>
+      <ThemeSwitch />
+      </Col>
+      <Col>
+        <GlobalSearch />
+      </Col>
       {/* TODO: To be implemented */}
       {/* <Col>
           <QuestionCircleOutlined />
@@ -215,13 +223,12 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: '0 16px', borderBottom: '1px solid', borderBottomColor: '#DDD' }}>
+        <Header style={{ padding: '0 10px' }}>
           <Row justify={'space-between'}>
-            <Col span={isBroken ? 1 : 0}></Col>
-            <Col span={isBroken ? 21 : 22}>
+            <Col style={{paddingLeft: isBroken ? "30px" : 0}} span={10}>
               <MenuSwitch />
             </Col>
-            <Col span={2}> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
+            <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
           </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
