@@ -82,15 +82,14 @@ exports[`test course creation modal > should render fields if there are users wi
               class="ant-modal-body"
             >
               <div
-                class="ant-space ant-space-vertical"
+                class="ant-space ant-space-vertical ant-space-gap-row-middle ant-space-gap-col-middle"
                 style="display: flex;"
               >
                 <div
                   class="ant-space-item"
-                  style="margin-bottom: 16px;"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
                     style="display: flex; justify-content: space-between;"
                   />
                 </div>
@@ -146,13 +145,12 @@ exports[`test course creation modal > should render fields if there are users wi
                                           class="ant-checkbox-wrapper"
                                         >
                                           <span
-                                            class="ant-checkbox"
+                                            class="ant-checkbox ant-wave-target"
                                           >
                                             <input
                                               aria-label="Select all"
                                               class="ant-checkbox-input"
                                               type="checkbox"
-                                              value=""
                                             />
                                             <span
                                               class="ant-checkbox-inner"
@@ -179,12 +177,13 @@ exports[`test course creation modal > should render fields if there are users wi
                                           class="ant-table-column-sorter ant-table-column-sorter-full"
                                         >
                                           <span
+                                            aria-hidden="true"
                                             class="ant-table-column-sorter-inner"
                                           >
                                             <span
                                               aria-label="caret-up"
                                               class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -203,7 +202,7 @@ exports[`test course creation modal > should render fields if there are users wi
                                             <span
                                               aria-label="caret-down"
                                               class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -241,12 +240,13 @@ exports[`test course creation modal > should render fields if there are users wi
                                           class="ant-table-column-sorter ant-table-column-sorter-full"
                                         >
                                           <span
+                                            aria-hidden="true"
                                             class="ant-table-column-sorter-inner"
                                           >
                                             <span
                                               aria-label="caret-up"
                                               class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -265,7 +265,7 @@ exports[`test course creation modal > should render fields if there are users wi
                                             <span
                                               aria-label="caret-down"
                                               class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -309,12 +309,13 @@ exports[`test course creation modal > should render fields if there are users wi
                                           class="ant-table-column-sorter ant-table-column-sorter-full"
                                         >
                                           <span
+                                            aria-hidden="true"
                                             class="ant-table-column-sorter-inner"
                                           >
                                             <span
                                               aria-label="caret-up"
                                               class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -333,7 +334,7 @@ exports[`test course creation modal > should render fields if there are users wi
                                             <span
                                               aria-label="caret-down"
                                               class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                              role="presentation"
+                                              role="img"
                                             >
                                               <svg
                                                 aria-hidden="true"
@@ -369,12 +370,11 @@ exports[`test course creation modal > should render fields if there are users wi
                                         class="ant-checkbox-wrapper"
                                       >
                                         <span
-                                          class="ant-checkbox"
+                                          class="ant-checkbox ant-wave-target"
                                         >
                                           <input
                                             class="ant-checkbox-input"
                                             type="checkbox"
-                                            value=""
                                           />
                                           <span
                                             class="ant-checkbox-inner"
@@ -499,18 +499,17 @@ exports[`test course creation modal > should render fields if there are users wi
                 </div>
               </div>
               <div
-                class="ant-space ant-space-vertical"
+                class="ant-space ant-space-vertical ant-space-gap-row-small ant-space-gap-col-small"
                 style="width: 100%;"
               >
                 <div
                   class="ant-space-item"
                 >
                   <div
-                    class="ant-space ant-space-horizontal ant-space-align-center"
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
                   >
                     <div
                       class="ant-space-item"
-                      style="margin-right: 8px;"
                     >
                       <span
                         class="ant-typography"
@@ -520,7 +519,6 @@ exports[`test course creation modal > should render fields if there are users wi
                     </div>
                     <div
                       class="ant-space-item"
-                      style="margin-right: 8px;"
                     >
                       <div
                         class="ant-input-number ant-input-number-sm"

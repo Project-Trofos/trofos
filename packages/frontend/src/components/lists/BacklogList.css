@@ -2,14 +2,13 @@
   cursor: pointer;
 }
 
-li.backlog-card-container.ant-list-item:last-child {
+/* li.backlog-card-container.ant-list-item:last-child .backlog-listing-card-container {
   border-bottom: 1px solid #eee;
-}
+} */
 
 .backlog-listing-card-container {
   display: flex;
   width: 100%;
-  background: #fff;
   padding: 12px;
-  border: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
 }

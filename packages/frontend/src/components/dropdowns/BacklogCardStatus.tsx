@@ -45,7 +45,7 @@ export default function BacklogCardStatus(props: { backlogId: number; currentSta
       onClick={(e) => e.stopPropagation()}
       onChange={handleStatusChange}
       dropdownMatchSelectWidth={false}
-      showArrow={false}
+      suffixIcon={false}
     />
   );
 }

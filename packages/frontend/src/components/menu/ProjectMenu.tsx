@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Menu, Spin, Tabs } from 'antd';
+import { Menu, Spin, ConfigProvider } from 'antd';
 import { useProject } from '../../api/hooks';
 
 export default function ProjectMenu(): JSX.Element {
@@ -24,19 +24,31 @@ export default function ProjectMenu(): JSX.Element {
   }
 
   return (
-    <Menu
-      mode="horizontal"
-      items={[
-        { key: 'overview', label: 'Overview' },
-        { key: 'users', label: 'Users' },
-        { key: 'sprint', label: 'Sprint' },
-        { key: 'board', label: 'Board' },
-        { key: 'feedback', label: 'Feedback' },
-        { key: 'statistics', label: 'Statistics' },
-        { key: 'settings', label: 'Settings' },
-      ]}
-      selectedKeys={[selectedTab]}
-      onClick={(e) => navigate(`/project/${project.id}/${e.key}`)}
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            darkItemBg: 'rgb(10,10,10)',
+            itemBg: '',
+          },
+        },
+      }}
+    >
+      <Menu
+        style={{ border: 'none' }}
+        mode="horizontal"
+        items={[
+          { key: 'overview', label: 'Overview' },
+          { key: 'users', label: 'Users' },
+          { key: 'sprint', label: 'Sprint' },
+          { key: 'board', label: 'Board' },
+          { key: 'feedback', label: 'Feedback' },
+          { key: 'statistics', label: 'Statistics' },
+          { key: 'settings', label: 'Settings' },
+        ]}
+        selectedKeys={[selectedTab]}
+        onClick={(e) => navigate(`/project/${project.id}/${e.key}`)}
+      />
+    </ConfigProvider>
   );
 }

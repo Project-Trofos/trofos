@@ -1,7 +1,3 @@
-.scrum-board-card-container {
-  width: 260px;
-}
-
 .scrum-board-card-container.ant-card {
   border-radius: 6px;
 }
@@ -29,10 +25,6 @@
   border-radius: 8px;
   width: 26px;
   text-align: center;
-}
-
-.scrum-board-card-points.points-active {
-  background-color: #ededed;
 }
 
 .scrum-board-card-priority {

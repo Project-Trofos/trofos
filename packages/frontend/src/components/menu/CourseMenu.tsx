@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Menu, Spin } from 'antd';
+import { Menu, Spin, ConfigProvider } from 'antd';
 import { useCourse } from '../../api/hooks';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
 
@@ -23,7 +23,19 @@ export default function CourseMenu(): JSX.Element {
   }
 
   return (
-    <Menu
+    <ConfigProvider
+    theme={{
+      components: {
+        Menu: {
+          darkItemBg: 'rgb(10,10,10)',
+          itemBg: '',
+        },
+      },
+    }}
+  >
+
+    <Menu        style={{ border: 'none' }}
+
       mode="horizontal"
       items={[
         { key: 'overview', label: 'Overview' },
@@ -39,5 +51,6 @@ export default function CourseMenu(): JSX.Element {
       selectedKeys={[selectedTab]}
       onClick={(e) => navigate(`/course/${course.id}/${e.key}`)}
     />
+    </ConfigProvider>
   );
 }
