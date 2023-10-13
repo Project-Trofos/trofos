@@ -10,8 +10,9 @@ import BacklogTextArea from '../fields/BacklogTextArea';
 import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/BacklogModal.types';
 import './BacklogCreationModal.css';
 import { useGetProjectQuery } from '../../api/project';
+import { Sprint } from '../../api/sprint';
 
-function BacklogCreationModal(): JSX.Element {
+function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; title?: string }): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
     { id: 'task', name: 'Task' },
@@ -80,11 +81,19 @@ function BacklogCreationModal(): JSX.Element {
     </Form.Item>
   );
 
-  const renderSprintSelect = (): JSX.Element => (
-    <Form.Item name="sprintId" label="Sprint">
-      <BacklogSelect options={projectData?.sprints || []} placeholder="Select Sprint" allowClear />
-    </Form.Item>
-  );
+  const renderSprintSelect = (): JSX.Element => {
+    const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
+    return (
+      <Form.Item name="sprintId" label="Sprint" initialValue={fixedSprint ? fixedSprint.id : undefined}>
+        <BacklogSelect
+          options={projectData?.sprints || []}
+          placeholder="Select Sprint"
+          allowClear
+          fixedValue={fixedSprintValue}
+        />
+      </Form.Item>
+    );
+  };
 
   const renderPrioritySelect = (): JSX.Element => (
     <Form.Item name="priority" label="Priority">
@@ -128,10 +137,10 @@ function BacklogCreationModal(): JSX.Element {
   return (
     <>
       <Button className="new-backlog-btn" type="primary" onClick={showModal}>
-        New Backlog
+        {title ?? 'New Backlog'}
       </Button>
       <Modal
-        title="New Backlog"
+        title={title ?? 'New Backlog'}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
