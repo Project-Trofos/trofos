@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Menu, Spin, Tabs } from 'antd';
+import { Menu, Spin } from 'antd';
 import { useProject } from '../../api/hooks';
 
 export default function ProjectMenu(): JSX.Element {

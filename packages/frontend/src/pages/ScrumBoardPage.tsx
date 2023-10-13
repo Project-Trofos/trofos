@@ -26,7 +26,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   return (
     <Container noGap fullWidth className="scrum-board-container">
       <div className="scrum-board-header">
-        <Heading style={{ marginLeft: '10px', marginTop: '0px', marginBottom: '0px', color: 'red' }}>
+        <Heading style={{ marginLeft: '10px', marginTop: '0px', marginBottom: '0px' }}>
           {getSprintHeading(activeSprint, activeSprint)}
         </Heading>
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
