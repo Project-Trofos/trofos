@@ -75,7 +75,9 @@ export default function CoursePage(): JSX.Element {
       <Breadcrumb.Item>
         <Link to="/courses">Courses</Link>
       </Breadcrumb.Item>
-      <Breadcrumb.Item>{course.cname}</Breadcrumb.Item>
+      <Breadcrumb.Item>
+        <Link to={`/course/${course.id}/overview`}>{course.cname}</Link>
+      </Breadcrumb.Item>
     </Breadcrumb>
   );
 
@@ -94,24 +96,6 @@ export default function CoursePage(): JSX.Element {
             : undefined
         }
         breadcrumb={breadCrumbs}
-        footer={
-          <Tabs
-            items={[
-              { key: 'overview', label: 'Overview' },
-              { key: 'users', label: 'Users' },
-              ...(isCourseManager
-                ? [
-                    { key: 'milestones', label: 'Milestones' },
-                    { key: 'statistics', label: 'Statistics' },
-                    { key: 'settings', label: 'Settings' },
-                  ]
-                : []),
-            ]}
-            activeKey={selectedTab}
-            className="footer-tabs"
-            onChange={(key) => navigate(`/course/${course.id}/${key}`)}
-          />
-        }
       >
         {course.description && <Text>{course.description}</Text>}
       </PageHeader>

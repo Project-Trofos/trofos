@@ -48,6 +48,7 @@ export default function BacklogCardAssignee(props: {
       {projectUsers?.map((user) => (
         <Option key={user.user.user_id} value={user.user.user_id}>
           <UserAvatar
+            tooltip
             className="assignee-avatar"
             userDisplayName={user.user.user_display_name}
             userHashString={user.user.user_email}

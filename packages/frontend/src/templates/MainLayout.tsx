@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Switch } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space } from 'antd';
 import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -11,6 +11,7 @@ import GlobalSearch from '../components/search/GlobalSearch';
 import { UserPermissionActions } from '../helpers/constants';
 import conditionalRender from '../helpers/conditionalRender';
 import AvatarButton from '../components/button/AvatarButton';
+import MenuSwitch from '../components/menu/MenuSwitch';
 
 import './MainLayout.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -54,9 +55,9 @@ function LogoutText() {
 
 function LoggedOutHeader() {
   return (
-    <Col>
+    <>
       <Link to="/login">Log in</Link>
-    </Col>
+    </>
   );
 }
 
@@ -83,7 +84,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <>
+    <Space>
       <Col>
       <ThemeSwitch />
       </Col>
@@ -97,14 +98,12 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <Col>
           <BellOutlined />
         </Col> */}
-      <Col>
-        <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
-          <div className="avatar-group">
-            <AvatarButton userInfo={userInfo} />
-          </div>
-        </Dropdown>
-      </Col>
-    </>
+      <Dropdown trigger={['click']} menu={{ items: accountMenuItems }}>
+        <div className="avatar-group">
+          <AvatarButton userInfo={userInfo} />
+        </div>
+      </Dropdown>
+    </Space>
   );
 }
 
@@ -112,6 +111,8 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
  * Main layout of the application.
  */
 export default function MainLayout() {
+  const [isBroken, setIsBroken] = useState(false);
+
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
@@ -209,7 +210,7 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider breakpoint="lg" collapsedWidth="0" className="main-layout-sider">
+      <Sider breakpoint="lg" collapsedWidth="0" onBreakpoint={setIsBroken} className="main-layout-sider">
         <Link to="/">
           <div className="logo">Trofos</div>
         </Link>
@@ -222,9 +223,12 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: '0 16px' }}>
-          <Row justify="end" align="middle" gutter={16} style={{ height: '100%' }}>
-            {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}
+        <Header style={{ padding: '0 10px' }}>
+          <Row justify={'space-between'}>
+            <Col style={{paddingLeft: isBroken ? "30px" : 0}} span={10}>
+              <MenuSwitch />
+            </Col>
+            <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
           </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>

@@ -7,10 +7,10 @@
   box-shadow: none;
 }
 
-/* .search-input {
+.search-input {
   width: 200px;
   transition: all 0.1s ease-in-out;
-} */
+}
 
 /* .search-input-hidden {
   width: 0;

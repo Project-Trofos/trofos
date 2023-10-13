@@ -34,6 +34,7 @@ function ScrumBoardCard(props: { backlog: Backlog; projectKey: string | null | u
               <div className="scrum-board-card-assignee">
                 {backlog.assignee && (
                   <UserAvatar
+                    tooltip
                     className="assignee-avatar"
                     size="small"
                     userHashString={backlog.assignee.user.user_email}

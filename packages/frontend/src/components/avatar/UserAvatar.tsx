@@ -41,19 +41,24 @@ const getInitials = (userDisplayName: string): string => {
 interface UserAvatarProps extends AvatarProps {
   userDisplayName: string;
   userHashString: string;
+  tooltip?: boolean;
 }
 
 const withColorAndTooltip = (WrappedAvatar: React.ComponentType<AvatarProps>): React.FC<UserAvatarProps> => {
-  return function ({ userDisplayName, userHashString, ...restProps }: UserAvatarProps) {
+  return function ({ userDisplayName, userHashString, tooltip, ...restProps }: UserAvatarProps) {
     const userInitials = getInitials(userDisplayName);
     const bgColor: string = stringToColour(userHashString);
     const fontColor: string = getContrastYIQ(bgColor);
-    return (
+    return tooltip ? (
       <Tooltip title={userDisplayName}>
-        <WrappedAvatar style={{ backgroundColor: bgColor, color: fontColor }} {...restProps}>
+        <WrappedAvatar size="small" style={{ backgroundColor: bgColor, color: fontColor }} {...restProps}>
           {userInitials}
         </WrappedAvatar>
       </Tooltip>
+    ) : (
+      <WrappedAvatar size="small" style={{ backgroundColor: bgColor, color: fontColor }} {...restProps}>
+        {userInitials}
+      </WrappedAvatar>
     );
   };
 };

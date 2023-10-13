@@ -6,6 +6,19 @@
   gap: 8px;
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Menu */
+.main-layout-sider .ant-layout-sider-children {
+  background-color: var(--sider-bg-color);
+}
+
 /* Prevent link from changing text color */
 .main-layout-sider .ant-menu-title-content a {
   color: inherit;
