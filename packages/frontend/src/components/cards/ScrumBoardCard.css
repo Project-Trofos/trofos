@@ -1,7 +1,3 @@
-.scrum-board-card-container {
-  width: 260px;
-}
-
 .scrum-board-card-container.ant-card {
   border-radius: 6px;
 }
