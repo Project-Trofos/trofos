@@ -20,7 +20,7 @@
 .logo {
   font-size: 2rem;
   margin: 10px;
-  color: white;
+  color: "#32A2AC";
   height: calc(63 - 10 * 2) px;
   text-align: center;
   border-radius: 0.375rem;
