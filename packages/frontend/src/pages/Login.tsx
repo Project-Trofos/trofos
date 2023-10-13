@@ -43,7 +43,7 @@ export default function LoginPage(): JSX.Element {
               name="userEmail"
               rules={[{ required: true, message: 'Please input your username!' }]}
             >
-              <Input />
+              <Input autoFocus />
             </Form.Item>
 
             <Form.Item
