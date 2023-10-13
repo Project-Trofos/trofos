@@ -13,12 +13,12 @@ const ThemeProvider = ({ children }: PropsWithChildren) => {
         token: {
           colorPrimary,
           colorLink: colorPrimary,
-          colorBgBase: isDarkTheme ? "rgb(10, 10, 10)" : "#FFF"
+          colorBgBase: isDarkTheme ? 'rgb(10, 10, 10)' : '#FFF',
         },
         components: {
           Layout: {
-            siderBg: colorPrimary,
-            headerBg: colorPrimary
+            siderBg: isDarkTheme ? "rgb(20, 20, 20)" : "#FFF",
+            headerBg: isDarkTheme ? "rgb(20, 20, 20)" : "#FFF"
           },
         },
       }}
