@@ -2,6 +2,7 @@ import React from 'react';
 import { Select } from 'antd';
 import type { BacklogSelectTypes } from '../../helpers/BacklogModal.types';
 import './BacklogSelect.css';
+import { Sprint } from '../../api/sprint';
 
 type BacklogSelectPropsTypes = {
   value?: string | number;
@@ -10,27 +11,46 @@ type BacklogSelectPropsTypes = {
   placeholder?: string;
   className?: string;
   allowClear?: boolean;
+  fixedValue?: BacklogSelectTypes | undefined;
 };
 
 const { Option } = Select;
 
 function BacklogSelect(props: BacklogSelectPropsTypes): JSX.Element {
-  const { value, onChange, options, placeholder, className, allowClear } = props;
+  const { value, onChange, options, placeholder, className, allowClear, fixedValue } = props;
 
   return (
-    <Select
-      value={value}
-      onChange={onChange}
-      className={`backlog-select ${className}`}
-      placeholder={placeholder}
-      allowClear={allowClear}
-    >
-      {options.map((option) => (
-        <Option key={option.id} value={option.id}>
-          {option.name}
-        </Option>
-      ))}
-    </Select>
+    <>
+      {fixedValue ? (
+        <Select
+          value={value}
+          onChange={onChange}
+          className={`backlog-select ${className}`}
+          placeholder={placeholder}
+          allowClear={allowClear}
+          defaultValue={fixedValue.name}
+          disabled={true}
+        >
+          <Option key={fixedValue.id} value={fixedValue.id}>
+            {fixedValue.name}
+          </Option>
+        </Select>
+      ) : (
+        <Select
+          value={value}
+          onChange={onChange}
+          className={`backlog-select ${className}`}
+          placeholder={placeholder}
+          allowClear={allowClear}
+        >
+          {options.map((option) => (
+            <Option key={option.id} value={option.id}>
+              {option.name}
+            </Option>
+          ))}
+        </Select>
+      )}
+    </>
   );
 }
 

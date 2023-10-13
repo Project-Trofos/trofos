@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../../api/project';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';

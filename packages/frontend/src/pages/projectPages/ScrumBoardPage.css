@@ -3,3 +3,10 @@
   min-width: 100%;
   min-height: 100%;
 }
+
+.scrum-board-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1em;
+}
