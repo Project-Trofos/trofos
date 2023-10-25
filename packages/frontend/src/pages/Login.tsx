@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, FormProps, Input, message, Space } from 'antd';
+import { Button, Form, FormProps, Input, Layout, message, Space, Typography } from 'antd';
 import './Login.css';
 import Title from 'antd/es/typography/Title';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
@@ -26,7 +26,7 @@ export default function LoginPage(): JSX.Element {
   };
 
   return (
-    <div className="main">
+    <Layout className="main">
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
         <div className="sso">
           <Heading>Trofos</Heading>
@@ -60,10 +60,10 @@ export default function LoginPage(): JSX.Element {
               </Button>
             </Form.Item>
           </Form>
-          <p>Sign in with</p>
+          <Typography>Sign in with</Typography>
           <NusSsoButton />
         </div>
       </Space>
-    </div>
+    </Layout>
   );
 }
