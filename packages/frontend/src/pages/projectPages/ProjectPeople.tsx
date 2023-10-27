@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card, Space } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useGetUserInfoQuery } from '../api/auth';
-import { useGetActionsOnRolesQuery } from '../api/role';
-import { useProject } from '../api/hooks';
-import InputWithButton from '../components/fields/InputWithButton';
-import Container from '../components/layouts/Container';
-import UserTable from '../components/tables/UserTable';
+import { useGetUserInfoQuery } from '../../api/auth';
+import { useGetActionsOnRolesQuery } from '../../api/role';
+import { useProject } from '../../api/hooks';
+import InputWithButton from '../../components/fields/InputWithButton';
+import Container from '../../components/layouts/Container';
+import UserTable from '../../components/tables/UserTable';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();

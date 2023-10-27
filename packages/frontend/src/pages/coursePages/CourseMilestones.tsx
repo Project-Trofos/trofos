@@ -2,12 +2,12 @@ import { Card, Select } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCourse } from '../api/hooks';
-import { useGetSprintsQuery } from '../api/sprint';
-import { Milestone } from '../api/types';
-import MilestoneCard from '../components/cards/MilestoneCard';
-import Container from '../components/layouts/Container';
-import SprintTable from '../components/tables/SprintTable';
+import { useCourse } from '../../api/hooks';
+import { useGetSprintsQuery } from '../../api/sprint';
+import { Milestone } from '../../api/types';
+import MilestoneCard from '../../components/cards/MilestoneCard';
+import Container from '../../components/layouts/Container';
+import SprintTable from '../../components/tables/SprintTable';
 
 export default function CourseMilestones(): JSX.Element {
   const params = useParams();

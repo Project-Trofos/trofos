@@ -2,18 +2,18 @@ import React, { useCallback, useMemo } from 'react';
 import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import { useRemoveProjectMutation } from '../api/project';
-import { useRemoveProjectFromCourseMutation } from '../api/course';
-import { confirmDeleteProject, confirmDetachProject } from '../components/modals/confirm';
-import ProjectAttachModal from '../components/modals/ProjectAttachModal';
-import { getErrorMessage } from '../helpers/error';
-import { useProject } from '../api/hooks';
+import { useRemoveProjectMutation } from '../../api/project';
+import { useRemoveProjectFromCourseMutation } from '../../api/course';
+import { confirmDeleteProject, confirmDetachProject } from '../../components/modals/confirm';
+import ProjectAttachModal from '../../components/modals/ProjectAttachModal';
+import { getErrorMessage } from '../../helpers/error';
+import { useProject } from '../../api/hooks';
 import './Project.css';
-import PageHeader from '../components/pageheader/PageHeader';
-import useSocket from '../api/socket/useSocket';
-import trofosApiSlice from '../api';
-import store from '../app/store';
-import { UpdateType } from '../api/socket/socket';
+import PageHeader from '../../components/pageheader/PageHeader';
+import useSocket from '../../api/socket/useSocket';
+import trofosApiSlice from '../../api';
+import store from '../../app/store';
+import { UpdateType } from '../../api/socket/socket';
 
 const { Text } = Typography;
 
@@ -43,12 +43,6 @@ export default function ProjectPage(): JSX.Element {
     store.dispatch(trofosApiSlice.util.invalidateTags(['Backlog', 'BacklogHistory', 'Sprint']));
   }, []);
   useSocket(UpdateType.BACKLOG, projectId.toString(), handleReset);
-
-  const selectedTab = useMemo(() => {
-    // Current location split [project, :projectId, :tabName]
-    const split = location.pathname.split('/');
-    return split[3];
-  }, [location.pathname]);
 
   const handleMenuClick = useCallback(
     async (key: string) => {

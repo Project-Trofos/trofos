@@ -3,15 +3,15 @@ import { skipToken } from '@reduxjs/toolkit/dist/query/react';
 import { useParams } from 'react-router-dom';
 import { Card, Col, Divider, Empty, Row, Segmented, Select, Space, Statistic, Switch } from 'antd';
 import dayjs from 'dayjs';
-import { useProject } from '../api/hooks';
-import { useGetSprintsByProjectIdQuery } from '../api/sprint';
-import Container from '../components/layouts/Container';
-import { useGetProjectBacklogHistoryQuery } from '../api/backlog';
-import { BurnDownChart } from '../components/visualization/BurnDownChart';
-import { Heading, Subheading } from '../components/typography';
-import BacklogTable from '../components/tables/BacklogTable';
-import UserBacklogPieChart from '../components/visualization/UserBacklogPieChart';
-import VelocityGraph from '../components/visualization/VelocityGraph';
+import { useProject } from '../../api/hooks';
+import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import Container from '../../components/layouts/Container';
+import { useGetProjectBacklogHistoryQuery } from '../../api/backlog';
+import { BurnDownChart } from '../../components/visualization/BurnDownChart';
+import { Heading, Subheading } from '../../components/typography';
+import BacklogTable from '../../components/tables/BacklogTable';
+import UserBacklogPieChart from '../../components/visualization/UserBacklogPieChart';
+import VelocityGraph from '../../components/visualization/VelocityGraph';
 
 export default function ProjectStatistics(): JSX.Element {
   const params = useParams();

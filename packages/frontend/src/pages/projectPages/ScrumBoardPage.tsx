@@ -1,12 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../api/sprint';
-import Container from '../components/layouts/Container';
-import ScrumBoard from '../components/board/ScrumBoard';
-import { Heading } from '../components/typography';
+import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import Container from '../../components/layouts/Container';
+import ScrumBoard from '../../components/board/ScrumBoard';
+import { Heading } from '../../components/typography';
 
 import './ScrumBoardPage.css';
-import BacklogCreationModal from '../components/modals/BacklogCreationModal';
+import BacklogCreationModal from '../../components/modals/BacklogCreationModal';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {

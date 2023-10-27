@@ -4,17 +4,17 @@ import { List, message, Typography } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { useGetSprintsByProjectIdQuery } from '../api/sprint';
-import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
-import type { Sprint } from '../api/sprint';
-import SprintCreationModal from '../components/modals/SprintCreationModal';
-import SprintListingCard from '../components/cards/SprintListingCard';
-import type { AutoSprintTypes } from '../helpers/SprintModal.types';
-import BacklogList from '../components/lists/BacklogList';
-import BacklogCreationModal from '../components/modals/BacklogCreationModal';
-import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
+import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
+import type { Sprint } from '../../api/sprint';
+import SprintCreationModal from '../../components/modals/SprintCreationModal';
+import SprintListingCard from '../../components/cards/SprintListingCard';
+import type { AutoSprintTypes } from '../../helpers/SprintModal.types';
+import BacklogList from '../../components/lists/BacklogList';
+import BacklogCreationModal from '../../components/modals/BacklogCreationModal';
+import StrictModeDroppable from '../../components/dnd/StrictModeDroppable';
 import './ProjectSprints.css';
-import Container from '../components/layouts/Container';
+import Container from '../../components/layouts/Container';
 
 const GENERIC_NEW_SPRINT: AutoSprintTypes = {
   name: 'Sprint 1',
