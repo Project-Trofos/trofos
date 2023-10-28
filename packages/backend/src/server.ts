@@ -30,34 +30,37 @@ app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
 
-app.use('/account', accountRouter);
+const router = express.Router()
+
+router.use('/account', accountRouter);
 
 // Routes for course
-app.use('/course', courseRouter);
+router.use('/course', courseRouter);
 
 // Routes for project
-app.use('/project', projectRouter);
+router.use('/project', projectRouter);
 
 // Routes for backlog
-app.use('/backlog', backlogRouter);
+router.use('/backlog', backlogRouter);
 
 // Routes for user
-app.use('/user', userRouter);
+router.use('/user', userRouter);
 
 // Routes for backlog
-app.use('/sprint', sprintRouter);
+router.use('/sprint', sprintRouter);
 
 // Routes for settings
-app.use('/feedback', feedbackRouter);
+router.use('/feedback', feedbackRouter);
 
 // Routes for role
-app.use('/role', roleRouter);
+router.use('/role', roleRouter);
 
 // Routes for github app
-app.use('/github', githubRouter);
+router.use('/github', githubRouter);
 
 // Routes for settings
-app.use('/settings', settingsRouter);
+router.use('/settings', settingsRouter);
 
+app.use('/api', router)
 // For unit testing
 export default app;

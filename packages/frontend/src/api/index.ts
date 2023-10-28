@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Define a service using a base URL and expected endpoints
 const trofosApiSlice = createApi({
   reducerPath: 'trofosApi',
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_BASE_URL || 'http://localhost:3001',
+  baseQuery: fetchBaseQuery({ baseUrl: "/api",
    prepareHeaders: (headers) => {
     headers.set('Cache-control', 'no-cache'); 
     return headers;

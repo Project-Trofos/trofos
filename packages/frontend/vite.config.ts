@@ -8,7 +8,19 @@ export default defineConfig({
   base: '/',
   plugins: [react()],
   server: {
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api/socket.io': {
+        target: 'ws://localhost:3001',
+        ws: true,
+        rewrite(path) {
+          return path.replace('/api', '');
+        },
+      },
+      '/api': {
+        target: 'http://localhost:3001',
+      },
+    },
   },
   test: {
     globals: true,

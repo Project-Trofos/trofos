@@ -15,13 +15,10 @@ type ClientToServerEvents = {
   update: (roomId: string, type?: string) => void;
 };
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  import.meta.env.VITE_SOCKET_IO_BASE_URL || 'http://localhost:3001',
-  {
-    path: import.meta.env.VITE_SOCKET_IO_PATH || '/socket.io/',
-    withCredentials: true,
-    transports: ['websocket'],
-  },
-);
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('/', {
+  path: '/api/socket.io/',
+  withCredentials: true,
+  transports: ['websocket'],
+});
 
 export default socket;
