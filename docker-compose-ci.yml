@@ -9,6 +9,8 @@ services:
     ports:
       - '3000:3000'
     container_name: trofos-frontend-ci
+    environment:
+      - CI=true
     restart: always
     links:
       - backend
