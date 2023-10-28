@@ -6,6 +6,7 @@ on:
     workflows: ["CI Test for staging"]
     types:
       - completed
+  pull_request:
 
 env:
   REGISTRY: ghcr.io
