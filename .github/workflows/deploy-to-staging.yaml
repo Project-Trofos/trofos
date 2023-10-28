@@ -3,7 +3,7 @@ name: Deploy to staging
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Stage deploy"]
+    workflows: ["CI Test for staging"]
     types:
       - completed
 
