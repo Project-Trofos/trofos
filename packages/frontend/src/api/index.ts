@@ -3,11 +3,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Define a service using a base URL and expected endpoints
 const trofosApiSlice = createApi({
   reducerPath: 'trofosApi',
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_BASE_URL || 'http://localhost:3001',
-   prepareHeaders: (headers) => {
-    headers.set('Cache-control', 'no-cache'); 
-    return headers;
-  } }, ),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NODE_ENV === 'test' ? 'http://localhost:3001/api' : '/api',
+    prepareHeaders: (headers) => {
+      headers.set('Cache-control', 'no-cache');
+      return headers;
+    },
+  }),
   tagTypes: [
     'Project',
     'UserInfo',
@@ -25,7 +27,6 @@ const trofosApiSlice = createApi({
     'Feedback',
   ],
   endpoints: () => ({}),
-  
 });
 
 // Define a service using a base URL and expected endpoints

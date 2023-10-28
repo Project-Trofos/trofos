@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   test-with-docker:
@@ -47,20 +50,6 @@ jobs:
         if: failure()
         run: |
           message="[CI Failed]
-          Commit: ${{ github.sha }}
-          View full log here: https://github.com/Project-Trofos/trofos/actions/runs/${{ github.run_id }}
-          "
-          curl --data-urlencode "text=${message}" ${{ secrets.NOTIFICATION_API }}
-  deploy:
-    needs: test-with-docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send deployment request to webhook
-        run: curl ${{ secrets.DEPLOYMENT_WEBHOOK_API }}
-      - name: Send notification on failure
-        if: failure()
-        run: |
-          message="[Build Failed]
           Commit: ${{ github.sha }}
           View full log here: https://github.com/Project-Trofos/trofos/actions/runs/${{ github.run_id }}
           "

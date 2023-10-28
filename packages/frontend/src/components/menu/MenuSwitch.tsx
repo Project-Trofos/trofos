@@ -22,4 +22,5 @@ export default function MenuSwitch() {
   } else if (matchCourses) {
     return <CoursesMenu />;
   }
+  return <></>
 }

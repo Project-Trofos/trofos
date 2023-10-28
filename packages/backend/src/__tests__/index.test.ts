@@ -48,7 +48,7 @@ describe('server.ts', () => {
         userPassword: 'testPassword',
       },
     };
-    const res = await request(server).post('/account/login').send(postData);
+    const res = await request(server).post('/api/account/login').send(postData);
     expect(res.headers['set-cookie']).toContain('trofos_sessioncookie=testSession; Path=/');
   });
 });

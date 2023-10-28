@@ -12,10 +12,10 @@ RUN mkdir -p /usr/src/app/frontend
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/frontend
 
-COPY package.json .
-COPY pnpm-lock.yaml .
-RUN pnpm i --frozen-lockfile
 COPY . .
+RUN pnpm i --frozen-lockfile
+RUN pnpm run build
+
 # Test stage for CI
 FROM base as test
 # Run unit test
@@ -23,6 +23,7 @@ RUN pnpm run test
 ENTRYPOINT ["pnpm", "run", "start"]
 
 # Production stage
-FROM base as prod
-# Command to run our app
-ENTRYPOINT ["pnpm", "run", "host"]
+FROM nginx:stable-alpine as prod
+COPY --from=base /usr/src/app/frontend/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+CMD ["nginx", "-g", "daemon off;"]

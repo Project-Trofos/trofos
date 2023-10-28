@@ -7,7 +7,7 @@ export type MultistepFromModalProps<T> = {
   formSteps: React.ReactNode[];
   onSubmit: (data: T) => Promise<void>;
   buttonElement?: 'button' | 'span';
-  buttonType?: 'link' | 'text' | 'ghost' | 'primary' | 'default' | 'dashed' | undefined;
+  buttonType?: 'link' | 'text' | 'primary' | 'default' | 'dashed' | undefined;
   buttonSize?: 'small' | 'middle' | 'large';
   buttonChildren: React.ReactNode | string;
 };
