@@ -1,6 +1,7 @@
 name: CI Test for staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
