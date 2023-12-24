@@ -30,7 +30,6 @@ export default function Overview(): JSX.Element {
         />
       )}
       <VisualizationCard projectId={project?.id} />
-      <CumulativeFlowCard projectId={project?.id} />
     </Container>
   );
 }

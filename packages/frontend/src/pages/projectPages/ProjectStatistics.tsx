@@ -12,6 +12,7 @@ import { Heading, Subheading } from '../../components/typography';
 import BacklogTable from '../../components/tables/BacklogTable';
 import UserBacklogPieChart from '../../components/visualization/UserBacklogPieChart';
 import VelocityGraph from '../../components/visualization/VelocityGraph';
+import CumulativeFlowCard from '../../components/cards/CumulativeFlowCard';
 
 export default function ProjectStatistics(): JSX.Element {
   const params = useParams();
@@ -72,6 +73,8 @@ export default function ProjectStatistics(): JSX.Element {
             <Subheading>Sprint Velocity</Subheading>
             <VelocityGraph sprints={sprintsData.sprints} />
           </Card>
+          {backlogHistory && <CumulativeFlowCard backlogHistory={backlogHistory} />}
+
           <Card>
             <Row>
               <Col xs={24} xl={12}>

@@ -3,10 +3,12 @@ import { Card, Tooltip, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Subheading } from '../../typography';
 import { CumulativeFlowDiagram } from '../../visualization/CumulativeFlowDiagram';
+import { BacklogHistory } from '../../../api/types';
 
 import './CumulativeFlowCard.css';
 
-export default function CumulativeFlowCard({ projectId }: { projectId: number | undefined }) {
+export default function CumulativeFlowCard(props: { backlogHistory: BacklogHistory[] }) {
+  const { backlogHistory } = props;
   return (
     <Card className="card">
       <div className="card-header">
@@ -15,7 +17,7 @@ export default function CumulativeFlowCard({ projectId }: { projectId: number | 
           <Button size="small" type="text" shape="circle" icon={<QuestionCircleOutlined />} />
         </Tooltip>
       </div>
-      <CumulativeFlowDiagram />
+      <CumulativeFlowDiagram backlogHistory={backlogHistory} />
     </Card>
   );
 }
