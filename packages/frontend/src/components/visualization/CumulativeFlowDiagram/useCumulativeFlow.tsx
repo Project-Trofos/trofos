@@ -1,11 +1,18 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { BacklogHistory, BacklogHistoryType } from '../../../api/types';
+import { Area } from '@ant-design/plots';
+import { dateFormatter } from '../../../util/Formatters';
+import { Dayjs } from 'dayjs';
+import { useAppSelector } from '../../../app/hooks';
 
-type CumulativeFlowData = {
+declare type CumulativeFlowData = {
   type: string;
   date: Date;
   value: number;
 };
+
+declare type EventValue<DateType> = DateType | null;
+declare type RangeValue<DateType> = [EventValue<DateType>, EventValue<DateType>] | null;
 
 const filterDeletionEvents = (backlogHistories: BacklogHistory[]): BacklogHistory[] => {
   const deletedSet = new Set<number>();
@@ -60,7 +67,7 @@ const registerUpdateEvent = (
   return Array.from(counter, ([type, value]) => ({ type: type, date: new Date(event.date), value: value }));
 };
 
-export default function useCummulativeFlow(backlogHistory: BacklogHistory[]): CumulativeFlowData[] {
+export function useCummulativeFlowData(backlogHistory: BacklogHistory[]): CumulativeFlowData[] {
   const data = useMemo(() => {
     if (!backlogHistory) {
       return [];
@@ -91,4 +98,31 @@ export default function useCummulativeFlow(backlogHistory: BacklogHistory[]): Cu
   }, [backlogHistory]);
 
   return data;
+}
+
+export function useCummulativeFlowConfig(data: CumulativeFlowData[]) {
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>(null);
+  const config = useMemo(() => {
+    return {
+      data: data,
+      theme: isDarkTheme ? 'dark' : 'default',
+      xField: 'date',
+      yField: 'value',
+      seriesField: 'type',
+      meta: {
+        date: {
+          alias: 'Date',
+          type: 'time', // important to use this specific type.
+          formatter: dateFormatter,
+          min: dateRange ? dateRange[0] : undefined,
+          max: dateRange ? dateRange[1] : undefined,
+        },
+        value: {
+          alias: 'Number of Issues',
+        },
+      },
+    };
+  }, [data, dateRange, isDarkTheme]);
+  return { config, setDateRange };
 }
