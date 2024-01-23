@@ -37,9 +37,10 @@ import PastCourses from '../pages/coursesPages/PastCourses';
 import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
 import Register from '../pages/Register';
+import useMessage from 'antd/es/message/useMessage';
 
 function App() {
-  return (
+  const [_, contextHolder] = useMessage();  return (
     <ThemeProvider>
       <BrowserRouter>
         <Routes>

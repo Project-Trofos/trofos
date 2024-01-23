@@ -8,15 +8,18 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [registerUser] = useRegisterMutation();
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-  const onFinish = async (userLoginInfo: RegisterUser) => {
+  const onFinish = async (user: RegisterUser) => {
     try {
-      await registerUser(userLoginInfo).unwrap();
-      messageApi.info('Successfully registered! Please login.');
-      navigate('/login');
+      messageApi.open({ key: 'key', type: 'loading', content: 'Registering...' });
+      await registerUser(user).unwrap();
+      messageApi.info({ key: 'key', type: 'success', content: 'Successfully registered! Returning to login screen.' });
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } catch (err: any) {
-      messageApi.error(err.data.error);
+      messageApi.open({ key: 'key', type: 'error', content: err.data.error });
     }
   };
 
@@ -26,6 +29,7 @@ const Register = () => {
 
   return (
     <Layout className="main">
+      {contextHolder}
       <Heading>Trofos</Heading>
       <Form
         name="basic"
