@@ -36,6 +36,7 @@ import CurrentCourses from '../pages/coursesPages/CurrentCourses';
 import PastCourses from '../pages/coursesPages/PastCourses';
 import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
+import Register from '../pages/Register';
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
             />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/callback/*" element={<Callback />} />
           <Route
             path="*"

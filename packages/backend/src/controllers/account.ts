@@ -4,8 +4,9 @@ import authenticationService from '../services/authentication.service';
 import sessionService from '../services/session.service';
 import roleService from '../services/role.service';
 import accountService from '../services/account.service';
-import { assertInputIsNotEmpty, getDefaultErrorRes } from '../helpers/error';
+import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -121,6 +122,25 @@ const updateUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
+async function register(req: express.Request, res: express.Response) {
+  try {
+    const { userEmail, userPassword, userDisplayName } = req.body;
+
+    assertInputIsNotEmpty<string>(userEmail, 'User Email');
+    assertInputIsNotEmpty<string>(userPassword, 'User Password');
+    assertInputIsNotEmpty<string>(userDisplayName, 'User Display Name');
+
+    await accountService.register(userEmail.toLowerCase(), userPassword, userDisplayName);
+
+    return res.status(StatusCodes.OK).json({ message: 'User successfully created' });
+  } catch (error) {
+    console.error(error);
+    const err = error as PrismaClientKnownRequestError;
+    if (err.code == "P2002") return res.status(StatusCodes.BAD_REQUEST).json({ error: "Email already in use"})
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+  }
+}
+
 export default {
   loginUser,
   logoutUser,
@@ -128,4 +148,5 @@ export default {
   changePassword,
   updateUser,
   oauth2Login,
+  register
 };
