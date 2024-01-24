@@ -10,11 +10,11 @@ export function CumulativeFlowDiagram(props: { backlogHistory: BacklogHistory[] 
   const { backlogHistory } = props;
   const data = useCummulativeFlowData(backlogHistory);
 
-  const { config, setDateRange } = useCummulativeFlowConfig(data);
-
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     return <div>No data to display.</div>;
   }
+
+  const { config, setDateRange } = useCummulativeFlowConfig(data);
 
   // eslint-disable-next-line react/jsx-props-no-spreading
   return (

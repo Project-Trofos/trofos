@@ -69,7 +69,7 @@ const registerUpdateEvent = (
 
 export function useCummulativeFlowData(backlogHistory: BacklogHistory[]): CumulativeFlowData[] {
   const data = useMemo(() => {
-    if (!backlogHistory) {
+    if (!backlogHistory || backlogHistory.length == 0) {
       return [];
     }
     const cummulativeFlowData: CumulativeFlowData[] = [];
@@ -77,6 +77,9 @@ export function useCummulativeFlowData(backlogHistory: BacklogHistory[]): Cumula
       // Sort in ascending order.
       return Date.parse(a.date) - Date.parse(b.date);
     });
+    if (!history || backlogHistory.length == 0) {
+      return [];
+    }
     const statusCounter = initialiseStatusCounter(backlogHistory);
     const stateMap = new Map<number, string>(); // Keeps track of the status of each backlog
     const initialStatus = history[0].status; // ASSUMPTION: FIRST STATUS IN HISTORY MUST HAVE THE CORRECT INITIAL STATUS
