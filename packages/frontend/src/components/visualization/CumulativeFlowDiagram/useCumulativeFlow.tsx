@@ -117,7 +117,6 @@ export function useCummulativeFlowConfig(data: CumulativeFlowData[]) {
         date: {
           alias: 'Date',
           type: 'time', // important to use this specific type.
-          formatter: dateFormatter,
           min: dateRange ? dateRange[0] : undefined,
           max: dateRange ? dateRange[1] : undefined,
         },
