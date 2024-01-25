@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BacklogHistory, BacklogHistoryType } from '../../../api/types';
 import { Area } from '@ant-design/plots';
-import { dateFormatter } from '../../../util/Formatters';
 import { Dayjs } from 'dayjs';
 import { useAppSelector } from '../../../app/hooks';
 
