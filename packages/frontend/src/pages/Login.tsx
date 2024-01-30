@@ -69,8 +69,8 @@ export default function LoginPage(): JSX.Element {
               </Row>
             </Form.Item>
           </Form>
-          <Typography>Sign in with</Typography>
-          <NusSsoButton />
+          {/* <Typography>Sign in with</Typography> */}
+          {/* <NusSsoButton /> */}
         </div>
       </Space>
     </Layout>
