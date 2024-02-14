@@ -12,5 +12,4 @@ export async function init() {
     console.log("Telegram bot started", bot.botInfo.username);
 
     bot.on("message", (ctx) => ctx.reply("test"))
-
 }

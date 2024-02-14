@@ -13,7 +13,7 @@
     "prisma-migrate-reset": "dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force",
     "prisma-migrate-ci": "pnpm exec prisma migrate reset --force && pnpm exec prisma generate",
     "build": "tsc --project tsconfig.build.json",
-    "start-prod": "dotenv -e .env.development.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
+    "start-prod": "dotenv -e .env.production.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
     "start-dev": "dotenv -e .env.development.local -- pnpm run build && dotenv -e .env.development.local -- nodemon",
     "start": "pnpm run build && node dist/index.js",
     "start:nodemon": "nodemon",
