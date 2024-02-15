@@ -3,13 +3,15 @@ import { Button, Form, FormInstance, Modal } from 'antd';
 
 export type MultistepFromModalProps<T> = {
   title: string;
-  form: FormInstance<T>;
+  formName?: string;
+  form?: FormInstance<T>;
+  openState?: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   formSteps: React.ReactNode[];
   onSubmit: (data: T) => Promise<void>;
-  buttonElement?: 'button' | 'span';
+  buttonElement?: 'button' | 'span' | 'none';
   buttonType?: 'link' | 'text' | 'primary' | 'default' | 'dashed' | undefined;
   buttonSize?: 'small' | 'middle' | 'large';
-  buttonChildren: React.ReactNode | string;
+  buttonChildren?: React.ReactNode | string;
 };
 
 /**
@@ -17,8 +19,10 @@ export type MultistepFromModalProps<T> = {
  */
 export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>) {
   const {
-    form,
+    form: deprecatedForm,
+    formName = 'multi-step-modal-form',
     formSteps,
+    openState,
     onSubmit,
     title,
     buttonElement = 'button',
@@ -27,7 +31,10 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
     buttonSize,
   } = props;
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  // TODO: Remove deprecatedForm in next major version
+  // TODO: Decouple button from modal
+  const [form] = deprecatedForm ? [deprecatedForm] : Form.useForm();
+  const [isModalVisible, setIsModalVisible] = openState ? openState : useState(false);
   const [data, setData] = useState<Partial<T>>({});
   const [step, setStep] = useState<number>(0);
 
@@ -111,7 +118,7 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
               ]
         }
       >
-        <Form name="multi-step-modal-form" layout="vertical" form={form} onFinish={onSubmit} autoComplete="off">
+        <Form name={formName} layout="vertical" form={form} onFinish={onSubmit} autoComplete="off">
           {formSteps[step]}
         </Form>
       </Modal>

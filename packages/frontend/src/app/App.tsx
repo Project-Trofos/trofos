@@ -36,6 +36,8 @@ import CurrentCourses from '../pages/coursesPages/CurrentCourses';
 import PastCourses from '../pages/coursesPages/PastCourses';
 import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
+import StandUpBoardPage from '../pages/projectPages/StandUpBoardPage';
+import StandUpsPage from '../pages/projectPages/StandUpsPage';
 
 function App() {
   return (
@@ -59,6 +61,8 @@ function App() {
               <Route path="backlog" element={<ProjectBacklogs />} />
               <Route path="backlog/:backlogId" element={<Backlog />} />
               <Route path="board" element={<ScrumBoard />} />
+              <Route path="standup" element={<StandUpsPage />} />
+              <Route path="standup/:standUpId" element={<StandUpBoardPage />} />
               <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
               <Route path="feedback" element={<ProjectFeedbacks />} />
               <Route path="statistics" element={<ProjectStatistics />} />
