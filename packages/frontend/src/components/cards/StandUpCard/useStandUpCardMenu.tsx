@@ -14,7 +14,7 @@ export default function useStandUpCardMenu(
   const handleOnDelete = async () => {
     try {
       confirmDeleteStandUp(async () => {
-        await deleteStandUp({ standUpId: standUp.standUpId, projectId: standUp.projectId }).unwrap();
+        await deleteStandUp({ id: standUp.id, project_id: standUp.project_id }).unwrap();
         message.success('Stand Up deleted!');
       });
     } catch (err) {

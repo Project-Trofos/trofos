@@ -30,7 +30,7 @@ export default function StandUpUpdateModal({
       if (!date) {
         throw new Error('Please provide a date!');
       }
-      await updateStandUp({ standUpId: standUpId, projectId: projectId, date: date.toDate() }).unwrap();
+      await updateStandUp({ id: standUpId, project_id: projectId, date: date.toDate() }).unwrap();
     } catch (err) {
       message.error(getErrorMessage(err));
     }

@@ -21,7 +21,7 @@ export default function StandUpCard(props: { standUp: StandUp }): JSX.Element {
     <SimpleCard
       content={
         <Title level={4}>
-          <Link to={`${standUp.standUpId}`}>{dateString}</Link>
+          <Link to={`${standUp.id}`}>{dateString}</Link>
         </Title>
       }
       action={
@@ -34,8 +34,8 @@ export default function StandUpCard(props: { standUp: StandUp }): JSX.Element {
           <StandUpUpdateModal
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
-            projectId={standUp.projectId}
-            standUpId={standUp.standUpId}
+            projectId={standUp.project_id}
+            standUpId={standUp.id}
           />
         </>
       }

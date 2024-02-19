@@ -72,6 +72,7 @@ model Project {
   backlogs        Backlog[]
   backlogHistories BacklogHistory[]
   backlogStatuses BacklogStatus[]
+  standUps  StandUp[]
 
   projectGitLink  ProjectGitLink?
 }
@@ -276,6 +277,23 @@ model RetrospectiveVote {
   user_id     Int
   type        RetrospectiveVoteType
   @@id([retro_id, user_id])
+}
+
+model StandUpNote {
+  id Int @id @default(autoincrement())
+  column_id Int
+  stand_up_id Int
+  stand_up  StandUp @relation(fields: [stand_up_id], references: [id], onDelete: Cascade)
+  user_id Int
+  content String
+}
+
+model StandUp {
+  id Int @id @default(autoincrement())
+  project_id  Int
+  project Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  date  DateTime
+  notes StandUpNote[]
 }
 
 enum Action {

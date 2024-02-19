@@ -20,7 +20,7 @@ export default function StandUpBoard(): JSX.Element {
 
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const users = projectData?.users;
-  const { data: standUpNotes } = useGetStandUpNotesQuery({ standUpId: standUpId });
+  const { data: standUpNotes } = useGetStandUpNotesQuery({ stand_up_id: standUpId });
 
   // Refetch active standup data upon update
   const handleReset = useCallback(() => {
@@ -54,8 +54,8 @@ export default function StandUpBoard(): JSX.Element {
                     columnId={index}
                     standUpId={standUpId}
                     columnData={standUpNotes
-                      ?.filter((note) => user.user.user_id == note.userId && note.columnId === index)
-                      .sort((a, b) => a.noteId - b.noteId)}
+                      ?.filter((note) => user.user.user_id == note.user_id && note.column_id === index)
+                      .sort((a, b) => a.id - b.id)}
                     userId={user.user.user_id}
                   />
                 );

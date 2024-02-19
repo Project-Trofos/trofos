@@ -24,7 +24,7 @@ export default function StandUpCreationModal({ projectId }: { projectId: number 
           throw new Error('Please provide a date!');
         }
 
-        await addStandUp({ projectId: projectId, date: date.toDate() }).unwrap();
+        await addStandUp({ project_id: projectId, date: date.toDate() }).unwrap();
         message.success(`Stand up scheduled for ${date}!`);
       } catch (err) {
         message.error(getErrorMessage(err));

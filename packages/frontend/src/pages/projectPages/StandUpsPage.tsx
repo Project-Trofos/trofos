@@ -25,7 +25,7 @@ export default function StandUpsPage(): JSX.Element {
           ?.slice()
           .sort((a, b) => (dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : -1))
           .map((standUp) => (
-            <Col key={standUp.standUpId}>
+            <Col key={standUp.id}>
               <StandUpCard standUp={standUp} />
             </Col>
           ))}

@@ -12,25 +12,25 @@ import { UpdateType } from './socket';
 import { emitUpdateEvent } from './useSocket';
 
 export const useAddStandUpNoteMutation = attachFunctionToRtkHookHOF(rtkUseAddStandUpNoteMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.standUpId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.stand_up_id}`);
 });
 
 export const useUpdateStandUpNoteMutation = attachFunctionToRtkHookHOF(rtkUseUpdateStandUpNoteMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.standUpId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.stand_up_id}`);
 });
 
 export const useDeleteStandUpNoteMutation = attachFunctionToRtkHookHOF(rtkUseDeleteStandUpNoteMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.standUpId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP_NOTES}/${mutArgs.stand_up_id}`);
 });
 
 export const useAddStandUpMutation = attachFunctionToRtkHookHOF(rtkUseAddStandUpMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.projectId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.project_id}`);
 });
 
 export const useUpdateStandUpMutation = attachFunctionToRtkHookHOF(rtkUseUpdateStandUpMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.projectId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.project_id}`);
 });
 
 export const useDeleteStandUpMutation = attachFunctionToRtkHookHOF(rtkUseDeleteStandUpMutation, (mutArgs) => {
-  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.projectId}`);
+  emitUpdateEvent(`${UpdateType.STAND_UP}/${mutArgs.project_id}`);
 });

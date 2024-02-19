@@ -24,7 +24,7 @@ export default function StandUpColumn(props: StandUpBoardColumnProps): JSX.Eleme
     const { content } = formData;
     if (!content) return;
     try {
-      await addStandUpNote({ standUpId, content, columnId, userId }).unwrap();
+      await addStandUpNote({ stand_up_id: standUpId, content, column_id: columnId, user_id: userId }).unwrap();
     } catch (err) {
       message.error(getErrorMessage(err));
     }
@@ -36,7 +36,7 @@ export default function StandUpColumn(props: StandUpBoardColumnProps): JSX.Eleme
     (noteId: number) => {
       return async () => {
         try {
-          await deleteStandUpNote({ standUpId: standUpId, noteId: noteId }).unwrap();
+          await deleteStandUpNote({ stand_up_id: standUpId, id: noteId }).unwrap();
         } catch (err) {
           message.error(getErrorMessage(err));
         }
@@ -50,11 +50,11 @@ export default function StandUpColumn(props: StandUpBoardColumnProps): JSX.Eleme
       <Space direction="vertical" style={{ width: '100%' }}>
         {columnData?.map((note) => (
           <SimpleCard
-            key={note.noteId}
+            key={note.id}
             content={note.content}
             action={
               <Button type="text">
-                <DeleteOutlined onClick={handleOnClick(note.noteId)} />
+                <DeleteOutlined onClick={handleOnClick(note.id)} />
               </Button>
             }
           />

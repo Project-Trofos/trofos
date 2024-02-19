@@ -2,32 +2,32 @@ import trofosApiSlice from '.';
 
 export type StandUpNote = {
   // TODO: figure this out
-  // projectId: number;
-  standUpId: number;
-  columnId: number;
-  noteId: number;
-  userId: number;
+  // project_id: number;
+  id: number;
+  column_id: number;
+  stand_up_id: number;
+  user_id: number;
   content: string;
 };
 
-type StandUpNoteFormFields = Omit<StandUpNote, 'noteId'>;
+type StandUpNoteFormFields = Omit<StandUpNote, 'id'>;
 
 export type StandUp = {
-  standUpId: number; // PK
-  projectId: number;
+  id: number; // PK
+  project_id: number;
   date: Date;
 };
 
 export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getStandUpsByProjectId: builder.query<StandUp[], number>({
-      query: (projectId) => ({
-        url: `standUp/${projectId}`,
+      query: (project_id) => ({
+        url: `standUp/${project_id}`,
         credentials: 'include',
       }),
       providesTags: ['StandUp'],
     }),
-    addStandUp: builder.mutation<StandUp, Omit<StandUp, 'standUpId'>>({
+    addStandUp: builder.mutation<StandUp, Omit<StandUp, 'id'>>({
       query: (standUp) => ({
         url: 'standUp/createStandUp/',
         method: 'POST',
@@ -45,9 +45,9 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['StandUp', 'StandUpNote'],
     }),
-    deleteStandUp: builder.mutation<void, Pick<StandUp, 'standUpId' | 'projectId'>>({
-      query: ({ standUpId }) => ({
-        url: `standUp/deleteStandUp/${standUpId}`,
+    deleteStandUp: builder.mutation<void, Pick<StandUp, 'id' | 'project_id'>>({
+      query: ({ id }) => ({
+        url: `standUp/deleteStandUp/${id}`,
         method: 'DELETE',
         credentials: 'include',
       }),
@@ -62,9 +62,9 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['StandUpNote'],
     }),
-    getStandUpNotes: builder.query<StandUpNote[], { standUpId: number }>({
-      query: ({ standUpId }) => ({
-        url: `standUp/getNotes/${standUpId}`,
+    getStandUpNotes: builder.query<StandUpNote[], { stand_up_id: number }>({
+      query: ({ stand_up_id }) => ({
+        url: `standUp/getNotes/${stand_up_id}`,
         credentials: 'include',
       }),
       providesTags: ['StandUpNote'],
@@ -78,9 +78,9 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['StandUpNote'],
     }),
-    deleteStandUpNote: builder.mutation<void, { noteId: number; standUpId: number }>({
-      query: ({ noteId, standUpId }) => ({
-        url: `standUp/deleteStandUpNote/${noteId}`,
+    deleteStandUpNote: builder.mutation<void, Pick<StandUpNote, 'id' | 'stand_up_id'>>({
+      query: ({ id }) => ({
+        url: `standUp/deleteStandUpNote/${id}`,
         method: 'DELETE',
         credentials: 'include',
       }),
