@@ -8,6 +8,7 @@ import VisualizationCard from '../../components/cards/VisualizationCard';
 import Container from '../../components/layouts/Container';
 import { useGetProjectBacklogHistoryQuery } from '../../api/backlog';
 import ProjectStatisticsCard from '../../components/cards/ProjectStatisticsCard';
+import CumulativeFlowCard from '../../components/cards/CumulativeFlowCard';
 
 export default function Overview(): JSX.Element {
   const params = useParams();
