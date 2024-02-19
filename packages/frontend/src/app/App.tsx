@@ -38,9 +38,11 @@ import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
 import StandUpBoardPage from '../pages/projectPages/StandUpBoardPage';
 import StandUpsPage from '../pages/projectPages/StandUpsPage';
+import Register from '../pages/Register';
+import useMessage from 'antd/es/message/useMessage';
 
 function App() {
-  return (
+  const [_, contextHolder] = useMessage();  return (
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
@@ -114,6 +116,7 @@ function App() {
             />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/callback/*" element={<Callback />} />
           <Route
             path="*"

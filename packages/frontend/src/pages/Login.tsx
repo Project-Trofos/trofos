@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Form, FormProps, Input, Layout, message, Space, Typography } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Col, Form, FormProps, Input, Layout, message, Row, Space, Typography } from 'antd';
 import './Login.css';
 import Title from 'antd/es/typography/Title';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
@@ -55,13 +55,22 @@ export default function LoginPage(): JSX.Element {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                Sign in
-              </Button>
+              <Row gutter={6}>
+                <Col span={12}>
+                  <Button type="primary" htmlType="submit" style={{width: "100%"}} >
+                    Sign in
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Link to="/register">
+                    <Button type="default" style={{width: "100%"}}>Register</Button>
+                  </Link>
+                </Col>
+              </Row>
             </Form.Item>
           </Form>
-          <Typography>Sign in with</Typography>
-          <NusSsoButton />
+          {/* <Typography>Sign in with</Typography> */}
+          {/* <NusSsoButton /> */}
         </div>
       </Space>
     </Layout>
