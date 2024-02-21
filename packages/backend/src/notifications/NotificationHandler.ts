@@ -1,7 +1,10 @@
-import { Bot } from "grammy";
+import { prisma } from "@prisma/client";
+import { Api, Bot, Context, RawApi } from "grammy";
+import projectService from "../services/project.service";
 
 
-let bot;
+
+let bot: Bot<Context, Api<RawApi>>;
 export async function init() {
     // console.log(process.env.TELEGRAM_TOKEN);
     console.log("Starting bot");
@@ -12,8 +15,16 @@ export async function init() {
     await bot.init()
     console.log("Telegram bot started", bot.botInfo.username);
 
-    bot.command("start", (ctx) => {
-        ctx.reply(`your id is ${ctx.message?.from.id}, please input this into your settings in trofos.`)
+    bot.command("start", (ctx) => {        
+        ctx.reply(`your channel id is ${ctx.update.channel_post?.sender_chat.id}, please input this into your settings in trofos.`)
     })
 
+}
+
+export async function sendToProject(projectId: number, message: string) {
+    const result = await projectService.getTelegramId(projectId);
+    if (result == null || result.telegramChannelLink == null) {
+        return
+    }
+    bot.api.sendMessage(result.telegramChannelLink, message)
 }

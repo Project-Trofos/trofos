@@ -551,6 +551,19 @@ async function setTelegramId(projectId: number, telegramId: string): Promise<Pro
 
   return result;
 }
+
+async function getTelegramId(projectId: number) {
+  const result = await prisma.project.findFirst({
+    where: {
+      id: projectId
+    },
+    select: {
+      telegramChannelLink: true
+    }
+  })
+  return result
+}
+
 async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectOnSettings | null> {
   const result = await prisma.usersOnProjectOnSettings.findUnique({
     where: {
@@ -604,5 +617,6 @@ export default {
   deleteGitUrl,
   getUserSettings,
   updateUserSettings,
-  setTelegramId
+  setTelegramId,
+  getTelegramId
 };
