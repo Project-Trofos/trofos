@@ -38,9 +38,6 @@ dependencies:
   cors:
     specifier: ^2.8.5
     version: 2.8.5
-  dotenv:
-    specifier: ^16.4.4
-    version: 16.4.4
   dotenv-cli:
     specifier: ^6.0.0
     version: 6.0.0
