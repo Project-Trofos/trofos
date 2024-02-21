@@ -74,6 +74,7 @@ model Project {
   backlogStatuses BacklogStatus[]
 
   projectGitLink  ProjectGitLink?
+  telegramChannelLink String?
 }
 
 model Announcement {
