@@ -22,6 +22,8 @@ const trofosApiSlice = createApi({
     'CourseRoles',
     'ProjectRoles',
     'Settings',
+    'StandUp',
+    'StandUpNote',
     'Retrospective',
     'ProjectUserSettings',
     'Feedback',

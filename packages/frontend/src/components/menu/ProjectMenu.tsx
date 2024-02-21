@@ -42,8 +42,9 @@ export default function ProjectMenu(): JSX.Element {
           { key: 'users', label: 'Users' },
           { key: 'sprint', label: 'Sprint' },
           { key: 'board', label: 'Board' },
-          { key: 'feedback', label: 'Feedback' },
+          { key: 'standup', label: 'Stand Up' },
           { key: 'statistics', label: 'Statistics' },
+          { key: 'feedback', label: 'Feedback' },
           { key: 'settings', label: 'Settings' },
         ]}
         selectedKeys={[selectedTab]}

@@ -1,0 +1,34 @@
+.standup-container-card {
+  margin: 5px;
+  width: 33%;
+  display: flex;
+  flex-flow: column;
+}
+
+.standup-container-card .ant-card-head-title {
+  text-align: center;
+}
+
+.standup-container-card .ant-card-body {
+  padding: 12px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.standup-container-card-body {
+  height: 50vh;
+  overflow-y: auto;
+}
+
+.standup-container-card-footer {
+  margin-top: auto;
+}
+
+.standup-container-form .ant-form-item {
+  margin-bottom: 0;
+}
+
+.standup-container-form input {
+  height: 44px;
+}

@@ -3,6 +3,8 @@ import { io, Socket } from 'socket.io-client';
 export enum UpdateType {
   BACKLOG = 'backlog',
   RETRO = 'retro',
+  STAND_UP_NOTES = 'stand-up-notes',
+  STAND_UP = 'stand-up',
 }
 
 type ServerToClientEvents = {

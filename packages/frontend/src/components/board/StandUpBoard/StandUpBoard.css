@@ -1,0 +1,44 @@
+.standup-board-drag-drop-context {
+  padding-bottom: 40px;
+}
+
+.standup-board-status-container {
+  display: flex;
+}
+
+.standup-board-droppable {
+  display: flex;
+}
+
+.standup-board-droppable > div,
+.standup-board-status {
+  width: 270px;
+  min-width: 270px;
+  border-radius: 6px;
+  margin: 10px;
+  padding: 5px;
+}
+
+.standup-board-droppable > div {
+  min-height: 90px;
+}
+
+.standup-board-droppable > div > div {
+  margin: 2px 0;
+}
+
+.standup-board-status .ant-typography {
+  margin: 0 5px;
+}
+
+.standup-board-user-container {
+  margin-top: 10px;
+}
+
+h5.ant-typography.standup-board-user-title {
+  margin: 0 10px;
+}
+
+.standup-board-warning.ant-alert {
+  margin: 10px 10px 20px;
+}
