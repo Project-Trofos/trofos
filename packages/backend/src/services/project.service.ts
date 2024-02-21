@@ -323,8 +323,8 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
       where: {
         id: projectId,
       },
-      include : {
-        course : true
+      include: {
+        course: true
       }
     });
 
@@ -332,7 +332,7 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
       // A user can only be added if they are already part of the parent course
       await tx.usersOnRolesOnCourses.findUniqueOrThrow({
         where: {
-          user_id_course_id : {
+          user_id_course_id: {
             course_id: projectInfo.course_id,
             user_id: userInfo.user_id,
           }
@@ -372,8 +372,8 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       where: {
         id: projectId,
       },
-      include : {
-        course : true
+      include: {
+        course: true
       }
     });
 
@@ -539,6 +539,18 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   return result;
 }
 
+async function setTelegramId(projectId: number, telegramId: string): Promise<Project> {
+  const result = await prisma.project.update({
+    where: {
+      id: projectId
+    },
+    data: {
+      telegramChannelLink: telegramId
+    }
+  });
+
+  return result;
+}
 async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectOnSettings | null> {
   const result = await prisma.usersOnProjectOnSettings.findUnique({
     where: {
@@ -592,4 +604,5 @@ export default {
   deleteGitUrl,
   getUserSettings,
   updateUserSettings,
+  setTelegramId
 };
