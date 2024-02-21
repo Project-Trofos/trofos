@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, message, Space } from 'antd';
+import { Form, Input, message, Space, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../../api/hooks';
 import { useGetUserSettingsQuery, useUpdateProjectMutation } from '../../api/project';
@@ -12,6 +12,7 @@ import { getErrorMessage } from '../../helpers/error';
 import ProjectBacklogStatusForm from '../../components/forms/ProjectBacklogStatusForm';
 import ProjectGitLinkForm from '../../components/forms/ProjectGitLinkForm';
 import ProjectUserSettingsForm from '../../components/forms/ProjectUserSettingsForm';
+import ProjectTelegramForm from '../../components/forms/ProjectTelegramForm';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
@@ -67,6 +68,10 @@ export default function ProjectSettings(): JSX.Element {
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>GitHub Linkage</Subheading>
         <ProjectGitLinkForm />
+      </Space>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Subheading>Telegram Channel</Subheading>
+        <ProjectTelegramForm />
       </Space>
       {projectUserSettings && (
         <Space direction="vertical" style={{ width: '100%' }}>
