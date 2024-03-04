@@ -54,6 +54,13 @@ export function confirmDeleteStandUp(onOk: () => Promise<void>) {
 /**
  * Shows a modal with prompt for deleting a project.
  */
+export function confirmUpdateStandUp(onOk: () => Promise<void>) {
+  return confirm('All notes will be moved to the new stand up. Are you sure you want to update?', onOk);
+}
+
+/**
+ * Shows a modal with prompt for deleting a project.
+ */
 export function confirmDetachProject(onOk: () => Promise<void>) {
   return confirm('Are you sure you want to remove this project from this course?', onOk);
 }
