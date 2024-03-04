@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Form, message } from 'antd';
+import React from 'react';
+import { message } from 'antd';
 import { Dayjs } from 'dayjs';
 import MultistepFormModal from './MultistepModalForm';
 import { getErrorMessage } from '../../helpers/error';
 import StandUpForm from '../forms/StandUpForm';
 import { useUpdateStandUpMutation } from '../../api/socket/standUpHooks';
+import { confirmUpdateStandUp } from './confirm';
 
 /**
  * Modal for scheduling stand ups
@@ -30,7 +31,10 @@ export default function StandUpUpdateModal({
       if (!date) {
         throw new Error('Please provide a date!');
       }
-      await updateStandUp({ id: standUpId, project_id: projectId, date: date.toDate() }).unwrap();
+      confirmUpdateStandUp(async () => {
+        await updateStandUp({ id: standUpId, project_id: projectId, date: date.toDate() }).unwrap();
+        message.success('Stand Up updated!');
+      });
     } catch (err) {
       message.error(getErrorMessage(err));
     }
