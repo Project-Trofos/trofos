@@ -14,6 +14,7 @@ import useSocket from '../../api/socket/useSocket';
 import trofosApiSlice from '../../api';
 import store from '../../app/store';
 import { UpdateType } from '../../api/socket/socket';
+import DownloadReport from '../../components/report/DownloadReport';
 
 const { Text } = Typography;
 
@@ -118,7 +119,10 @@ export default function ProjectPage(): JSX.Element {
   return (
     <>
       <PageHeader
-        extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
+        extra={[
+          <DownloadReport key="project-report" project={project} />,
+          <DropdownMenu projectMenu={projectMenu} key="more" />,
+        ]}
         breadcrumb={breadCrumbs}
       >
         {project.description && <Text>{project.description}</Text>}
