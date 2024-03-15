@@ -40,9 +40,11 @@ import StandUpBoardPage from '../pages/projectPages/StandUpBoardPage';
 import StandUpsPage from '../pages/projectPages/StandUpsPage';
 import Register from '../pages/Register';
 import useMessage from 'antd/es/message/useMessage';
+import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
 
 function App() {
-  const [_, contextHolder] = useMessage();  return (
+  const [_, contextHolder] = useMessage();
+  return (
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
@@ -68,6 +70,7 @@ function App() {
               <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
               <Route path="feedback" element={<ProjectFeedbacks />} />
               <Route path="statistics" element={<ProjectStatistics />} />
+              <Route path="report" element={<ProjectReportPage />} />
               <Route path="settings" element={<ProjectSettings />} />
             </Route>
             <Route path="courses" element={<Courses />}>

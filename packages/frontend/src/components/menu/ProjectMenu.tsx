@@ -44,6 +44,7 @@ export default function ProjectMenu(): JSX.Element {
           { key: 'board', label: 'Board' },
           { key: 'standup', label: 'Stand Up' },
           { key: 'statistics', label: 'Statistics' },
+          { key: 'report', label: 'Report' },
           { key: 'feedback', label: 'Feedback' },
           { key: 'settings', label: 'Settings' },
         ]}
