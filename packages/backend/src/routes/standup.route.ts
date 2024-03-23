@@ -1,4 +1,4 @@
-import { Action, StandUpNote } from '@prisma/client';
+import { Action } from '@prisma/client';
 import express from 'express';
 import standUp from '../controllers/standup';
 import { hasAuthForProject } from '../middleware/auth.middleware';
@@ -14,7 +14,7 @@ router.post(
 );
 
 // Get all stand ups of a project
-router.get('/:projectId', hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME), standUp.getStandUps);
+router.get('/:projectId', hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME), standUp.getStandUpHeaders);
 
 // Update stand up
 router.put(
@@ -34,7 +34,12 @@ router.post('/createNote', hasAuthForProject(Action.update_project, projectPolic
 router.get(
   '/getNotes/:standUpId',
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
-  standUp.getStandUpNotes,
+  standUp.getStandUp,
+);
+router.get(
+  '/getAllNotes/:projectId',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  standUp.getStandUps,
 );
 router.delete(
   '/deleteStandUpNote/:noteId',

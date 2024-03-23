@@ -1,36 +1,27 @@
+import React from 'react';
 import { Typography, Card } from 'antd';
-
-import './StandUpBoard.css';
 import StandUpColumn from './StandUpColumn';
-import { useGetStandUpNotesQuery } from '../../../api/standup';
-import { useParams } from 'react-router-dom';
+import { StandUp } from '../../../api/standup';
 import { useGetProjectQuery } from '../../../api/project';
-import trofosApiSlice from '../../../api';
-import useSocket from '../../../api/socket/useSocket';
-import { useCallback } from 'react';
-import store from '../../../app/store';
-import { UpdateType } from '../../../api/socket/socket';
+import { useProjectIdParam } from '../../../api/hooks';
+import { Heading } from '../../typography';
+import dayjs from 'dayjs';
+import './StandUpBoard.css';
 
 const { Title } = Typography;
 
-export default function StandUpBoard(): JSX.Element {
-  const params = useParams();
-  const projectId = Number(params.projectId);
-  const standUpId = Number(params.standUpId);
+type StandUpBoardProps = { standUp: StandUp; readOnly?: boolean };
+
+export default function StandUpBoard({ standUp, readOnly }: StandUpBoardProps): JSX.Element {
+  const projectId = useProjectIdParam();
 
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const users = projectData?.users;
-  const { data: standUpNotes } = useGetStandUpNotesQuery({ stand_up_id: standUpId });
-
-  // Refetch active standup data upon update
-  const handleReset = useCallback(() => {
-    store.dispatch(trofosApiSlice.util.invalidateTags(['StandUpNote']));
-  }, []);
-  useSocket(UpdateType.STAND_UP_NOTES, standUpId.toString(), handleReset);
 
   const columnNames = ["What's Done?", 'What Next?', 'Blockers?'];
   return (
     <>
+      <Heading>{dayjs(standUp.date).format('dddd, DD MMM YYYY')}</Heading>
       <div className="standup-board-status-container">
         {columnNames.map((columnName, index) => {
           return (
@@ -52,11 +43,12 @@ export default function StandUpBoard(): JSX.Element {
                   <StandUpColumn
                     key={index}
                     columnId={index}
-                    standUpId={standUpId}
-                    columnData={standUpNotes
-                      ?.filter((note) => user.user.user_id == note.user_id && note.column_id === index)
+                    standUpId={standUp.id}
+                    columnData={standUp.notes
+                      .filter((note) => user.user.user_id == note.user_id && note.column_id === index)
                       .sort((a, b) => a.id - b.id)}
                     userId={user.user.user_id}
+                    readOnly={readOnly}
                   />
                 );
               })}

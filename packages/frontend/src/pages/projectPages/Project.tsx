@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
-import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../../api/project';
@@ -29,7 +29,6 @@ export default function ProjectPage(): JSX.Element {
   const params = useParams();
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
@@ -117,10 +116,7 @@ export default function ProjectPage(): JSX.Element {
 
   return (
     <>
-      <PageHeader
-        extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
-        breadcrumb={breadCrumbs}
-      >
+      <PageHeader extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]} breadcrumb={breadCrumbs}>
         {project.description && <Text>{project.description}</Text>}
       </PageHeader>
       <section className="overflow-scroll-container">

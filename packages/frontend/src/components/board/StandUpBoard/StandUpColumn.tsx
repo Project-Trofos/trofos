@@ -12,10 +12,16 @@ type StandUpBoardColumnProps = {
   standUpId: number;
   columnId: number;
   userId: number;
+  readOnly?: boolean;
 };
 
-export default function StandUpColumn(props: StandUpBoardColumnProps): JSX.Element {
-  const { columnData, columnId, standUpId, userId } = props;
+export default function StandUpColumn({
+  columnData,
+  columnId,
+  standUpId,
+  userId,
+  readOnly,
+}: StandUpBoardColumnProps): JSX.Element {
   const [form] = Form.useForm();
 
   const [addStandUpNote] = useAddStandUpNoteMutation();
@@ -53,21 +59,25 @@ export default function StandUpColumn(props: StandUpBoardColumnProps): JSX.Eleme
             key={note.id}
             content={note.content}
             action={
-              <Button type="text">
-                <DeleteOutlined onClick={handleOnClick(note.id)} />
-              </Button>
+              readOnly ? undefined : (
+                <Button type="text">
+                  <DeleteOutlined onClick={handleOnClick(note.id)} />
+                </Button>
+              )
             }
           />
         ))}
       </Space>
-      <div className="standup-container-card-footer">
-        <Divider />
-        <Form className="standup-container-form" form={form} onFinish={handleFormSubmit}>
-          <Form.Item name="content">
-            <Input placeholder="Type something here..." autoComplete="off" />
-          </Form.Item>
-        </Form>
-      </div>
+      {!readOnly && (
+        <div className="standup-container-card-footer">
+          <Divider />
+          <Form className="standup-container-form" form={form} onFinish={handleFormSubmit}>
+            <Form.Item name="content">
+              <Input placeholder="Type something here..." autoComplete="off" />
+            </Form.Item>
+          </Form>
+        </div>
+      )}
     </Card>
   );
 }

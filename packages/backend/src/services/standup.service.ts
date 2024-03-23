@@ -67,13 +67,24 @@ async function addStandUpNote(note: Omit<StandUpNote, 'id'>): Promise<StandUpNot
   return standUpNote;
 }
 
-async function getStandUpNotes(standUpId: number): Promise<StandUpNote[]> {
-  const notes = await prisma.standUpNote.findMany({
+async function getStandUp(standUpId: number): Promise<StandUp | null> {
+  const standUp = await prisma.standUp.findUnique({
     where: {
-      stand_up_id: standUpId,
+      id: standUpId,
     },
+    include: { notes: true },
   });
-  return notes;
+  return standUp;
+}
+
+async function getStandUps(projectId: number): Promise<StandUp[] | null> {
+  const standUps = await prisma.standUp.findMany({
+    where: {
+      project_id: projectId,
+    },
+    include: { notes: true },
+  });
+  return standUps;
 }
 
 async function deleteStandUpNote(noteId: number): Promise<StandUpNote> {
@@ -91,6 +102,7 @@ export default {
   updateStandUp,
   deleteStandUp,
   addStandUpNote,
-  getStandUpNotes,
+  getStandUp,
+  getStandUps,
   deleteStandUpNote,
 };

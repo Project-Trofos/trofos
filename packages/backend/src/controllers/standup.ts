@@ -15,7 +15,7 @@ async function createStandUp(req: express.Request, res: express.Response) {
   }
 }
 
-async function getStandUps(req: express.Request, res: express.Response) {
+async function getStandUpHeaders(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
 
@@ -59,10 +59,20 @@ async function addStandUpNote(req: express.Request, res: express.Response) {
   }
 }
 
-async function getStandUpNotes(req: express.Request, res: express.Response) {
+async function getStandUp(req: express.Request, res: express.Response) {
   try {
     assertIdIsValidNumber(req.params.standUpId, 'Stand Up ID');
-    const result = await standupService.getStandUpNotes(Number(req.params.standUpId));
+    const result = await standupService.getStandUp(Number(req.params.standUpId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function getStandUps(req: express.Request, res: express.Response) {
+  try {
+    assertIdIsValidNumber(req.params.projectId, 'Project ID');
+    const result = await standupService.getStandUps(Number(req.params.projectId));
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -81,10 +91,11 @@ async function deleteStandUpNote(req: express.Request, res: express.Response) {
 
 export default {
   createStandUp,
-  getStandUps,
+  getStandUpHeaders,
   updateStandUp,
   deleteStandUp,
   addStandUpNote,
-  getStandUpNotes,
+  getStandUp,
+  getStandUps,
   deleteStandUpNote,
 };

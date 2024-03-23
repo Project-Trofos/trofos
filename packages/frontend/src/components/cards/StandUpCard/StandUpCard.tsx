@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Dropdown, Typography } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 
-import { StandUp } from '../../../api/standup';
+import { StandUpHeader } from '../../../api/standup';
 import SimpleCard from '../SimpleCard';
 import { Link } from 'react-router-dom';
 import StandUpUpdateModal from '../../modals/StandUpUpdateModal';
@@ -11,7 +11,7 @@ import useStandUpCardMenu from './useStandUpCardMenu';
 
 const { Title } = Typography;
 
-export default function StandUpCard(props: { standUp: StandUp }): JSX.Element {
+export default function StandUpCard(props: { standUp: StandUpHeader }): JSX.Element {
   const { standUp } = props;
   const dateString = dayjs(standUp.date).format('ddd, DD MMM YYYY');
   const [isModalOpen, setIsModalOpen] = useState(false);

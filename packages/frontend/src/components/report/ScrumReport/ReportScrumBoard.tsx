@@ -1,21 +1,21 @@
 import React from 'react';
-import { Alert, message, Typography, Card, Space } from 'antd';
+import { Typography, Card, Space } from 'antd';
 
-import { useUpdateBacklogMutation } from '../../../api/backlog';
 import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../../api/project';
-import { Backlog, BacklogUpdatePayload, ScrumBoardUserData } from '../../../api/types';
+import { Backlog, ScrumBoardUserData } from '../../../api/types';
 import { ReadOnlyScrumBoardCard } from '../../cards/ScrumBoardCard';
 import { Sprint } from '../../../api/sprint';
+import { useProjectIdParam } from '../../../api/hooks';
+import { Heading } from '../../typography';
 
 const { Title } = Typography;
 
-type ReportScrumBoardProps = { projectId: number; sprint?: Sprint };
+type ReportScrumBoardProps = { sprint?: Sprint };
 
-export default function ReportScrumBoard({ projectId, sprint }: ReportScrumBoardProps): JSX.Element {
+export default function ReportScrumBoard({ sprint }: ReportScrumBoardProps): JSX.Element {
+  const projectId = useProjectIdParam();
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const { data: projectData } = useGetProjectQuery({ id: projectId });
-
-  const [updateBacklog] = useUpdateBacklogMutation();
 
   const processBacklogs = (backlogs?: Backlog[]) => {
     if (!backlogs) {
@@ -41,7 +41,8 @@ export default function ReportScrumBoard({ projectId, sprint }: ReportScrumBoard
   const users = addUnassignedUser(projectData?.users);
 
   return (
-    <div className="scrum-board-drag-drop-context">
+    <Card style={{ marginBottom: '30px' }}>
+      <Heading style={{ marginLeft: '10px' }}>{sprint?.name} Board</Heading>
       <div className="scrum-board-status-container">
         {backlogStatus?.map((status) => (
           <Card bodyStyle={{ padding: '0' }} key={status.name} className="scrum-board-status">
@@ -56,7 +57,7 @@ export default function ReportScrumBoard({ projectId, sprint }: ReportScrumBoard
           </Title>
           <div className="scrum-board-droppable">
             {backlogStatus?.map((status) => (
-              <Card bodyStyle={{ padding: 8 }}>
+              <Card key={status.name} bodyStyle={{ padding: 8 }}>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   {backlogs
                     ?.filter((backlog) => backlog.status === status.name && backlog.assignee_id === user.user.user_id)
@@ -73,6 +74,6 @@ export default function ReportScrumBoard({ projectId, sprint }: ReportScrumBoard
           </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

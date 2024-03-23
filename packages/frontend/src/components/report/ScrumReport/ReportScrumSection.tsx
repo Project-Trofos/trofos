@@ -1,21 +1,26 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import { useGetSprintsByProjectIdQuery } from '../../../api/sprint';
 import Container from '../../layouts/Container';
-import { Heading } from '../../typography';
 import ReportScrumBoard from './ReportScrumBoard';
+import SprintSummaryCard from '../../cards/SprintSummaryCard';
+import { useProjectIdParam } from '../../../api/hooks';
+import { Typography } from 'antd';
+import './ReportScrum.css';
+import Retrospective from '../../../pages/Retrospective';
 
 export function ReportScrumSection(): JSX.Element {
-  const params = useParams();
-  const projectId = Number(params.projectId);
+  const projectId = useProjectIdParam();
   const { data: sprints } = useGetSprintsByProjectIdQuery(projectId);
+  const sortedSprints = useMemo(() => sprints?.sprints.toSorted((a, b) => a.id - b.id), [sprints]);
 
   return (
     <div>
-      {sprints?.sprints.map((sprint) => (
-        <Container noGap fullWidth className="scrum-board-container">
-          <Heading style={{ marginLeft: '10px' }}>{sprint.name}</Heading>
-          <ReportScrumBoard projectId={projectId} sprint={sprint} />
+      {sortedSprints?.map((sprint) => (
+        <Container noGap key={sprint.id}>
+          <Typography.Title>{sprint.name}</Typography.Title>
+          <SprintSummaryCard sprint={sprint} />
+          <ReportScrumBoard sprint={sprint} />
+          <Retrospective sprintId={sprint.id} readOnly />
         </Container>
       ))}
     </div>
