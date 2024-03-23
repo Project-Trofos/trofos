@@ -41,11 +41,11 @@ const SprintSummaryCard: React.FC<SprintSummaryCardProps> = ({ sprint }) => {
         <Divider />
         {project && (
           <Row justify="center">
-            <Col xs={24} md={12}>
+            <Col xs={24} sm={12}>
               <UserBacklogPieChart includeTitle sprints={[sprint]} users={project.users} />
             </Col>
             {backlogHistory && (
-              <Col xs={24} md={12}>
+              <Col xs={24} sm={12}>
                 <DailyCompletedPointsBarGraph
                   backlogHistory={backlogHistory.filter((b) => b.sprint_id === sprint.id)}
                   showButton
