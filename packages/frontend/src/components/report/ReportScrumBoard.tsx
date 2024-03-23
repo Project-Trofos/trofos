@@ -1,17 +1,18 @@
 import React from 'react';
 import { Typography, Card, Space } from 'antd';
 
-import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../../api/project';
-import { Backlog, ScrumBoardUserData } from '../../../api/types';
-import { ReadOnlyScrumBoardCard } from '../../cards/ScrumBoardCard';
-import { Sprint } from '../../../api/sprint';
-import { useProjectIdParam } from '../../../api/hooks';
-import { Heading } from '../../typography';
+import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../api/project';
+import { Backlog, ScrumBoardUserData } from '../../api/types';
+import { ReadOnlyScrumBoardCard } from '../cards/ScrumBoardCard';
+import { Sprint } from '../../api/sprint';
+import { useProjectIdParam } from '../../api/hooks';
+import { Heading } from '../typography';
 
 const { Title } = Typography;
 
 type ReportScrumBoardProps = { sprint?: Sprint };
 
+// TODO: Make the data a snapshot of a specific date of the sprint
 export default function ReportScrumBoard({ sprint }: ReportScrumBoardProps): JSX.Element {
   const projectId = useProjectIdParam();
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });

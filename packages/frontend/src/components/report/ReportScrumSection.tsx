@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
-import { useGetSprintsByProjectIdQuery } from '../../../api/sprint';
-import Container from '../../layouts/Container';
+import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
+import Container from '../layouts/Container';
 import ReportScrumBoard from './ReportScrumBoard';
-import SprintSummaryCard from '../../cards/SprintSummaryCard';
-import { useProjectIdParam } from '../../../api/hooks';
+import SprintSummaryCard from '../cards/SprintSummaryCard';
+import { useProjectIdParam } from '../../api/hooks';
 import { Typography } from 'antd';
 import './ReportScrum.css';
-import Retrospective from '../../../pages/Retrospective';
+import { ReportRetrospectiveContainer } from './ReportRetrospectiveContainer';
 
 export function ReportScrumSection(): JSX.Element {
   const projectId = useProjectIdParam();
@@ -20,7 +20,7 @@ export function ReportScrumSection(): JSX.Element {
           <Typography.Title>{sprint.name}</Typography.Title>
           <SprintSummaryCard sprint={sprint} />
           <ReportScrumBoard sprint={sprint} />
-          <Retrospective sprintId={sprint.id} readOnly />
+          <ReportRetrospectiveContainer sprint={sprint} />
         </Container>
       ))}
     </div>

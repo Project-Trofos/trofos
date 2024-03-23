@@ -1,9 +1,9 @@
-import StandUpBoard from '../../board/StandUpBoard';
+import StandUpBoard from '../board/StandUpBoard';
 import { Card, Divider, Typography } from 'antd';
-import { Heading } from '../../typography';
-import Container from '../../layouts/Container';
-import { useGetStandUpsQuery } from '../../../api/standup';
-import { useProjectIdParam } from '../../../api/hooks';
+import { Heading } from '../typography';
+import Container from '../layouts/Container';
+import { useGetStandUpsQuery } from '../../api/standup';
+import { useProjectIdParam } from '../../api/hooks';
 
 export function ReportStandUpSection(): JSX.Element {
   const projectId = useProjectIdParam();
