@@ -23,8 +23,18 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    removeUser: builder.mutation<User, Pick<User, 'user_id'>>({
+      query: (user) => ({
+        url: `user/${user.user_id}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      // TODO: BINGSEN after testing this works, change this invalidation tag to specific users only,
+      // refer to project.ts
+      invalidatesTags: (result, error, arg) => ['User'],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetUsersQuery, useCreateUserMutation } = extendedApi;
+export const { useGetUsersQuery, useCreateUserMutation, useRemoveUserMutation } = extendedApi;
