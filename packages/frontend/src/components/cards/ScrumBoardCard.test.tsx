@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 import store from '../../app/store';
 import type { Backlog } from '../../api/types';
-import ScrumBoardCard from './ScrumBoardCard';
+import { ScrumBoardCard } from './ScrumBoardCard';
 import StrictModeDroppable from '../dnd/StrictModeDroppable';
 
 describe('ScrumBoardCard test', () => {
@@ -42,7 +42,7 @@ describe('ScrumBoardCard test', () => {
           <StrictModeDroppable droppableId={mockDroppableId}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                <ScrumBoardCard backlog={mockBacklog} projectKey={mockProjectKey} id={mockIndex} />
+                <ScrumBoardCard backlog={mockBacklog} projectKey={mockProjectKey} id={mockIndex} index={0} />
               </div>
             )}
           </StrictModeDroppable>
