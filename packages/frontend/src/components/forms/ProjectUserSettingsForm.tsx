@@ -1,7 +1,7 @@
 import React from 'react';
 import { message, Switch } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useGetUserSettingsQuery, useUpdateUserSettingsMutation } from '../../api/project';
+import { useUpdateUserSettingsMutation } from '../../api/project';
 import { ProjectUserSettings } from '../../api/types';
 import './ProjectUserSettingsForm.css';
 

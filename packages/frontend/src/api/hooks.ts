@@ -29,6 +29,19 @@ import {
 } from './role';
 import { Project, Course } from './types';
 import { useGetSettingsQuery } from './settings';
+import { useParams } from 'react-router-dom';
+
+export const useProjectIdParam = () => {
+  const params = useParams();
+  const projectId = Number(params.projectId);
+  return projectId;
+};
+
+export const useSprintIdParam = () => {
+  const params = useParams();
+  const sprintId = Number(params.sprintId);
+  return sprintId;
+};
 
 // Filter projects by current and past
 export const useCurrentAndPastProjects = () => {
@@ -109,7 +122,7 @@ export const useCurrentAndPastCourses = () => {
 };
 
 // Get project information by id
-export const useProject = (projectId: number) => {
+export function useProject(projectId: number) {
   const { data: project, isLoading: isProjectsLoading } = useGetProjectQuery({ id: projectId });
   const { data: userRoles } = useGetProjectUserRolesQuery(projectId);
 
@@ -193,7 +206,7 @@ export const useProject = (projectId: number) => {
     handleUpdateUserRole,
     isLoading: isProjectsLoading,
   };
-};
+}
 
 // Get course information by id
 export const useCourse = (courseId?: string) => {

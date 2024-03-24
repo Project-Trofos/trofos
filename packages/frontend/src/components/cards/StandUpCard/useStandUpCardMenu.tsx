@@ -1,12 +1,12 @@
 import { MenuProps, message } from 'antd';
 import { useDeleteStandUpMutation } from '../../../api/socket/standUpHooks';
-import { StandUp } from '../../../api/standup';
+import { StandUpHeader } from '../../../api/standup';
 import { confirmDeleteStandUp } from '../../modals/confirm';
 import { getErrorMessage } from '../../../helpers/error';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 export default function useStandUpCardMenu(
-  standUp: StandUp,
+  standUp: StandUpHeader,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
 ): { menu: MenuProps } {
   const [deleteStandUp] = useDeleteStandUpMutation();

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Typography, Space, Col, Row } from 'antd';
 
 import Container from '../../components/layouts/Container';
-import { useGetStandUpsByProjectIdQuery } from '../../api/standup';
+import { useGetStandUpHeadersByProjectIdQuery } from '../../api/standup';
 import StandUpCard from '../../components/cards/StandUpCard';
 import { useParams } from 'react-router-dom';
 import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
@@ -13,7 +13,7 @@ const { Title } = Typography;
 export default function StandUpsPage(): JSX.Element {
   const params = useParams();
   const projectId = Number(params.projectId);
-  const { data: standUps } = useGetStandUpsByProjectIdQuery(projectId);
+  const { data: standUps } = useGetStandUpHeadersByProjectIdQuery(projectId);
   return (
     <Container fullWidth noGap>
       <Space style={{ display: 'flex', justifyContent: 'space-between' }}>

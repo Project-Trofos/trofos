@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Menu, Spin, ConfigProvider } from 'antd';
-import { useProject } from '../../api/hooks';
+import { Menu, ConfigProvider } from 'antd';
 
 export default function ProjectMenu(): JSX.Element {
   const params = useParams();
@@ -11,17 +10,11 @@ export default function ProjectMenu(): JSX.Element {
 
   const projectId = Number(params.projectId) || -1;
 
-  const { project, isLoading } = useProject(projectId);
-
   const selectedTab = useMemo(() => {
     // Current location split [project, :projectId, :tabName]
     const split = location.pathname.split('/');
     return split[3];
   }, [location.pathname]);
-
-  if (isLoading || !params.projectId || !project) {
-    return <Spin />;
-  }
 
   return (
     <ConfigProvider
@@ -44,11 +37,12 @@ export default function ProjectMenu(): JSX.Element {
           { key: 'board', label: 'Board' },
           { key: 'standup', label: 'Stand Up' },
           { key: 'statistics', label: 'Statistics' },
+          { key: 'report', label: 'Report' },
           { key: 'feedback', label: 'Feedback' },
           { key: 'settings', label: 'Settings' },
         ]}
         selectedKeys={[selectedTab]}
-        onClick={(e) => navigate(`/project/${project.id}/${e.key}`)}
+        onClick={(e) => navigate(`/project/${projectId}/${e.key}`)}
       />
     </ConfigProvider>
   );

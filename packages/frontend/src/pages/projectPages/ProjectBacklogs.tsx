@@ -5,10 +5,9 @@ import { useGetBacklogsByProjectIdQuery } from '../../api/backlog';
 import BacklogCreationModal from '../../components/modals/BacklogCreationModal';
 import BacklogList from '../../components/lists/BacklogList';
 import './ProjectBacklogs.css';
+const { Title } = Typography;
 
 function ProjectBacklog(): JSX.Element {
-  const { Title } = Typography;
-
   const params = useParams();
   const projectId = Number(params.projectId);
 

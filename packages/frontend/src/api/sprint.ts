@@ -14,6 +14,8 @@ export type Sprint = {
   backlogs: Backlog[];
 };
 
+export type SprintWithBacklogs = { sprints: Sprint[]; unassignedBacklogs: Backlog[] };
+
 export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSprints: builder.query<Sprint[], void>({
@@ -23,7 +25,7 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['Sprint'],
     }),
-    getSprintsByProjectId: builder.query<{ sprints: Sprint[]; unassignedBacklogs: Backlog[] }, number>({
+    getSprintsByProjectId: builder.query<SprintWithBacklogs, number>({
       query: (projectId) => ({
         url: `sprint/listSprints/${projectId}`,
         credentials: 'include',

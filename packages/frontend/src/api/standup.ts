@@ -1,8 +1,6 @@
 import trofosApiSlice from '.';
 
 export type StandUpNote = {
-  // TODO: figure this out
-  // project_id: number;
   id: number;
   column_id: number;
   stand_up_id: number;
@@ -16,34 +14,37 @@ export type StandUp = {
   id: number; // PK
   project_id: number;
   date: Date;
+  notes: StandUpNote[];
 };
+
+export type StandUpHeader = Omit<StandUp, 'notes'>;
 
 export const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getStandUpsByProjectId: builder.query<StandUp[], number>({
+    getStandUpHeadersByProjectId: builder.query<StandUpHeader[], number>({
       query: (project_id) => ({
         url: `standUp/${project_id}`,
         credentials: 'include',
       }),
-      providesTags: ['StandUp'],
+      providesTags: ['StandUpHeader'],
     }),
-    addStandUp: builder.mutation<StandUp, Omit<StandUp, 'id'>>({
+    addStandUp: builder.mutation<StandUpHeader, Omit<StandUpHeader, 'id'>>({
       query: (standUp) => ({
         url: 'standUp/createStandUp/',
         method: 'POST',
         body: standUp,
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUp', 'StandUpNote'],
+      invalidatesTags: ['StandUpHeader'],
     }),
-    updateStandUp: builder.mutation<StandUp, StandUp>({
+    updateStandUp: builder.mutation<StandUpHeader, StandUpHeader>({
       query: (standUpToUpdate) => ({
         url: 'standUp/updateStandUp/',
         method: 'PUT',
         body: standUpToUpdate,
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUp', 'StandUpNote'],
+      invalidatesTags: ['StandUpHeader'],
     }),
     deleteStandUp: builder.mutation<void, Pick<StandUp, 'id' | 'project_id'>>({
       query: ({ id }) => ({
@@ -51,7 +52,7 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUp', 'StandUpNote'],
+      invalidatesTags: (_result, _error, arg) => [{ type: 'StandUp', id: arg.id }, 'StandUpHeader'],
     }),
     addStandUpNote: builder.mutation<StandUpNote, StandUpNoteFormFields>({
       query: (standUpNote) => ({
@@ -60,23 +61,31 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
         body: standUpNote,
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUpNote'],
+      invalidatesTags: (_result, _error, arg) => [{ type: 'StandUp', id: arg.stand_up_id }],
     }),
-    getStandUpNotes: builder.query<StandUpNote[], { stand_up_id: number }>({
-      query: ({ stand_up_id }) => ({
-        url: `standUp/getNotes/${stand_up_id}`,
+    getStandUps: builder.query<StandUp[], Pick<StandUp, 'project_id'>>({
+      query: ({ project_id }) => ({
+        url: `standUp/getAllNotes/${project_id}`,
         credentials: 'include',
       }),
-      providesTags: ['StandUpNote'],
+      providesTags: (result, _error, _arg) =>
+        result ? [...result.map(({ id }) => ({ type: 'StandUp' as const, id })), 'StandUp'] : ['StandUp'],
     }),
-    updateStandUpNote: builder.mutation<StandUpNote, StandUpNoteFormFields>({
+    getStandUp: builder.query<StandUp, Pick<StandUp, 'id'>>({
+      query: ({ id }) => ({
+        url: `standUp/getNotes/${id}`,
+        credentials: 'include',
+      }),
+      providesTags: (_result, _error, arg) => [{ type: 'StandUp', id: arg.id }],
+    }),
+    updateStandUpNote: builder.mutation<StandUpNote, StandUpNote>({
       query: (standUpNoteToUpdate) => ({
         url: 'standUp/updateStandUpNote/',
         method: 'PUT',
         body: standUpNoteToUpdate,
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUpNote'],
+      invalidatesTags: (_result, _error, arg) => [{ type: 'StandUp', id: arg.stand_up_id }],
     }),
     deleteStandUpNote: builder.mutation<void, Pick<StandUpNote, 'id' | 'stand_up_id'>>({
       query: ({ id }) => ({
@@ -84,7 +93,7 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['StandUpNote'],
+      invalidatesTags: (_result, _error, arg) => [{ type: 'StandUp', id: arg.stand_up_id }],
     }),
   }),
   overrideExisting: false,
@@ -92,11 +101,12 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
 
 export const {
   useAddStandUpMutation,
-  useGetStandUpsByProjectIdQuery,
+  useGetStandUpHeadersByProjectIdQuery,
   useUpdateStandUpMutation,
   useDeleteStandUpMutation,
   useAddStandUpNoteMutation,
-  useGetStandUpNotesQuery,
+  useGetStandUpQuery,
+  useGetStandUpsQuery,
   useUpdateStandUpNoteMutation,
   useDeleteStandUpNoteMutation,
 } = extendedApi;

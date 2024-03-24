@@ -6,6 +6,7 @@ import { BacklogHistory } from '../../../api/types';
 
 const { RangePicker } = DatePicker;
 
+// TODO: move rangePicker up to page level
 export function CumulativeFlowDiagram(props: { backlogHistory: BacklogHistory[] }): JSX.Element {
   const { backlogHistory } = props;
   const data = useCummulativeFlowData(backlogHistory);
