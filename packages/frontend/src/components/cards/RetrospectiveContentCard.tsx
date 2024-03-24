@@ -11,7 +11,7 @@ import { Retrospective, RetrospectiveVoteType } from '../../api/types';
 import './RetrospectiveContentCard.css';
 
 function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Element {
-  const { retroEntry } = props;
+  const { retroEntry, readOnly } = props;
   const [addRetrospectiveVote] = useAddRetrospectiveVoteMutation();
   const [updateRetrospectiveVote] = useUpdateRetrospectiveVoteMutation();
   const [deleteRetrospectiveVote] = useDeleteRetrospectiveVoteMutation();
@@ -57,6 +57,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
           <Button
             onClick={() => handleVoteClick(RetrospectiveVoteType.UP)}
             className={`up ${currentVote === RetrospectiveVoteType.UP ? 'is-selected' : ''}`}
+            disabled={readOnly}
           >
             <ArrowUpOutlined />
           </Button>
@@ -64,6 +65,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
           <Button
             onClick={() => handleVoteClick(RetrospectiveVoteType.DOWN)}
             className={`down ${currentVote === RetrospectiveVoteType.DOWN ? 'is-selected' : ''}`}
+            disabled={readOnly}
           >
             <ArrowDownOutlined />
           </Button>
@@ -76,6 +78,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
 
 type RetrospectiveContentCardProps = {
   retroEntry: Retrospective;
+  readOnly?: boolean;
 };
 
 export default React.memo(RetrospectiveContentCard, (prevRetro, currRetro) => isEqual(prevRetro, currRetro));

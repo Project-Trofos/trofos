@@ -1,21 +1,20 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { skipToken } from '@reduxjs/toolkit/dist/query/react';
-import { useParams } from 'react-router-dom';
-import { Card, Col, Divider, Empty, Row, Segmented, Select, Space, Statistic, Switch } from 'antd';
-import dayjs from 'dayjs';
-import { useProject } from '../../api/hooks';
+import { Card, Divider, Empty, Segmented, Select, Space } from 'antd';
+import { useProjectIdParam } from '../../api/hooks';
 import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import Container from '../../components/layouts/Container';
 import { useGetProjectBacklogHistoryQuery } from '../../api/backlog';
 import { BurnDownChart } from '../../components/visualization/BurnDownChart';
-import { Heading, Subheading } from '../../components/typography';
+import { Subheading } from '../../components/typography';
 import BacklogTable from '../../components/tables/BacklogTable';
-import UserBacklogPieChart from '../../components/visualization/UserBacklogPieChart';
-import VelocityGraph from '../../components/visualization/VelocityGraph';
+import SprintSummaryCard from '../../components/cards/SprintSummaryCard';
+import { useGetProjectQuery } from '../../api/project';
+import ProjectSummaryCard from '../../components/cards/ProjectSummaryCard';
 
 export default function ProjectStatistics(): JSX.Element {
-  const params = useParams();
-  const { project } = useProject(Number(params.projectId));
+  const projectId = useProjectIdParam();
+  const { data: project } = useGetProjectQuery({ id: projectId });
   const { data: sprintsData } = useGetSprintsByProjectIdQuery(project?.id ?? skipToken);
   const { data: backlogHistory } = useGetProjectBacklogHistoryQuery(
     project?.id ? { projectId: project.id } : skipToken,
@@ -35,8 +34,6 @@ export default function ProjectStatistics(): JSX.Element {
     }
     return backlogHistory.filter((b) => b.assignee_id === selectedUser?.id && b.sprint_id === selectedSprint.id);
   }, [backlogHistory, selectedUser, selectedSprint]);
-
-  const [includeIncomplete, setIncludeIncomplete] = useState<boolean>(false);
 
   return (
     <Container>
@@ -68,28 +65,7 @@ export default function ProjectStatistics(): JSX.Element {
       </Card>
       {segment === 'Overall' && sprintsData && project && (
         <>
-          <Card>
-            <Subheading>Sprint Velocity</Subheading>
-            <VelocityGraph sprints={sprintsData.sprints} />
-          </Card>
-          <Card>
-            <Row>
-              <Col xs={24} xl={12}>
-                <Subheading>Overall Contribution by Story Points</Subheading>
-              </Col>
-              <Col xs={24} xl={12} style={{ display: 'flex', justifyContent: 'end' }}>
-                <Space>
-                  <div>Include Incomplete</div>
-                  <Switch onChange={(e) => setIncludeIncomplete(e)} checked={includeIncomplete} />
-                </Space>
-              </Col>
-            </Row>
-            <UserBacklogPieChart
-              sprints={sprintsData.sprints}
-              users={project?.users}
-              includeIncompleteIssues={includeIncomplete}
-            />
-          </Card>
+          <ProjectSummaryCard />
           <Card>
             <BacklogTable
               heading="All Issues"
@@ -103,45 +79,7 @@ export default function ProjectStatistics(): JSX.Element {
 
       {segment === 'By Sprint' && (
         <>
-          {selectedSprint && project && (
-            <Card>
-              <Heading>{selectedSprint.name}</Heading>
-              <Row gutter={[32, 32]}>
-                <Col sm={6} xs={24}>
-                  <Statistic title="Start date" value={dayjs(selectedSprint.start_date).format('YYYY-MM-DD')} />
-                </Col>
-                <Col sm={6} xs={24}>
-                  <Statistic title="End date" value={dayjs(selectedSprint.end_date).format('YYYY-MM-DD')} />
-                </Col>
-                <Col sm={6} xs={24}>
-                  <Statistic title="Issues" value={selectedSprint.backlogs.length} />
-                </Col>
-                <Col sm={6} xs={24}>
-                  <Statistic title="Status" value={selectedSprint.status} />
-                </Col>
-              </Row>
-            </Card>
-          )}
-          {selectedSprint && project && (
-            <Card>
-              <Row>
-                <Col xs={24} xl={12}>
-                  <Subheading>Sprint Contribution by Story Points</Subheading>
-                </Col>
-                <Col xs={24} xl={12} style={{ display: 'flex', justifyContent: 'end' }}>
-                  <Space>
-                    <div>Include Incomplete</div>
-                    <Switch onChange={(e) => setIncludeIncomplete(e)} checked={includeIncomplete} />
-                  </Space>
-                </Col>
-              </Row>
-              <UserBacklogPieChart
-                sprints={[selectedSprint]}
-                users={project?.users}
-                includeIncompleteIssues={includeIncomplete}
-              />
-            </Card>
-          )}
+          <SprintSummaryCard sprint={selectedSprint} />
           {selectedSprint && backlogHistory && (
             <Card>
               <BacklogTable

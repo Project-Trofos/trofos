@@ -72,6 +72,19 @@ export function assertProjectIdIsValid(projectId: string | number | undefined): 
   }
 }
 
+// Assert Id is not undefined and it is a number
+export function assertIdIsValidNumber(
+  id: string | number | undefined,
+  fieldName: string = 'id',
+): asserts id is string | number {
+  if (!id) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage(fieldName));
+  }
+  if (typeof id !== 'number') {
+    assertStringIsNumberOrThrow(id, getFieldNotNumberErrorMessage(fieldName));
+  }
+}
+
 export function assertProjectNameIsValid(projectName: string | undefined): asserts projectName is string {
   if (!projectName) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('projectName'));

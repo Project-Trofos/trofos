@@ -10,11 +10,7 @@ export type StoryPointData = {
   backlog_id: number;
 };
 
-export function useBurndownChart(
-  backlogHistory: BacklogHistory[],
-  sprintId: number | undefined,
-  sprintEndDate?: string,
-) {
+export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: number, sprintEndDate?: string) {
   // When a backlog is moved to another sprint, add a dummy delete history
   const backlogHistoryAddMove = useMemo(() => {
     const backlogSorted = [...backlogHistory].sort((a, b) => (new Date(a.date) > new Date(b.date) ? 1 : -1));
@@ -42,10 +38,9 @@ export function useBurndownChart(
   }, [backlogHistory]);
 
   // Filter backlog history to only belong to a certain sprint
-  const backlogFiltered = useMemo(
-    () => backlogHistoryAddMove.filter((b) => b.sprint_id === sprintId),
-    [backlogHistoryAddMove, sprintId],
-  );
+  const backlogFiltered = useMemo(() => {
+    return sprintId ? backlogHistoryAddMove.filter((b) => b.sprint_id === sprintId) : backlogHistoryAddMove;
+  }, [backlogHistoryAddMove, sprintId]);
 
   // Group backlog history by backlog id
   const backlogGrouped = useMemo(() => {

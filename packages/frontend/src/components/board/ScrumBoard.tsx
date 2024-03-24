@@ -5,7 +5,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useUpdateBacklogMutation } from '../../api/backlog';
 import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../api/project';
 import { Backlog, BacklogUpdatePayload, ScrumBoardUserData } from '../../api/types';
-import ScrumBoardCard from '../cards/ScrumBoardCard';
+import { ScrumBoardCard } from '../cards/ScrumBoardCard';
 import StrictModeDroppable from '../dnd/StrictModeDroppable';
 import { Sprint } from '../../api/sprint';
 
@@ -13,7 +13,9 @@ import './ScrumBoard.css';
 
 const { Title } = Typography;
 
-export default function ScrumBoard({ projectId, sprint }: { projectId: number; sprint?: Sprint }): JSX.Element {
+type ScrumBoardProps = { projectId: number; sprint?: Sprint };
+
+export default function ScrumBoard({ projectId, sprint }: ScrumBoardProps): JSX.Element {
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const { data: projectData } = useGetProjectQuery({ id: projectId });
 
@@ -106,7 +108,7 @@ export default function ScrumBoard({ projectId, sprint }: { projectId: number; s
           <StrictModeDroppable key={key.count} droppableId={key.count.toString()}>
             {(provided) => (
               <Card bodyStyle={{ padding: 8 }} ref={provided.innerRef} {...provided.droppableProps}>
-                <Space direction='vertical' style={{width: "100%"}}>
+                <Space direction="vertical" style={{ width: '100%' }}>
                   {backlogs
                     ?.filter((backlog) => backlog.status === status.name && backlog.assignee_id === userId)
                     ?.map((backlog, index) => (
@@ -114,6 +116,7 @@ export default function ScrumBoard({ projectId, sprint }: { projectId: number; s
                         key={backlog.backlog_id}
                         backlog={backlog}
                         projectKey={projectData?.pkey}
+                        id={backlog.backlog_id}
                         index={index}
                       />
                     ))}

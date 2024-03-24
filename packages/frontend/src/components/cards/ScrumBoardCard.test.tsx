@@ -42,7 +42,7 @@ describe('ScrumBoardCard test', () => {
           <StrictModeDroppable droppableId={mockDroppableId}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                <ScrumBoardCard backlog={mockBacklog} projectKey={mockProjectKey} index={mockIndex} />
+                <ScrumBoardCard backlog={mockBacklog} projectKey={mockProjectKey} id={mockIndex} />
               </div>
             )}
           </StrictModeDroppable>

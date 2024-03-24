@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { OAuth2Payload } from './types';
+import { OAuth2Payload, RegisterUser } from './types';
 
 export enum UserRole {
   FACULTY = 1,
@@ -90,6 +90,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    register: builder.mutation<void, RegisterUser>({
+      query: (user) => ({
+        url: '/account/register',
+        method: 'POST',
+        body: user,
+      }),
+    })
   }),
 });
 
@@ -100,4 +107,5 @@ export const {
   useChangePasswordMutation,
   useUpdateUserInfoMutation,
   useOauth2LoginMutation,
+  useRegisterMutation,
 } = extendedApi;

@@ -7,7 +7,7 @@ import RetrospectiveContentCard from './RetrospectiveContentCard';
 import './RetrospectiveContainerCard.css';
 
 export default function RetrospectiveContainerCard(props: RetrospectiveContainerCardProps): JSX.Element {
-  const { title, type, sprintId } = props;
+  const { title, type, sprintId, readOnly } = props;
   const [form] = Form.useForm();
 
   const { data: retrospectivesData } = useGetRetrospectivesQuery({ sprintId, type });
@@ -29,17 +29,19 @@ export default function RetrospectiveContainerCard(props: RetrospectiveContainer
     <Card className="retrospective-container-card" title={title}>
       <div className="retrospective-container-card-body">
         {retrospectivesData?.map((retro) => (
-          <RetrospectiveContentCard key={retro.id} retroEntry={retro} />
+          <RetrospectiveContentCard key={retro.id} retroEntry={retro} readOnly={readOnly} />
         ))}
       </div>
-      <div className="retrospective-container-card-footer">
-        <Divider />
-        <Form className="retrospective-container-form" form={form} onFinish={handleFormSubmit}>
-          <Form.Item name="content">
-            <Input placeholder="Type something here..." />
-          </Form.Item>
-        </Form>
-      </div>
+      {!readOnly && (
+        <div className="retrospective-container-card-footer">
+          <Divider />
+          <Form className="retrospective-container-form" form={form} onFinish={handleFormSubmit}>
+            <Form.Item name="content">
+              <Input placeholder="Type something here..." />
+            </Form.Item>
+          </Form>
+        </div>
+      )}
     </Card>
   );
 }
@@ -48,4 +50,5 @@ type RetrospectiveContainerCardProps = {
   title: string;
   type: RetrospectiveType;
   sprintId: number;
+  readOnly?: boolean;
 };

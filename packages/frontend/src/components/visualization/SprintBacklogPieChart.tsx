@@ -5,6 +5,7 @@ import { Pie } from '@ant-design/plots';
 import { Sprint } from '../../api/sprint';
 import { Backlog } from '../../api/types';
 import useGroupSprintBacklog from './useGroupSprintBacklog';
+import { useAppSelector } from '../../app/hooks';
 
 export default function SprintBacklogPieChart(props: {
   sprints: Sprint[];
@@ -14,9 +15,11 @@ export default function SprintBacklogPieChart(props: {
   const { sprints, unassignedBacklog, showButton } = props;
   const data = useGroupSprintBacklog(sprints, unassignedBacklog);
   const navigate = useNavigate();
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const config = {
     data,
+    theme: isDarkTheme ? 'dark' : 'default',
     angleField: 'value',
     colorField: 'type',
     height: 300,

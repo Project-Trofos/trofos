@@ -49,6 +49,12 @@ export type CreateUserRequest = {
   newPassword: string;
 };
 
+export type RegisterUser = {
+  userEmail: string;
+  newPassword: string;
+  userDisplayName: string;
+}
+
 export type UserCourseRoleRequest = {
   id: number;
   userRole: number;
@@ -86,12 +92,7 @@ export type ProjectData = Project & {
 };
 
 export type UserData = {
-  user: {
-    user_id: number;
-    user_email: string;
-    user_display_name: string;
-    courses: CourseRoles[];
-  };
+  user: Pick<User, 'user_id' | 'user_email' | 'user_display_name' | 'courses'>;
 };
 
 export type ScrumBoardUserData = {

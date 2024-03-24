@@ -47,7 +47,6 @@ export default function ProjectStatisticsCard(props: {
               <SprintBacklogPieChart sprints={[activeSprint]} unassignedBacklog={unassignedBacklogs} showButton />
             </Col>
             <Col xs={24} md={12} style={{ padding: '20px' }}>
-              <Subheading style={{ textAlign: 'center' }}>Daily Completed Story Points</Subheading>
               <DailyCompletedPointsBarGraph
                 backlogHistory={backlogHistory.filter((b) => b.sprint_id === activeSprint.id)}
                 showButton

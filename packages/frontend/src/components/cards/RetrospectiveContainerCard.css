@@ -17,7 +17,7 @@
 }
 
 .retrospective-container-card-body {
-  height: 50vh;
+  min-height: 2vh;
   overflow-y: auto;
 }
 

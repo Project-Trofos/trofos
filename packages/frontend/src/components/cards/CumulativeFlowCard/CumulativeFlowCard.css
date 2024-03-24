@@ -1,0 +1,9 @@
+.card .card-header {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.card .card-header .card-header-text {
+  margin-bottom: 30px;
+}

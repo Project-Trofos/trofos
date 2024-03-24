@@ -3,10 +3,11 @@ import { Empty } from 'antd';
 import { ColumnConfig, Column } from '@ant-design/plots';
 import { BacklogStatus, ProjectData } from '../../api/types';
 import { Sprint } from '../../api/sprint';
+import { useAppSelector } from '../../app/hooks';
 
 export default function TeamIssuesComparisonBarGraph(props: { activeSprints: Sprint[]; projects: ProjectData[] }) {
   const { activeSprints, projects } = props;
-
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
   const data = useMemo(() => {
     const toDosPerProject = projects.map((p) => {
       const backlogs = activeSprints.find((s) => s.project_id === p.id)?.backlogs;
@@ -40,6 +41,7 @@ export default function TeamIssuesComparisonBarGraph(props: { activeSprints: Spr
 
   const config: ColumnConfig = {
     data,
+    theme: isDarkTheme ? 'dark' : 'default',
     isStack: true,
     xField: 'projectName',
     yField: 'value',

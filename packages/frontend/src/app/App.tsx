@@ -36,8 +36,14 @@ import CurrentCourses from '../pages/coursesPages/CurrentCourses';
 import PastCourses from '../pages/coursesPages/PastCourses';
 import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
+import StandUpBoardPage from '../pages/projectPages/StandUpBoardPage';
+import StandUpsPage from '../pages/projectPages/StandUpsPage';
+import Register from '../pages/Register';
+import useMessage from 'antd/es/message/useMessage';
+import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
 
 function App() {
+  const [_, contextHolder] = useMessage();
   return (
     <ThemeProvider>
       <BrowserRouter>
@@ -59,9 +65,12 @@ function App() {
               <Route path="backlog" element={<ProjectBacklogs />} />
               <Route path="backlog/:backlogId" element={<Backlog />} />
               <Route path="board" element={<ScrumBoard />} />
+              <Route path="standup" element={<StandUpsPage />} />
+              <Route path="standup/:standUpId" element={<StandUpBoardPage />} />
               <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
               <Route path="feedback" element={<ProjectFeedbacks />} />
               <Route path="statistics" element={<ProjectStatistics />} />
+              <Route path="report" element={<ProjectReportPage />} />
               <Route path="settings" element={<ProjectSettings />} />
             </Route>
             <Route path="courses" element={<Courses />}>
@@ -110,6 +119,7 @@ function App() {
             />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/callback/*" element={<Callback />} />
           <Route
             path="*"

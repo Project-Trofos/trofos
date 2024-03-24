@@ -3,18 +3,23 @@ import { Line } from '@ant-design/plots';
 import { BacklogHistory } from '../../api/types';
 import { Sprint } from '../../api/sprint';
 import { useBurndownChart } from './useBurndownChart';
+import { Subheading } from '../typography';
+import { useAppSelector } from '../../app/hooks';
 
 type BurnDownChartProps = {
   backlogHistory: BacklogHistory[];
-  sprint: Sprint | undefined;
+  sprint?: Sprint;
+  includeTitle?: boolean;
 };
 
 export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
-  const { backlogHistory, sprint } = props;
+  const { backlogHistory, sprint, includeTitle } = props;
   const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
+    theme: isDarkTheme ? 'dark' : 'default',
     xField: 'date',
     yField: 'point',
     stepType: 'hv',
@@ -52,14 +57,15 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
     },
   };
 
-  if (!sprint) {
-    return <div>Please select a sprint to display.</div>;
-  }
-
   if (storyPointData.length === 0) {
     return <div>No data to display.</div>;
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Line {...config} />;
+  return (
+    <>
+      {includeTitle && <Subheading>Burn Down Chart</Subheading>}
+      <Line {...config} />
+    </>
+  );
 }

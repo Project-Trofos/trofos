@@ -5,9 +5,9 @@ import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
 
 type UserTableProps = {
-  users: CourseData['users'] | undefined;
-  userRoles?: UserOnRolesOnCourse[] | undefined;
-  actionsOnRoles?: ActionsOnRoles[] | undefined;
+  users?: CourseData['users'];
+  userRoles?: UserOnRolesOnCourse[];
+  actionsOnRoles?: ActionsOnRoles[];
   isLoading?: boolean;
   heading?: string;
   control?: React.ReactNode;
@@ -18,6 +18,7 @@ type UserTableProps = {
   showSelect?: boolean;
   onSelectChange?: (selectedKeys: React.Key[]) => void;
   footer?: string;
+  pagination?: false;
 };
 
 /**
@@ -38,6 +39,7 @@ export default function UserTable(props: UserTableProps) {
     showSelect,
     userRoles,
     footer,
+    pagination,
   } = props;
 
   const userIdToRole = useMemo(() => {
@@ -77,13 +79,14 @@ export default function UserTable(props: UserTableProps) {
         bordered
         size="small"
         footer={footer ? () => footer : undefined}
+        pagination={pagination}
       >
         <Table.Column
           width={150}
           title="ID"
           dataIndex={['user', 'user_id']}
           sorter={(a: UserData, b: UserData) => a.user.user_id - b.user.user_id}
-          render={(values, record, _) => (
+          render={(_values, record, _) => (
             <>
               {record.user.user_id} {Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
             </>
@@ -131,9 +134,14 @@ export default function UserTable(props: UserTableProps) {
             render={(_, record: UserData) => (
               <Space size="middle">
                 {handleRemoveUser && (
-                  <Button size="small" onClick={() => users?.length === 1 ?
-                                                      message.error("There must be atleast one user in a project") :
-                                                      handleRemoveUser(record.user.user_id)}>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      users?.length === 1
+                        ? message.error('There must be atleast one user in a project')
+                        : handleRemoveUser(record.user.user_id)
+                    }
+                  >
                     Remove
                   </Button>
                 )}
