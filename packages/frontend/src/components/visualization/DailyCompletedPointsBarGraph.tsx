@@ -11,7 +11,7 @@ import { useAppSelector } from '../../app/hooks';
 export default function DailyCompletedPointsBarGraph(props: {
   backlogHistory: BacklogHistory[];
   showButton?: boolean;
-}): React.ReactNode {
+}) {
   const { backlogHistory, showButton } = props;
   const navigate = useNavigate();
 

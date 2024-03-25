@@ -9,7 +9,7 @@ import './ScrumBoardCard.css';
 
 type ScrumBoardCardProps = { backlog: Backlog; projectKey: string | null | undefined };
 
-function Component({ backlog, projectKey }: ScrumBoardCardProps): React.ReactNode {
+function Component({ backlog, projectKey }: ScrumBoardCardProps) {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -43,7 +43,7 @@ function Component({ backlog, projectKey }: ScrumBoardCardProps): React.ReactNod
   );
 }
 
-const ScrumBoardCard  = React.memo(draggableWrapper(Component), (prevProps, currProps) => isEqual(prevProps, currProps));
+const ScrumBoardCard = React.memo(draggableWrapper(Component), (prevProps, currProps) => isEqual(prevProps, currProps));
 const ReadOnlyScrumBoardCard = React.memo(Component, (prevProps, currProps) => isEqual(prevProps, currProps));
 
 export { ScrumBoardCard, ReadOnlyScrumBoardCard };
