@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { BacklogHistory, BacklogHistoryType } from '../../../api/types';
-import { Area } from '@ant-design/plots';
 import { Dayjs } from 'dayjs';
 import { useAppSelector } from '../../../app/hooks';
 
@@ -13,7 +12,7 @@ declare type CumulativeFlowData = {
 declare type EventValue<DateType> = DateType | null;
 declare type RangeValue<DateType> = [EventValue<DateType>, EventValue<DateType>] | null;
 
-const filterDeletionEvents = (backlogHistories: BacklogHistory[]): BacklogHistory[] => {
+export const filterDeletionEvents = (backlogHistories: BacklogHistory[]): BacklogHistory[] => {
   const deletedSet = new Set<number>();
   for (const backlogHistory of backlogHistories) {
     if (backlogHistory.history_type == BacklogHistoryType.DELETE) {
@@ -76,7 +75,7 @@ export function useCummulativeFlowData(backlogHistory: BacklogHistory[]): Cumula
       // Sort in ascending order.
       return Date.parse(a.date) - Date.parse(b.date);
     });
-    if (!history || backlogHistory.length == 0) {
+    if (!history || history.length == 0) {
       return [];
     }
     const statusCounter = initialiseStatusCounter(backlogHistory);
