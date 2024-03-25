@@ -7,7 +7,7 @@ import { useAppSelector } from '../../app/hooks';
 export default function VelocityGraph(props: { sprints: Sprint[] }) {
   const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
   const { sprints } = props;
-  const sortedSprints = useMemo(() => sprints.toSorted((a, b) => b.id - a.id), [sprints]);
+  const sortedSprints = useMemo(() => [...sprints].sort((a: Sprint, b: Sprint) => b.id - a.id), [sprints]);
   const data = useMemo(() => {
     const commitmentBySprint = sortedSprints.map((s) => ({
       sprintName: s.name,
