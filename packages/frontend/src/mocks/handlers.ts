@@ -240,6 +240,7 @@ export const MSW_PROJECT: ProjectData = {
   course: MSW_COURSE,
   backlogStatuses: [],
   sprints: MSW_SPRINT,
+  telegramChannelLink: "",
   users: [
     {
       user: {
