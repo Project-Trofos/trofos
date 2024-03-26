@@ -259,6 +259,21 @@ async function updateGitLink(req: express.Request, res: express.Response) {
   }
 }
 
+async function setTelegramId(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { telegramId } = req.body;
+
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.setTelegramId(Number(projectId), telegramId);
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 async function deleteGitLink(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
@@ -323,4 +338,5 @@ export default {
   deleteGitLink,
   getUserSettings,
   updateUserSettings,
+  setTelegramId
 };

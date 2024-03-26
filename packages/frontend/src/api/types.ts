@@ -89,6 +89,7 @@ export type ProjectData = Project & {
     name: string;
   }[];
   backlogStatuses: Omit<BacklogStatusData, 'project_id'>[];
+  telegramChannelLink: string;
 };
 
 export type UserData = {

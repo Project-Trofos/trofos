@@ -133,4 +133,11 @@ router.delete(
   feedback.remove,
 );
 
+//Set the telegram id for notifications for a project
+router.put(
+  `/:projectId/telegramId`,
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.setTelegramId,
+)
+
 export default router;

@@ -18,6 +18,7 @@ const projectResponseObject = {
   users: [],
   sprints: [],
   backlogStatuses: [],
+  telegramChannelLink: ""
 };
 
 const usersOnRolesOnCoursesResponseObject = {

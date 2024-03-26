@@ -75,6 +75,7 @@ model Project {
   standUps  StandUp[]
 
   projectGitLink  ProjectGitLink?
+  telegramChannelLink String?
 }
 
 model Announcement {

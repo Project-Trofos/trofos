@@ -22,6 +22,7 @@ describe('course.service tests', () => {
       course_id: 1,
       created_at: new Date(Date.now()),
       backlog_counter: 0,
+      telegramChannelLink: ""
     },
   ];
 
