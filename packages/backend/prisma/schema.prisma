@@ -76,6 +76,7 @@ model Project {
 
   projectGitLink  ProjectGitLink?
   telegramChannelLink String?
+  is_archive      Boolean?
 }
 
 model Announcement {

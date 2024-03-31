@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
-import { Card, Dropdown, Menu, message } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Card, Dropdown, Menu, message, MenuProps } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
-import { useRemoveProjectMutation } from '../../api/project';
-import { confirmDeleteProject } from '../modals/confirm';
+import { useRemoveProjectMutation, useArchiveProjectMutation, useUnarchiveProjectMutation } from '../../api/project';
+import { confirmDeleteProject, confirmArchiveProject, confirmUnarchiveProject } from '../modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { Project } from '../../api/types';
 
@@ -19,8 +19,11 @@ type ProjectCardProps = {
 export default function ProjectCard(props: ProjectCardProps): JSX.Element {
   const { project } = props;
   const [removeProject] = useRemoveProjectMutation();
+  const [archiveProject] = useArchiveProjectMutation();
+  const [unarchiveProject] = useUnarchiveProjectMutation();
+  useState;
 
-  const handleOnClick = useCallback(() => {
+  const handleOnDelete = useCallback(() => {
     try {
       confirmDeleteProject(async () => {
         await removeProject({ id: project.id }).unwrap();
@@ -28,17 +31,57 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
     } catch (err) {
       message.error(getErrorMessage(err));
     }
-  }, [removeProject, project.id]);
+  }, [removeProject, archiveProject, unarchiveProject, project.id]);
 
-  const menu = {
-    onClick: handleOnClick,
-    items: [
-      {
-        label: 'delete',
-        key: '0',
-      },
-    ],
+  const handleOnArchive = useCallback(() => {
+    try {
+      confirmArchiveProject(async () => {
+        await archiveProject({ id: project.id }).unwrap();
+      });
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [removeProject, archiveProject, unarchiveProject, project.id]);
+
+  const handleOnUnarchive = useCallback(() => {
+    try {
+      confirmUnarchiveProject(async () => {
+        await unarchiveProject({ id: project.id }).unwrap();
+      });
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  }, [removeProject, archiveProject, unarchiveProject, project.id]);
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    if (e.key === 'delete') {
+      handleOnDelete();
+    }
+    if (e.key === 'archive') {
+      handleOnArchive();
+    }
+    if (e.key === 'unarchive') {
+      handleOnUnarchive();
+    }
   };
+
+  const items: MenuProps['items'] = [
+    {
+      label: 'delete',
+      key: 'delete',
+    },
+    project?.is_archive
+      ? {
+          label: 'unarchive',
+          key: 'unarchive',
+        }
+      : {
+          label: 'archive',
+          key: 'archive',
+        },
+  ];
+
+  const menu = { items, onClick: handleMenuClick };
 
   return (
     <Card

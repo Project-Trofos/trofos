@@ -45,6 +45,20 @@ export function confirmDeleteProject(onOk: () => Promise<void>) {
 }
 
 /**
+ * Shows a modal with prompt for archiving a project.
+ */
+export function confirmArchiveProject(onOk: () => Promise<void>) {
+  return confirm('Are you sure you want to archive this project? Project will be moved to \'Past Projects\'', onOk);
+}
+
+/**
+ * Shows a modal with prompt for unarchiving a project.
+ */
+export function confirmUnarchiveProject(onOk: () => Promise<void>) {
+  return confirm('Are you sure you want to unarchive this project? Project will be moved to \'Current Projects\' or \'Future Projects\'', onOk);
+}
+
+/**
  * Shows a modal with prompt for deleting a project.
  */
 export function confirmDeleteStandUp(onOk: () => Promise<void>) {

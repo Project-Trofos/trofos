@@ -72,6 +72,26 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
     }),
 
+    // Archiving a project will invalidate that project
+    archiveProject: builder.mutation<Project, Pick<Project, 'id'>>({
+      query: (project) => ({
+        url: `project/${project.id}/archive`, //TODO: change url
+        method: 'PUT',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
+    }),
+
+    // Unarchiving a project will invalidate that project
+    unarchiveProject: builder.mutation<Project, Pick<Project, 'id'>>({
+      query: (project) => ({
+        url: `project/${project.id}/unarchive`, //TODO: change url
+        method: 'PUT',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.id }, 'Course'],
+    }),
+
     // Adding a user in a project will invalidate that project
     addProjectUser: builder.mutation<Project, Pick<Project, 'id'> & { userEmail: string }>({
       query: (param) => ({
@@ -253,6 +273,8 @@ export const {
   useGetProjectQuery,
   useUpdateProjectMutation,
   useRemoveProjectMutation,
+  useArchiveProjectMutation,
+  useUnarchiveProjectMutation,
   useAddProjectUserMutation,
   useRemoveProjectUserMutation,
   useGetBacklogStatusQuery,

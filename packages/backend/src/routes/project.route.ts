@@ -85,6 +85,20 @@ router.put(
   project.updateGitLink,
 );
 
+// Archive a project by projectId
+router.put(
+  '/:projectId/archive',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.archiveProject,
+);
+
+// Unarchive a project by projectId
+router.put(
+  '/:projectId/unarchive',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  project.unarchiveProject,
+);
+
 // Delete git url by projectId
 router.delete(
   '/:projectId/gitLink',
@@ -133,7 +147,7 @@ router.delete(
   feedback.remove,
 );
 
-//Set the telegram id for notifications for a project
+// Set the telegram id for notifications for a project
 router.put(
   `/:projectId/telegramId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),

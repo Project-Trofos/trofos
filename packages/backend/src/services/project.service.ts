@@ -529,6 +529,32 @@ async function updateGitUrl(projectId: number, repoLink: string): Promise<Projec
   return result;
 }
 
+async function archiveProject(id: number): Promise<Project> {
+  const result = await prisma.project.update({
+    where: {
+      id,
+    },
+    data: {
+      is_archive: true,
+    },
+  });
+
+  return result;
+}
+
+async function unarchiveProject(id: number): Promise<Project> {
+  const result = await prisma.project.update({
+    where: {
+      id,
+    },
+    data: {
+      is_archive: false,
+    },
+  });
+
+  return result;
+}
+
 async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
   const result = await prisma.projectGitLink.delete({
     where: {
@@ -618,5 +644,7 @@ export default {
   getUserSettings,
   updateUserSettings,
   setTelegramId,
-  getTelegramId
+  getTelegramId,
+  archiveProject,
+  unarchiveProject
 };
