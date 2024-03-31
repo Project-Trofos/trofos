@@ -22,6 +22,7 @@ describe('test ProjectTable', () => {
       course_id: 1,
       public: false,
       created_at: '2022-09-15T01:58:01.735Z',
+      is_archive: null,
     },
   ];
 

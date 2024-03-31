@@ -12,7 +12,8 @@ export const projectsData: Project[] = [
     description: 'd1',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: ""
+    telegramChannelLink: "",
+    is_archive: null,
   },
   {
     id: 2,
@@ -23,7 +24,8 @@ export const projectsData: Project[] = [
     description: 'd2',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: ""
+    telegramChannelLink: "",
+    is_archive: null,
   },
   {
     id: 3,
@@ -34,7 +36,8 @@ export const projectsData: Project[] = [
     description: 'd3',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: ""
+    telegramChannelLink: "",
+    is_archive: null,
   },
   {
     id: 4,
@@ -45,7 +48,8 @@ export const projectsData: Project[] = [
     description: 'd4',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: ""
+    telegramChannelLink: "",
+    is_archive: null,
   },
 ];
 
@@ -58,7 +62,8 @@ export const mockBacklogReturnedProject: Project = {
   description: 'd1',
   public: false,
   backlog_counter: 1,
-  telegramChannelLink: ""
+  telegramChannelLink: "",
+  is_archive: null,
 };
 
 export const mockInProgressBacklogStatus: BacklogStatus = {
