@@ -319,6 +319,30 @@ async function updateUserSettings(req: express.Request, res: express.Response) {
   }
 }
 
+async function archiveProject(req: express.Request, res:express.Response) {
+  try {
+    const { projectId } = req.params;
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.archiveProject(Number(projectId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function unarchiveProject(req: express.Request, res:express.Response) {
+  try {
+    const { projectId } = req.params;
+    assertProjectIdIsValid(projectId);
+
+    const result = await project.unarchiveProject(Number(projectId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -338,5 +362,7 @@ export default {
   deleteGitLink,
   getUserSettings,
   updateUserSettings,
-  setTelegramId
+  setTelegramId,
+  archiveProject,
+  unarchiveProject
 };

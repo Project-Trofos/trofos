@@ -7,6 +7,7 @@ export type Project = {
   public: boolean;
   created_at: string;
   course?: Course;
+  is_archive: boolean | null;
 };
 
 export type Course = {
