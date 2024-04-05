@@ -109,6 +109,17 @@ const addRetrospective = async (req: express.Request, res: express.Response) => 
   }
 };
 
+const deleteRetrospective = async (req: express.Request, res: express.Response) => {
+  try {
+    const { retroId } = req.params;
+    assertRetroIdIsValid(retroId);
+    const retrospective: Retrospective = await sprintService.deleteRetrospective(Number(retroId));
+    return res.status(StatusCodes.OK).json(retrospective);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const getRetrospectives = async (req: express.Request, res: express.Response) => {
   try {
     const { sprintId, type } = req.params;
@@ -196,6 +207,7 @@ export default {
   updateSprint,
   deleteSprint,
   addRetrospective,
+  deleteRetrospective,
   getRetrospectives,
   addRetrospectiveVote,
   updateRetrospectiveVote,

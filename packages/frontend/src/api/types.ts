@@ -206,6 +206,29 @@ export type Backlog = {
   } | null;
 };
 
+export type DefaultBacklog = {
+  backlog_id?: number;
+  summary?: string;
+  type?: 'story' | 'task' | 'bug';
+  priority?: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  reporter_id?: number;
+  assignee_id?: number | null;
+  sprint_id?: number | null;
+  points?: number | null;
+  description?: string | null;
+  project_id?: number;
+  status?: BacklogStatus | string;
+  assignee?: {
+    created_at: string;
+    project_id: number;
+    user_id: number;
+    user: {
+      user_email: string;
+      user_display_name: string;
+    };
+  } | null;
+};
+
 export type BacklogUpdatePayload = {
   projectId: number;
   backlogId: number;
