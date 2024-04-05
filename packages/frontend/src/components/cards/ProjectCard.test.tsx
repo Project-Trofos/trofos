@@ -16,6 +16,7 @@ describe('CourseCard test', () => {
     course_year: null,
     public: true,
     created_at: '2022-09-14T03:33:34.960Z',
+    is_archive: null,
   };
   const { baseElement } = render(
     <Provider store={store}>

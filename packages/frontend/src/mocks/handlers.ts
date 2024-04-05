@@ -251,6 +251,7 @@ export const MSW_PROJECT: ProjectData = {
       },
     },
   ],
+  is_archive: null,
 };
 
 export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [

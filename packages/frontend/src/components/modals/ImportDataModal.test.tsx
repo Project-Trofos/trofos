@@ -54,7 +54,8 @@ const mockProjectData: ProjectData = {
   users: [],
   sprints: [],
   backlogStatuses: [],
-  telegramChannelLink: ""
+  telegramChannelLink: "",
+  is_archive: null,
 };
 
 describe('test import data modal', () => {
