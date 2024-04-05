@@ -15,6 +15,7 @@ router.delete('/deleteSprint/:sprintId', hasAuth(Action.update_project, null), s
 
 // Routes for retrospective
 router.post('/addRetrospective', hasAuth(Action.update_project, null), sprint.addRetrospective);
+router.delete('/deleteRetrospective/:retroId', hasAuth(Action.update_project, null), sprint.deleteRetrospective);
 router.get('/getRetrospectives/:sprintId/:type', hasAuth(Action.read_project, null), sprint.getRetrospectives);
 
 router.post('/addRetrospectiveVote', hasAuth(Action.update_project, null), sprint.addRetrospectiveVote);

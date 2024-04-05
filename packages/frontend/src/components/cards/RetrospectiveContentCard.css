@@ -42,4 +42,22 @@
   display: flex;
   align-items: center;
   overflow-x: hidden;
+  width: 100%;
+}
+
+.retrospective-content-delete-container {
+  min-width: 30px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.retrospective-content-delete-container button {
+  border: none;
+  padding: 3px;
+}
+
+.retrospective-content-delete-container button.delete.ant-btn:hover {
+  background-color: rgb(0 0 0 / 4%);
+  color: #f34132;
 }

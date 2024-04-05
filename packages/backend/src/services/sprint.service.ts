@@ -252,6 +252,16 @@ async function addRetrospective(sprintId: number, content: string, type: Retrosp
   return retrospective;
 }
 
+async function deleteRetrospective(retroId: number): Promise<Retrospective> {
+  const retrospective = await prisma.retrospective.delete({
+    where: {
+      id: retroId,
+    },
+  });
+
+  return retrospective;
+}
+
 async function getRetrospectives(sprintId: number, userId: number, type?: RetrospectiveType): Promise<Retrospective[]> {
   const retrospectives = await prisma.retrospective.findMany({
     where: {
@@ -379,6 +389,7 @@ export default {
   updateSprintStatus,
   deleteSprint,
   addRetrospective,
+  deleteRetrospective,
   getRetrospectives,
   addRetrospectiveVote,
   updateRetrospectiveVote,

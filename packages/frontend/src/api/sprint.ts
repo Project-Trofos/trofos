@@ -85,6 +85,15 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.type}` }],
     }),
+    deleteRetrospective: builder.mutation<Retrospective, 
+      { retroId: number; sprintId: number; retroType: RetrospectiveType }>({
+      query: ({ retroId }) => ({
+        url: `sprint/deleteRetrospective/${retroId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.retroType}` }],
+    }),
     getRetrospectives: builder.query<Retrospective[], { sprintId: number; type?: RetrospectiveType }>({
       query: ({ sprintId, type }) => ({
         url: `sprint/getRetrospectives/${sprintId}/${type || ''}`,
@@ -146,6 +155,7 @@ export const {
   useUpdateSprintMutation,
   useDeleteSprintMutation,
   useAddRetrospectiveMutation,
+  useDeleteRetrospectiveMutation,
   useGetRetrospectivesQuery,
   useAddRetrospectiveVoteMutation,
   useUpdateRetrospectiveVoteMutation,
