@@ -8,10 +8,12 @@ import {
   useUpdateRetrospectiveVoteMutation,
   useDeleteRetrospectiveMutation,
 } from '../../api/socket/retrospectiveHooks';
-import { Retrospective, RetrospectiveVoteType } from '../../api/types';
+import { Retrospective, RetrospectiveType, RetrospectiveVoteType } from '../../api/types';
 import './RetrospectiveContentCard.css';
 import { getErrorMessage } from '../../helpers/error';
 import { confirmDeleteRetrospective } from '../modals/confirm';
+import BacklogCreationModal from '../modals/BacklogCreationModal';
+import { useGetUserInfoQuery } from '../../api/auth';
 
 function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Element {
   const { retroEntry, readOnly } = props;
@@ -19,6 +21,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
   const [updateRetrospectiveVote] = useUpdateRetrospectiveVoteMutation();
   const [deleteRetrospectiveVote] = useDeleteRetrospectiveVoteMutation();
   const [deleteRetrospective] = useDeleteRetrospectiveMutation();
+  const { data: userInfo } = useGetUserInfoQuery();
 
   const getCurrentVote = (): RetrospectiveVoteType => {
     return retroEntry.votes?.[0]?.type || null;
@@ -57,7 +60,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
   const handleDelete = async () => {
     try {
       confirmDeleteRetrospective(async () => {
-        await deleteRetrospective({ 
+        await deleteRetrospective({
           retroId: retroEntry.id,
           sprintId: retroEntry.sprint_id,
           retroType: retroEntry.type,
@@ -89,10 +92,28 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
           </Button>
         </div>
         <div className="retrospective-content-text">{retroEntry.content}</div>
-        <div className="retrospective-content-delete-container">
-          <Button onClick={() => handleDelete()} className={"delete"} disabled={readOnly}>
-            <DeleteOutlined/>
+        <div
+          className={`retrospective-content-delete-container${
+            retroEntry && retroEntry.type == RetrospectiveType.ACTION ? '-create' : ''
+          }`}
+        >
+          <Button onClick={() => handleDelete()} className={'delete'} disabled={readOnly}>
+            <DeleteOutlined />
           </Button>
+          {retroEntry && retroEntry.type == RetrospectiveType.ACTION ? (
+            <BacklogCreationModal
+              title={'create'}
+              defaultBacklog={{
+                reporter_id: userInfo?.userId ?? undefined,
+                summary: retroEntry.content ?? undefined,
+                points: 2,
+                type: 'task',
+                priority: 'medium',
+              }}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </Card>

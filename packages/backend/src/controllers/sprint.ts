@@ -116,7 +116,6 @@ const deleteRetrospective = async (req: express.Request, res: express.Response) 
     const retrospective: Retrospective = await sprintService.deleteRetrospective(Number(retroId));
     return res.status(StatusCodes.OK).json(retrospective);
   } catch (error) {
-    console.log(error);
     return getDefaultErrorRes(error, res);
   }
 };

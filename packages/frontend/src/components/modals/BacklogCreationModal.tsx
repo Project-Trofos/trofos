@@ -11,8 +11,17 @@ import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/Backlo
 import './BacklogCreationModal.css';
 import { useGetProjectQuery } from '../../api/project';
 import { Sprint } from '../../api/sprint';
+import { DefaultBacklog } from '../../api/types';
 
-function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; title?: string }): JSX.Element {
+function BacklogCreationModal({
+  fixedSprint,
+  title,
+  defaultBacklog,
+}: {
+  fixedSprint?: Sprint;
+  title?: string;
+  defaultBacklog?: DefaultBacklog;
+}): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
     { id: 'task', name: 'Task' },
@@ -75,11 +84,14 @@ function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; ti
     </Button>,
   ];
 
-  const renderTypeSelect = (): JSX.Element => (
-    <Form.Item name="type" label="Type" rules={[{ required: true }]}>
-      <BacklogSelect options={TYPES} placeholder="Type of backlog" />
-    </Form.Item>
-  );
+  const renderTypeSelect = (): JSX.Element => {
+    const defaultType = defaultBacklog?.type ? TYPES.find((p) => p.id === defaultBacklog?.type) : undefined;
+    return (
+      <Form.Item name="type" label="Type" rules={[{ required: true }]} initialValue={defaultType?.id}>
+        <BacklogSelect options={TYPES} placeholder="Type of backlog" defaultValue={defaultType} />
+      </Form.Item>
+    );
+  };
 
   const renderSprintSelect = (): JSX.Element => {
     const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
@@ -95,17 +107,24 @@ function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; ti
     );
   };
 
-  const renderPrioritySelect = (): JSX.Element => (
-    <Form.Item name="priority" label="Priority">
-      <BacklogSelect options={PRIORITIES} placeholder="Select Priority" allowClear />
-    </Form.Item>
-  );
+  const renderPrioritySelect = (): JSX.Element => {
+    const defaultPriority = defaultBacklog?.priority
+      ? PRIORITIES.find((p) => p.id === defaultBacklog?.priority)
+      : undefined;
+    return (
+      <Form.Item name="priority" label="Priority" initialValue={defaultPriority?.id}>
+        <BacklogSelect options={PRIORITIES} placeholder="Select Priority" defaultValue={defaultPriority} allowClear />
+      </Form.Item>
+    );
+  };
 
-  const renderReporterSelect = (): JSX.Element => (
-    <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]}>
+  const renderReporterSelect = (): JSX.Element => { //todo
+    const defaultReporter = defaultBacklog?.reporter_id ?? undefined;
+    return (<Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]} initialValue={defaultReporter}>
       <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
     </Form.Item>
-  );
+    );
+  };
 
   const renderAssigneeSelect = (): JSX.Element => (
     <Form.Item name="assigneeId" label="Assignee">
@@ -115,8 +134,8 @@ function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; ti
 
   const renderContent = (): JSX.Element => (
     <Form id="newBacklog" form={form} onFinish={handleFormSubmit}>
-      <Form.Item name="summary" rules={[{ required: true }]} initialValue="">
-        <BacklogSummaryInput placeholder="* Type summary here..." />
+      <Form.Item name="summary" rules={[{ required: true }]} initialValue={defaultBacklog?.summary ?? ''}>
+        <BacklogSummaryInput placeholder="* Type summary here..." defaultValue={defaultBacklog?.summary ?? ''} />
       </Form.Item>
       {renderTypeSelect()}
       {renderSprintSelect()}
@@ -125,8 +144,8 @@ function BacklogCreationModal({ fixedSprint, title }: { fixedSprint?: Sprint; ti
         <Col span={12}>{renderReporterSelect()}</Col>
         <Col span={12}>{renderAssigneeSelect()}</Col>
       </Row>
-      <Form.Item name="points" label="Points">
-        <BacklogInputNumber />
+      <Form.Item name="points" label="Points" initialValue={defaultBacklog?.points ?? undefined}>
+        <BacklogInputNumber defaultValue={defaultBacklog?.points ?? undefined} />
       </Form.Item>
       <Form.Item name="description">
         <BacklogTextArea placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />

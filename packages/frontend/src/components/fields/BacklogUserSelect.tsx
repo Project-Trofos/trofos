@@ -11,12 +11,13 @@ type BacklogUserSelectPropsTypes = {
   placeholder?: string;
   className?: string;
   allowClear?: boolean;
+  defaultValue?: string | number;
 };
 
 const { Option } = Select;
 
 function BacklogUserSelect(props: BacklogUserSelectPropsTypes): JSX.Element {
-  const { value, onChange, options, placeholder, className, allowClear } = props;
+  const { value, onChange, options, placeholder, className, allowClear, defaultValue } = props;
 
   return (
     <Select
@@ -47,6 +48,7 @@ BacklogUserSelect.defaultProps = {
   placeholder: '',
   value: undefined,
   onChange: undefined,
+  defaultValue: undefined,
 };
 
 export default BacklogUserSelect;
