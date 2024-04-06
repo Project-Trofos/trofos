@@ -12,7 +12,7 @@ type BacklogCardEpicProps = {
   };
 
 
-export default function BacklogCardPriority(props: BacklogCardEpicProps) {
+export default function BacklogCardEpic(props: BacklogCardEpicProps) {
     const { currentEpic, backlogId, projectId, editable = true } = props;
     const params = useParams();
     const [updateBacklog] = useUpdateBacklogMutation();

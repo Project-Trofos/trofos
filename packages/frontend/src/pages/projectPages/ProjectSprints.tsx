@@ -16,6 +16,9 @@ import StrictModeDroppable from '../../components/dnd/StrictModeDroppable';
 import './ProjectSprints.css';
 import Container from '../../components/layouts/Container';
 import EpicCreationModal from '../../components/modals/EpicCreationModal';
+import { Epic } from '../../api/types';
+import EpicListingCard from '../../components/cards/EpicListingCard';
+import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 
 const GENERIC_NEW_SPRINT: AutoSprintTypes = {
   name: 'Sprint 1',
@@ -32,6 +35,7 @@ function ProjectSprints(): JSX.Element {
 
   const projectId = Number(params.projectId);
   const { data: sprintsData } = useGetSprintsByProjectIdQuery(projectId);
+  const { data: epicData } = useGetEpicsByProjectIdQuery({ projectId: projectId });
 
   const [updateBacklog] = useUpdateBacklogMutation();
 
@@ -43,6 +47,10 @@ function ProjectSprints(): JSX.Element {
       return -1;
     }
     return dayjs(s1.start_date).isAfter(dayjs(s2.start_date)) ? 1 : -1;
+  };
+
+  const sortEpicsByDescendingId = (e1: Epic, e2: Epic) => {
+    return e2.epic_id - e1.epic_id;
   };
 
   const incrementSprintName = (latestSprintName: string): string => {
@@ -89,11 +97,23 @@ function ProjectSprints(): JSX.Element {
     return sprintsDataCopy;
   }, [sprintsData]);
 
+  const epics = useMemo(() => {
+    const epicsDataCopy = epicData ? [...epicData] : [];
+    epicsDataCopy.sort(sortEpicsByDescendingId);
+    return epicsDataCopy;
+  }, [epicData]);
+
   const backlogs = sprintsData?.unassignedBacklogs;
 
   const renderSprintListingCards = (sprint: Sprint) => (
     <List.Item className="sprint-card-container">
       <SprintListingCard sprint={sprint} setSprint={setSprintToEdit} setIsModalVisible={setIsModalVisible} />
+    </List.Item>
+  );
+
+  const renderEpicListingCards = (epic: Epic) => (
+    <List.Item className="epic-card-container">
+      <EpicListingCard epic={epic} />
     </List.Item>
   );
 
@@ -175,6 +195,13 @@ function ProjectSprints(): JSX.Element {
             />
           </div>
         </DragDropContext>
+        <div className="epic-list">
+            <Title level={5}>Epics:</Title>
+            <List
+              dataSource={epics}
+              renderItem={renderEpicListingCards}
+            />
+          </div>
       </div>
     </Container>
   );

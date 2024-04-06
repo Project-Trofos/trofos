@@ -192,10 +192,12 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: epic,
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Epic', id: `project-${arg.epic.projectId}`},
-                                                { type: 'Backlog', id: `epic-${result?.epic_id}` }],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.epic.projectId}` },
+        { type: 'Backlog', id: `epic-${result?.epic_id}` },
+      ],
     }),
-    getEpicsByProjectId: builder.query<Epic[], { projectId: number}>({
+    getEpicsByProjectId: builder.query<Epic[], { projectId: number }>({
       query: ({ projectId }) => ({
         url: `epic/project/${projectId}`,
         credentials: 'include',
@@ -209,34 +211,43 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: (result, error, arg) => [{ type: 'Backlog', id: `epic-${arg.epicId}` }],
     }),
-    addBacklogToEpic: builder.mutation<Backlog, { projectId: number, backlogId: number, epicId: number }>({
+    addBacklogToEpic: builder.mutation<Backlog, { projectId: number; backlogId: number; epicId: number }>({
       query: ({ projectId, backlogId, epicId }) => ({
         url: 'epic/addBacklog',
         method: 'POST',
         body: { projectId, backlogId, epicId },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Epic', id: `project-${arg.projectId}`} , 
-                                                { type: 'Backlog', id: `epic-${arg.epicId}` }],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.projectId}` },
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
     }),
-    removeBacklogFromEpic: builder.mutation<Backlog, { projectId: number, backlogId: number, epicId: number }>({
+    removeBacklogFromEpic: builder.mutation<Backlog, { projectId: number; backlogId: number; epicId: number }>({
       query: ({ projectId, backlogId, epicId }) => ({
         url: 'epic/removeBacklog',
         method: 'POST',
         body: { projectId, backlogId, epicId },
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [{ type: 'Epic', id: `project-${arg.projectId}`} , 
-                                                { type: 'Backlog', id: `epic-${arg.epicId}` }],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.projectId}` },
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
     }),
-    deleteEpic: builder.mutation<Epic, { epicId: number, projectId: number }>({
+    deleteEpic: builder.mutation<Epic, { epicId: number; projectId: number }>({
       query: ({ epicId, projectId }) => ({
         url: `epic/${epicId}`,
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [ result ? { type: 'Epic', id: `project-${arg.projectId}` } : 'Epic',
-                                                { type: 'Backlog', id: `epic-${arg.epicId}` }],
+      invalidatesTags: (result, error, arg) => [
+        result ? { type: 'Epic', id: `project-${arg.projectId}` } : 'Epic',
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
     }),
   }),
   overrideExisting: false,

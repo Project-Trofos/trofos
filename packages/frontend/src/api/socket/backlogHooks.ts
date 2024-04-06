@@ -42,11 +42,12 @@ const useRemoveBacklogFromEpicMutation = attachFunctionToRtkHookHOF(rtkUseRemove
 // Delete epic mutation hook, also emit update event to backend via socket io
 const useDeleteEpicMutation = attachFunctionToRtkHookHOF(rtkUseDeleteEpicMutation, (mutArgs) => {
   emitUpdateEvent(`${UpdateType.EPIC}/${mutArgs.projectId}`);
+  emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
 });
 
-export { 
-  useAddBacklogMutation, 
-  useUpdateBacklogMutation, 
+export {
+  useAddBacklogMutation,
+  useUpdateBacklogMutation,
   useDeleteBacklogMutation,
   useAddEpicMutation,
   useAddBacklogToEpicMutation,
