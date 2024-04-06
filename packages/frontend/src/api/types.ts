@@ -205,6 +205,7 @@ export type Backlog = {
     };
   } | null;
   epic_id?: number | null;
+  epic?: Epic | null
 };
 
 export type Epic = {

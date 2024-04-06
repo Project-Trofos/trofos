@@ -51,6 +51,7 @@ export default function BacklogCardPoints(props: { backlogId: number; currentPoi
       onBlur={handlePointsChange}
       min={1}
       controls={false}
+      placeholder='points'
       status={isError ? 'error' : undefined}
     />
   );

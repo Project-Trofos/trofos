@@ -229,13 +229,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: 'Epic', id: `project-${arg.projectId}`} , 
                                                 { type: 'Backlog', id: `epic-${arg.epicId}` }],
     }),
-    deleteEpic: builder.mutation<Epic, { epicId: number }>({
-      query: ({ epicId }) => ({
+    deleteEpic: builder.mutation<Epic, { epicId: number, projectId: number }>({
+      query: ({ epicId, projectId }) => ({
         url: `epic/${epicId}`,
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: (result, error, arg) => [ result ? { type: 'Epic', id: `project-${result.project_id}` } : 'Epic',
+      invalidatesTags: (result, error, arg) => [ result ? { type: 'Epic', id: `project-${arg.projectId}` } : 'Epic',
                                                 { type: 'Backlog', id: `epic-${arg.epicId}` }],
     }),
   }),

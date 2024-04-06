@@ -2,6 +2,10 @@ import {
   useAddBacklogMutation as rtkUseAddBacklogMutation,
   useUpdateBacklogMutation as rtkUseUpdateBacklogMutation,
   useDeleteBacklogMutation as rtkUseDeleteBacklogMutation,
+  useAddEpicMutation as rtkUseAddEpicMutation,
+  useAddBacklogToEpicMutation as rtkUseAddBacklogToEpicMutation,
+  useRemoveBacklogFromEpicMutation as rtkUseRemoveBacklogFromEpicMutation,
+  useDeleteEpicMutation as rtkUseDeleteEpicMutation,
 } from '../backlog';
 import attachFunctionToRtkHookHOF from './helper';
 import { UpdateType } from './socket';
@@ -22,4 +26,30 @@ const useDeleteBacklogMutation = attachFunctionToRtkHookHOF(rtkUseDeleteBacklogM
   emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
 });
 
-export { useAddBacklogMutation, useUpdateBacklogMutation, useDeleteBacklogMutation };
+// Add epic mutation hook, also emit update event to backend via socket io
+const useAddEpicMutation = attachFunctionToRtkHookHOF(rtkUseAddEpicMutation, (mutArgs) => {
+  emitUpdateEvent(`${UpdateType.EPIC}/${mutArgs.epic.projectId}`);
+});
+
+const useAddBacklogToEpicMutation = attachFunctionToRtkHookHOF(rtkUseAddBacklogToEpicMutation, (mutArgs) => {
+  emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
+});
+
+const useRemoveBacklogFromEpicMutation = attachFunctionToRtkHookHOF(rtkUseRemoveBacklogFromEpicMutation, (mutArgs) => {
+  emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
+});
+
+// Delete epic mutation hook, also emit update event to backend via socket io
+const useDeleteEpicMutation = attachFunctionToRtkHookHOF(rtkUseDeleteEpicMutation, (mutArgs) => {
+  emitUpdateEvent(`${UpdateType.EPIC}/${mutArgs.projectId}`);
+});
+
+export { 
+  useAddBacklogMutation, 
+  useUpdateBacklogMutation, 
+  useDeleteBacklogMutation,
+  useAddEpicMutation,
+  useAddBacklogToEpicMutation,
+  useRemoveBacklogFromEpicMutation,
+  useDeleteEpicMutation,
+};

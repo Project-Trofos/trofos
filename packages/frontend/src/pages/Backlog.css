@@ -61,6 +61,10 @@
   margin: 10px 20px;
 }
 
+.related-container {
+  margin: 10px 20px;
+}
+
 .comment-container textarea {
   border-radius: 8px;
 }

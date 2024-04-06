@@ -43,6 +43,11 @@ export default function ProjectPage(): JSX.Element {
   }, []);
   useSocket(UpdateType.BACKLOG, projectId.toString(), handleReset);
 
+  const handleResetEpic = useCallback(() => {
+    store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'Epic', id: `project-${projectId.toString()}`}]));
+  }, []);
+  useSocket(UpdateType.EPIC, projectId.toString(), handleResetEpic);
+
   const handleMenuClick = useCallback(
     async (key: string) => {
       try {

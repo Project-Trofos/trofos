@@ -129,13 +129,26 @@ const getEpicsForProject = async (req: express.Request, res: express.Response) =
   }
 };
 
+const getEpicById = async (req: express.Request, res: express.Response) => {
+  try {
+    const { epicId } = req.params;
+    if (!epicId) {
+      throw new BadRequestError('epicId cannot be empty');
+    }
+    const epic: Epic | null = await backlogService.getEpicById(Number(epicId));
+    return res.status(StatusCodes.OK).json(epic);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const addBacklogToEpic = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId, backlogId, epicId } = req.body;
     if (!projectId || !backlogId || !epicId) {
       throw new BadRequestError('projectId or backlogId or epicId cannot be empty');
     }
-    const epic: Epic | null = await backlogService.getEpicsById(epicId);
+    const epic: Epic | null = await backlogService.getEpicById(Number(epicId));
     if (!epic || epic.project_id !== Number(projectId)) {
       throw new BadRequestError('Adding backlog to an epic of different project is not allowed');
     }
@@ -152,7 +165,7 @@ const removeBacklogFromEpic = async (req: express.Request, res: express.Response
     if (!projectId || !backlogId || !epicId) {
       throw new BadRequestError('projectId or backlogId or epicId cannot be empty');
     }
-    const epic: Epic | null = await backlogService.getEpicsById(epicId);
+    const epic: Epic | null = await backlogService.getEpicById(epicId);
     if (!epic || epic.project_id !== Number(projectId)) {
       throw new BadRequestError('Removing backlog from an epic of different project is not allowed');
     }
@@ -188,6 +201,7 @@ export default {
   createEpic,
   getBacklogsForEpic,
   getEpicsForProject,
+  getEpicById,
   addBacklogToEpic,
   removeBacklogFromEpic,
   deleteEpic,

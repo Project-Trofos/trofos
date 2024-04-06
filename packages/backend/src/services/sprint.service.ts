@@ -59,6 +59,14 @@ async function listSprints(policyConstraint: AppAbility): Promise<Omit<Sprint, '
               },
             },
           },
+          epic: {
+            select: {
+              epic_id: true,
+              project_id: true,
+              name: true,
+              description: true,
+            }
+          },
         },
       },
     },
@@ -86,6 +94,14 @@ async function listSprintsByProjectId(projectId: number): Promise<Omit<Sprint, '
                 },
               },
             },
+          },
+          epic: {
+            select: {
+              epic_id: true,
+              project_id: true,
+              name: true,
+              description: true,
+            }
           },
         },
       },
@@ -129,9 +145,17 @@ async function listActiveSprint(projectId: number): Promise<Omit<Sprint, 'notes'
               },
             },
           },
+          epic: {
+            select: {
+              epic_id: true,
+              project_id: true,
+              name: true,
+              description: true,
+            }
+          },
+        }
         },
       },
-    },
   });
 
   if (!sprint) {
