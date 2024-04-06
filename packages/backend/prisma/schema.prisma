@@ -77,6 +77,7 @@ model Project {
   projectGitLink  ProjectGitLink?
   telegramChannelLink String?
   is_archive      Boolean?
+  epics           Epic[]
 }
 
 model Announcement {
@@ -143,6 +144,8 @@ model Backlog {
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
   status        String
   comments      Comment[]
+  epic_id       Epic?             @relation("EpicBacklogs", fields: [epic_id], references: [epic_id], onDelete: SetNull)
+  epic_id       Int?
 
   @@id([project_id, backlog_id])
 }
@@ -192,6 +195,15 @@ model Comment {
   content       String
   created_at    DateTime          @default(now())
   updated_at    DateTime?
+}
+
+model Epic {
+  epic_id           Int         @id @default(autoincrement())
+  project           Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id        Int
+  name              String
+  description       String?
+  backlogs          Backlog[]   @relation("EpicBacklogs")
 }
 
 model Sprint {
