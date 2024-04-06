@@ -12,6 +12,7 @@ import feedbackRouter from './routes/feedback.route';
 import roleRouter from './routes/role.route';
 import githubRouter from './routes/github.route';
 import settingsRouter from './routes/settings.route';
+import epicRouter from './routes/epic.route';
 
 const app = express();
 
@@ -43,6 +44,9 @@ router.use('/project', projectRouter);
 
 // Routes for standUp
 router.use('/standUp', standUpRouter);
+
+// Routes for epic
+router.use('/epic', epicRouter);
 
 // Routes for backlog
 router.use('/backlog', backlogRouter);

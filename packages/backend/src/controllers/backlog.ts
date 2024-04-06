@@ -1,8 +1,8 @@
-import { Backlog } from '@prisma/client';
+import { Backlog, Epic } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import backlogService from '../services/backlog.service';
-import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import { BadRequestError, getDefaultErrorRes, assertProjectIdIsValid, assertEpicNameIsValid } from '../helpers/error';
 import { sendToProject } from '../notifications/NotificationHandler';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 
@@ -85,6 +85,99 @@ const deleteBacklog = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const createEpic = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, name, description } = req.body;
+    assertProjectIdIsValid(projectId);
+    assertEpicNameIsValid(name);
+
+    const epic: Epic = await backlogService.createEpic(
+      Number(projectId),
+      name,
+      description,
+    );
+    sendToProject(Number(projectId), `Epic created: ${name}`)
+    return res.status(StatusCodes.OK).json(epic);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const getBacklogsForEpic = async (req: express.Request, res: express.Response) => {
+  try {
+    const { epicId } = req.params;
+    if (!epicId) {
+      throw new BadRequestError('epicId cannot be empty');
+    }
+    const backlogs: Backlog[] = await backlogService.getBacklogsForEpic(Number(epicId));
+    return res.status(StatusCodes.OK).json(backlogs);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const getEpicsForProject = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId } = req.params;
+    if (!projectId) {
+      throw new BadRequestError('projectId cannot be empty');
+    }
+    const epics: Epic[] = await backlogService.getEpicsForProject(Number(projectId));
+    return res.status(StatusCodes.OK).json(epics);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const addBacklogToEpic = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, backlogId, epicId } = req.body;
+    if (!projectId || !backlogId || !epicId) {
+      throw new BadRequestError('projectId or backlogId or epicId cannot be empty');
+    }
+    const epic: Epic | null = await backlogService.getEpicsById(epicId);
+    if (!epic || epic.project_id !== Number(projectId)) {
+      throw new BadRequestError('Adding backlog to an epic of different project is not allowed');
+    }
+    const backlog: Backlog = await backlogService.addBacklogToEpic(Number(projectId), Number(epicId), Number(backlogId));
+    return res.status(StatusCodes.OK).json(backlog);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const removeBacklogFromEpic = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, backlogId, epicId } = req.body;
+    if (!projectId || !backlogId || !epicId) {
+      throw new BadRequestError('projectId or backlogId or epicId cannot be empty');
+    }
+    const epic: Epic | null = await backlogService.getEpicsById(epicId);
+    if (!epic || epic.project_id !== Number(projectId)) {
+      throw new BadRequestError('Removing backlog from an epic of different project is not allowed');
+    }
+    const backlog: Backlog = await backlogService.removeBacklogFromEpic(Number(projectId), Number(epicId), Number(backlogId));
+    return res.status(StatusCodes.OK).json(backlog);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const deleteEpic = async (req: express.Request, res: express.Response) => {
+  try {
+    const { epicId } = req.params;
+    if (!epicId) {
+      throw new BadRequestError('epicId cannot be empty');
+    }
+    const epic: Epic = await backlogService.deleteEpic(Number(epicId));
+    sendToProject(Number(epic.project_id), `Epic ${epic.name} deleted`)
+
+    return res.status(StatusCodes.OK).json(epic);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 export default {
   newBacklog,
   listBacklogsByProjectId,
@@ -92,4 +185,10 @@ export default {
   getBacklog,
   updateBacklog,
   deleteBacklog,
+  createEpic,
+  getBacklogsForEpic,
+  getEpicsForProject,
+  addBacklogToEpic,
+  removeBacklogFromEpic,
+  deleteEpic,
 };

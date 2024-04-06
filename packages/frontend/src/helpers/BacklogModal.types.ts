@@ -10,3 +10,9 @@ export type BacklogSelectTypes = {
 export type BacklogUserSelectTypes = {
   [user: string]: { user_id: number; user_email: string; user_display_name: string };
 };
+
+export interface EpicFormFields extends FormData {
+  projectId: number;
+  name: string;
+  description?: string;
+}

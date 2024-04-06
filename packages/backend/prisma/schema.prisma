@@ -144,7 +144,7 @@ model Backlog {
   backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
   status        String
   comments      Comment[]
-  epic_id       Epic?             @relation("EpicBacklogs", fields: [epic_id], references: [epic_id], onDelete: SetNull)
+  epic       Epic?             @relation("EpicBacklogs", fields: [epic_id], references: [epic_id], onDelete: SetNull)
   epic_id       Int?
 
   @@id([project_id, backlog_id])

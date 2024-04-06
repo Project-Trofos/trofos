@@ -204,7 +204,15 @@ export type Backlog = {
       user_display_name: string;
     };
   } | null;
+  epic_id?: number | null;
 };
+
+export type Epic = {
+  epic_id: number;
+  project_id: number;
+  name: string;
+  description: string | null;
+}
 
 export type DefaultBacklog = {
   backlog_id?: number;
@@ -227,6 +235,7 @@ export type DefaultBacklog = {
       user_display_name: string;
     };
   } | null;
+  epic_id?: number | null;
 };
 
 export type BacklogUpdatePayload = {

@@ -146,6 +146,12 @@ export function assertCommentIsValid(comment: string | undefined): asserts comme
   }
 }
 
+export function assertEpicNameIsValid(epicName: string | undefined): asserts epicName is string {
+  if (!epicName) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('epicName'));
+  }
+}
+
 export function assertDateIsValid(date: string | undefined): asserts date is string {
   try {
     if (!date) {

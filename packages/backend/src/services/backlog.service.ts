@@ -1,4 +1,4 @@
-import { Backlog, BacklogStatusType, HistoryType, Prisma } from '@prisma/client';
+import { Backlog, BacklogStatusType, HistoryType, Prisma, Epic } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
@@ -264,6 +264,92 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
   });
 }
 
+async function createEpic(projectId: number, name: string, description?: string): Promise<Epic> {
+  const epic = prisma.epic.create({
+    data: {
+      name,
+      description: description || null,
+      project: {
+        connect: { id: projectId },
+      },
+    },
+  });
+
+  return epic;
+};
+
+async function getEpicsById(epicId: number): Promise<Epic | null> {
+  const epic = await prisma.epic.findUnique({
+    where: {
+      epic_id: epicId,
+    },
+  });
+
+  return epic;
+};
+
+async function getEpicsForProject(projectId: number): Promise<Epic[]> {
+  const epics = await prisma.epic.findMany({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return epics;
+};
+
+async function getBacklogsForEpic(epicId: number): Promise<Backlog[]> {
+  const backlogs = await prisma.backlog.findMany({
+    where: {
+      epic_id: epicId,
+    },
+  });
+
+  return backlogs;
+};
+
+async function addBacklogToEpic(projectId: number, epicId: number, backlogId: number): Promise<Backlog> {
+  const updatedBacklog = await prisma.backlog.update({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      },
+    },
+    data: {
+      epic_id: epicId,
+    },
+  });
+
+  return updatedBacklog;
+};
+
+async function removeBacklogFromEpic(projectId: number, epicId: number, backlogId: number): Promise<Backlog> {
+  const updatedBacklog = await prisma.backlog.update({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      },
+    },
+    data: {
+      epic_id: null,
+    },
+  });
+
+  return updatedBacklog;
+};
+
+async function deleteEpic(epicId: number): Promise<Epic> {
+  const epic = await prisma.epic.delete({
+    where: {
+      epic_id: epicId,
+    },
+  });
+
+  return epic;
+};
+
 export default {
   newBacklog,
   listBacklogsByProjectId,
@@ -272,4 +358,11 @@ export default {
   getBacklog,
   updateBacklog,
   deleteBacklog,
+  createEpic,
+  getEpicsById,
+  getEpicsForProject,
+  getBacklogsForEpic,
+  addBacklogToEpic,
+  removeBacklogFromEpic,
+  deleteEpic,
 };
