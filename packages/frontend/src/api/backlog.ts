@@ -1,7 +1,8 @@
 import trofosApiSlice from '.';
 import { extendedApi as sprintApi } from './sprint';
-import type { BacklogFormFields, EpicFormFields } from '../helpers/BacklogModal.types';
+import type { BacklogFormFields } from '../helpers/BacklogModal.types';
 import type { Backlog, BacklogHistory, BacklogUpdatePayload, Epic } from './types';
+import { EpicFormFields } from '../helpers/EpicModal.types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
