@@ -244,11 +244,52 @@ exports[`BacklogCard test > renders backlog card with correct details 1`] = `
           aria-valuenow="3"
           autocomplete="off"
           class="ant-input-number-input"
+          placeholder="points"
           role="spinbutton"
           step="1"
           value="3"
         />
       </div>
+    </div>
+    <div
+      class="ant-select backlog-epic ant-select-single ant-select-allow-clear ant-select-show-arrow"
+    >
+      <div
+        class="ant-select-selector"
+      >
+        <span
+          class="ant-select-selection-search"
+        >
+          <input
+            aria-autocomplete="list"
+            aria-controls="rc_select_TEST_OR_SSR_list"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="Search"
+            aria-owns="rc_select_TEST_OR_SSR_list"
+            autocomplete="off"
+            class="ant-select-selection-search-input"
+            id="rc_select_TEST_OR_SSR"
+            readonly=""
+            role="combobox"
+            style="opacity: 0;"
+            type="search"
+            unselectable="on"
+            value=""
+          />
+        </span>
+        <span
+          class="ant-select-selection-placeholder"
+        >
+          epic
+        </span>
+      </div>
+      <span
+        aria-hidden="true"
+        class="ant-select-arrow"
+        style="user-select: none;"
+        unselectable="on"
+      />
     </div>
   </div>
   <textarea

@@ -57,7 +57,7 @@ function EpicCreationModal(): JSX.Element {
   const renderContent = (): JSX.Element => (
     <Form id="newEpic" form={form} onFinish={handleFormSubmit} layout="vertical">
       <Form.Item name="name" rules={[{ required: true }]} label="Epic Name">
-        <Input />
+        <Input placeholder='An awesome epic name...'/>
       </Form.Item>
       <Form.Item name="description" label="Description">
         <Input.TextArea placeholder="Describe the goals of this epic..." autoSize={{ minRows: 5, maxRows: 8 }} />
