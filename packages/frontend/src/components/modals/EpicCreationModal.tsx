@@ -1,9 +1,9 @@
 import { Button, Col, Form, Input, Modal, Row } from 'antd';
 import { useState } from 'react';
 import './EpicCreationModal.css';
-import { EpicFormFields } from '../../helpers/BacklogModal.types';
 import { useParams } from 'react-router-dom';
 import { useAddEpicMutation } from '../../api/socket/backlogHooks';
+import { EpicFormFields } from '../../helpers/EpicModal.types';
 
 function EpicCreationModal(): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState(false);
