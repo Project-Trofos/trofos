@@ -13,6 +13,7 @@ import {
   assertCommentIdIsValid,
   assertCommentIsValid,
   assertFileIsCorrectType,
+  assertEpicNameIsValid,
 } from './assertions';
 import { getDefaultErrorRes } from './response';
 
@@ -32,4 +33,5 @@ export {
   assertCommentIdIsValid,
   assertCommentIsValid,
   assertFileIsCorrectType,
+  assertEpicNameIsValid,
 };

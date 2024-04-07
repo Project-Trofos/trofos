@@ -10,4 +10,5 @@ export type BacklogFields = {
   points?: number;
   description?: string;
   projectId: number;
+  epicId?: number;
 };

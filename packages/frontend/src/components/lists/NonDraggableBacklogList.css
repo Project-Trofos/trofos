@@ -1,0 +1,15 @@
+.backlog-card-container {
+    cursor: pointer;
+  }
+  
+  /* li.backlog-card-container.ant-list-item:last-child .backlog-listing-card-container {
+    border-bottom: 1px solid #eee;
+  } */
+  
+  .backlog-listing-card-container {
+    display: flex;
+    width: 100%;
+    padding: 12px;
+    /* border-bottom: 1px solid #eee; */
+  }
+  

@@ -12,6 +12,7 @@ import './BacklogCreationModal.css';
 import { useGetProjectQuery } from '../../api/project';
 import { Sprint } from '../../api/sprint';
 import { DefaultBacklog } from '../../api/types';
+import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 
 function BacklogCreationModal({
   fixedSprint,
@@ -42,6 +43,7 @@ function BacklogCreationModal({
 
   const [addBacklog] = useAddBacklogMutation();
   const { data: projectData } = useGetProjectQuery({ id: projectId });
+  const { data: epicData } = useGetEpicsByProjectIdQuery({ projectId: projectId });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,6 +109,20 @@ function BacklogCreationModal({
     );
   };
 
+  const renderEpicSelect = (): JSX.Element => {
+    return (
+      <Form.Item name="epicId" label="Epic">
+        <BacklogSelect
+          options={epicData
+            ? epicData.map((e) => ({id: e.epic_id, name: e.name})) 
+            : []}
+          placeholder="Select Epic"
+          allowClear
+        />
+      </Form.Item>
+    );
+  };
+
   const renderPrioritySelect = (): JSX.Element => {
     const defaultPriority = defaultBacklog?.priority
       ? PRIORITIES.find((p) => p.id === defaultBacklog?.priority)
@@ -139,6 +155,7 @@ function BacklogCreationModal({
       </Form.Item>
       {renderTypeSelect()}
       {renderSprintSelect()}
+      {renderEpicSelect()}
       {renderPrioritySelect()}
       <Row>
         <Col span={12}>{renderReporterSelect()}</Col>

@@ -1,7 +1,7 @@
 import trofosApiSlice from '.';
 import { extendedApi as sprintApi } from './sprint';
-import type { BacklogFormFields } from '../helpers/BacklogModal.types';
-import type { Backlog, BacklogHistory, BacklogUpdatePayload } from './types';
+import type { BacklogFormFields, EpicFormFields } from '../helpers/BacklogModal.types';
+import type { Backlog, BacklogHistory, BacklogUpdatePayload, Epic } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -185,6 +185,70 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['BacklogHistory'],
     }),
+    addEpic: builder.mutation<Epic, { epic: EpicFormFields }>({
+      query: ({ epic }) => ({
+        url: 'epic/newEpic',
+        method: 'POST',
+        body: epic,
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.epic.projectId}` },
+        { type: 'Backlog', id: `epic-${result?.epic_id}` },
+      ],
+    }),
+    getEpicsByProjectId: builder.query<Epic[], { projectId: number }>({
+      query: ({ projectId }) => ({
+        url: `epic/project/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Epic', id: `project-${arg.projectId}` }],
+    }),
+    getBacklogsByEpicId: builder.query<Backlog[], { epicId: number }>({
+      query: ({ epicId }) => ({
+        url: `epic/backlogs/${epicId}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Backlog', id: `epic-${arg.epicId}` }],
+    }),
+    addBacklogToEpic: builder.mutation<Backlog, { projectId: number; backlogId: number; epicId: number }>({
+      query: ({ projectId, backlogId, epicId }) => ({
+        url: 'epic/addBacklog',
+        method: 'POST',
+        body: { projectId, backlogId, epicId },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.projectId}` },
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
+    }),
+    removeBacklogFromEpic: builder.mutation<Backlog, { projectId: number; backlogId: number; epicId: number }>({
+      query: ({ projectId, backlogId, epicId }) => ({
+        url: 'epic/removeBacklog',
+        method: 'POST',
+        body: { projectId, backlogId, epicId },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Epic', id: `project-${arg.projectId}` },
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
+    }),
+    deleteEpic: builder.mutation<Epic, { epicId: number; projectId: number }>({
+      query: ({ epicId, projectId }) => ({
+        url: `epic/${epicId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [
+        result ? { type: 'Epic', id: `project-${arg.projectId}` } : 'Epic',
+        { type: 'Backlog', id: `epic-${arg.epicId}` },
+        'Sprint',
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -199,4 +263,10 @@ export const {
   useGetBacklogHistoryQuery,
   useGetProjectBacklogHistoryQuery,
   useGetSprintBacklogHistoryQuery,
+  useAddEpicMutation,
+  useGetEpicsByProjectIdQuery,
+  useGetBacklogsByEpicIdQuery,
+  useAddBacklogToEpicMutation,
+  useRemoveBacklogFromEpicMutation,
+  useDeleteEpicMutation,
 } = extendedApi;

@@ -1,0 +1,28 @@
+li.epic-card-container.ant-list-item {
+  border-radius: 8px;
+  padding: 0;
+  margin: 3px 0;
+}
+
+.epic-card-container .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  align-items: center;
+}
+
+.epic-card-inner-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.epic-card-container > div {
+  width: 100%;
+}
+
+.epic-card-name {
+  display: flex;
+  flex: 1 1 0%;
+}
+
+.epic-card-setting-icon {
+  padding: 0 6px 0 10px;
+}

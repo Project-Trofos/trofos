@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Card, Form, message, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useGetBacklogQuery } from '../api/backlog';
-import { useUpdateBacklogMutation } from '../api/socket/backlogHooks';
+import { useGetBacklogQuery, useGetBacklogsByEpicIdQuery, useGetEpicsByProjectIdQuery } from '../api/backlog';
+import { useUpdateBacklogMutation, useAddBacklogToEpicMutation } from '../api/socket/backlogHooks';
 import BacklogInputNumber from '../components/fields/BacklogInputNumber';
 import BacklogSelect from '../components/fields/BacklogSelect';
 import BacklogSummaryInput from '../components/fields/BacklogSummaryInput';
@@ -16,6 +16,9 @@ import BacklogStatusSelect from '../components/fields/BacklogStatusSelect';
 import Comment from '../components/lists/Comment';
 import './Backlog.css';
 import BacklogComment from '../components/fields/BacklogComment';
+import BacklogList from '../components/lists/BacklogList';
+import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 function Backlog(): JSX.Element {
   const { Title } = Typography;
@@ -42,6 +45,8 @@ function Backlog(): JSX.Element {
   const backlogId = Number(params.backlogId);
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const { data: backlog } = useGetBacklogQuery({ projectId, backlogId });
+  const { data: epicData } = useGetEpicsByProjectIdQuery({ projectId: projectId });
+  const relatedBacklogs = useGetBacklogsByEpicIdQuery({ epicId: backlog?.epic_id ?? -1 }).data?.filter((b)=>(b.backlog_id !== backlog?.backlog_id)) ?? [];
 
   useEffect(() => {
     form.setFieldsValue(backlog);
@@ -179,6 +184,16 @@ function Backlog(): JSX.Element {
                   </Form.Item>
                 </div>
                 <div>
+                  <label>Epic</label>
+                  <Form.Item name="epic_id">
+                    <BacklogSelect
+                      options={epicData ? epicData.map((e) => ({ id: e.epic_id, name: e.name })) : []}
+                      placeholder="Select Epic"
+                      allowClear
+                    />
+                  </Form.Item>
+                </div>
+                <div>
                   <label>Point(s)</label>
                   <Form.Item name="points">
                     <BacklogInputNumber onBlur={handlePointsFieldUpdate} />
@@ -198,6 +213,20 @@ function Backlog(): JSX.Element {
           </div>
         </Form>
       </div>
+      {relatedBacklogs.length > 0 ?
+      <div className="related-container">
+        <Title level={2}>Related Backlogs In The Same Epic</Title>
+        <DragDropContext onDragEnd={async (result: DropResult) => {}}>
+          <StrictModeDroppable droppableId="null">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <BacklogList backlogs={relatedBacklogs} />
+                {provided.placeholder}
+              </div>
+            )}
+          </StrictModeDroppable>
+        </DragDropContext>
+      </div> : <></>}
       <div className="comment-container">
         <Title level={2}>Comments</Title>
         <BacklogComment />

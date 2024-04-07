@@ -38,6 +38,15 @@ function Component({ backlog, projectKey }: ScrumBoardCardProps) {
             />
           )}
         </div>
+        {backlog.epic_id && <div className="scrum-board-card-assignee">
+            <UserAvatar
+              tooltip
+              className="assignee-avatar"
+              size="small"
+              userHashString={backlog.epic?.name ?? 'epic'}
+              userDisplayName={backlog.epic?.name ?? 'epic'}
+            />
+        </div>}
       </div>
     </Card>
   );

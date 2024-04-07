@@ -9,6 +9,7 @@ import BacklogCardAssignee from '../dropdowns/BacklogCardAssignee';
 import BacklogCardPoints from '../fields/BacklogCardPoints';
 import BacklogCardSummary from '../fields/BacklogCardSummary';
 import './BacklogListingCard.css';
+import BacklogCardEpic from '../dropdowns/BacklogCardEpic';
 
 function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
   const { backlog, projectKey, users } = props;
@@ -25,6 +26,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
       <BacklogCardPriority backlogId={backlog.backlog_id} currentPriority={backlog.priority} />
       <BacklogCardAssignee backlogId={backlog.backlog_id} currentAssignee={backlog.assignee_id} projectUsers={users} />
       <BacklogCardPoints backlogId={backlog.backlog_id} currentPoints={backlog.points} />
+      <BacklogCardEpic backlogId={backlog.backlog_id} currentEpic={backlog.epic_id ?? undefined} />
     </>
   );
 }

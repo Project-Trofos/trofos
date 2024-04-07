@@ -5,6 +5,7 @@ export enum UpdateType {
   RETRO = 'retro',
   STAND_UP_NOTES = 'stand-up-notes',
   STAND_UP = 'stand-up',
+  EPIC = 'epic',
 }
 
 type ServerToClientEvents = {

@@ -1,11 +1,12 @@
-import { Backlog, BacklogStatusType, HistoryType, Prisma } from '@prisma/client';
+import { Backlog, BacklogStatusType, HistoryType, Prisma, Epic } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 import { AppAbility } from '../policies/policyTypes';
 
 async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
-  const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId } = backlogFields;
+  const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId, epicId } =
+    backlogFields;
 
   return prisma.$transaction<Backlog>(async (tx: Prisma.TransactionClient) => {
     const backlogCounter = await tx.project.findUniqueOrThrow({
@@ -68,6 +69,13 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
             id: projectId,
           },
         },
+        ...(epicId && {
+          epic: {
+            connect: {
+              epic_id: epicId,
+            },
+          },
+        }),
       },
     });
 
@@ -147,6 +155,16 @@ async function listUnassignedBacklogs(projectId: number): Promise<Backlog[]> {
       project_id: projectId,
       sprint_id: null,
     },
+    include: {
+      epic: {
+        select: {
+          epic_id: true,
+          project_id: true,
+          name: true,
+          description: true,
+        },
+      },
+    },
   });
 
   return backlogs;
@@ -158,6 +176,16 @@ async function getBacklog(projectId: number, backlogId: number): Promise<Backlog
       project_id_backlog_id: {
         project_id: projectId,
         backlog_id: backlogId,
+      },
+    },
+    include: {
+      epic: {
+        select: {
+          epic_id: true,
+          project_id: true,
+          name: true,
+          description: true,
+        },
       },
     },
   });
@@ -264,6 +292,102 @@ async function deleteBacklog(projectId: number, backlogId: number): Promise<Back
   });
 }
 
+async function createEpic(projectId: number, name: string, description?: string): Promise<Epic> {
+  const epic = prisma.epic.create({
+    data: {
+      name,
+      description: description || null,
+      project: {
+        connect: { id: projectId },
+      },
+    },
+  });
+
+  return epic;
+}
+
+async function getEpicById(epicId: number): Promise<Epic | null> {
+  const epic = await prisma.epic.findUnique({
+    where: {
+      epic_id: epicId,
+    },
+  });
+
+  return epic;
+}
+
+async function getEpicsForProject(projectId: number): Promise<Epic[]> {
+  const epics = await prisma.epic.findMany({
+    where: {
+      project_id: projectId,
+    },
+  });
+
+  return epics;
+}
+
+async function getBacklogsForEpic(epicId: number): Promise<Backlog[]> {
+  const backlogs = await prisma.backlog.findMany({
+    where: {
+      epic_id: epicId,
+    },
+    include: {
+      epic: {
+        select: {
+          epic_id: true,
+          project_id: true,
+          name: true,
+          description: true,
+        },
+      },
+    },
+  });
+
+  return backlogs;
+}
+
+async function addBacklogToEpic(projectId: number, epicId: number, backlogId: number): Promise<Backlog> {
+  const updatedBacklog = await prisma.backlog.update({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      },
+    },
+    data: {
+      epic_id: epicId,
+    },
+  });
+
+  return updatedBacklog;
+}
+
+async function removeBacklogFromEpic(projectId: number, epicId: number, backlogId: number): Promise<Backlog> {
+  const updatedBacklog = await prisma.backlog.update({
+    where: {
+      project_id_backlog_id: {
+        project_id: projectId,
+        backlog_id: backlogId,
+      },
+    },
+    data: {
+      epic_id: null,
+    },
+  });
+
+  return updatedBacklog;
+}
+
+async function deleteEpic(epicId: number): Promise<Epic> {
+  const epic = await prisma.epic.delete({
+    where: {
+      epic_id: epicId,
+    },
+  });
+
+  return epic;
+}
+
 export default {
   newBacklog,
   listBacklogsByProjectId,
@@ -272,4 +396,11 @@ export default {
   getBacklog,
   updateBacklog,
   deleteBacklog,
+  createEpic,
+  getEpicById,
+  getEpicsForProject,
+  getBacklogsForEpic,
+  addBacklogToEpic,
+  removeBacklogFromEpic,
+  deleteEpic,
 };
