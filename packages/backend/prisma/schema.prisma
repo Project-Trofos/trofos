@@ -88,7 +88,7 @@ model Announcement {
   course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   user_id        Int?
-  user           UsersOnRolesOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
+  user           UsersOnRolesOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id], onDelete: Cascade)
 
   created_at     DateTime         @default(now())
   updated_at     DateTime?
@@ -133,9 +133,9 @@ model Backlog {
   sprint        Sprint?           @relation(fields: [sprint_id], references: [id], onDelete: SetNull)
   sprint_id     Int?
   priority      BacklogPriority?
-  reporter      UsersOnProjects   @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id])
+  reporter      UsersOnProjects   @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id], onDelete: Cascade)
   reporter_id   Int
-  assignee      UsersOnProjects?  @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id])
+  assignee      UsersOnProjects?  @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id], onDelete: Cascade)
   assignee_id   Int?
   project_id    Int
   project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
@@ -189,7 +189,7 @@ model Comment {
   comment_id    Int               @id @default(autoincrement())
   backlog       Backlog           @relation(fields: [backlog_id, project_id], references: [backlog_id, project_id], onDelete: Cascade)
   backlog_id    Int
-  commenter     UsersOnProjects   @relation(fields: [commenter_id, project_id], references: [user_id, project_id])
+  commenter     UsersOnProjects   @relation(fields: [commenter_id, project_id], references: [user_id, project_id], onDelete: Cascade)
   commenter_id  Int
   project_id    Int
   content       String

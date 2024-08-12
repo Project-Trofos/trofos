@@ -63,8 +63,19 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
   return user;
 }
 
+async function remove(userId: number): Promise<User> {
+  const result = await prisma.user.delete({
+    where: {
+      user_id: userId,
+    },
+  });
+
+  return result;
+}
+
 export default {
   getAll,
   get,
   create,
+  remove,
 };
