@@ -95,12 +95,17 @@ function BacklogCreationModal({
     );
   };
 
+  // Sort sprints by ID desc
+  const sprintOptionsDescending = projectData?.sprints
+    ? [...projectData.sprints].sort((a, b) => b.id - a.id)
+    : [];
+
   const renderSprintSelect = (): JSX.Element => {
     const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
     return (
       <Form.Item name="sprintId" label="Sprint" initialValue={fixedSprint ? fixedSprint.id : undefined}>
         <BacklogSelect
-          options={projectData?.sprints || []}
+          options={sprintOptionsDescending || []}
           placeholder="Select Sprint"
           allowClear
           fixedValue={fixedSprintValue}
