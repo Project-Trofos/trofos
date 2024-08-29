@@ -109,6 +109,7 @@ function BacklogCreationModal({
           placeholder="Select Sprint"
           allowClear
           fixedValue={fixedSprintValue}
+          showSearch
         />
       </Form.Item>
     );
