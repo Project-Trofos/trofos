@@ -13,6 +13,17 @@ async function getAll(req: express.Request, res: express.Response) {
   }
 }
 
+async function queryEmail(req: express.Request, res: express.Response) {
+  try {
+    const { userEmail } = req.params;
+    const user = await userService.getByEmail(userEmail);
+    return res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: getErrorMessage(error) });
+  }
+}
+
 async function create(req: express.Request, res: express.Response) {
   try {
     const { userEmail, newPassword } = req.body;
@@ -31,5 +42,6 @@ async function create(req: express.Request, res: express.Response) {
 
 export default {
   getAll,
+  queryEmail,
   create,
 };

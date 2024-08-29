@@ -48,14 +48,17 @@ export function confirmDeleteProject(onOk: () => Promise<void>) {
  * Shows a modal with prompt for archiving a project.
  */
 export function confirmArchiveProject(onOk: () => Promise<void>) {
-  return confirm('Are you sure you want to archive this project? Project will be moved to \'Past Projects\'', onOk);
+  return confirm("Are you sure you want to archive this project? Project will be moved to 'Past Projects'", onOk);
 }
 
 /**
  * Shows a modal with prompt for unarchiving a project.
  */
 export function confirmUnarchiveProject(onOk: () => Promise<void>) {
-  return confirm('Are you sure you want to unarchive this project? Project will be moved to \'Current Projects\' or \'Future Projects\'', onOk);
+  return confirm(
+    "Are you sure you want to unarchive this project? Project will be moved to 'Current Projects' or 'Future Projects'",
+    onOk,
+  );
 }
 
 /**
@@ -91,4 +94,11 @@ export function confirmDeleteAnnouncement(onOk: () => Promise<void>) {
  */
 export function confirmDeleteRetrospective(onOk: () => Promise<void>) {
   return confirm('Are you sure you want to delete this retrospective item?', onOk);
+}
+
+/**
+ * Shows a modal with prompt for adding a user to a project.
+ */
+export function confirmAddUserToProject(onOk: () => Promise<void>) {
+  return confirm('Email does not exist. Are you sure you want to add this user?', onOk);
 }

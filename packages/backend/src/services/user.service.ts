@@ -29,6 +29,19 @@ async function get(user_id: number): Promise<User> {
   return user;
 }
 
+async function getByEmail(user_email: string): Promise<Pick<User, 'user_email'> | null> {
+  const user = await prisma.user.findFirst({
+    where: {
+      user_email,
+    },
+    select: {
+      user_email: true,
+    },
+  });
+
+  return user;
+}
+
 async function getAll(): Promise<Users[]> {
   const users = await prisma.user.findMany({
     include: {
@@ -66,5 +79,6 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
 export default {
   getAll,
   get,
+  getByEmail,
   create,
 };
