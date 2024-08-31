@@ -228,7 +228,7 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                            class="ant-select ant-select-in-form-item backlog-select sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                           >
                             <div
                               class="ant-select-selector"
@@ -246,11 +246,8 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
                                   id="rc_select_TEST_OR_SSR"
-                                  readonly=""
                                   role="combobox"
-                                  style="opacity: 0;"
                                   type="search"
-                                  unselectable="on"
                                   value=""
                                 />
                               </span>
