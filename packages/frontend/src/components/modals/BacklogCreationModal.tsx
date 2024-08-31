@@ -110,6 +110,7 @@ function BacklogCreationModal({
           allowClear
           fixedValue={fixedSprintValue}
           showSearch
+          className='sprint-select'
         />
       </Form.Item>
     );

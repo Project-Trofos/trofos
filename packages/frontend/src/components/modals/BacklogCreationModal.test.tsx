@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import BacklogCreationModal from './BacklogCreationModal';
 import store from '../../app/store';
@@ -65,5 +65,29 @@ describe('BacklogModal tests', () => {
     const sprintIds = sprintOptions.map((option) => option.textContent);
 
     expect(sprintIds).toEqual(['TestSprint last', 'TestSprint x', 'TestSprint 3', 'TestSprint 1']);
+  })
+
+  it('should be able to search sprints', async () => {
+    const { baseElement } = setup();
+
+    // Ensure sprints are sorted by ID descending
+    const sprintSelect = baseElement.querySelector('.sprint-select') as HTMLSelectElement;
+    const combobox = within(sprintSelect).getByRole('combobox');
+
+    fireEvent.change(combobox, { target: { value: 'last' } });
+
+    const sprintSelectOptionsBox = screen.getByText('Select Sprint');
+    fireEvent.mouseDown(sprintSelectOptionsBox);
+
+    const sprintOptions = await screen.findAllByText((content, element) => {
+      if (!element) {
+        return false;
+      }
+      return element.classList.contains('ant-select-item-option-content') && /TestSprint/i.test(content);
+    });
+
+    const sprintIds = sprintOptions.map((option) => option.textContent);
+
+    expect(sprintIds).toEqual(['TestSprint last']);
   })
 });
