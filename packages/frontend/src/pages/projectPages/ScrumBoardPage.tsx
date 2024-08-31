@@ -2,11 +2,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import Container from '../../components/layouts/Container';
-import ScrumBoard from '../../components/board/ScrumBoard';
-import { Heading } from '../../components/typography';
+import { Heading, Subheading } from '../../components/typography';
 
 import './ScrumBoardPage.css';
 import BacklogCreationModal from '../../components/modals/BacklogCreationModal';
+import ScrumBoardParent from '../../components/board/ScrumBoard/ScrumBoardParent';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -17,6 +17,13 @@ const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | und
   }
   return `${sprint.name} (Active)`;
 };
+
+const getSprintSubheading = (sprint: Sprint | undefined): string | undefined => {
+  if (!sprint) {
+    return undefined;
+  }
+  return `Goals: ${sprint.goals}`;
+}
 
 export default function ActiveScrumBoardPage(): JSX.Element {
   const params = useParams();
@@ -31,7 +38,12 @@ export default function ActiveScrumBoardPage(): JSX.Element {
         </Heading>
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
       </div>
-      <ScrumBoard projectId={projectId} sprint={activeSprint} />
+      <div className='scrum-board-subheader'>
+        <Subheading style={{ marginLeft: '10px', color: 'grey' }}>
+          {getSprintSubheading(activeSprint)}
+        </Subheading>
+        </div>
+      <ScrumBoardParent projectId={projectId} sprint={activeSprint} />
     </Container>
   );
 }
@@ -46,7 +58,10 @@ export function SprintScrumBoardPage(): JSX.Element {
   return (
     <Container noGap fullWidth className="scrum-board-container">
       <Heading style={{ marginLeft: '10px' }}>{getSprintHeading(sprint, undefined)}</Heading>
-      <ScrumBoard projectId={projectId} sprint={sprint} />
+      <Subheading style={{ marginLeft: '10px', color: 'grey' }}>
+        {getSprintSubheading(sprint)}
+      </Subheading>
+      <ScrumBoardParent projectId={projectId} sprint={sprint} />
     </Container>
   );
 }

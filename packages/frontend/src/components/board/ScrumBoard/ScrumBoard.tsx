@@ -2,12 +2,12 @@ import React from 'react';
 import { Alert, message, Typography, Card, Space } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { useUpdateBacklogMutation } from '../../api/backlog';
-import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../api/project';
-import { Backlog, BacklogUpdatePayload, ScrumBoardUserData } from '../../api/types';
-import { ScrumBoardCard } from '../cards/ScrumBoardCard';
-import StrictModeDroppable from '../dnd/StrictModeDroppable';
-import { Sprint } from '../../api/sprint';
+import { useUpdateBacklogMutation } from '../../../api/backlog';
+import { useGetBacklogStatusQuery, useGetProjectQuery } from '../../../api/project';
+import { Backlog, BacklogUpdatePayload, ScrumBoardUserData } from '../../../api/types';
+import { ScrumBoardCard } from '../../cards/ScrumBoardCard';
+import StrictModeDroppable from '../../dnd/StrictModeDroppable';
+import { Sprint } from '../../../api/sprint';
 
 import './ScrumBoard.css';
 

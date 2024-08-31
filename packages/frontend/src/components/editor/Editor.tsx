@@ -69,10 +69,17 @@ type EditorProps = {
   isEditable?: boolean;
   hideToolbar?: boolean;
   maxLength?: number;
+  collaborationPlugin?: JSX.Element;
 };
 
 const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
-  const { initialStateString, isEditable = true, hideToolbar = false, maxLength } = props;
+  const {
+    initialStateString,
+    isEditable = true,
+    hideToolbar = false,
+    maxLength,
+    collaborationPlugin = null
+  } = props;
 
   const initialConfig: InitialConfigType = {
     ...baseInitialConfig,
@@ -82,6 +89,7 @@ const Editor = React.forwardRef<LexicalEditor, EditorProps>((props, ref) => {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={clsx({ 'editor-container': !hideToolbar })}>
+        {collaborationPlugin}
         {!hideToolbar && <ToolbarPlugin />}
         <RichTextPlugin
           contentEditable={
