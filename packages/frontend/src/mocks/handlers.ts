@@ -254,6 +254,48 @@ export const MSW_PROJECT: ProjectData = {
   is_archive: null,
 };
 
+export const MSW_PROJECT_BY_ID: ProjectData = {
+  id: 1,
+  pname: 'project1',
+  pkey: null,
+  description: 'project1_description',
+  course_id: 1,
+  public: false,
+  created_at: '2022-09-15T01:58:01.735Z',
+  course: MSW_COURSE,
+  backlogStatuses: [],
+  sprints: [
+    {
+      id: 4,
+      name: 'TestSprint x',
+    },
+    {
+      id: 5,
+      name: 'TestSprint last',
+    },
+    {
+      id: 3,
+      name: 'TestSprint 3',
+    },
+    {
+      id: 1,
+      name: 'TestSprint 1',
+    }
+  ],
+  telegramChannelLink: "",
+  users: [
+    {
+      user: {
+        courses: [],
+        user_display_name: 'User 1',
+        user_email: 'test@test.com',
+        user_id: 1,
+      },
+    },
+  ],
+  is_archive: null,
+};
+
 export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [
   {
     course_id: 1,
@@ -270,6 +312,9 @@ export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [
 const handlers = [
   // Handles GET on /project
   rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
+
+  // Handles GET on /project/:id
+  rest.get(`${BASE_URL}/project/:id`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify(MSW_PROJECT_BY_ID)))),
 
   // Handles GET on /course
   rest.get(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_COURSE])))),

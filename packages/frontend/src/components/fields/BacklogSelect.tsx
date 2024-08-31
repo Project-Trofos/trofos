@@ -13,12 +13,13 @@ type BacklogSelectPropsTypes = {
   allowClear?: boolean;
   fixedValue?: BacklogSelectTypes | undefined; // cannot change
   defaultValue?: BacklogSelectTypes | undefined; // can change
+  showSearch?: boolean;
 };
 
 const { Option } = Select;
 
 function BacklogSelect(props: BacklogSelectPropsTypes): JSX.Element {
-  const { value, onChange, options, placeholder, className, allowClear, fixedValue, defaultValue } = props;
+  const { value, onChange, options, placeholder, className, allowClear, fixedValue, defaultValue, showSearch } = props;
 
   return (
     <>
@@ -51,7 +52,23 @@ function BacklogSelect(props: BacklogSelectPropsTypes): JSX.Element {
             </Option>
           ))}
         </Select>
-      ) : (
+      ) : showSearch ?  (
+        <Select
+          value={value}
+          onChange={onChange}
+          className={`backlog-select ${className}`}
+          placeholder={placeholder}
+          allowClear={allowClear}
+          showSearch={showSearch}
+          optionFilterProp="label"
+          options={options.map((option) => (
+            {
+              label: option.name,
+              value: option.id
+            }
+          ))}
+        />
+      ): (
         <Select
           value={value}
           onChange={onChange}
@@ -76,6 +93,7 @@ BacklogSelect.defaultProps = {
   value: undefined,
   onChange: undefined,
   placeholder: '',
+  showSearch: false,
 };
 
 export default BacklogSelect;
