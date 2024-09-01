@@ -20,6 +20,13 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3001',
       },
+      '/api/ws': {
+        target: 'ws://localhost:3001',
+        ws: true,
+        rewrite(path) {
+          return path.replace('/api', '');
+        },
+      }
     },
   },
   test: {

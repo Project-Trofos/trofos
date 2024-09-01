@@ -23,6 +23,7 @@ export function init(socketServer: Server) {
   io = socketServer;
 
   io.on('connection', async (socket) => {
+    console.log("connection tried")
     const sessionId = (socket.request as typeof socket.request & { cookies: { [key: string]: string } }).cookies
       ?.trofos_sessioncookie;
 

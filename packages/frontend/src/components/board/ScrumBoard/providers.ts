@@ -9,7 +9,7 @@ export function createWebsocketProvider(
   id: string,
   doc: Y.Doc,
 ): WebsocketProvider {
-  return new WebsocketProvider('ws://localhost:1234', id, doc, {
+  return new WebsocketProvider('/api/ws', id, doc, {
     connect: false,
   });
 }
