@@ -22,6 +22,7 @@ model User {
   courses UsersOnRolesOnCourses[]
   basicRoles UsersOnRoles[]
   feedbacks Feedback[]
+  user_api_key UserApiKey?
 }
 
 model UserSession {
@@ -308,6 +309,16 @@ model StandUp {
   project Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
   date  DateTime
   notes StandUpNote[]
+}
+
+model UserApiKey {
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  api_key String @unique
+  created_at DateTime @default(now())
+  last_used DateTime?
+  active Boolean @default(true)
 }
 
 enum Action {
