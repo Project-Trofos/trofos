@@ -27,7 +27,7 @@ initBot()
 init(io);
 
 // Init ws server that uses y-websocket, for lexical live collab
-initWss(server);
+//initWss(server);
 
 // For unit testing
 export default server;

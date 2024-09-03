@@ -49,7 +49,9 @@
     "prisma": "4.8.1",
     "socket.io": "^4.5.4",
     "ws": "^8.18.0",
-    "y-websocket": "^2.0.4"
+    "y-leveldb": "^0.1.2",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.18"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
