@@ -152,6 +152,10 @@ router.put(
   `/:projectId/telegramId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.setTelegramId,
-)
+);
+
+// Send project invitation to destination email
+// TODO: Determine user groups that have authority to send email (maybe group leaders?)
+router.post(`/:projectId/invite`, hasAuth(null, null), project.sendInvite);
 
 export default router;

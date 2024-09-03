@@ -12,6 +12,8 @@ import {
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import settings from '../services/settings.service';
+import email from './email';
+import { projectInviteSubject, projectInviteBody } from '../templates/email';
 import { OptionRequestBody, ProjectRequestBody, UserEmailRequestBody, UserIdRequestBody } from './requestTypes';
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
@@ -319,7 +321,7 @@ async function updateUserSettings(req: express.Request, res: express.Response) {
   }
 }
 
-async function archiveProject(req: express.Request, res:express.Response) {
+async function archiveProject(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
@@ -331,7 +333,7 @@ async function archiveProject(req: express.Request, res:express.Response) {
   }
 }
 
-async function unarchiveProject(req: express.Request, res:express.Response) {
+async function unarchiveProject(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
@@ -341,6 +343,28 @@ async function unarchiveProject(req: express.Request, res:express.Response) {
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
+}
+
+async function sendInvite(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { senderName, senderEmail, destEmail } = req.body;
+    assertProjectIdIsValid(projectId);
+
+    const projectName = (await project.getById(Number(projectId))).pname;
+    const subject = projectInviteSubject(projectName);
+    const body = projectInviteBody(generateInvitationLink(projectId), senderName, senderEmail);
+
+    await email.sendEmail(destEmail, subject, body);
+
+    return res.sendStatus(StatusCodes.OK);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+function generateInvitationLink(projectId: string) {
+  return `invitation-link-${projectId}`;
 }
 
 export default {
@@ -364,5 +388,6 @@ export default {
   updateUserSettings,
   setTelegramId,
   archiveProject,
-  unarchiveProject
+  unarchiveProject,
+  sendInvite,
 };

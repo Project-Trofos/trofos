@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', hasAuth(Action.read_users, null), user.getAll);
 
 // Query for userEmail
-router.get('/:userEmail', user.queryEmail);
+router.get('/:userEmail', hasAuth(null, null), user.queryEmail);
 
 router.post('/', hasAuth(Action.create_users, null), user.create);
 

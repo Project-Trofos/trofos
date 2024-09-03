@@ -10,6 +10,7 @@ import UserTable from '../../components/tables/UserTable';
 import { confirmAddUserToProject } from '../../components/modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
+import { useSendProjectInvitationMutation } from '../../api/project';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
@@ -19,14 +20,32 @@ export default function ProjectPeople(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
   const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
   const [findUserByEmail] = useFindUserByEmailMutation();
+  const [sendProjectInvitation] = useSendProjectInvitationMutation();
 
   const sendEmail = async (destEmail: string) => {
-    message.success(`Sent registration invite to ${destEmail}`);
-    const didAccept = true;
-
-    if (didAccept) {
-      await handleAddUser(destEmail);
+    if (!project || !userInfo) {
+      return;
     }
+
+    try {
+      await sendProjectInvitation({
+        projectId: project.id,
+        senderName: userInfo.userDisplayName,
+        senderEmail: userInfo.userEmail,
+        destEmail: destEmail,
+      });
+
+      message.success(`Registration invite sent`);
+    } catch (error) {
+      message.error(`Error sending registration invite: ${getErrorMessage(error)}`);
+    }
+
+    // TODO: Handle add user on clicking invite link
+    // const didAccept = true;
+
+    // if (didAccept) {
+    //   await handleAddUser(destEmail);
+    // }
   };
 
   const handleOnClick = async (userEmail: string) => {

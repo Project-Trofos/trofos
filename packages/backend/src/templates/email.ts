@@ -9,3 +9,15 @@ export function commentBody(username: string, comment: string, projectId: number
     Backlog link: ${process.env.FRONTEND_BASE_URL}/project/${projectId}/backlog/${backlogId}
   `;
 }
+
+export function projectInviteSubject(projectName: string) {
+  return `Trofos - Invitation to join project ${projectName}`;
+}
+
+export function projectInviteBody(invitationLink: string, senderName: string, senderEmail: string) {
+  return `
+    ${senderName} (${senderEmail}) has invited you to join a project.
+  
+    Click to join: ${invitationLink}
+  `;
+}
