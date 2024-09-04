@@ -89,6 +89,15 @@ async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
   });
 
   console.log('created actionsOnRoles table seed %s', actionsOnRoles);
+
+  // This is inserted in a migration (to cater for insert to prod db)
+  // Putting this here for understandability
+  const updatePorjectUserRow = await prisma.$executeRaw`
+    INSERT INTO "ActionsOnRoles" (role_id, action)
+    VALUES
+      (${FACULTY_ROLE_ID}, ${Action.update_project_users}::"Action")
+    ON CONFLICT (role_id, action) DO NOTHING;`
+  console.log('created update project users action %s', updatePorjectUserRow);
 }
 
 export { createActionsOnRolesTableSeed };
