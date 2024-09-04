@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Space } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../../api/auth';
-import { useGetActionsOnRolesQuery } from '../../api/role';
+import { ADMIN_ROLE_ID, useGetActionsOnRolesQuery } from '../../api/role';
 import { useProject } from '../../api/hooks';
 import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
@@ -27,6 +27,7 @@ export default function ProjectPeople(): JSX.Element {
             actionsOnRoles={actionsOnRoles}
             isLoading={isLoading}
             myUserId={userInfo?.userId}
+            iAmAdmin={userInfo?.userRoleActions.includes('admin')}
             control={
               <InputWithButton
                 handleClick={(v) => handleAddUser(v)}
