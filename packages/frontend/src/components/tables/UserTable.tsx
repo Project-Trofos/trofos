@@ -14,7 +14,7 @@ type UserTableProps = {
   control?: React.ReactNode;
   onlyShowActions?: ('REMOVE' | 'ROLE')[];
   myUserId?: number | undefined;
-  iAmAdmin?: boolean | undefined;
+  hideIdByRoleProp?: { iAmAdmin: boolean | undefined, isHideIdByRole: boolean } | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
   showSelect?: boolean;
@@ -36,7 +36,7 @@ export default function UserTable(props: UserTableProps) {
     heading,
     isLoading,
     myUserId,
-    iAmAdmin,
+    hideIdByRoleProp,
     onSelectChange,
     onlyShowActions,
     showSelect,
@@ -60,8 +60,8 @@ export default function UserTable(props: UserTableProps) {
 
 
   const currentUserIsFacultyOrAdmin = useMemo(() => {
-    return iAmAdmin || userRoles?.some((ur) => ur.user_id === myUserId && ur.role_id === FACULTY_ROLE_ID);
-  }, [userRoles, myUserId]);
+    return hideIdByRoleProp?.iAmAdmin || userRoles?.some((ur) => ur.user_id === myUserId && ur.role_id === FACULTY_ROLE_ID);
+  }, [hideIdByRoleProp, userRoles, myUserId]);
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -89,7 +89,7 @@ export default function UserTable(props: UserTableProps) {
         footer={footer ? () => footer : undefined}
         pagination={pagination}
       >
-        {currentUserIsFacultyOrAdmin && <Table.Column
+        {((hideIdByRoleProp?.isHideIdByRole && currentUserIsFacultyOrAdmin) || !hideIdByRoleProp) && <Table.Column
           width={150}
           title="ID"
           dataIndex={['user', 'user_id']}
@@ -106,7 +106,7 @@ export default function UserTable(props: UserTableProps) {
           sorter={(a: UserData, b: UserData) => a.user.user_email.localeCompare(b.user.user_email)}
           render={(_values, record, _) => (
             <>
-              {record.user.user_email} {!currentUserIsFacultyOrAdmin && Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
+              {record.user.user_email} {hideIdByRoleProp?.isHideIdByRole && !currentUserIsFacultyOrAdmin && Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
             </>
           )}
         />
