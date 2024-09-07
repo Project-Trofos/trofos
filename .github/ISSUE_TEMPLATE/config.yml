@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature Request
+    url: https://github.com/Project-Trofos/trofos/discussions/new?category=ideas
+    about: Propose a feature request for Trofos
