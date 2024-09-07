@@ -1,7 +1,6 @@
 import { prisma } from '@prisma/client';
 import { Api, Bot, Context, RawApi } from 'grammy';
 import projectService from '../services/project.service';
-import { BadRequestError } from '../helpers/error';
 
 let bot: Bot<Context, Api<RawApi>>;
 export async function init() {
