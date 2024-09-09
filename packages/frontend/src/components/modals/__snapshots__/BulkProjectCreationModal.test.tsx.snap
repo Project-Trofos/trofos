@@ -26,7 +26,7 @@ exports[`test course creation modal > should render fields if there are users wi
         <div
           aria-labelledby="test-id"
           aria-modal="true"
-          class="ant-modal ant-zoom-appear ant-zoom-appear-prepare ant-zoom"
+          class="ant-modal"
           role="dialog"
           style="width: 520px; transform-origin: 0px 0px;"
         >
@@ -392,6 +392,7 @@ exports[`test course creation modal > should render fields if there are users wi
                                       class="ant-table-cell"
                                     >
                                       email
+                                       
                                     </td>
                                     <td
                                       class="ant-table-cell"

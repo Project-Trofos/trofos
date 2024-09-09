@@ -286,6 +286,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                             class="ant-table-cell"
                           >
                             email
+                             
                           </td>
                           <td
                             class="ant-table-cell"
