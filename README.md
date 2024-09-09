@@ -1,3 +1,11 @@
+# TROFOS
+
+TROFOS, is intended to be the academic counterpart of Jira, equipping students with a tool that mirrors Jira's capabilities to develop a grasp of agile methodologies, aligning with industry practices.
+
+## Contributor guide
+
+Looking to report a bug or request for a feature? Checkout our Wiki's [contributing page](https://github.com/Project-Trofos/trofos/wiki/Contributing)
+
 ## Prerequisites
 
 1. Install pnpm with `npm install -g pnpm`
