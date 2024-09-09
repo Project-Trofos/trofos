@@ -14,7 +14,10 @@ export function projectInviteSubject(projectName: string) {
   return `Trofos - Invitation to join project ${projectName}`;
 }
 
-export function projectInviteBody(invitationLink: string, senderName: string, senderEmail: string) {
+export function projectInviteBody(invitationToken: string, projectId: string, senderName: string, senderEmail: string) {
+  const BASE_URL = '';
+  const invitationLink = `${BASE_URL}/project/${projectId}/join?token=${invitationToken}`;
+
   return `
     ${senderName} (${senderEmail}) has invited you to join a project.
   

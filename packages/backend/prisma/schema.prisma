@@ -310,6 +310,14 @@ model StandUp {
   notes StandUpNote[]
 }
 
+model Invite {
+  project_id Int
+  email String
+  unique_token String
+  expiry_date DateTime @default(dbgenerated("NOW() + interval '1 week'"))
+  @@id([project_id, email]) //limit one invite per project per email
+}
+
 enum Action {
   // Course related actions
   create_course

@@ -351,9 +351,11 @@ async function sendInvite(req: express.Request, res: express.Response) {
     const { senderName, senderEmail, destEmail } = req.body;
     assertProjectIdIsValid(projectId);
 
+    const token = await email.createToken(Number(projectId), destEmail);
+
     const projectName = (await project.getById(Number(projectId))).pname;
     const subject = projectInviteSubject(projectName);
-    const body = projectInviteBody(generateInvitationLink(projectId), senderName, senderEmail);
+    const body = projectInviteBody(token, projectId, senderName, senderEmail);
 
     await email.sendEmail(destEmail, subject, body);
 
@@ -361,10 +363,6 @@ async function sendInvite(req: express.Request, res: express.Response) {
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
-}
-
-function generateInvitationLink(projectId: string) {
-  return `invitation-link-${projectId}`;
 }
 
 export default {

@@ -99,6 +99,6 @@ export function confirmDeleteRetrospective(onOk: () => Promise<void>) {
 /**
  * Shows a modal with prompt for adding a user to a project.
  */
-export function confirmAddUserToProject(onOk: () => Promise<void>) {
-  return confirm('Email does not exist. Are you sure you want to add this user?', onOk);
+export function confirmInviteUserToProject(onOk: () => Promise<void>) {
+  return confirm('Email does not exist. Are you sure you want to invite this user?', onOk);
 }

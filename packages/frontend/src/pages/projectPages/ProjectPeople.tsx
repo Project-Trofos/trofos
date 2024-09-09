@@ -7,10 +7,11 @@ import { useProject } from '../../api/hooks';
 import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
 import UserTable from '../../components/tables/UserTable';
-import { confirmAddUserToProject } from '../../components/modals/confirm';
+import { confirmInviteUserToProject } from '../../components/modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
 import { useSendProjectInvitationMutation } from '../../api/project';
+import { validateEmailPattern } from '../../helpers/validation';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
@@ -33,42 +34,37 @@ export default function ProjectPeople(): JSX.Element {
         senderName: userInfo.userDisplayName,
         senderEmail: userInfo.userEmail,
         destEmail: destEmail,
-      });
+      }).unwrap();
 
       message.success(`Registration invite sent`);
     } catch (error) {
-      message.error(`Error sending registration invite: ${getErrorMessage(error)}`);
+      message.error(getErrorMessage(error));
     }
-
-    // TODO: Handle add user on clicking invite link
-    // const didAccept = true;
-
-    // if (didAccept) {
-    //   await handleAddUser(destEmail);
-    // }
   };
 
   const handleOnClick = async (userEmail: string) => {
-    const queryUser = await findUserByEmail(userEmail).unwrap();
+    try {
+      validateEmailPattern(userEmail);
 
-    if (queryUser == null) {
-      try {
-        confirmAddUserToProject(async () => {
+      const queryUser = await findUserByEmail(userEmail).unwrap();
+
+      if (queryUser == null) {
+        confirmInviteUserToProject(async () => {
           await sendEmail(userEmail);
         });
-      } catch (err) {
-        message.error(getErrorMessage(err));
-      }
 
-      return;
-    }
-
-    if (project) {
-      if (project.users.some((u) => u.user.user_email === userEmail)) {
-        message.error('User already in this course!');
         return;
       }
-      await sendEmail(userEmail);
+
+      if (project) {
+        if (project.users.some((u) => u.user.user_email === userEmail)) {
+          message.error('User already in this course!');
+          return;
+        }
+        await sendEmail(userEmail);
+      }
+    } catch (err) {
+      message.error(getErrorMessage(err));
     }
   };
 
@@ -84,7 +80,11 @@ export default function ProjectPeople(): JSX.Element {
             isLoading={isLoading}
             myUserId={userInfo?.userId}
             control={
-              <InputWithButton handleClick={handleOnClick} buttonText="Add" inputPlaceholder="Add user by email" />
+              <InputWithButton
+                handleClick={handleOnClick}
+                buttonText="Invite"
+                inputPlaceholder="Invite user by email"
+              />
             }
             handleRemoveUser={handleRemoveUser}
             handleUpdateUserRole={handleUpdateUserRole}
