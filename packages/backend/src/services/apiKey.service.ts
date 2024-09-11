@@ -4,11 +4,11 @@ import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
 
 async function generateApiKey(userId: number): Promise<UserApiKey> {
-  return prisma.$transaction<UserApiKey>(async (tx: Prisma.TransactionClient) => {
-    // Generate and hash with salt an API key
-    const newApiKey = randomUUID();
-    const apiKeyHash = bcrypt.hashSync(newApiKey, 10);
-    
+  const newApiKey = randomUUID();
+  // Generate and hash with salt an API key
+  const apiKeyHash = bcrypt.hashSync(newApiKey, 10);
+
+  const { api_key, ...newUserApiKeyWithoutApiKey } = await prisma.$transaction<UserApiKey>(async (tx: Prisma.TransactionClient) => {
     // Check if existing API key exists
     const existingApiKey = await tx.userApiKey.findFirst({
       where: {
@@ -41,8 +41,23 @@ async function generateApiKey(userId: number): Promise<UserApiKey> {
       },
     });
   });
+
+  return {
+    ...newUserApiKeyWithoutApiKey,
+    api_key: newApiKey,
+  };
 }
+
+async function getApiKeyRecordForUser(userId: number): Promise<UserApiKey | null> {
+  // api_key and user is currently one to one
+  return prisma.userApiKey.findFirst({
+    where: {
+      user_id: userId,
+    },
+  });
+};
 
 export default {
   generateApiKey,
+  getApiKeyRecordForUser,
 };
