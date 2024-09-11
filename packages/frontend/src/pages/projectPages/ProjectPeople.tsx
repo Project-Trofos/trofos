@@ -10,12 +10,12 @@ import UserTable from '../../components/tables/UserTable';
 import { confirmInviteUserToProject } from '../../components/modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
-import { useSendProjectInvitationMutation } from '../../api/project';
+import { useSendProjectInvitationMutation } from '../../api/invite';
 import { validateEmailPattern } from '../../helpers/validation';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
-  const { project, projectUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
+  const { project, projectUserRoles, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
@@ -23,7 +23,7 @@ export default function ProjectPeople(): JSX.Element {
   const [findUserByEmail] = useFindUserByEmailMutation();
   const [sendProjectInvitation] = useSendProjectInvitationMutation();
 
-  const sendEmail = async (destEmail: string) => {
+  const sendEmail = async (destEmail: string, isRegister: boolean) => {
     if (!project || !userInfo) {
       return;
     }
@@ -34,9 +34,10 @@ export default function ProjectPeople(): JSX.Element {
         senderName: userInfo.userDisplayName,
         senderEmail: userInfo.userEmail,
         destEmail: destEmail,
+        isRegister: isRegister,
       }).unwrap();
 
-      message.success(`Registration invite sent`);
+      message.success(`Invite sent`);
     } catch (error) {
       message.error(getErrorMessage(error));
     }
@@ -50,7 +51,7 @@ export default function ProjectPeople(): JSX.Element {
 
       if (queryUser == null) {
         confirmInviteUserToProject(async () => {
-          await sendEmail(userEmail);
+          await sendEmail(userEmail, true);
         });
 
         return;
@@ -61,7 +62,7 @@ export default function ProjectPeople(): JSX.Element {
           message.error('User already in this course!');
           return;
         }
-        await sendEmail(userEmail);
+        await sendEmail(userEmail, false);
       }
     } catch (err) {
       message.error(getErrorMessage(err));

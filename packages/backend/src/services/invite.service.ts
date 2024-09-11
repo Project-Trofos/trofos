@@ -14,6 +14,16 @@ async function getInvite(project_id: number, email: string): Promise<Invite | nu
   return invite;
 }
 
+async function getInviteByToken(token: string): Promise<Invite> {
+  const invite = await prisma.invite.findFirstOrThrow({
+    where: {
+      unique_token: token,
+    },
+  });
+
+  return invite;
+}
+
 async function createInvite(project_id: number, email: string, unique_token: string): Promise<Invite> {
   const invite = await prisma.invite.create({
     data: {
@@ -46,4 +56,17 @@ async function updateInvite(project_id: number, email: string, unique_token: str
   return invite;
 }
 
-export default { getInvite, createInvite, updateInvite };
+async function deleteInvite(project_id: number, email: string): Promise<Invite> {
+  const invite = await prisma.invite.delete({
+    where: {
+      project_id_email: {
+        project_id: project_id,
+        email: email,
+      },
+    },
+  });
+
+  return invite;
+}
+
+export default { getInvite, getInviteByToken, createInvite, updateInvite, deleteInvite };

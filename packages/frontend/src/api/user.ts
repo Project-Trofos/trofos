@@ -11,7 +11,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    findUserByEmail: builder.mutation<Pick<User, 'user_email'>[], string>({
+    findUserByEmail: builder.mutation<Pick<User, 'user_email'>, string>({
       query: (userEmail) => ({
         url: `user/${userEmail}`,
         method: 'GET',

@@ -263,3 +263,9 @@ export function assertFileIsCorrectType(fileType: string | undefined, type: stri
     throw new BadRequestError(`Invalid file type. File must be of type ${type}`);
   }
 }
+
+export function assertEmailIsValid(email: string | undefined): asserts email is string {
+  if (!email) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('email'));
+  }
+}

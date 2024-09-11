@@ -2,6 +2,7 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertInputIsNotEmpty, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
+import { assertEmailIsValid } from '../helpers/error/assertions';
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
@@ -16,6 +17,7 @@ async function getAll(req: express.Request, res: express.Response) {
 async function queryEmail(req: express.Request, res: express.Response) {
   try {
     const { userEmail } = req.params;
+    assertEmailIsValid(userEmail);
     const user = await userService.getByEmail(userEmail);
     return res.status(StatusCodes.OK).json(user);
   } catch (error) {

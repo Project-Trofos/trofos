@@ -263,22 +263,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'ProjectUserSettings', id: arg.projectId }],
     }),
-
-    sendProjectInvitation: builder.mutation<
-      void,
-      { projectId: number; senderName: string; senderEmail: string; destEmail: string }
-    >({
-      query: ({ projectId, senderName, senderEmail, destEmail }) => ({
-        url: `project/${projectId}/invite`,
-        method: 'POST',
-        body: {
-          senderName,
-          senderEmail,
-          destEmail,
-        },
-        credentials: 'include',
-      }),
-    }),
   }),
   overrideExisting: false,
 });
@@ -305,5 +289,4 @@ export const {
   useGetUserSettingsQuery,
   useUpdateUserSettingsMutation,
   useUpdateTelegramIdMutation,
-  useSendProjectInvitationMutation,
 } = extendedApi;

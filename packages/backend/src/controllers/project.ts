@@ -3,6 +3,7 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { assertProjectIdIsValid, assertUserIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
+  assertEmailIsValid,
   assertGetAllOptionIsValid,
   assertProjectNameIsValid,
   assertRepoLinkIsValid,
@@ -12,7 +13,7 @@ import {
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import settings from '../services/settings.service';
-import email from './email';
+import invite from './invite';
 import { projectInviteSubject, projectInviteBody } from '../templates/email';
 import { OptionRequestBody, ProjectRequestBody, UserEmailRequestBody, UserIdRequestBody } from './requestTypes';
 
@@ -348,18 +349,19 @@ async function unarchiveProject(req: express.Request, res: express.Response) {
 async function sendInvite(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const { senderName, senderEmail, destEmail } = req.body;
+    const { senderName, senderEmail, destEmail, isRegister } = req.body;
     assertProjectIdIsValid(projectId);
+    assertEmailIsValid(destEmail);
 
-    const token = await email.createToken(Number(projectId), destEmail);
+    const token = await invite.createToken(Number(projectId), destEmail);
 
     const projectName = (await project.getById(Number(projectId))).pname;
     const subject = projectInviteSubject(projectName);
-    const body = projectInviteBody(token, projectId, senderName, senderEmail);
+    const body = projectInviteBody(token, senderName, senderEmail, isRegister);
 
-    await email.sendEmail(destEmail, subject, body);
+    await invite.sendEmail(destEmail, subject, body);
 
-    return res.sendStatus(StatusCodes.OK);
+    return res.status(StatusCodes.OK).send();
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }

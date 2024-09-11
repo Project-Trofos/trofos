@@ -13,6 +13,7 @@ import roleRouter from './routes/role.route';
 import githubRouter from './routes/github.route';
 import settingsRouter from './routes/settings.route';
 import epicRouter from './routes/epic.route';
+import inviteRouter from './routes/invite.route';
 
 const app = express();
 
@@ -68,6 +69,9 @@ router.use('/github', githubRouter);
 
 // Routes for settings
 router.use('/settings', settingsRouter);
+
+// Routes for invites
+router.use('/invite', inviteRouter);
 
 app.use('/api', router);
 // For unit testing
