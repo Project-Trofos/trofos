@@ -5,3 +5,6 @@ const router = express.Router();
 
 // Routes for api keys
 router.post('/generate', hasAuth(null, null), apiKey.generateApiKey);
+router.get('/me/key', hasAuth(null, null), apiKey.getApiKeyRecordForUser);
+
+export default router;
