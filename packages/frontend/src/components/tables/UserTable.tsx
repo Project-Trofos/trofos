@@ -14,7 +14,7 @@ type UserTableProps = {
   control?: React.ReactNode;
   onlyShowActions?: ('REMOVE' | 'ROLE')[];
   myUserId?: number | undefined;
-  hideIdByRoleProp?: { iAmAdmin: boolean | undefined, isHideIdByRole: boolean } | undefined;
+  hideIdByRoleProp?: { iAmAdmin: boolean | undefined, isHideIdByRole: true } | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
   showSelect?: boolean;
