@@ -14,8 +14,6 @@ router.post(
   project.sendInvite,
 );
 
-router.get(`/:token`, invite.getInvite);
-
 router.post(`/:token`, invite.processInvite);
 
 export default router;

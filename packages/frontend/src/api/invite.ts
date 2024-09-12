@@ -19,12 +19,6 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
-    getProjectInvitation: builder.query<{ token: string }, string>({
-      query: (token) => ({
-        url: `invite/${token}`,
-        credentials: 'include',
-      }),
-    }),
     processProjectInvitation: builder.mutation<void, string>({
       query: (token) => ({
         url: `invite/${token}`,
@@ -36,5 +30,4 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useSendProjectInvitationMutation, useGetProjectInvitationQuery, useProcessProjectInvitationMutation } =
-  extendedApi;
+export const { useSendProjectInvitationMutation, useProcessProjectInvitationMutation } = extendedApi;

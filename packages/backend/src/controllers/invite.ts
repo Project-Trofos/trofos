@@ -33,19 +33,6 @@ async function createToken(projectId: number, email: string) {
   return token;
 }
 
-async function getInvite(req: express.Request, res: express.Response) {
-  try {
-    const { token } = req.params;
-    const result = await invite.getInviteByToken(token);
-
-    await checkIfExpired(result);
-
-    return res.status(StatusCodes.OK).json({ token: result.unique_token });
-  } catch (error) {
-    return getDefaultErrorRes(error, res);
-  }
-}
-
 async function processInvite(req: express.Request, res: express.Response) {
   try {
     const { token } = req.params;
@@ -84,6 +71,5 @@ function isExpired(inviteDate: Date) {
 export default {
   sendEmail,
   createToken,
-  getInvite,
   processInvite,
 };
