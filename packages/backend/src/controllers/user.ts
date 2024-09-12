@@ -18,8 +18,9 @@ async function queryEmail(req: express.Request, res: express.Response) {
   try {
     const { userEmail } = req.params;
     assertEmailIsValid(userEmail);
-    const user = await userService.getByEmail(userEmail);
-    return res.status(StatusCodes.OK).json(user);
+
+    const user = await userService.findByEmail(userEmail);
+    return res.status(StatusCodes.OK).json({ exists: user != null });
   } catch (error) {
     console.error(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: getErrorMessage(error) });

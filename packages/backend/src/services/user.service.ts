@@ -29,13 +29,22 @@ async function get(user_id: number): Promise<User> {
   return user;
 }
 
-async function getByEmail(user_email: string): Promise<Pick<User, 'user_email'> | null> {
-  const user = await prisma.user.findFirst({
+// This is used to query if an email is registered, can return null
+async function findByEmail(user_email: string): Promise<User | null> {
+  const user = await prisma.user.findUnique({
     where: {
       user_email,
     },
-    select: {
-      user_email: true,
+  });
+
+  return user;
+}
+
+// This is used to get a user by email, will throw error if not found
+async function getByEmail(user_email: string): Promise<User> {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      user_email,
     },
   });
 
@@ -79,6 +88,7 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
 export default {
   getAll,
   get,
+  findByEmail,
   getByEmail,
   create,
 };

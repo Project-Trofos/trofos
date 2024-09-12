@@ -47,9 +47,9 @@ export default function ProjectPeople(): JSX.Element {
     try {
       validateEmailPattern(userEmail);
 
-      const queryUser = await findUserByEmail(userEmail).unwrap();
+      const res = await findUserByEmail(userEmail).unwrap();
 
-      if (queryUser == null) {
+      if (!res.exists) {
         confirmInviteUserToProject(async () => {
           await sendEmail(userEmail, true);
         });
