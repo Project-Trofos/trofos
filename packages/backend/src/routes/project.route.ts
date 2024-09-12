@@ -32,7 +32,7 @@ router.post('/:projectId/user', hasAuthForProject(Action.update_project, project
 // Remove a user from a project
 router.delete(
   '/:projectId/user',
-  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  hasAuthForProject(Action.update_project_users, projectPolicy.POLICY_NAME),
   project.removeUser,
 );
 

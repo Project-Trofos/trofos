@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Tooltip, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../../api/project';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';
@@ -14,6 +14,8 @@ import useSocket from '../../api/socket/useSocket';
 import trofosApiSlice from '../../api';
 import store from '../../app/store';
 import { UpdateType } from '../../api/socket/socket';
+import { useGetUserInfoQuery } from '../../api/auth';
+import { UserPermissionActions } from '../../helpers/constants';
 
 const { Text } = Typography;
 
@@ -36,6 +38,10 @@ export default function ProjectPage(): JSX.Element {
   const projectId = Number(params.projectId) || -1;
 
   const { project, course, isLoading } = useProject(projectId);
+  const { data: userInfo } = useGetUserInfoQuery();
+
+  const iAmAdmin = userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN);
+  const canUpdateProjectCourse = userInfo?.userRoleActions.includes(UserPermissionActions.UPDATE_COURSE) || iAmAdmin;
 
   // Refetch active sprint data upon update
   const handleReset = useCallback(() => {
@@ -93,11 +99,25 @@ export default function ProjectPage(): JSX.Element {
       course
         ? {
             key: 'detach',
-            label: 'Detach from course',
+            label: canUpdateProjectCourse ? (
+              'Detach from course'
+            ) : (
+              <Tooltip title="You do not have permission to detach this project from the course">
+                <span>Detach from course</span>
+              </Tooltip>
+            ),
+            disabled: !canUpdateProjectCourse,
           }
         : {
             key: 'attach',
-            label: <ProjectAttachModal project={project} key="attach" />,
+            label: canUpdateProjectCourse ? (
+              <ProjectAttachModal project={project} key="attach" />
+            ) : (
+              <Tooltip title="You do not have permission to attach this project to a course">
+                <span>Attach to course</span>
+              </Tooltip>
+            ),
+            disabled: !canUpdateProjectCourse
           },
     ],
   };

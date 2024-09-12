@@ -8,6 +8,7 @@ import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
 import UserTable from '../../components/tables/UserTable';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import { UserPermissionActions } from '../../helpers/constants';
 
 export default function CoursePeople(): JSX.Element {
   const params = useParams();
@@ -29,6 +30,10 @@ export default function CoursePeople(): JSX.Element {
             actionsOnRoles={actionsOnRoles}
             isLoading={isLoading}
             myUserId={userInfo?.userId}
+            hideIdByRoleProp={{
+              iAmAdmin: userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN),
+              isHideIdByRole: true
+            }}
             control={
               isCourseManager && (
                 <InputWithButton

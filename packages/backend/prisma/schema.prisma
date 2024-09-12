@@ -342,6 +342,7 @@ enum Action {
   create_users
   // Admin action
   admin
+  update_project_users
 }
 
 enum BacklogType {
