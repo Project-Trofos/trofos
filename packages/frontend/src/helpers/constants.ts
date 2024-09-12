@@ -5,6 +5,7 @@ const UserPermissionActions = {
   UPDATE_COURSE: 'update_course',
   CREATE_PROJECT: 'create_project',
   READ_PROJECT: 'read_project',
+  UPDATE_PROJECT_USERS: 'update_project_users',
   ADMIN: 'admin',
 } as const;
 

@@ -7,14 +7,22 @@ import { useProject } from '../../api/hooks';
 import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
 import UserTable from '../../components/tables/UserTable';
+import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import { UserPermissionActions } from '../../helpers/constants';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
-  const { project, projectUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
+  const { project, projectUserRoles, handleAddUser, handleRemoveUser, handleUpdateUserRole, isLoading, course } = useProject(
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
   const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
+  const { isCourseManager } = useIsCourseManager(course?.id);
+  
+  const myRoleId = projectUserRoles?.find((pur) => pur.user_id === userInfo?.userId)?.role_id;
+  const iAmAdmin = userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN);
+  const isAllowedRemoveUser = actionsOnRoles?.find((aor) => aor.id === myRoleId)
+    ?.actions?.find(act => act.action === UserPermissionActions.UPDATE_PROJECT_USERS) || iAmAdmin;
 
   return (
     <Container>
@@ -27,6 +35,10 @@ export default function ProjectPeople(): JSX.Element {
             actionsOnRoles={actionsOnRoles}
             isLoading={isLoading}
             myUserId={userInfo?.userId}
+            hideIdByRoleProp={{
+              iAmAdmin: iAmAdmin,
+              isHideIdByRole: true
+            }}
             control={
               <InputWithButton
                 handleClick={(v) => handleAddUser(v)}
@@ -34,8 +46,9 @@ export default function ProjectPeople(): JSX.Element {
                 inputPlaceholder="Add user by email"
               />
             }
-            handleRemoveUser={handleRemoveUser}
-            handleUpdateUserRole={handleUpdateUserRole}
+            handleRemoveUser={isAllowedRemoveUser ? handleRemoveUser : undefined}
+            handleUpdateUserRole={isCourseManager ? handleUpdateUserRole : undefined}
+            onlyShowActions={isCourseManager ? undefined : isAllowedRemoveUser ? ["REMOVE", "ROLE"] : ["ROLE"]}
           />
         </Card>
       </Space>
