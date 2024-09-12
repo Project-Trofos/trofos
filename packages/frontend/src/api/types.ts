@@ -54,7 +54,7 @@ export type RegisterUser = {
   userEmail: string;
   newPassword: string;
   userDisplayName: string;
-}
+};
 
 export type UserCourseRoleRequest = {
   id: number;
@@ -183,11 +183,13 @@ export enum BacklogStatus {
   DONE = 'Done',
 }
 
+export type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+
 export type Backlog = {
   backlog_id: number;
   summary: string;
   type: 'story' | 'task' | 'bug';
-  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  priority: BacklogPriority;
   reporter_id: number;
   assignee_id: number | null;
   sprint_id: number | null;
@@ -205,7 +207,7 @@ export type Backlog = {
     };
   } | null;
   epic_id?: number | null;
-  epic?: Epic | null
+  epic?: Epic | null;
 };
 
 export type Epic = {
@@ -213,13 +215,13 @@ export type Epic = {
   project_id: number;
   name: string;
   description: string | null;
-}
+};
 
 export type DefaultBacklog = {
   backlog_id?: number;
   summary?: string;
   type?: 'story' | 'task' | 'bug';
-  priority?: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  priority?: BacklogPriority;
   reporter_id?: number;
   assignee_id?: number | null;
   sprint_id?: number | null;

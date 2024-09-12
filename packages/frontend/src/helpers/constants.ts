@@ -9,11 +9,19 @@ const UserPermissionActions = {
   ADMIN: 'admin',
 } as const;
 
-type UserPermissionActionsType = typeof UserPermissionActions[keyof typeof UserPermissionActions];
+type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof UserPermissionActions];
 
 const COURSE_MANAGER_ACTIONS: UserPermissionActionsType[] = [
   UserPermissionActions.ADMIN,
   UserPermissionActions.UPDATE_COURSE,
 ];
 
-export { UserPermissionActions, COURSE_MANAGER_ACTIONS };
+const BACKLOG_PRIORITY_OPTIONS = [
+  { value: 'very_high', label: 'Very High' },
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
+  { value: 'very_low', label: 'Very Low' },
+];
+
+export { UserPermissionActions, COURSE_MANAGER_ACTIONS, BACKLOG_PRIORITY_OPTIONS };

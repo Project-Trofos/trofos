@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import { UserAvatar } from '../avatar/UserAvatar';
 import type { Backlog } from '../../api/types';
 import { draggableWrapper } from '../../helpers/dragAndDrop';
+import { BACKLOG_PRIORITY_OPTIONS } from '../../helpers/constants';
 import './ScrumBoardCard.css';
 
 type ScrumBoardCardProps = { backlog: Backlog; projectKey: string | null | undefined };
@@ -26,7 +27,9 @@ function Component({ backlog, projectKey }: ScrumBoardCardProps) {
         </div>
         <div className="scrum-board-card-type">{backlog.type}</div>
         <div className={`scrum-board-card-points ${backlog.points ? 'points-active' : ''}`}>{backlog.points}</div>
-        <div className={`scrum-board-card-priority ${backlog.priority}-priority`}>{backlog.priority}</div>
+        <div className={`scrum-board-card-priority ${backlog.priority}-priority`}>
+          {BACKLOG_PRIORITY_OPTIONS.find((v) => v.value == backlog.priority)?.label}
+        </div>
         <div className="scrum-board-card-assignee">
           {backlog.assignee && (
             <UserAvatar
@@ -38,7 +41,8 @@ function Component({ backlog, projectKey }: ScrumBoardCardProps) {
             />
           )}
         </div>
-        {backlog.epic_id && <div className="scrum-board-card-assignee">
+        {backlog.epic_id && (
+          <div className="scrum-board-card-assignee">
             <UserAvatar
               tooltip
               className="assignee-avatar"
@@ -46,7 +50,8 @@ function Component({ backlog, projectKey }: ScrumBoardCardProps) {
               userHashString={backlog.epic?.name ?? 'epic'}
               userDisplayName={backlog.epic?.name ?? 'epic'}
             />
-        </div>}
+          </div>
+        )}
       </div>
     </Card>
   );
