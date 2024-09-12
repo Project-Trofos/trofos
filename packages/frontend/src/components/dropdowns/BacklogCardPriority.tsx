@@ -2,17 +2,9 @@ import React from 'react';
 import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
+import { BACKLOG_PRIORITY_OPTIONS } from '../../helpers/constants';
+import { BacklogPriority } from '../../api/types';
 import './BacklogCardPriority.css';
-
-type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
-
-const BACKLOG_PRIORITY_OPTIONS = [
-  { value: 'very_high', label: 'Very High' },
-  { value: 'high', label: 'High' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'low', label: 'Low' },
-  { value: 'very_low', label: 'Very Low' },
-];
 
 type BacklogCardPriorityProps = {
   backlogId: number;

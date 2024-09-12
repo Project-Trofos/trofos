@@ -50,7 +50,7 @@ exports[`ScrumBoardCard test > renders scrum board card with correct details 1`]
               <div
                 class="scrum-board-card-priority very_high-priority"
               >
-                very_high
+                Very High
               </div>
               <div
                 class="scrum-board-card-assignee"
