@@ -332,6 +332,7 @@ enum Action {
   read_project
   update_project
   delete_project
+  update_project_users
   // Project feedback
   create_feedback
   read_feedback
@@ -342,7 +343,9 @@ enum Action {
   create_users
   // Admin action
   admin
-  update_project_users
+  // Api key actions
+  create_api_key
+  read_api_key
 }
 
 enum BacklogType {
