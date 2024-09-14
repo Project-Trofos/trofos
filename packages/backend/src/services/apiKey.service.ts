@@ -1,12 +1,13 @@
-import { Prisma, UserApiKey } from "@prisma/client";
+import { Prisma, User, UserApiKey, UsersOnRoles } from "@prisma/client";
 import prisma from "../models/prismaClient";
-import { randomUUID } from "crypto";
-import bcrypt from "bcryptjs";
+import { randomUUID, createHash } from "crypto";
+import { ApiKeyAuth } from "./types/apiKey.service.types";
+import { ADMIN_ROLE_ID } from "../helpers/constants";
 
 async function generateApiKey(userId: number): Promise<UserApiKey> {
   const newApiKey = randomUUID();
   // Generate and hash with salt an API key
-  const apiKeyHash = bcrypt.hashSync(newApiKey, 10);
+  const apiKeyHash = hashApiKey(newApiKey);
 
   const { api_key, ...newUserApiKeyWithoutApiKey } = await prisma.$transaction<UserApiKey>(async (tx: Prisma.TransactionClient) => {
     // Check if existing API key exists
@@ -57,7 +58,43 @@ async function getApiKeyRecordForUser(userId: number): Promise<UserApiKey | null
   });
 };
 
+async function authenticateApiKey(apiKey: string): Promise<ApiKeyAuth> {
+  let userAuth: ApiKeyAuth;
+
+  const userApiKey: UserApiKey | null = await prisma.userApiKey.findFirst({
+    where: {
+      api_key: hashApiKey(apiKey),
+    },
+  });
+
+  const userRole: UsersOnRoles | null = await prisma.usersOnRoles.findFirst({
+    where: {
+      user_id: userApiKey?.user_id,
+    },
+  });
+
+  if (!userApiKey || !userRole || !userApiKey.active) {
+    userAuth = {
+      isValidUser: false,
+    };
+    return userAuth;
+  }
+  
+  userAuth = {
+    isValidUser: true,
+    user_id: userApiKey.user_id,
+    role_id: userRole.role_id,
+    user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
+  }
+  return userAuth;
+};
+
+const hashApiKey = (apiKey: string): string => {
+  return createHash('sha256').update(apiKey).digest('hex');
+};
+
 export default {
   generateApiKey,
   getApiKeyRecordForUser,
+  authenticateApiKey,
 };

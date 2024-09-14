@@ -3,6 +3,7 @@ import StatusCodes from 'http-status-codes';
 import express from 'express';
 import { Action, UserSession } from '@prisma/client';
 import sessionService from '../services/session.service';
+import apiKeyService from '../services/apiKey.service';
 import roleService from '../services/role.service';
 import policyEngine from '../policies/policyEngine';
 import { PolicyOutcome } from '../policies/policyTypes';
@@ -156,4 +157,29 @@ const hasAuthForCourse =
     return next();
   };
 
-export { hasAuth, hasAuthForProject, hasAuthForCourse };
+// Authorises external api calls
+const hasAuthForExternalApi =
+  (routeAction: Action | null) =>
+  async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const apiKey = req.headers['x-api-key'] as string;
+      const apiKeyAuth = await apiKeyService.authenticateApiKey(apiKey);
+
+      if (!apiKeyAuth.isValidUser) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+
+      const isValidAction = await roleService.isActionAllowed(apiKeyAuth.role_id, routeAction);
+
+      if (!isValidAction) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+    }
+
+    return next();
+  };
+
+export { hasAuth, hasAuthForProject, hasAuthForCourse, hasAuthForExternalApi };
