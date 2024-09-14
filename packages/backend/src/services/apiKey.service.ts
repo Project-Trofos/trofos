@@ -80,11 +80,18 @@ async function authenticateApiKey(apiKey: string): Promise<ApiKeyAuth> {
     return userAuth;
   }
   
+  const user: User | null = await prisma.user.findUnique({
+    where: {
+      user_id: userApiKey.user_id,
+    },
+  });
+
   userAuth = {
     isValidUser: true,
     user_id: userApiKey.user_id,
     role_id: userRole.role_id,
     user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
+    user_email: user?.user_email as string,
   }
   return userAuth;
 };

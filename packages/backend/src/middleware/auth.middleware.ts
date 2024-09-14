@@ -8,6 +8,7 @@ import roleService from '../services/role.service';
 import policyEngine from '../policies/policyEngine';
 import { PolicyOutcome } from '../policies/policyTypes';
 import { ADMIN_ROLE_ID } from '../helpers/constants';
+import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -27,6 +28,26 @@ const checkPolicyOutcome = async (
 
   return policyOutcome;
 };
+
+const checkPolicyOutcomeExternalApiCall = async (
+  req: express.Request,
+  res: express.Response,
+  apiKeyAuth: ApiKeyAuthIsValid,
+  policyName: string | null,
+): Promise<PolicyOutcome> => {
+  const policyOutcome = await policyEngine.executeExternalApiCall(req, apiKeyAuth, policyName);
+
+  if (policyOutcome.isPolicyValid) {
+    res.locals.policyConstraint = policyOutcome.policyConstraint;
+    res.locals.userSession = { // hacky way for now, session_id and session_expiry isnt used
+      ...apiKeyAuth,
+      session_id: '',
+      session_expiry: new Date(),
+    };
+  }
+
+  return policyOutcome;
+}
 
 async function canUserPerformActionForProject(
   sessionInformation: UserSession,
@@ -159,7 +180,7 @@ const hasAuthForCourse =
 
 // Authorises external api calls
 const hasAuthForExternalApi =
-  (routeAction: Action | null) =>
+  (routeAction: Action | null, policyName: string | null) =>
   async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const apiKey = req.headers['x-api-key'] as string;
@@ -172,6 +193,13 @@ const hasAuthForExternalApi =
       const isValidAction = await roleService.isActionAllowed(apiKeyAuth.role_id, routeAction);
 
       if (!isValidAction) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+
+      // const policyOutcome = await policyEngine.executeExternalApiCall(req, apiKeyAuth, policyName);
+      const policyOutcome = await checkPolicyOutcomeExternalApiCall(req, res, apiKeyAuth, policyName);
+      
+      if (!policyOutcome.isPolicyValid) {
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {

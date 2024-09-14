@@ -1,11 +1,10 @@
 import express from 'express';
 import { hasAuthForExternalApi } from '../../../middleware/auth.middleware';
-import { Action } from '@prisma/client';
+import coursePolicy from '../../../policies/course.policy';
+import course from '../../../controllers/course';
 
 const router = express.Router();
 
-router.get('/', hasAuthForExternalApi(Action.create_api_key), (req: express.Request, res: express.Response) => {
-  res.json({ status: 'ok' });
-});
+router.get('/', hasAuthForExternalApi(null, coursePolicy.POLICY_NAME), course.getAll);
 
 export default router;
