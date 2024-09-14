@@ -59,42 +59,47 @@ async function getApiKeyRecordForUser(userId: number): Promise<UserApiKey | null
 };
 
 async function authenticateApiKey(apiKey: string): Promise<ApiKeyAuth> {
-  let userAuth: ApiKeyAuth;
+  return await prisma.$transaction(async (prisma) => {
+    const hashedApiKey = hashApiKey(apiKey);
+    
+    const userApiKey = await prisma.userApiKey.findFirst({
+      where: { api_key: hashedApiKey },
+    });
 
-  const userApiKey: UserApiKey | null = await prisma.userApiKey.findFirst({
-    where: {
-      api_key: hashApiKey(apiKey),
-    },
-  });
+    if (!userApiKey || !userApiKey.active) {
+      return { isValidUser: false };
+    }
 
-  const userRole: UsersOnRoles | null = await prisma.usersOnRoles.findFirst({
-    where: {
-      user_id: userApiKey?.user_id,
-    },
-  });
+    const userRole = await prisma.usersOnRoles.findFirst({
+      where: { user_id: userApiKey.user_id },
+    });
 
-  if (!userApiKey || !userRole || !userApiKey.active) {
-    userAuth = {
-      isValidUser: false,
-    };
-    return userAuth;
-  }
-  
-  const user: User | null = await prisma.user.findUnique({
-    where: {
+    if (!userRole) {
+      return { isValidUser: false };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { user_id: userApiKey.user_id },
+    });
+
+    if (!user) {
+      return { isValidUser: false };
+    }
+
+    await prisma.userApiKey.update({
+      where: { user_id: userApiKey.user_id },
+      data: { last_used: new Date() },
+    });
+
+    return {
+      isValidUser: true,
       user_id: userApiKey.user_id,
-    },
+      role_id: userRole.role_id,
+      user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
+      user_email: user?.user_email as string,
+    };
   });
-
-  userAuth = {
-    isValidUser: true,
-    user_id: userApiKey.user_id,
-    role_id: userRole.role_id,
-    user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
-    user_email: user?.user_email as string,
-  }
-  return userAuth;
-};
+}
 
 const hashApiKey = (apiKey: string): string => {
   return createHash('sha256').update(apiKey).digest('hex');

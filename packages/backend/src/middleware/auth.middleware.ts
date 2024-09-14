@@ -66,6 +66,23 @@ async function canUserPerformActionForProject(
   return matchingAction.length !== 0;
 }
 
+async function canUserPerformActionForProjectExternalApi(
+  apiKeyAuth: ApiKeyAuthIsValid,
+  projectId: number,
+  routeAction: Action | null,
+): Promise<boolean> {
+  // User is admin or the route is not protected
+  if (apiKeyAuth.user_is_admin || !routeAction) {
+    return true;
+  }
+
+  const userActions = await roleService.getUserRoleActionsForProject(apiKeyAuth.user_id, projectId);
+
+  const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
+
+  return matchingAction.length !== 0;
+}
+
 async function canUserPerformActionForCourse(
   sessionInformation: UserSession,
   courseId: number,
@@ -198,7 +215,7 @@ const hasAuthForExternalApi =
 
       // const policyOutcome = await policyEngine.executeExternalApiCall(req, apiKeyAuth, policyName);
       const policyOutcome = await checkPolicyOutcomeExternalApiCall(req, res, apiKeyAuth, policyName);
-      
+
       if (!policyOutcome.isPolicyValid) {
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
@@ -210,4 +227,42 @@ const hasAuthForExternalApi =
     return next();
   };
 
-export { hasAuth, hasAuthForProject, hasAuthForCourse, hasAuthForExternalApi };
+const hasAuthForProjectExternalApi =
+  (routeAction: Action | null, policyName: string | null) =>
+  async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      const apiKey = req.headers['x-api-key'] as string;
+      const apiKeyAuth = await apiKeyService.authenticateApiKey(apiKey);
+
+      if (!apiKeyAuth.isValidUser) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+
+      const projectId = Number(req.params.projectId);
+
+      const isValidAction = await canUserPerformActionForProjectExternalApi(apiKeyAuth, projectId, routeAction);
+
+      if (!isValidAction) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+
+      const policyOutcome = await checkPolicyOutcomeExternalApiCall(req, res, apiKeyAuth, policyName);
+
+      if (!policyOutcome.isPolicyValid) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
+    } catch (e) {
+      console.error(e);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+    }
+
+    return next();
+  };
+
+export {
+  hasAuth,
+  hasAuthForProject,
+  hasAuthForCourse,
+  hasAuthForExternalApi,
+  hasAuthForProjectExternalApi,
+};

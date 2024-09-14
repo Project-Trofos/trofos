@@ -15,6 +15,7 @@ commandMap[feedbackPolicy.POLICY_NAME] = feedbackPolicy.applyFeedbackPolicy;
 
 const commandMapExternalApiCall: { [policyName: string]: any } = {};
 commandMapExternalApiCall[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicyExternalApiCall;
+commandMapExternalApiCall[projectPolicy.POLICY_NAME] = projectPolicy.applyProjectPolicyExternalApiCall;
 
 async function execute(
   req: express.Request,
