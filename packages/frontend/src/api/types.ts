@@ -340,7 +340,7 @@ export type UserApiKey = {
   id: number
   user_id: number
   api_key: string
-  created_at: Date
-  last_used: Date | null
+  created_at: string
+  last_used: string | null
   active: boolean
 };

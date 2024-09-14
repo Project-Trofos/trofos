@@ -5,6 +5,7 @@ import { Button, Empty, Space, Table } from 'antd';
 import { Subheading } from '../typography';
 import { useGenerateUserApiKeyMutation, useGetUserApiKeyQuery } from '../../api/apiKey';
 import GeneratedApiKeyModal from '../modals/GeneratedApiKeyModal';
+import { formatDbTimestamp } from '../../helpers/dateFormatter';
 
 export default function UserApiKeyTable(): JSX.Element {
   const [generateUserApiKey, { isLoading: isGeneratingApiKey }] = useGenerateUserApiKeyMutation();
@@ -61,10 +62,12 @@ export default function UserApiKeyTable(): JSX.Element {
         <Table.Column
           title="Created At"
           dataIndex="created_at"
+          render={(_, record: UserApiKey) => (formatDbTimestamp(record.created_at))}
         />
         <Table.Column
           title="Last Used"
           dataIndex="last_used"
+          render={(_, record: UserApiKey) => (record.last_used ? formatDbTimestamp(record.last_used) : 'Never')}
         />
         <Table.Column
           title="Active"
