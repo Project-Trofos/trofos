@@ -25,7 +25,7 @@ import ProjectPeople from '../pages/projectPages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/projectPages/ProjectFeedbacks';
 import CourseStatistics from '../pages/coursePages/CourseStatistics';
-import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
+import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
 import CourseMilestones from '../pages/coursePages/CourseMilestones';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
@@ -118,7 +118,14 @@ function App() {
                 </AdminProtected>
               }
             />
-            <Route path="manage-api-key" element={<ApiKey />} />
+            <Route
+              path="manage-api-key"
+              element={
+                <ApiKeyManagerProtected>
+                  <ApiKey />
+                </ApiKeyManagerProtected>
+              }
+            />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

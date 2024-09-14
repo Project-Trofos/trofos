@@ -17,6 +17,11 @@ const COURSE_MANAGER_ACTIONS: UserPermissionActionsType[] = [
   UserPermissionActions.UPDATE_COURSE,
 ];
 
+const MANAGE_API_KEY_ACTIONS: UserPermissionActionsType[] = [ // if read AND write given to faculty. just check read
+  UserPermissionActions.ADMIN,
+  UserPermissionActions.READ_API_KEY,
+];
+
 const BACKLOG_PRIORITY_OPTIONS = [
   { value: 'very_high', label: 'Very High' },
   { value: 'high', label: 'High' },
@@ -25,4 +30,9 @@ const BACKLOG_PRIORITY_OPTIONS = [
   { value: 'very_low', label: 'Very Low' },
 ];
 
-export { UserPermissionActions, COURSE_MANAGER_ACTIONS, BACKLOG_PRIORITY_OPTIONS };
+export {
+  UserPermissionActions,
+  COURSE_MANAGER_ACTIONS,
+  BACKLOG_PRIORITY_OPTIONS,
+  MANAGE_API_KEY_ACTIONS,
+};
