@@ -335,3 +335,12 @@ export type OAuth2Payload = {
   state: string;
   callbackUrl: string;
 };
+
+export type UserApiKey = {
+  id: number
+  user_id: number
+  api_key: string
+  created_at: Date
+  last_used: Date | null
+  active: boolean
+};

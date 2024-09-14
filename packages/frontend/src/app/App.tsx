@@ -41,6 +41,7 @@ import StandUpsPage from '../pages/projectPages/StandUpsPage';
 import Register from '../pages/Register';
 import useMessage from 'antd/es/message/useMessage';
 import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
+import ApiKey from '../pages/ApiKey';
 
 function App() {
   const [_, contextHolder] = useMessage();
@@ -117,6 +118,7 @@ function App() {
                 </AdminProtected>
               }
             />
+            <Route path="manage-api-key" element={<ApiKey />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

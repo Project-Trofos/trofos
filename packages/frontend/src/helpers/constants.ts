@@ -7,6 +7,7 @@ const UserPermissionActions = {
   READ_PROJECT: 'read_project',
   UPDATE_PROJECT_USERS: 'update_project_users',
   ADMIN: 'admin',
+  READ_API_KEY: 'read_api_key',
 } as const;
 
 type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof UserPermissionActions];

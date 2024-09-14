@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space } from 'antd';
-import { BookOutlined, HomeOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
+import { BookOutlined, HomeOutlined, KeyOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -204,6 +204,17 @@ export default function MainLayout() {
         [UserPermissionActions.ADMIN],
         userInfo?.userRoleActions,
       ),
+      conditionalRender(
+        getItem(
+          <Link onClick={(e) => e.stopPropagation()} to="/manage-api-key">
+            API Keys
+          </Link>,
+          '/api-key',
+          <KeyOutlined />,
+        ),
+        [UserPermissionActions.READ_API_KEY, UserPermissionActions.ADMIN],
+        userInfo?.userRoleActions,
+      )
     ],
     [projects, courses, userInfo],
   );
