@@ -349,7 +349,7 @@ async function unarchiveProject(req: express.Request, res: express.Response) {
 async function sendInvite(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const { senderName, senderEmail, destEmail, isRegister } = req.body;
+    const { senderName, senderEmail, destEmail } = req.body;
     assertProjectIdIsValid(projectId);
     assertEmailIsValid(destEmail);
 
@@ -357,7 +357,7 @@ async function sendInvite(req: express.Request, res: express.Response) {
 
     const projectName = (await project.getById(Number(projectId))).pname;
     const subject = projectInviteSubject(projectName);
-    const body = projectInviteBody(token, senderName, senderEmail, isRegister);
+    const body = projectInviteBody(token, senderName, senderEmail);
 
     await invite.sendEmail(destEmail, subject, body);
 

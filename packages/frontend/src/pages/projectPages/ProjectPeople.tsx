@@ -23,7 +23,7 @@ export default function ProjectPeople(): JSX.Element {
   const [findUserByEmail] = useFindUserByEmailMutation();
   const [sendProjectInvitation] = useSendProjectInvitationMutation();
 
-  const sendEmail = async (destEmail: string, isRegister: boolean) => {
+  const sendEmail = async (destEmail: string) => {
     if (!project || !userInfo) {
       return;
     }
@@ -34,7 +34,6 @@ export default function ProjectPeople(): JSX.Element {
         senderName: userInfo.userDisplayName,
         senderEmail: userInfo.userEmail,
         destEmail: destEmail,
-        isRegister: isRegister,
       }).unwrap();
 
       message.success(`Invite sent`);
@@ -51,7 +50,7 @@ export default function ProjectPeople(): JSX.Element {
 
       if (!res.exists) {
         confirmInviteUserToProject(async () => {
-          await sendEmail(userEmail, true);
+          await sendEmail(userEmail);
         });
 
         return;
@@ -62,7 +61,7 @@ export default function ProjectPeople(): JSX.Element {
           message.error('User already in this course!');
           return;
         }
-        await sendEmail(userEmail, false);
+        await sendEmail(userEmail);
       }
     } catch (err) {
       message.error(getErrorMessage(err));

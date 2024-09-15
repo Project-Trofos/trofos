@@ -15,5 +15,6 @@ router.post(
 );
 
 router.post(`/:token`, invite.processInvite);
+router.get(`/:token`, invite.getInfoFromInvite);
 
 export default router;

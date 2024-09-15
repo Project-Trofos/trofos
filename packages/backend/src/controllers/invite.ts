@@ -8,6 +8,7 @@ import invite from '../services/invite.service';
 import user from '../services/user.service';
 import project from '../services/project.service';
 import course from '../services/course.service';
+import { assertTokenIsValid } from '../helpers/error/assertions';
 
 async function sendEmail(emailDest: string, subject: string, body: string) {
   if (!ses.isSESEnabled()) return;
@@ -37,6 +38,7 @@ async function createToken(projectId: number, email: string) {
 async function processInvite(req: express.Request, res: express.Response) {
   try {
     const { token } = req.params;
+    assertTokenIsValid(token);
     const inviteRes = await invite.getInviteByToken(token);
     await checkIfExpired(inviteRes);
 
@@ -53,6 +55,19 @@ async function processInvite(req: express.Request, res: express.Response) {
 
     const result = await invite.deleteInvite(inviteRes.project_id, inviteRes.email);
     return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function getInfoFromInvite(req: express.Request, res: express.Response) {
+  try {
+    const { token } = req.params;
+    assertTokenIsValid(token);
+
+    const inviteRes = await invite.getInviteByToken(token);
+    const userRes = await user.findByEmail(inviteRes.email);
+    return res.status(StatusCodes.OK).json({ exists: userRes != null, email: inviteRes.email });
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -79,4 +94,5 @@ export default {
   sendEmail,
   createToken,
   processInvite,
+  getInfoFromInvite,
 };

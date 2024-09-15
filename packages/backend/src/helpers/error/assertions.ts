@@ -269,3 +269,9 @@ export function assertEmailIsValid(email: string | undefined): asserts email is 
     throw new BadRequestError(getFieldUndefinedErrorMessage('email'));
   }
 }
+
+export function assertTokenIsValid(token: string | undefined): asserts token is string {
+  if (!token) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('token'));
+  }
+}
