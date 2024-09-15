@@ -39,7 +39,7 @@ export function CourseManagerProtected({ children }: { children: JSX.Element }):
 export function AdminProtected({ children }: { children: JSX.Element }): JSX.Element {
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
 
-  const isAdmin = canDisplay(userInfo?.userRoleActions || [], MANAGE_API_KEY_ACTIONS);
+  const isAdmin = canDisplay(userInfo?.userRoleActions || [], [UserPermissionActions.ADMIN]);
 
   if (isLoading) {
     return <Spin />;
