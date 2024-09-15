@@ -2,6 +2,7 @@ import { UserSession } from '@prisma/client';
 import { createRequest } from 'node-mocks-http';
 import coursePolicy from '../../policies/course.policy';
 import courseConstraint from '../../policies/constraints/course.constraint';
+import { ApiKeyAuthIsValid } from '../../services/types/apiKey.service.types';
 
 const spies = {
   canManageCourse: jest.spyOn(courseConstraint, 'canManageCourse'),
@@ -39,5 +40,32 @@ describe('course.policy tests', () => {
       expect(policyOutcome.policyConstraint).not.toBeNull();
     });
   });
-  describe('coursePolicyConstraint', () => {});
+  
+  describe('applyCoursePolicyExternalApiCall', () => {
+    it('should return a valid outcome if the user request has no parameters', async () => {
+      const mockReq = createRequest();
+      const apiKeyAuth = {
+        user_id: 1,
+      } as ApiKeyAuthIsValid;
+      const policyOutcome = await coursePolicy.applyCoursePolicyExternalApiCall(mockReq, apiKeyAuth);
+      expect(policyOutcome.isPolicyValid).toEqual(true);
+      expect(policyOutcome.policyConstraint).not.toBeNull();
+    });
+
+    it('should return the policy outcome if the user request has the required parameters', async () => {
+      spies.canManageCourse.mockResolvedValueOnce(true);
+      const mockReq = createRequest();
+      mockReq.params = {
+        courseId: 'TEST_ID',
+        courseYear: '2022',
+        courseSem: '1',
+      };
+      const apiKeyAuth = {
+        user_id: 1,
+      } as ApiKeyAuthIsValid;
+      const policyOutcome = await coursePolicy.applyCoursePolicyExternalApiCall(mockReq, apiKeyAuth);
+      expect(policyOutcome.isPolicyValid).toEqual(true);
+      expect(policyOutcome.policyConstraint).not.toBeNull();
+    });
+  });
 });
