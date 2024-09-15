@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import apiKeyService from '../../services/apiKey.service';
 
@@ -35,13 +34,83 @@ describe('apiKey.service tests', () => {
     });
   });
 
-  describe('authenticateApiKey', () => {
-    const notValidUserObj = {
-      isValidUser: false,
-    };
-    it('should reject if no matching key is found', async () => {
+  describe('authenticateApiKeyWithinTransaction', () => {
+    it('should return false if no API key is found', async () => {
       prismaMock.userApiKey.findFirst.mockResolvedValueOnce(null);
-      await expect(apiKeyService.authenticateApiKey('mockApiKey')).resolves.toEqual(notValidUserObj);
+
+      const result = await apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test');
+      expect(result.isValidUser).toBe(false);
+      expect(prismaMock.userApiKey.findFirst).toBeCalledTimes(1);
+    });
+
+    const mockUserApiKey = {
+      id: 1,
+      user_id: 1,
+      api_key: 'mockApiKey',
+      created_at: new Date(),
+      last_used: null,
+      active: true,
+    };
+
+    it('should return false if the API key is not active', async () => {
+      prismaMock.userApiKey.findFirst.mockResolvedValueOnce({
+        ...mockUserApiKey,
+        active: false,
+      });
+      const result = await apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test');
+      expect(result.isValidUser).toBe(false);
+      expect(prismaMock.userApiKey.findFirst).toBeCalledTimes(1);
+    });
+
+    it('should return false if no role is associated with the user_id of the API key', async () => {
+      prismaMock.userApiKey.findFirst.mockResolvedValueOnce(mockUserApiKey);
+      prismaMock.usersOnRoles.findFirst.mockResolvedValueOnce(null);
+      const result = await apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test');
+      expect(result.isValidUser).toBe(false);
+      expect(prismaMock.userApiKey.findFirst).toBeCalledTimes(1);
+      expect(prismaMock.usersOnRoles.findFirst).toBeCalledTimes(1);
+    });
+
+    const mockUserOnRole = {
+      user_id: 1,
+      role_id: 1,
+    };
+
+    it('should return false if no user_id is associated with the API key', async () => {
+      prismaMock.userApiKey.findFirst.mockResolvedValueOnce(mockUserApiKey);
+      prismaMock.usersOnRoles.findFirst.mockResolvedValueOnce(mockUserOnRole);
+      prismaMock.user.findUnique.mockResolvedValueOnce(null);
+      const result = await apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test');
+      expect(result.isValidUser).toBe(false);
+      expect(prismaMock.userApiKey.findFirst).toBeCalledTimes(1);
+      expect(prismaMock.usersOnRoles.findFirst).toBeCalledTimes(1);
+      expect(prismaMock.user.findUnique).toBeCalledTimes(1);
+    });
+
+    const mockUser = {
+      user_id: 1,
+      user_email: 'test',
+      user_display_name: 'test',
+      user_password_hash: 'test',
+    };
+
+    it('should return api key auth info and update last_used if the API key is valid', async () => {
+      prismaMock.userApiKey.findFirst.mockResolvedValueOnce(mockUserApiKey);
+      prismaMock.usersOnRoles.findFirst.mockResolvedValueOnce(mockUserOnRole);
+      prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
+      prismaMock.userApiKey.update.mockResolvedValueOnce(mockUserApiKey);
+      
+      await expect(apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test')).resolves.toEqual({
+        isValidUser: true,
+        user_id: 1,
+        role_id: 1,
+        user_is_admin: false,
+        user_email: 'test',
+      });
+      expect(prismaMock.userApiKey.findFirst).toBeCalledTimes(1);
+      expect(prismaMock.usersOnRoles.findFirst).toBeCalledTimes(1);
+      expect(prismaMock.user.findUnique).toBeCalledTimes(1);
+      expect(prismaMock.userApiKey.update).toBeCalledTimes(1);
     });
   });
 });

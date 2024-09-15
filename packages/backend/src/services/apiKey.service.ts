@@ -59,46 +59,35 @@ async function getApiKeyRecordForUser(userId: number): Promise<UserApiKey | null
 };
 
 async function authenticateApiKey(apiKey: string): Promise<ApiKeyAuth> {
+  const hashedApiKey = hashApiKey(apiKey);
   return await prisma.$transaction(async (prisma) => {
-    const hashedApiKey = hashApiKey(apiKey);
-    
-    const userApiKey = await prisma.userApiKey.findFirst({
-      where: { api_key: hashedApiKey },
-    });
-
-    if (!userApiKey || !userApiKey.active) {
-      return { isValidUser: false };
-    }
-
-    const userRole = await prisma.usersOnRoles.findFirst({
-      where: { user_id: userApiKey.user_id },
-    });
-
-    if (!userRole) {
-      return { isValidUser: false };
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { user_id: userApiKey.user_id },
-    });
-
-    if (!user) {
-      return { isValidUser: false };
-    }
-
-    await prisma.userApiKey.update({
-      where: { user_id: userApiKey.user_id },
-      data: { last_used: new Date() },
-    });
-
-    return {
-      isValidUser: true,
-      user_id: userApiKey.user_id,
-      role_id: userRole.role_id,
-      user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
-      user_email: user?.user_email as string,
-    };
+    return authenticateApiKeyWithinTransaction(prisma, hashedApiKey);
   });
+}
+
+async function authenticateApiKeyWithinTransaction(prisma: Prisma.TransactionClient, hashedApiKey: string): Promise<ApiKeyAuth> {
+  const userApiKey = await prisma.userApiKey.findFirst({ where: { api_key: hashedApiKey } });
+  if (!userApiKey || !userApiKey.active) {
+    return { isValidUser: false };
+  }
+  const userRole = await prisma.usersOnRoles.findFirst({ where: { user_id: userApiKey.user_id } });
+  if (!userRole) {
+    return { isValidUser: false };
+  }
+  const user = await prisma.user.findUnique({ where: { user_id: userApiKey.user_id } });
+  if (!user) {
+    return { isValidUser: false };
+  }
+
+  await prisma.userApiKey.update({ where: { user_id: userApiKey.user_id }, data: { last_used: new Date() } });
+
+  return {
+    isValidUser: true,
+    user_id: userApiKey.user_id,
+    role_id: userRole.role_id,
+    user_is_admin: userRole.role_id === ADMIN_ROLE_ID,
+    user_email: user?.user_email as string,
+  };
 }
 
 const hashApiKey = (apiKey: string): string => {
@@ -109,4 +98,5 @@ export default {
   generateApiKey,
   getApiKeyRecordForUser,
   authenticateApiKey,
+  authenticateApiKeyWithinTransaction,
 };
