@@ -19,10 +19,3 @@ export const filterDropdown = ({
     placeholder="type to filter"
   />
 );
-
-export const displayDateTime = (date: Date) => {
-  // Small workaround
-  const d = new Date(date);
-
-  return `${d.toLocaleDateString('en-SG')} ${d.toLocaleTimeString('en-SG')}`;
-};

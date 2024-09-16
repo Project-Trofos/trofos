@@ -213,7 +213,7 @@ exports[`test InviteTable > should render table with correct fields 1`] = `
                           <td
                             class="ant-table-cell"
                           >
-                            23/09/2024 1:40:46 pm
+                            2024-09-23 13:40:46
                           </td>
                           <td
                             class="ant-table-cell"

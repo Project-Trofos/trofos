@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import InviteTable from './InviteTable';
 import { Invite } from '../../api/types';
-import { displayDateTime } from './helper';
+import { formatDbDate } from '../../helpers/dateFormatter';
 
 describe('test InviteTable', () => {
   const mockInvites: Invite[] = [
@@ -35,7 +35,7 @@ describe('test InviteTable', () => {
 
     // Ensure row is present
     expect(screen.getByText(mockInvites[0].email)).toBeInTheDocument();
-    expect(screen.getByText(displayDateTime(mockInvites[0].expiry_date))).toBeInTheDocument();
+    expect(screen.getByText(formatDbDate(mockInvites[0].expiry_date))).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
     expect(baseElement).toMatchSnapshot();
