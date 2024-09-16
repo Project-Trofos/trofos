@@ -24,5 +24,5 @@ export const displayDateTime = (date: Date) => {
   // Small workaround
   const d = new Date(date);
 
-  return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+  return `${d.toLocaleDateString('en-SG')} ${d.toLocaleTimeString('en-SG')}`;
 };

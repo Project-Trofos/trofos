@@ -4,6 +4,8 @@ import project from '../../services/project.service';
 import course from '../../services/course.service';
 import user from '../../services/user.service';
 import inviteController from '../../controllers/invite';
+import { UsersOnRolesOnCourses, UsersOnProjects } from '@prisma/client';
+import { STUDENT_ROLE_ID } from '../../helpers/constants';
 import {
   expiredInviteData,
   mockInviteInfoFromProjId,
@@ -43,6 +45,12 @@ describe('invite controller tests', () => {
     senderName: 'senderMock',
     senderEmail: 'mockSender@test.com',
   };
+
+  // Mock data for users on courses
+  const usersCourseData: UsersOnRolesOnCourses = { id: 1, course_id: 1, user_id: 1, role_id: STUDENT_ROLE_ID };
+
+  // Mock data for users on projects
+  const usersProjectData: UsersOnProjects = { project_id: 1, user_id: 1, created_at: new Date(Date.now()) };
 
   describe('sendInvite', () => {
     it('should create invite', async () => {
@@ -113,6 +121,9 @@ describe('invite controller tests', () => {
       spies.getById.mockResolvedValue(validInviteProject);
       spies.getCourseUsers.mockResolvedValue(Array.of());
       spies.getByEmail.mockResolvedValue(validUser);
+      spies.addUserToCourse.mockResolvedValue(usersCourseData);
+      spies.addUserToProj.mockResolvedValue(usersProjectData);
+      spies.deleteInvite.mockResolvedValue(validInviteData);
 
       const mockReq = createRequest({
         params: {
@@ -127,7 +138,7 @@ describe('invite controller tests', () => {
       expect(spies.addUserToProj).toHaveBeenCalled();
       expect(spies.deleteInvite).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(validInviteData);
+      expect(mockRes._getData()).toEqual(JSON.stringify(validInviteData));
     });
 
     it('should reject and delete expired invite', async () => {

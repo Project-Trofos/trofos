@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { UserApiKey } from '../../api/types';
 import { Button, Empty, Space, Table } from 'antd';
@@ -12,6 +11,8 @@ export default function UserApiKeyTable(): JSX.Element {
   const { data: userApiKey, isLoading: isUserApiKeyLoading } = useGetUserApiKeyQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [apiKey, setApiKey] = useState<string | null>(null);
+
+  console.log(userApiKey);
 
   const handleGenerateUserApiKey = async () => {
     try {
@@ -30,14 +31,12 @@ export default function UserApiKeyTable(): JSX.Element {
 
   let locale = {
     emptyText: (
-      <Empty
-        description="No API Keys found"
-      >
+      <Empty description="No API Keys found">
         <Button onClick={handleGenerateUserApiKey} loading={isGeneratingApiKey}>
           Generate API Key
         </Button>
       </Empty>
-    )
+    ),
   };
 
   return (
@@ -45,11 +44,7 @@ export default function UserApiKeyTable(): JSX.Element {
       <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Subheading>{'My Keys'}</Subheading>
       </Space>
-      <GeneratedApiKeyModal
-        isModalOpen={isModalOpen}
-        apiKey={apiKey}
-        handleClose={handleModalClose}
-      />
+      <GeneratedApiKeyModal isModalOpen={isModalOpen} apiKey={apiKey} handleClose={handleModalClose} />
       <Table
         dataSource={userApiKey ? [userApiKey] : []} // for now only 1:1 user : api key
         rowKey={(apiKey) => apiKey.id}
@@ -62,7 +57,7 @@ export default function UserApiKeyTable(): JSX.Element {
         <Table.Column
           title="Created At"
           dataIndex="created_at"
-          render={(_, record: UserApiKey) => (formatDbTimestamp(record.created_at))}
+          render={(_, record: UserApiKey) => formatDbTimestamp(record.created_at)}
         />
         <Table.Column
           title="Last Used"
@@ -72,7 +67,7 @@ export default function UserApiKeyTable(): JSX.Element {
         <Table.Column
           title="Active"
           dataIndex="active"
-          render={(_, record: UserApiKey) => (`${record.active ? 'Yes' : 'No'}`)}
+          render={(_, record: UserApiKey) => `${record.active ? 'Yes' : 'No'}`}
         />
         <Table.Column
           title="Re-generate key"

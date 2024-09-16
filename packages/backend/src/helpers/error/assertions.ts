@@ -271,7 +271,7 @@ export function assertEmailIsValid(email: string | undefined): asserts email is 
 }
 
 export function assertTokenIsValid(token: string | undefined): asserts token is string {
-  if (!token) {
+  if (token == undefined) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('token'));
   }
 }
