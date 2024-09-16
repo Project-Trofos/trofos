@@ -11,7 +11,7 @@ const router = express.Router();
 router.post(
   `/project/:projectId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
-  project.sendInvite,
+  invite.sendInvite,
 );
 
 router.get(

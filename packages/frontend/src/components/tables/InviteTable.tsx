@@ -3,6 +3,7 @@ import { Button, message, Space, Table, Tag } from 'antd';
 import { Subheading } from '../typography';
 import { Invite } from '../../api/types';
 import { UserInfo } from '../../api/auth';
+import { displayDateTime } from './helper';
 
 type InviteTableProps = {
   invites?: Invite[];
@@ -30,6 +31,7 @@ export default function InviteTable(props: InviteTableProps) {
           title="Expiry date"
           dataIndex={'expiry_date'}
           sorter={(a: Invite, b: Invite) => a.expiry_date.valueOf() - b.expiry_date.valueOf()}
+          render={(_, record: Invite) => <>{displayDateTime(record.expiry_date)}</>}
         />
         <Table.Column
           width={150}

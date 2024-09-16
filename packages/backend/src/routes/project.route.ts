@@ -1,6 +1,7 @@
 import express from 'express';
 import { Action } from '@prisma/client';
 import project from '../controllers/project';
+import invite from '../controllers/invite';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
 import feedbackPolicy from '../policies/feedback.policy';
@@ -153,9 +154,5 @@ router.put(
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.setTelegramId,
 );
-
-// Send project invitation to destination email
-// TODO: Determine user groups that have authority to send email (maybe group leaders?)
-router.post(`/:projectId/invite`, hasAuth(null, null), project.sendInvite);
 
 export default router;

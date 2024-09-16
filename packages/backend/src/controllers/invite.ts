@@ -1,13 +1,14 @@
 import ses from '../aws/ses';
 import express from 'express';
 import { Invite } from '@prisma/client';
-import { getDefaultErrorRes } from '../helpers/error';
+import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
 import { StatusCodes } from 'http-status-codes';
 import invite from '../services/invite.service';
 import user from '../services/user.service';
 import project from '../services/project.service';
 import course from '../services/course.service';
-import { assertProjectIdIsValid, assertTokenIsValid } from '../helpers/error/assertions';
+import { projectInviteSubject, projectInviteBody } from '../templates/email';
+import { assertProjectIdIsValid, assertTokenIsValid, assertEmailIsValid } from '../helpers/error/assertions';
 import { randomUUID } from 'crypto';
 
 async function sendEmail(emailDest: string, subject: string, body: string) {
@@ -33,12 +34,35 @@ async function createToken(projectId: number, email: string) {
   const token = generateToken();
 
   if (res == null) {
-    await invite.createInvite(projectId, email, token);
+    return await invite.createInvite(projectId, email, token);
   } else {
-    await invite.updateInvite(projectId, email, token);
+    return await invite.updateInvite(projectId, email, token);
   }
+}
 
-  return token;
+async function sendInvite(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    const { senderName, senderEmail, destEmail } = req.body;
+    assertProjectIdIsValid(projectId);
+    assertEmailIsValid(destEmail);
+
+    const token = await createToken(Number(projectId), destEmail);
+
+    const projectName = (await project.getById(Number(projectId))).pname;
+    const subject = projectInviteSubject(projectName);
+    const body = projectInviteBody(token.unique_token, senderName, senderEmail);
+
+    await sendEmail(destEmail, subject, body);
+
+    if (token) {
+      token.unique_token = '';
+    }
+
+    return res.status(StatusCodes.OK).json(token);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
 }
 
 async function processInvite(req: express.Request, res: express.Response) {
@@ -99,7 +123,7 @@ async function checkIfExpired(inviteObj: Invite) {
   if (isExpired(inviteObj.expiry_date)) {
     await invite.deleteInvite(inviteObj.project_id, inviteObj.email);
 
-    throw new Error('Invalid invite');
+    throw new BadRequestError('Invalid invite');
   }
 }
 
@@ -109,8 +133,7 @@ function isExpired(inviteDate: Date) {
 }
 
 export default {
-  sendEmail,
-  createToken,
+  sendInvite,
   processInvite,
   getInfoFromInvite,
   getInfoFromProjectId,

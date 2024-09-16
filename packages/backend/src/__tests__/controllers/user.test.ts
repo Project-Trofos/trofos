@@ -6,6 +6,7 @@ import user from '../../controllers/user';
 
 const spies = {
   userServiceGetAllUsers: jest.spyOn(userService, 'getAll'),
+  userServiceFindByEmail: jest.spyOn(userService, 'findByEmail'),
   userServiceCreateUser: jest.spyOn(userService, 'create'),
 };
 
@@ -105,6 +106,55 @@ describe('user.controller tests', () => {
       });
 
       await user.create(mockReq, mockRes);
+    });
+  });
+
+  const existingUser: User = {
+    user_id: 1,
+    user_email: 'testEmail@test.com',
+    user_display_name: 'Test User',
+    user_password_hash: 'testPassword',
+  };
+
+  describe('queryEmail', () => {
+    it('should find existing user', async () => {
+      const expected = {
+        exists: true,
+      };
+
+      spies.userServiceFindByEmail.mockResolvedValueOnce(existingUser);
+      const mockReq = createRequest({
+        params: {
+          userEmail: existingUser.user_email,
+        },
+      });
+      const mockRes = createResponse();
+
+      await user.queryEmail(mockReq, mockRes);
+
+      expect(spies.userServiceFindByEmail).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(expected);
+    });
+
+    it('should not find non-existing user', async () => {
+      const expected = {
+        exists: false,
+      };
+
+      spies.userServiceFindByEmail.mockResolvedValueOnce(null);
+      const mockReq = createRequest({
+        params: {
+          userEmail: existingUser.user_email,
+        },
+      });
+      const mockRes = createResponse();
+
+      await user.queryEmail(mockReq, mockRes);
+
+      expect(spies.userServiceFindByEmail).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(expected);
     });
   });
 });

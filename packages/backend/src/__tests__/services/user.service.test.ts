@@ -47,6 +47,13 @@ describe('user.service tests', () => {
     });
   });
 
+  const prismaResponseObject = {
+    user_email: 'testEmail@test.com',
+    user_id: 1,
+    user_display_name: 'Test User',
+    user_password_hash: null,
+  };
+
   describe('get', () => {
     it('should throw an error if something went wrong during the operation', async () => {
       const prismaError = new Prisma.PrismaClientKnownRequestError('Prisma error', {
@@ -58,14 +65,36 @@ describe('user.service tests', () => {
     });
 
     it('should return ther user if the request was successful', async () => {
-      const prismaResponseObject = {
-        user_email: 'testEmail@test.com',
-        user_id: 1,
-        user_display_name: 'Test User',
-        user_password_hash: null,
-      };
       prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(prismaResponseObject);
       await expect(userService.get(1)).resolves.toEqual(prismaResponseObject);
+    });
+  });
+
+  describe('findByEmail', () => {
+    it('should return null if email not found', async () => {
+      prismaMock.user.findUnique.mockResolvedValueOnce(null);
+      expect(userService.findByEmail('nonexistingemail@test.com')).toEqual(null);
+    });
+
+    it('should return existing email', async () => {
+      prismaMock.user.findUnique.mockResolvedValueOnce(prismaResponseObject);
+      expect(userService.findByEmail(prismaResponseObject.user_email)).toEqual(prismaResponseObject);
+    });
+  });
+
+  describe('getByEmail', () => {
+    it('should throw an error if something went wrong during the operation', async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError('Prisma error', {
+        code: PRISMA_RECORD_NOT_FOUND,
+        clientVersion: 'testVersion',
+      });
+      prismaMock.user.findUniqueOrThrow.mockRejectedValueOnce(prismaError);
+      await expect(userService.getByEmail(prismaResponseObject.user_email)).rejects.toThrow(prismaError);
+    });
+
+    it('should return existing email', async () => {
+      prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(prismaResponseObject);
+      expect(userService.findByEmail(prismaResponseObject.user_email)).toEqual(prismaResponseObject);
     });
   });
 });
