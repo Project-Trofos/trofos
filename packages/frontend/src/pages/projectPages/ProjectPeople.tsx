@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Card, Space, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../../api/auth';
@@ -7,10 +7,11 @@ import { useProject } from '../../api/hooks';
 import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
 import UserTable from '../../components/tables/UserTable';
+import InviteTable from '../../components/tables/InviteTable';
 import { confirmInviteUserToProject } from '../../components/modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
-import { useSendProjectInvitationMutation } from '../../api/invite';
+import { useSendProjectInvitationMutation, useGetInfoFromProjectIdQuery } from '../../api/invite';
 import { validateEmailPattern } from '../../helpers/validation';
 
 export default function ProjectPeople(): JSX.Element {
@@ -20,27 +21,31 @@ export default function ProjectPeople(): JSX.Element {
   );
   const { data: userInfo } = useGetUserInfoQuery();
   const { data: actionsOnRoles } = useGetActionsOnRolesQuery();
+  const { data: invites } = useGetInfoFromProjectIdQuery(Number(params.projectId) ? Number(params.projectId) : -1);
   const [findUserByEmail] = useFindUserByEmailMutation();
   const [sendProjectInvitation] = useSendProjectInvitationMutation();
 
-  const sendEmail = async (destEmail: string) => {
-    if (!project || !userInfo) {
-      return;
-    }
+  const sendEmail = useCallback(
+    async (destEmail: string) => {
+      if (!project || !userInfo) {
+        return;
+      }
 
-    try {
-      await sendProjectInvitation({
-        projectId: project.id,
-        senderName: userInfo.userDisplayName,
-        senderEmail: userInfo.userEmail,
-        destEmail: destEmail,
-      }).unwrap();
+      try {
+        await sendProjectInvitation({
+          projectId: project.id,
+          senderName: userInfo.userDisplayName,
+          senderEmail: userInfo.userEmail,
+          destEmail: destEmail,
+        }).unwrap();
 
-      message.success(`Invite sent`);
-    } catch (error) {
-      message.error(getErrorMessage(error));
-    }
-  };
+        message.success(`Invite sent`);
+      } catch (error) {
+        message.error(getErrorMessage(error));
+      }
+    },
+    [project, userInfo],
+  );
 
   const handleOnClick = async (userEmail: string) => {
     try {
@@ -89,6 +94,9 @@ export default function ProjectPeople(): JSX.Element {
             handleRemoveUser={handleRemoveUser}
             handleUpdateUserRole={handleUpdateUserRole}
           />
+        </Card>
+        <Card>
+          <InviteTable userInfo={userInfo} invites={invites} onResendInvite={sendEmail} />
         </Card>
       </Space>
     </Container>

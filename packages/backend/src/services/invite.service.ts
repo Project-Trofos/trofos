@@ -24,6 +24,23 @@ async function getInviteByToken(token: string): Promise<Invite> {
   return invite;
 }
 
+async function getInviteByProjectId(
+  project_id: number,
+): Promise<Pick<Invite, 'project_id' | 'email' | 'expiry_date'>[]> {
+  const invites = await prisma.invite.findMany({
+    where: {
+      project_id: project_id,
+    },
+    select: {
+      project_id: true,
+      email: true,
+      expiry_date: true,
+    },
+  });
+
+  return invites;
+}
+
 async function createInvite(project_id: number, email: string, unique_token: string): Promise<Invite> {
   const invite = await prisma.invite.create({
     data: {
@@ -69,4 +86,4 @@ async function deleteInvite(project_id: number, email: string): Promise<Invite> 
   return invite;
 }
 
-export default { getInvite, getInviteByToken, createInvite, updateInvite, deleteInvite };
+export default { getInvite, getInviteByToken, getInviteByProjectId, createInvite, updateInvite, deleteInvite };

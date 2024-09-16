@@ -1,5 +1,5 @@
 import express from 'express';
-import { hasAuthForProject } from '../middleware/auth.middleware';
+import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import { Action } from '@prisma/client';
 import projectPolicy from '../policies/project.policy';
 import invite from '../controllers/invite';
@@ -12,6 +12,12 @@ router.post(
   `/project/:projectId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.sendInvite,
+);
+
+router.get(
+  `/project/:projectId`,
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  invite.getInfoFromProjectId,
 );
 
 router.post(`/:token`, invite.processInvite);

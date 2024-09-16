@@ -1,6 +1,5 @@
 import ses from '../aws/ses';
 import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { Invite } from '@prisma/client';
 import { getDefaultErrorRes } from '../helpers/error';
 import { StatusCodes } from 'http-status-codes';
@@ -8,12 +7,19 @@ import invite from '../services/invite.service';
 import user from '../services/user.service';
 import project from '../services/project.service';
 import course from '../services/course.service';
-import { assertTokenIsValid } from '../helpers/error/assertions';
+import { assertProjectIdIsValid, assertTokenIsValid } from '../helpers/error/assertions';
+import { randomUUID } from 'crypto';
 
 async function sendEmail(emailDest: string, subject: string, body: string) {
-  if (!ses.isSESEnabled()) return;
+  try {
+    if (!ses.isSESEnabled()) {
+      throw new Error('Email service not enabled');
+    }
 
-  ses.sendEmail(emailDest, subject, body);
+    ses.sendEmail(emailDest, subject, body);
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function createToken(projectId: number, email: string) {
@@ -73,8 +79,20 @@ async function getInfoFromInvite(req: express.Request, res: express.Response) {
   }
 }
 
+async function getInfoFromProjectId(req: express.Request, res: express.Response) {
+  try {
+    const { projectId } = req.params;
+    assertProjectIdIsValid(projectId);
+
+    const result = await invite.getInviteByProjectId(Number(projectId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 function generateToken() {
-  return uuidv4();
+  return randomUUID();
 }
 
 async function checkIfExpired(inviteObj: Invite) {
@@ -95,4 +113,5 @@ export default {
   createToken,
   processInvite,
   getInfoFromInvite,
+  getInfoFromProjectId,
 };

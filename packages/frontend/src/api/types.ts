@@ -54,7 +54,7 @@ export type RegisterUser = {
   userEmail: string;
   newPassword: string;
   userDisplayName: string;
-}
+};
 
 export type UserCourseRoleRequest = {
   id: number;
@@ -205,7 +205,7 @@ export type Backlog = {
     };
   } | null;
   epic_id?: number | null;
-  epic?: Epic | null
+  epic?: Epic | null;
 };
 
 export type Epic = {
@@ -213,7 +213,7 @@ export type Epic = {
   project_id: number;
   name: string;
   description: string | null;
-}
+};
 
 export type DefaultBacklog = {
   backlog_id?: number;
@@ -332,4 +332,10 @@ export type OAuth2Payload = {
   code: string;
   state: string;
   callbackUrl: string;
+};
+
+export type Invite = {
+  project_id: number;
+  email: string;
+  expiry_date: Date;
 };
