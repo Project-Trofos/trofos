@@ -3,6 +3,7 @@ import { Button, message, Space, Table, Tag } from 'antd';
 import { CourseData, UserData, UserOnRolesOnCourse, ActionsOnRoles } from '../../api/types';
 import { Subheading } from '../typography';
 import UserTableRoleManagementModal from '../modals/UserTableRoleManagementModal';
+import { FACULTY_ROLE_ID } from '../../api/role';
 
 type UserTableProps = {
   users?: CourseData['users'];
@@ -13,6 +14,7 @@ type UserTableProps = {
   control?: React.ReactNode;
   onlyShowActions?: ('REMOVE' | 'ROLE')[];
   myUserId?: number | undefined;
+  hideIdByRoleProp?: { iAmAdmin: boolean | undefined, isHideIdByRole: true } | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
   showSelect?: boolean;
@@ -34,6 +36,7 @@ export default function UserTable(props: UserTableProps) {
     heading,
     isLoading,
     myUserId,
+    hideIdByRoleProp,
     onSelectChange,
     onlyShowActions,
     showSelect,
@@ -54,6 +57,11 @@ export default function UserTable(props: UserTableProps) {
 
     return map;
   }, [users, userRoles]);
+
+
+  const currentUserIsFacultyOrAdmin = useMemo(() => {
+    return hideIdByRoleProp?.iAmAdmin || userRoles?.some((ur) => ur.user_id === myUserId && ur.role_id === FACULTY_ROLE_ID);
+  }, [hideIdByRoleProp, userRoles, myUserId]);
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
@@ -81,7 +89,7 @@ export default function UserTable(props: UserTableProps) {
         footer={footer ? () => footer : undefined}
         pagination={pagination}
       >
-        <Table.Column
+        {((hideIdByRoleProp?.isHideIdByRole && currentUserIsFacultyOrAdmin) || !hideIdByRoleProp) && <Table.Column
           width={150}
           title="ID"
           dataIndex={['user', 'user_id']}
@@ -91,11 +99,16 @@ export default function UserTable(props: UserTableProps) {
               {record.user.user_id} {Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
             </>
           )}
-        />
+        />}
         <Table.Column
           title="Email"
           dataIndex={['user', 'user_email']}
           sorter={(a: UserData, b: UserData) => a.user.user_email.localeCompare(b.user.user_email)}
+          render={(_values, record, _) => (
+            <>
+              {record.user.user_email} {hideIdByRoleProp?.isHideIdByRole && !currentUserIsFacultyOrAdmin && Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
+            </>
+          )}
         />
         <Table.Column title="Display Name" dataIndex={['user', 'user_display_name']} />
         {(!onlyShowActions || onlyShowActions.includes('ROLE')) && (

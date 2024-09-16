@@ -14,6 +14,8 @@ import githubRouter from './routes/github.route';
 import settingsRouter from './routes/settings.route';
 import epicRouter from './routes/epic.route';
 import inviteRouter from './routes/invite.route';
+import apiKeyRouter from './routes/apiKey.route';
+import routerExternalV1 from './routes/external/v1/route.external.v1';
 
 const app = express();
 
@@ -72,6 +74,12 @@ router.use('/settings', settingsRouter);
 
 // Routes for invites
 router.use('/invite', inviteRouter);
+
+// Routes for api keys
+router.use('/api-key', apiKeyRouter);
+
+// Routes for external api v1
+router.use('/external/v1', routerExternalV1);
 
 app.use('/api', router);
 // For unit testing

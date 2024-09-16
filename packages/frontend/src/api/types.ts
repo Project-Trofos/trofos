@@ -183,11 +183,13 @@ export enum BacklogStatus {
   DONE = 'Done',
 }
 
+export type BacklogPriority = 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+
 export type Backlog = {
   backlog_id: number;
   summary: string;
   type: 'story' | 'task' | 'bug';
-  priority: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  priority: BacklogPriority;
   reporter_id: number;
   assignee_id: number | null;
   sprint_id: number | null;
@@ -219,7 +221,7 @@ export type DefaultBacklog = {
   backlog_id?: number;
   summary?: string;
   type?: 'story' | 'task' | 'bug';
-  priority?: 'very_high' | 'high' | 'medium' | 'low' | 'very_low' | null;
+  priority?: BacklogPriority;
   reporter_id?: number;
   assignee_id?: number | null;
   sprint_id?: number | null;
@@ -338,4 +340,13 @@ export type Invite = {
   project_id: number;
   email: string;
   expiry_date: Date;
+};
+
+export type UserApiKey = {
+  id: number;
+  user_id: number;
+  api_key: string;
+  created_at: string;
+  last_used: string | null;
+  active: boolean;
 };

@@ -22,6 +22,7 @@ model User {
   courses UsersOnRolesOnCourses[]
   basicRoles UsersOnRoles[]
   feedbacks Feedback[]
+  user_api_key UserApiKey?
 }
 
 model UserSession {
@@ -318,6 +319,16 @@ model Invite {
   @@id([project_id, email]) //limit one invite per project per email
 }
 
+model UserApiKey {
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  api_key String @unique
+  created_at DateTime @default(now())
+  last_used DateTime?
+  active Boolean @default(true)
+}
+
 enum Action {
   // Course related actions
   create_course
@@ -329,6 +340,7 @@ enum Action {
   read_project
   update_project
   delete_project
+  update_project_users
   // Project feedback
   create_feedback
   read_feedback
@@ -339,6 +351,9 @@ enum Action {
   create_users
   // Admin action
   admin
+  // Api key actions
+  create_api_key
+  read_api_key
 }
 
 enum BacklogType {

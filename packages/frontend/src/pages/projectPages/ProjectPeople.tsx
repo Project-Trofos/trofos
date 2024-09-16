@@ -13,10 +13,12 @@ import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
 import { useSendProjectInvitationMutation, useGetInfoFromProjectIdQuery } from '../../api/invite';
 import { validateEmailPattern } from '../../helpers/validation';
+import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import { UserPermissionActions } from '../../helpers/constants';
 
 export default function ProjectPeople(): JSX.Element {
   const params = useParams();
-  const { project, projectUserRoles, handleRemoveUser, handleUpdateUserRole, isLoading } = useProject(
+  const { project, projectUserRoles, handleRemoveUser, handleUpdateUserRole, isLoading, course } = useProject(
     Number(params.projectId) ? Number(params.projectId) : -1,
   );
   const { data: userInfo } = useGetUserInfoQuery();
@@ -24,6 +26,15 @@ export default function ProjectPeople(): JSX.Element {
   const { data: invites } = useGetInfoFromProjectIdQuery(Number(params.projectId) ? Number(params.projectId) : -1);
   const [findUserByEmail] = useFindUserByEmailMutation();
   const [sendProjectInvitation] = useSendProjectInvitationMutation();
+
+  const { isCourseManager } = useIsCourseManager(course?.id);
+
+  const myRoleId = projectUserRoles?.find((pur) => pur.user_id === userInfo?.userId)?.role_id;
+  const iAmAdmin = userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN);
+  const isAllowedRemoveUser =
+    actionsOnRoles
+      ?.find((aor) => aor.id === myRoleId)
+      ?.actions?.find((act) => act.action === UserPermissionActions.UPDATE_PROJECT_USERS) || iAmAdmin;
 
   const sendEmail = useCallback(
     async (destEmail: string) => {
@@ -84,6 +95,10 @@ export default function ProjectPeople(): JSX.Element {
             actionsOnRoles={actionsOnRoles}
             isLoading={isLoading}
             myUserId={userInfo?.userId}
+            hideIdByRoleProp={{
+              iAmAdmin: iAmAdmin,
+              isHideIdByRole: true,
+            }}
             control={
               <InputWithButton
                 handleClick={handleOnClick}
@@ -91,8 +106,9 @@ export default function ProjectPeople(): JSX.Element {
                 inputPlaceholder="Invite user by email"
               />
             }
-            handleRemoveUser={handleRemoveUser}
-            handleUpdateUserRole={handleUpdateUserRole}
+            handleRemoveUser={isAllowedRemoveUser ? handleRemoveUser : undefined}
+            handleUpdateUserRole={isCourseManager ? handleUpdateUserRole : undefined}
+            onlyShowActions={isCourseManager ? undefined : isAllowedRemoveUser ? ['REMOVE', 'ROLE'] : ['ROLE']}
           />
         </Card>
         <Card>
