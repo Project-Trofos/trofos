@@ -25,7 +25,7 @@ import ProjectPeople from '../pages/projectPages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/projectPages/ProjectFeedbacks';
 import CourseStatistics from '../pages/coursePages/CourseStatistics';
-import { AdminProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
+import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
 import CourseMilestones from '../pages/coursePages/CourseMilestones';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
@@ -41,6 +41,7 @@ import StandUpsPage from '../pages/projectPages/StandUpsPage';
 import Register from '../pages/Register';
 import useMessage from 'antd/es/message/useMessage';
 import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
+import ApiKey from '../pages/ApiKey';
 
 function App() {
   const [_, contextHolder] = useMessage();
@@ -115,6 +116,14 @@ function App() {
                 <AdminProtected>
                   <Admin />
                 </AdminProtected>
+              }
+            />
+            <Route
+              path="manage-api-key"
+              element={
+                <ApiKeyManagerProtected>
+                  <ApiKey />
+                </ApiKeyManagerProtected>
               }
             />
           </Route>

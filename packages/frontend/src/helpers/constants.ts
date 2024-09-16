@@ -7,6 +7,7 @@ const UserPermissionActions = {
   READ_PROJECT: 'read_project',
   UPDATE_PROJECT_USERS: 'update_project_users',
   ADMIN: 'admin',
+  READ_API_KEY: 'read_api_key',
 } as const;
 
 type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof UserPermissionActions];
@@ -14,6 +15,11 @@ type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof Use
 const COURSE_MANAGER_ACTIONS: UserPermissionActionsType[] = [
   UserPermissionActions.ADMIN,
   UserPermissionActions.UPDATE_COURSE,
+];
+
+const MANAGE_API_KEY_ACTIONS: UserPermissionActionsType[] = [ // if read AND write given to faculty. just check read
+  UserPermissionActions.ADMIN,
+  UserPermissionActions.READ_API_KEY,
 ];
 
 const BACKLOG_PRIORITY_OPTIONS = [
@@ -24,4 +30,9 @@ const BACKLOG_PRIORITY_OPTIONS = [
   { value: 'very_low', label: 'Very Low' },
 ];
 
-export { UserPermissionActions, COURSE_MANAGER_ACTIONS, BACKLOG_PRIORITY_OPTIONS };
+export {
+  UserPermissionActions,
+  COURSE_MANAGER_ACTIONS,
+  BACKLOG_PRIORITY_OPTIONS,
+  MANAGE_API_KEY_ACTIONS,
+};

@@ -2,12 +2,14 @@ import { Action } from '@prisma/client';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { hasAuth, hasAuthForCourse, hasAuthForProject } from '../../middleware/auth.middleware';
+import { hasAuth, hasAuthForCourse, hasAuthForExternalApi, hasAuthForProject } from '../../middleware/auth.middleware';
 import roleService from '../../services/role.service';
 import sessionService from '../../services/session.service';
 import policyEngine from '../../policies/policyEngine';
 import { PolicyOutcome } from '../../policies/policyTypes';
 import { UserRoleActionsForCourse } from '../../services/types/role.service.types';
+import apiKeyService from '../../services/apiKey.service';
+import { ApiKeyAuth, ApiKeyAuthIsValid } from '../../services/types/apiKey.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -16,6 +18,8 @@ const roleServiceIsActionAllowed = jest.spyOn(roleService, 'isActionAllowed');
 const roleServiceGetUserRoleActionsForCourse = jest.spyOn(roleService, 'getUserRoleActionsForCourse');
 const roleServiceGetUserRoleActionsForProject = jest.spyOn(roleService, 'getUserRoleActionsForProject');
 const policyEngineSpy = jest.spyOn(policyEngine, 'execute');
+const apiKeyServiceAuthApiKeySpy = jest.spyOn(apiKeyService, 'authenticateApiKey');
+const policyEngineExternalApiCallSpy = jest.spyOn(policyEngine, 'executeExternalApiCall');
 
 beforeEach(() => {
   sessionServiceGetUserSessionSpy.mockReset();
@@ -23,6 +27,8 @@ beforeEach(() => {
   roleServiceGetUserRoleActionsForCourse.mockReset();
   roleServiceGetUserRoleActionsForProject.mockReset();
   policyEngineSpy.mockReset();
+  apiKeyServiceAuthApiKeySpy.mockReset();
+  policyEngineExternalApiCallSpy.mockReset();
 });
 
 // Mock data
@@ -307,4 +313,73 @@ describe('auth.middleware tests', () => {
       expect(mockNext).toHaveBeenCalled();
     });
   });
+
+  describe('when an external api request is made', () => {
+    it('should reject the request if the api key is not valid', async () => {
+      const mockRequest = createRequest();
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+      const notValidObj = {
+        isValidUser: false,
+      } as ApiKeyAuth;
+      apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(notValidObj);
+      await hasAuthForExternalApi(null, null)(mockRequest, mockResponse, mockNext);
+      expect(apiKeyServiceAuthApiKeySpy).toHaveBeenCalledTimes(1);
+      expect(mockResponse.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    const validApiKeyAuth = {
+      isValidUser: true,
+      user_id: 1,
+      user_email: 'test',
+      role_id: 1,
+      user_is_admin: false,
+    } as ApiKeyAuthIsValid;
+
+    it('should reject the request if it is not a valid action by role', async () => {
+      const mockRequest = createRequest();
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+      apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(false);
+      await hasAuthForExternalApi(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(apiKeyServiceAuthApiKeySpy).toHaveBeenCalledTimes(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledTimes(1);
+      expect(mockResponse.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should reject the request if the policy is not valid', async () => {
+      const mockRequest = createRequest();
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+      apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(true);
+      policyEngineExternalApiCallSpy.mockResolvedValueOnce({ isPolicyValid: false } as PolicyOutcome);
+      await hasAuthForExternalApi(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(apiKeyServiceAuthApiKeySpy).toHaveBeenCalledTimes(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledTimes(1);
+      expect(policyEngineExternalApiCallSpy).toHaveBeenCalledTimes(1);
+      expect(mockResponse.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should call the next function if the api key is valid and the user has permissions to perform actions on this data', async () => {
+      const policyEngineResponseObject = {
+        isPolicyValid: true,
+      } as PolicyOutcome;
+      const mockRequest = createRequest();
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+      apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);
+      roleServiceIsActionAllowed.mockResolvedValueOnce(true);
+      policyEngineExternalApiCallSpy.mockResolvedValueOnce(policyEngineResponseObject);
+      await hasAuthForExternalApi(Action.read_course, 'TEST_POLICY')(mockRequest, mockResponse, mockNext);
+      expect(apiKeyServiceAuthApiKeySpy).toHaveBeenCalledTimes(1);
+      expect(roleServiceIsActionAllowed).toHaveBeenCalledTimes(1);
+      expect(policyEngineExternalApiCallSpy).toHaveBeenCalledTimes(1);
+      expect(mockNext).toHaveBeenCalled();
+    });
+  })
 });
