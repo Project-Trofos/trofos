@@ -73,12 +73,16 @@ describe('user.service tests', () => {
   describe('findByEmail', () => {
     it('should return null if email not found', async () => {
       prismaMock.user.findUnique.mockResolvedValueOnce(null);
-      expect(userService.findByEmail('nonexistingemail@test.com')).toEqual(null);
+
+      const result = await userService.findByEmail('nonexistingemail@test.com');
+      expect(result).toEqual(null);
     });
 
     it('should return existing email', async () => {
       prismaMock.user.findUnique.mockResolvedValueOnce(prismaResponseObject);
-      expect(userService.findByEmail(prismaResponseObject.user_email)).toEqual(prismaResponseObject);
+
+      const result = await userService.findByEmail(prismaResponseObject.user_email);
+      expect(result).toEqual(prismaResponseObject);
     });
   });
 
@@ -94,7 +98,9 @@ describe('user.service tests', () => {
 
     it('should return existing email', async () => {
       prismaMock.user.findUniqueOrThrow.mockResolvedValueOnce(prismaResponseObject);
-      expect(userService.findByEmail(prismaResponseObject.user_email)).toEqual(prismaResponseObject);
+
+      const result = await userService.getByEmail(prismaResponseObject.user_email);
+      expect(result).toEqual(prismaResponseObject);
     });
   });
 });

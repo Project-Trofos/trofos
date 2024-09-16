@@ -134,7 +134,7 @@ describe('user.controller tests', () => {
 
       expect(spies.userServiceFindByEmail).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(expected);
+      expect(mockRes._getData()).toEqual(JSON.stringify(expected));
     });
 
     it('should not find non-existing user', async () => {
@@ -154,7 +154,7 @@ describe('user.controller tests', () => {
 
       expect(spies.userServiceFindByEmail).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(expected);
+      expect(mockRes._getData()).toEqual(JSON.stringify(expected));
     });
   });
 });

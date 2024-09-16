@@ -1,16 +1,23 @@
-import { Invite, User } from '@prisma/client';
-
-export const inviteData = {
-  project_id: 900,
-  email: 'mockemail@test.com',
-  unique_token: '',
-};
+import { Invite, User, Project } from '@prisma/client';
 
 export const validInviteData: Invite = {
   project_id: 1,
   email: 'validemail@test.com',
   unique_token: '2c883054-0d4c-43b7-9c91-a0acf6096c56',
   expiry_date: new Date(Date.now()),
+};
+
+export const validInviteProject: Project = {
+  id: 1,
+  pname: 'c1',
+  created_at: new Date(Date.now()),
+  course_id: 5,
+  pkey: null,
+  description: 'd1',
+  public: false,
+  backlog_counter: 0,
+  telegramChannelLink: '',
+  is_archive: null,
 };
 
 export const updatedInviteData: Invite = {
@@ -27,11 +34,14 @@ export const validUser: User = {
   user_password_hash: null,
 };
 
+const expired = new Date();
+expired.setDate(expired.getDate() - 10);
+
 export const expiredInviteData: Invite = {
   project_id: 900,
   email: 'mockemail@test.com',
   unique_token: 'eb95d491-7918-445c-b82c-7305d392fac4',
-  expiry_date: new Date(Date.now() - 100),
+  expiry_date: expired,
 };
 
 export const mockInviteInfoFromProjId: Pick<Invite, 'project_id' | 'email' | 'expiry_date'>[] = [

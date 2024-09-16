@@ -13,10 +13,6 @@ import { randomUUID } from 'crypto';
 
 async function sendEmail(emailDest: string, subject: string, body: string) {
   try {
-    if (!ses.isSESEnabled()) {
-      throw new Error('Email service not enabled');
-    }
-
     ses.sendEmail(emailDest, subject, body);
   } catch (err) {
     throw err;
@@ -47,6 +43,10 @@ async function sendInvite(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
     assertEmailIsValid(destEmail);
 
+    if (!ses.isSESEnabled()) {
+      throw new BadRequestError('Email service not enabled');
+    }
+
     const token = await createToken(Number(projectId), destEmail);
 
     const projectName = (await project.getById(Number(projectId))).pname;
@@ -69,6 +69,7 @@ async function processInvite(req: express.Request, res: express.Response) {
   try {
     const { token } = req.params;
     assertTokenIsValid(token);
+
     const inviteRes = await invite.getInviteByToken(token);
     await checkIfExpired(inviteRes);
 

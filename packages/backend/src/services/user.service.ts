@@ -33,7 +33,7 @@ async function get(user_id: number): Promise<User> {
 async function findByEmail(user_email: string): Promise<User | null> {
   const user = await prisma.user.findUnique({
     where: {
-      user_email,
+      user_email: user_email,
     },
   });
 

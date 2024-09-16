@@ -3,7 +3,7 @@ import { mockInviteInfoFromProjId, updatedInviteData, validInviteData } from '..
 import invite from '../../services/invite.service';
 
 describe('invite.service tests', () => {
-  describe('getInvite', async () => {
+  describe('getInvite', () => {
     it('should return invite if exists', async () => {
       prismaMock.invite.findUnique.mockResolvedValueOnce(validInviteData);
 
@@ -19,7 +19,7 @@ describe('invite.service tests', () => {
     });
   });
 
-  describe('getInviteByToken', async () => {
+  describe('getInviteByToken', () => {
     it('should return invite if exists', async () => {
       prismaMock.invite.findFirstOrThrow.mockResolvedValueOnce(validInviteData);
 
@@ -35,21 +35,21 @@ describe('invite.service tests', () => {
     });
   });
 
-  describe('getInviteByProjectId', async () => {
+  describe('getInviteByProjectId', () => {
     it('should return all invites of a project', async () => {
-      prismaMock.invite.findMany.mockResolvedValueOnce(
-        mockInviteInfoFromProjId.map((x) => ({
-          ...x,
-          unique_token: '',
-        })),
-      );
+      const mockWithEmptyToken = mockInviteInfoFromProjId.map((x) => ({
+        ...x,
+        unique_token: '',
+      }));
 
-      const result = await invite.getInviteByProjectId(mockInviteInfoFromProjId[0].project_id);
-      expect(result).toEqual(mockInviteInfoFromProjId);
+      prismaMock.invite.findMany.mockResolvedValueOnce(mockWithEmptyToken);
+
+      const result = await invite.getInviteByProjectId(mockWithEmptyToken[0].project_id);
+      expect(result).toEqual(mockWithEmptyToken);
     });
   });
 
-  describe('createInvite', async () => {
+  describe('createInvite', () => {
     it('should return created invite', async () => {
       prismaMock.invite.create.mockResolvedValueOnce(validInviteData);
       const result = await invite.createInvite(
@@ -61,7 +61,7 @@ describe('invite.service tests', () => {
     });
   });
 
-  describe('updateInvite', async () => {
+  describe('updateInvite', () => {
     it('should return updated invite', async () => {
       prismaMock.invite.update.mockResolvedValueOnce(updatedInviteData);
       const result = await invite.updateInvite(
@@ -73,7 +73,7 @@ describe('invite.service tests', () => {
     });
   });
 
-  describe('deleteInvite', async () => {
+  describe('deleteInvite', () => {
     it('should return deleted invite', async () => {
       const deletedInvite = validInviteData;
 
