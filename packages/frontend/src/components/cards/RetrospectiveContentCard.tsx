@@ -103,6 +103,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
           {retroEntry && retroEntry.type == RetrospectiveType.ACTION ? (
             <BacklogCreationModal
               title={'create'}
+              modalKey={retroEntry.id}
               defaultBacklog={{
                 reporter_id: userInfo?.userId ?? undefined,
                 summary: retroEntry.content ?? undefined,
