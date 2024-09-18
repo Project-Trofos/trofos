@@ -11,14 +11,6 @@ import { projectInviteSubject, projectInviteBody } from '../templates/email';
 import { assertProjectIdIsValid, assertTokenIsValid, assertEmailIsValid } from '../helpers/error/assertions';
 import { randomUUID } from 'crypto';
 
-async function sendEmail(emailDest: string, subject: string, body: string) {
-  try {
-    ses.sendEmail(emailDest, subject, body);
-  } catch (err) {
-    throw err;
-  }
-}
-
 async function createToken(projectId: number, email: string) {
   const res = await invite.getInvite(projectId, email);
 
@@ -53,7 +45,7 @@ async function sendInvite(req: express.Request, res: express.Response) {
     const subject = projectInviteSubject(projectName);
     const body = projectInviteBody(token.unique_token, senderName, senderEmail);
 
-    await sendEmail(destEmail, subject, body);
+    await ses.sendEmail(destEmail, subject, body);
 
     if (token) {
       token.unique_token = '';
