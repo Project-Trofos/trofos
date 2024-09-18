@@ -15,9 +15,7 @@ export function projectInviteSubject(projectName: string) {
 }
 
 export function projectInviteBody(invitationToken: string, senderName: string, senderEmail: string) {
-  const BASE_URL =
-    process.env.NODE_ENV === 'test' ? 'http://localhost:3000' : 'https://trofos-production.comp.nus.edu.sg';
-  const invitationLink = `${BASE_URL}/join?token=${invitationToken}`;
+  const invitationLink = `${process.env.FRONTEND_BASE_URL}/join?token=${invitationToken}`;
 
   return `
     ${senderName} (${senderEmail}) has invited you to join a project.
