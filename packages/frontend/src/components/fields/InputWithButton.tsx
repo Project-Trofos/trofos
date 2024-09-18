@@ -9,6 +9,7 @@ type InputWithButtonProps = {
 
 export default function InputWithButton({ handleClick, buttonText, inputPlaceholder }: InputWithButtonProps) {
   const [value, setValue] = useState('');
+  const [isError, setIsError] = useState(false);
 
   return (
     <Space style={{ display: 'flex' }}>
@@ -17,9 +18,18 @@ export default function InputWithButton({ handleClick, buttonText, inputPlacehol
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={inputPlaceholder}
+        status={isError ? 'error' : undefined}
       />
 
-      <Button htmlType="submit" onClick={() => handleClick(value)}>
+      <Button
+        htmlType="submit"
+        onClick={() => {
+          setIsError(!value);
+          if (value) {
+            handleClick(value);
+          }
+        }}
+      >
         {buttonText}
       </Button>
     </Space>

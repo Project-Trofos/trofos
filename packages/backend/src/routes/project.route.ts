@@ -1,6 +1,7 @@
 import express from 'express';
 import { Action } from '@prisma/client';
 import project from '../controllers/project';
+import invite from '../controllers/invite';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
 import feedbackPolicy from '../policies/feedback.policy';
@@ -152,6 +153,6 @@ router.put(
   `/:projectId/telegramId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.setTelegramId,
-)
+);
 
 export default router;

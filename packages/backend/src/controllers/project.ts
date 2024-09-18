@@ -319,7 +319,7 @@ async function updateUserSettings(req: express.Request, res: express.Response) {
   }
 }
 
-async function archiveProject(req: express.Request, res:express.Response) {
+async function archiveProject(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
@@ -331,7 +331,7 @@ async function archiveProject(req: express.Request, res:express.Response) {
   }
 }
 
-async function unarchiveProject(req: express.Request, res:express.Response) {
+async function unarchiveProject(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
     assertProjectIdIsValid(projectId);
@@ -364,5 +364,5 @@ export default {
   updateUserSettings,
   setTelegramId,
   archiveProject,
-  unarchiveProject
+  unarchiveProject,
 };

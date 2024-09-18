@@ -63,7 +63,6 @@ export const useCurrentAndPastProjects = () => {
       return project;
     });
 
-
     // archive false, date current or future -> move to current or future
     // archive null, date current or future -> move to current or future
     // archive true , date current or future -> move to past
@@ -71,37 +70,52 @@ export const useCurrentAndPastProjects = () => {
     // archive null, date in the past -> move to past
     // archive true, date in the past -> move to past
     return {
-      pastProjects: projects.filter((p) => !(p.is_archive === false) && (p.is_archive ||
-        isPast(p.course?.startYear, p.course?.startSem, p.course?.endYear, p.course?.endSem, CURRENT_YEAR, CURRENT_SEM)),
+      pastProjects: projects.filter(
+        (p) =>
+          !(p.is_archive === false) &&
+          (p.is_archive ||
+            isPast(
+              p.course?.startYear,
+              p.course?.startSem,
+              p.course?.endYear,
+              p.course?.endSem,
+              CURRENT_YEAR,
+              CURRENT_SEM,
+            )),
       ),
-      currentProjects: projects.filter((p) => !(p.is_archive) && // if is_archive is true, don't put it in current projects even if date is current
-        ((p.is_archive === false 
-            && !isFuture( // this isFuture() check handles edge case where user archives then unarchives a future project, it should go under future and not current projects
+      currentProjects: projects.filter(
+        (p) =>
+          !p.is_archive && // if is_archive is true, don't put it in current projects even if date is current
+          ((p.is_archive === false &&
+            !isFuture(
+              // this isFuture() check handles edge case where user archives then unarchives a future project, it should go under future and not current projects
+              p.course?.startYear,
+              p.course?.startSem,
+              p.course?.endYear,
+              p.course?.endSem,
+              CURRENT_YEAR,
+              CURRENT_SEM,
+            )) || // if is_archive is false and not null, put it in current projects even if the date is in the past
+            isCurrent(
+              p.course?.startYear,
+              p.course?.startSem,
+              p.course?.endYear,
+              p.course?.endSem,
+              CURRENT_YEAR,
+              CURRENT_SEM,
+            )),
+      ),
+      futureProjects: projects.filter(
+        (p) =>
+          !p.is_archive &&
+          isFuture(
             p.course?.startYear,
             p.course?.startSem,
             p.course?.endYear,
             p.course?.endSem,
             CURRENT_YEAR,
-            CURRENT_SEM,)
-         ) || // if is_archive is false and not null, put it in current projects even if the date is in the past
-        isCurrent(
-          p.course?.startYear,
-          p.course?.startSem,
-          p.course?.endYear,
-          p.course?.endSem,
-          CURRENT_YEAR,
-          CURRENT_SEM,
-        )),
-      ),
-      futureProjects: projects.filter((p) => !(p.is_archive) && 
-        isFuture(
-          p.course?.startYear,
-          p.course?.startSem,
-          p.course?.endYear,
-          p.course?.endSem,
-          CURRENT_YEAR,
-          CURRENT_SEM,
-        ),
+            CURRENT_SEM,
+          ),
       ),
     };
   }, [projectsData, settings]);
@@ -171,10 +185,6 @@ export function useProject(projectId: number) {
     async (userEmail: string) => {
       try {
         if (project) {
-          if (project.users.some((u) => u.user.user_email === userEmail)) {
-            message.error('User already in this course!');
-            return;
-          }
           await addUser({ id: project.id, userEmail }).unwrap();
           message.success('User added!');
         }

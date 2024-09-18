@@ -41,6 +41,7 @@ import StandUpsPage from '../pages/projectPages/StandUpsPage';
 import Register from '../pages/Register';
 import useMessage from 'antd/es/message/useMessage';
 import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
+import Invite from '../pages/Invite';
 import ApiKey from '../pages/ApiKey';
 
 function App() {
@@ -130,6 +131,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/callback/*" element={<Callback />} />
+          <Route path="/join" element={<Invite />} />
           <Route
             path="*"
             element={

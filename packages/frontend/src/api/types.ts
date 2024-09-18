@@ -336,11 +336,17 @@ export type OAuth2Payload = {
   callbackUrl: string;
 };
 
+export type Invite = {
+  project_id: number;
+  email: string;
+  expiry_date: Date;
+};
+
 export type UserApiKey = {
-  id: number
-  user_id: number
-  api_key: string
-  created_at: string
-  last_used: string | null
-  active: boolean
+  id: number;
+  user_id: number;
+  api_key: string;
+  created_at: string;
+  last_used: string | null;
+  active: boolean;
 };

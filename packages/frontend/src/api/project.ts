@@ -229,7 +229,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
     }),
 
     //Telegram channel api
-    updateTelegramId: builder.mutation<string, {projectId: number, telegramId: string}>({
+    updateTelegramId: builder.mutation<string, { projectId: number; telegramId: string }>({
       query: (param) => ({
         url: `project/${param.projectId}/telegramId`,
         method: 'PUT',
@@ -288,5 +288,5 @@ export const {
   useDeleteGitUrlMutation,
   useGetUserSettingsQuery,
   useUpdateUserSettingsMutation,
-  useUpdateTelegramIdMutation
+  useUpdateTelegramIdMutation,
 } = extendedApi;

@@ -1,6 +1,8 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
-const sesClient = new SESClient({ region: 'ap-southeast-1' });
+const sesClient = new SESClient({
+  region: 'ap-southeast-1',
+});
 
 // Disable SES features if in test env or email service is not provided
 function isSESEnabled() {
