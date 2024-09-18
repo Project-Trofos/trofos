@@ -17,12 +17,12 @@ import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 function BacklogCreationModal({
   fixedSprint,
   title,
-  formKey,
+  modalKey,
   defaultBacklog,
 }: {
   fixedSprint?: Sprint;
   title?: string;
-  formKey?: string | number;
+  modalKey?: string | number;
   defaultBacklog?: DefaultBacklog;
 }): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
@@ -83,7 +83,13 @@ function BacklogCreationModal({
   };
 
   const renderFooter = (): JSX.Element[] => [
-    <Button form={`newBacklog-` + formKey} key="submit" type="primary" htmlType="submit" loading={isLoading}>
+    <Button
+      form={`newBacklog${modalKey ? `-${modalKey}` : ''}`}
+      key="submit"
+      type="primary"
+      htmlType="submit"
+      loading={isLoading}
+    >
       Create
     </Button>,
   ];
@@ -156,7 +162,7 @@ function BacklogCreationModal({
   );
 
   const renderContent = (): JSX.Element => (
-    <Form id={`newBacklog-` + formKey} form={form} onFinish={handleFormSubmit}>
+    <Form id={`newBacklog${modalKey ? `-${modalKey}` : ''}`} form={form} onFinish={handleFormSubmit}>
       <Form.Item name="summary" rules={[{ required: true }]} initialValue={defaultBacklog?.summary ?? ''}>
         <BacklogSummaryInput placeholder="* Type summary here..." defaultValue={defaultBacklog?.summary ?? ''} />
       </Form.Item>

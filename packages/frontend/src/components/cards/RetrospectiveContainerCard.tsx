@@ -29,7 +29,7 @@ export default function RetrospectiveContainerCard(props: RetrospectiveContainer
     <Card className="retrospective-container-card" title={title}>
       <div className="retrospective-container-card-body">
         {retrospectivesData?.map((retro) => (
-          <RetrospectiveContentCard key={retro.id} formKey={retro.id} retroEntry={retro} readOnly={readOnly} />
+          <RetrospectiveContentCard key={retro.id} retroEntry={retro} readOnly={readOnly} />
         ))}
       </div>
       {!readOnly && (
