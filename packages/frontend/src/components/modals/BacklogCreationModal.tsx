@@ -17,10 +17,12 @@ import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 function BacklogCreationModal({
   fixedSprint,
   title,
+  formKey,
   defaultBacklog,
 }: {
   fixedSprint?: Sprint;
   title?: string;
+  formKey?: string | number;
   defaultBacklog?: DefaultBacklog;
 }): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
@@ -81,7 +83,7 @@ function BacklogCreationModal({
   };
 
   const renderFooter = (): JSX.Element[] => [
-    <Button form="newBacklog" key="submit" type="primary" htmlType="submit" loading={isLoading}>
+    <Button form={`newBacklog-` + formKey} key="submit" type="primary" htmlType="submit" loading={isLoading}>
       Create
     </Button>,
   ];
@@ -96,9 +98,7 @@ function BacklogCreationModal({
   };
 
   // Sort sprints by ID desc
-  const sprintOptionsDescending = projectData?.sprints
-    ? [...projectData.sprints].sort((a, b) => b.id - a.id)
-    : [];
+  const sprintOptionsDescending = projectData?.sprints ? [...projectData.sprints].sort((a, b) => b.id - a.id) : [];
 
   const renderSprintSelect = (): JSX.Element => {
     const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
@@ -110,7 +110,7 @@ function BacklogCreationModal({
           allowClear
           fixedValue={fixedSprintValue}
           showSearch
-          className='sprint-select'
+          className="sprint-select"
         />
       </Form.Item>
     );
@@ -120,9 +120,7 @@ function BacklogCreationModal({
     return (
       <Form.Item name="epicId" label="Epic">
         <BacklogSelect
-          options={epicData
-            ? epicData.map((e) => ({id: e.epic_id, name: e.name})) 
-            : []}
+          options={epicData ? epicData.map((e) => ({ id: e.epic_id, name: e.name })) : []}
           placeholder="Select Epic"
           allowClear
         />
@@ -141,11 +139,13 @@ function BacklogCreationModal({
     );
   };
 
-  const renderReporterSelect = (): JSX.Element => { //todo
+  const renderReporterSelect = (): JSX.Element => {
+    //todo
     const defaultReporter = defaultBacklog?.reporter_id ?? undefined;
-    return (<Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]} initialValue={defaultReporter}>
-      <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
-    </Form.Item>
+    return (
+      <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]} initialValue={defaultReporter}>
+        <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
+      </Form.Item>
     );
   };
 
@@ -156,7 +156,7 @@ function BacklogCreationModal({
   );
 
   const renderContent = (): JSX.Element => (
-    <Form id="newBacklog" form={form} onFinish={handleFormSubmit}>
+    <Form id={`newBacklog-` + formKey} form={form} onFinish={handleFormSubmit}>
       <Form.Item name="summary" rules={[{ required: true }]} initialValue={defaultBacklog?.summary ?? ''}>
         <BacklogSummaryInput placeholder="* Type summary here..." defaultValue={defaultBacklog?.summary ?? ''} />
       </Form.Item>

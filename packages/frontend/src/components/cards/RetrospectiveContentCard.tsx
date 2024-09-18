@@ -16,7 +16,7 @@ import BacklogCreationModal from '../modals/BacklogCreationModal';
 import { useGetUserInfoQuery } from '../../api/auth';
 
 function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Element {
-  const { retroEntry, readOnly } = props;
+  const { formKey, retroEntry, readOnly } = props;
   const [addRetrospectiveVote] = useAddRetrospectiveVoteMutation();
   const [updateRetrospectiveVote] = useUpdateRetrospectiveVoteMutation();
   const [deleteRetrospectiveVote] = useDeleteRetrospectiveVoteMutation();
@@ -103,6 +103,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
           {retroEntry && retroEntry.type == RetrospectiveType.ACTION ? (
             <BacklogCreationModal
               title={'create'}
+              formKey={formKey}
               defaultBacklog={{
                 reporter_id: userInfo?.userId ?? undefined,
                 summary: retroEntry.content ?? undefined,
@@ -123,6 +124,7 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
 type RetrospectiveContentCardProps = {
   retroEntry: Retrospective;
   readOnly?: boolean;
+  formKey: string | number;
 };
 
 export default React.memo(RetrospectiveContentCard, (prevRetro, currRetro) => isEqual(prevRetro, currRetro));
