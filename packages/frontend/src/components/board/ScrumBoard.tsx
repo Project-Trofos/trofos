@@ -10,12 +10,17 @@ import StrictModeDroppable from '../dnd/StrictModeDroppable';
 import { Sprint } from '../../api/sprint';
 
 import './ScrumBoard.css';
+import { StandUp } from '../../api/standup';
 
 const { Title } = Typography;
 
-type ScrumBoardProps = { projectId: number; sprint?: Sprint };
+type ScrumBoardProps = {
+  projectId: number;
+  sprint?: Sprint
+  standUp?: StandUp;
+};
 
-export default function ScrumBoard({ projectId, sprint }: ScrumBoardProps): JSX.Element {
+export default function ScrumBoard({ projectId, sprint, standUp }: ScrumBoardProps): JSX.Element {
   const { data: backlogStatus } = useGetBacklogStatusQuery({ id: projectId });
   const { data: projectData } = useGetProjectQuery({ id: projectId });
 
@@ -118,6 +123,7 @@ export default function ScrumBoard({ projectId, sprint }: ScrumBoardProps): JSX.
                         projectKey={projectData?.pkey}
                         id={backlog.backlog_id}
                         index={index}
+                        standUp={standUp}
                       />
                     ))}
                   {provided.placeholder}

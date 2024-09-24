@@ -12,6 +12,12 @@ const { Title } = Typography;
 
 type StandUpBoardProps = { standUp: StandUp; readOnly?: boolean };
 
+export const COLUMN_MAPPING = {
+  DONE: 0,
+  NEXT: 1,
+  BLOCKERS: 2,
+};
+
 export default function StandUpBoard({ standUp, readOnly }: StandUpBoardProps): JSX.Element {
   const projectId = useProjectIdParam();
 

@@ -48,7 +48,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
       <>
         {activeSprint ? (
         <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-          <ScrumBoard projectId={projectId} sprint={activeSprint} />
+          <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
         </div>
       ) : null}
       {todaysStandUp ? (
