@@ -15,6 +15,7 @@ import trofosApiSlice from '../../api';
 import useSocket from '../../api/socket/useSocket';
 import { UpdateType } from '../../api/socket/socket';
 import { useProjectIdParam } from '../../api/hooks';
+import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -47,15 +48,15 @@ export default function ActiveScrumBoardPage(): JSX.Element {
       //<Carousel arrows draggable={false}>
       <>
         {activeSprint ? (
-        <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-          <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
-        </div>
-      ) : null}
-      {todaysStandUp ? (
-        <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-          <StandUpBoard standUp={todaysStandUp} />
-        </div>
-      ) : null}
+          <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+            <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
+          </div>
+        ) : null}
+        {todaysStandUp ? (
+          <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+            <StandUpBoard standUp={todaysStandUp} />
+          </div>
+        ) : null}
       </>
       //</></Carousel>
     );
@@ -85,6 +86,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
           {getSprintHeading(activeSprint, activeSprint)}
         </Heading>
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
+        {!todaysStandUp && <StandUpCreationModal projectId={projectId} isToday/>}
       </div>
       {renderBody()}
     </Container>
