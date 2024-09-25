@@ -60,23 +60,19 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   const renderBody = () => {
     return (
       <Carousel draggable={false} ref={carouselRef}>
-        {activeSprint ? (
+        <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+          {activeSprint && todaysStandUp && (
+            <Button onClick={handleViewStandUpBoard}>
+            View Today's Stand Up Board
+            </Button> 
+          )}
+          <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
+        </div>
+        {activeSprint && todaysStandUp ? (
           <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-            {todaysStandUp && (
-             <Button onClick={handleViewStandUpBoard}>
-              View Today's Stand Up Board
-             </Button> 
-            )}
-            <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
-          </div>
-        ) : null}
-        {todaysStandUp ? (
-          <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-            {activeSprint && (
-              <Button onClick={handleViewScrumBoard}>
-                View Active Scrum Board
-              </Button>
-            )}
+            <Button onClick={handleViewScrumBoard}>
+              View Active Scrum Board
+            </Button>
             <StandUpBoard standUp={todaysStandUp} />
           </div>
         ) : null}
@@ -108,7 +104,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
           {getSprintHeading(activeSprint, activeSprint)}
         </Heading>
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
-        {!todaysStandUp && <StandUpCreationModal projectId={projectId} isToday/>}
+        {!todaysStandUp && activeSprint && <StandUpCreationModal projectId={projectId} isToday/>}
       </div>
       {renderBody()}
     </Container>
