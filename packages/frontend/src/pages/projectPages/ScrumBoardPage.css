@@ -2,6 +2,7 @@
   display: inline-block;
   min-width: 100%;
   min-height: 100%;
+  transform: none;
 }
 
 .scrum-board-header {
@@ -10,4 +11,5 @@
   align-items: center;
   margin-bottom: 1em;
   gap: 1em;
+  transform: none;
 }

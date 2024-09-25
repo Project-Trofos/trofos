@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Carousel, Spin } from 'antd';
+import { Button, Carousel, Spin } from 'antd';
+import type { CarouselRef } from 'antd/es/carousel';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import Container from '../../components/layouts/Container';
 import ScrumBoard from '../../components/board/ScrumBoard';
@@ -36,29 +37,50 @@ export default function ActiveScrumBoardPage(): JSX.Element {
     { id: todaysStandUpId! }, 
     { skip: todaysStandUpId === undefined } // Skip the query if there's no standupId
   );
-  
+  const carouselRef = useRef<CarouselRef>(null);
+
   // Refetch active standup data upon update
   const handleReset = useCallback(() => {
     store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'StandUp', id: todaysStandUpId }]));
   }, [todaysStandUpId]);
   useSocket(UpdateType.STAND_UP_NOTES, todaysStandUpId?.toString(), handleReset);
 
+  const handleViewStandUpBoard = () => {
+    if (carouselRef) {
+      carouselRef.current?.goTo(1);
+    }
+  }
+
+  const handleViewScrumBoard = () => {
+    if (carouselRef) {
+      carouselRef.current?.goTo(0);
+    }
+  };
+
   const renderBody = () => {
     return (
-      //<Carousel arrows draggable={false}>
-      <>
+      <Carousel draggable={false} ref={carouselRef}>
         {activeSprint ? (
           <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+            {todaysStandUp && (
+             <Button onClick={handleViewStandUpBoard}>
+              View Today's Stand Up Board
+             </Button> 
+            )}
             <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
           </div>
         ) : null}
         {todaysStandUp ? (
           <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+            {activeSprint && (
+              <Button onClick={handleViewScrumBoard}>
+                View Active Scrum Board
+              </Button>
+            )}
             <StandUpBoard standUp={todaysStandUp} />
           </div>
         ) : null}
-      </>
-      //</></Carousel>
+      </Carousel>
     );
   }
 
@@ -80,7 +102,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   }
 
   return (
-    <Container noGap fullWidth className="scrum-board-container">
+    <Container noGap className="scrum-board-container">
       <div className="scrum-board-header">
         <Heading style={{ marginLeft: '10px', marginTop: '0px', marginBottom: '0px' }}>
           {getSprintHeading(activeSprint, activeSprint)}
