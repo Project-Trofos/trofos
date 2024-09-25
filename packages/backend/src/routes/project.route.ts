@@ -6,8 +6,11 @@ import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
 import feedbackPolicy from '../policies/feedback.policy';
 import feedback from '../controllers/feedback';
+import standupRouter from './standup.route';
 
 const router = express.Router();
+
+router.use('/:projectId/standup', standupRouter);
 
 // Get all projects
 router.get('/', hasAuth(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);

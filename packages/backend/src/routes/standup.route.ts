@@ -4,7 +4,8 @@ import standUp from '../controllers/standup';
 import { hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
 
-const router = express.Router();
+// Get projectId from parent route
+const router = express.Router({ mergeParams: true});
 
 // Create a stand up
 router.post(
@@ -14,7 +15,7 @@ router.post(
 );
 
 // Get all stand ups of a project
-router.get('/:projectId', hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME), standUp.getStandUpHeaders);
+router.get('/', hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME), standUp.getStandUpHeaders);
 
 // Update stand up
 router.put(
@@ -31,13 +32,14 @@ router.delete(
 );
 
 router.post('/createNote', hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME), standUp.addStandUpNote);
+
 router.get(
   '/getNotes/:standUpId',
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   standUp.getStandUp,
 );
 router.get(
-  '/getAllNotes/:projectId',
+  '/getAllNotes',
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   standUp.getStandUps,
 );

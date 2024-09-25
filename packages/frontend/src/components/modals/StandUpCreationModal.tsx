@@ -13,7 +13,7 @@ const { Option } = Select;
  * @param course course that the project will attach to, skips second step
  */
 // eslint-disable-next-line react/require-default-props
-export default function StandUpCreationModal({ projectId }: { projectId: number }): JSX.Element {
+export default function StandUpCreationModal({ projectId, isToday }: { projectId: number, isToday?: boolean }): JSX.Element {
   const [addStandUp] = useAddStandUpMutation();
 
   const onFinish = useCallback(
@@ -36,10 +36,10 @@ export default function StandUpCreationModal({ projectId }: { projectId: number 
 
   return (
     <MultistepFormModal
-      title="Schedule Stand Up"
-      buttonChildren="Schedule Stand Up"
+      title={isToday? "Schedule Stand up for today": "Schedule Stand Up"}
+      buttonChildren={isToday? "Schedule Stand up for today": "Schedule Stand Up"}
       formName="stand-up-creation-form"
-      formSteps={[<StandUpForm />]}
+      formSteps={[<StandUpForm isToday={isToday} />]}
       onSubmit={onFinish}
       buttonType="primary"
     />

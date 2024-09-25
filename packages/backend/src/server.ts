@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import accountRouter from './routes/account.route';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
-import standUpRouter from './routes/standup.route';
 import backlogRouter from './routes/backlog.route';
 import userRouter from './routes/user.route';
 import sprintRouter from './routes/sprint.route';
@@ -45,8 +44,7 @@ router.use('/course', courseRouter);
 // Routes for project
 router.use('/project', projectRouter);
 
-// Routes for standUp
-router.use('/standUp', standUpRouter);
+// Routes for standUp are in projectRouter
 
 // Routes for epic
 router.use('/epic', epicRouter);

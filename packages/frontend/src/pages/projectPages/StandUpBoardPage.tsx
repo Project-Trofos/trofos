@@ -12,7 +12,11 @@ import { Spin } from 'antd';
 export default function StandUpBoardPage(): JSX.Element {
   const params = useParams();
   const standUpId = Number(params.standUpId);
-  const { data: standUp, isLoading } = useGetStandUpQuery({ id: standUpId });
+  const projectId = Number(params.projectId);
+  const { data: standUp, isLoading } = useGetStandUpQuery({ 
+    project_id: projectId,
+    id: {id: standUpId}
+  });
 
   // Refetch active standup data upon update
   const handleReset = useCallback(() => {
