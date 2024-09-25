@@ -46,9 +46,9 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['StandUpHeader'],
     }),
-    deleteStandUp: builder.mutation<void, StandUp>({
-      query: (standUp) => ({
-        url: `project/${standUp.project_id}/standUp/deleteStandUp/${standUp.id}`,
+    deleteStandUp: builder.mutation<void, StandUpHeader>({
+      query: (standUpHeader) => ({
+        url: `project/${standUpHeader.project_id}/standUp/deleteStandUp/${standUpHeader.id}`,
         method: 'DELETE',
         credentials: 'include',
       }),
