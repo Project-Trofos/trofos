@@ -35,10 +35,13 @@ function Component({ backlog, projectKey, standUp }: ScrumBoardCardProps) {
     const userId = backlog.assignee;
     try {
       await addStandUpNote({
-        stand_up_id: standUp.id,
-        content: backlog.summary,
-        column_id: Number(e.key),
-        user_id: userId!.user_id,
+        project_id: backlog.project_id,
+        standUpNote: {
+          stand_up_id: standUp.id,
+          content: backlog.summary,
+          column_id: Number(e.key),
+          user_id: userId!.user_id,
+        }
       }).unwrap();
       message.success("Added in standup board");
     } catch (err) {

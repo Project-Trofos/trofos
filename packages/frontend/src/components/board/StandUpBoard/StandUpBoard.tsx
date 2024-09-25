@@ -55,6 +55,7 @@ export default function StandUpBoard({ standUp, readOnly }: StandUpBoardProps): 
                       .sort((a, b) => a.id - b.id)}
                     userId={user.user.user_id}
                     readOnly={readOnly}
+                    project_id={projectId}
                   />
                 );
               })}

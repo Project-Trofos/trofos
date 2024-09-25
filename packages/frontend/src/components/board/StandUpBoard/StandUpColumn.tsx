@@ -13,6 +13,7 @@ type StandUpBoardColumnProps = {
   columnId: number;
   userId: number;
   readOnly?: boolean;
+  project_id: number;
 };
 
 export default function StandUpColumn({
@@ -21,6 +22,7 @@ export default function StandUpColumn({
   standUpId,
   userId,
   readOnly,
+  project_id,
 }: StandUpBoardColumnProps): JSX.Element {
   const [form] = Form.useForm();
 
@@ -30,7 +32,15 @@ export default function StandUpColumn({
     const { content } = formData;
     if (!content) return;
     try {
-      await addStandUpNote({ stand_up_id: standUpId, content, column_id: columnId, user_id: userId }).unwrap();
+      await addStandUpNote({ 
+        project_id: project_id,
+        standUpNote: {
+          stand_up_id: standUpId,
+          content,
+          column_id: columnId,
+          user_id: userId
+        }
+      }).unwrap();
     } catch (err) {
       message.error(getErrorMessage(err));
     }
@@ -42,7 +52,13 @@ export default function StandUpColumn({
     (noteId: number) => {
       return async () => {
         try {
-          await deleteStandUpNote({ stand_up_id: standUpId, id: noteId }).unwrap();
+          await deleteStandUpNote({
+            project_id: project_id,
+            id: {
+              stand_up_id: standUpId,
+              id: noteId
+            }
+          }).unwrap();
         } catch (err) {
           message.error(getErrorMessage(err));
         }

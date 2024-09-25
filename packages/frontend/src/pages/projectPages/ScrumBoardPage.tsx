@@ -34,7 +34,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   const { data: standUps, isLoading: isLoadingStandUpHeaders } = useGetStandUpHeadersByProjectIdQuery(projectId);
   const [todaysStandUpId, setTodaysStandUpId] = useState<number | undefined>(undefined);
   const { data: todaysStandUp, isLoading: isLoadingStandUp } = useGetStandUpQuery(
-    { id: todaysStandUpId! }, 
+    { project_id: projectId, id: {id: todaysStandUpId!} }, 
     { skip: todaysStandUpId === undefined } // Skip the query if there's no standupId
   );
   const carouselRef = useRef<CarouselRef>(null);
