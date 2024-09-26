@@ -185,6 +185,10 @@ export function useProject(projectId: number) {
     async (userEmail: string) => {
       try {
         if (project) {
+          if (project.users.some((u) => u.user.user_email === userEmail)) {
+            message.error('User already in this course!');
+            return;
+          }
           await addUser({ id: project.id, userEmail }).unwrap();
           message.success('User added!');
         }
