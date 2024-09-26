@@ -30,11 +30,14 @@ export default function ProjectPeople(): JSX.Element {
 
   const myRoleId = projectUserRoles?.find((pur) => pur.user_id === userInfo?.userId)?.role_id;
   const iAmAdmin = userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN);
-  const isAllowedUpdateUser =
+  const isAllowedRemoveUser =
     actionsOnRoles
       ?.find((aor) => aor.id === myRoleId)
       ?.actions?.find((act) => act.action === UserPermissionActions.UPDATE_PROJECT_USERS) || iAmAdmin;
-  const isAllowedInviteUser = false; // TODO: setup permission action
+  const isAllowedInviteUser =
+    actionsOnRoles
+      ?.find((aor) => aor.id === myRoleId)
+      ?.actions?.find((act) => act.action === UserPermissionActions.SEND_INVITE) || iAmAdmin;
 
   const sendEmail = useCallback(
     async (destEmail: string) => {
@@ -100,24 +103,25 @@ export default function ProjectPeople(): JSX.Element {
               isHideIdByRole: true,
             }}
             control={
-              isAllowedUpdateUser ? (
-                <InputWithButton handleClick={handleAddUser} buttonText="Add" inputPlaceholder="Add user by email" />
-              ) : (
-                isAllowedInviteUser && (
+              <Space direction="horizontal">
+                {iAmAdmin && (
+                  <InputWithButton handleClick={handleAddUser} buttonText="Add" inputPlaceholder="Add user by email" />
+                )}
+                {isAllowedInviteUser && (
                   <InputWithButton
                     handleClick={handleOnClick}
                     buttonText="Invite"
                     inputPlaceholder="Invite user by email"
                   />
-                )
-              )
+                )}
+              </Space>
             }
-            handleRemoveUser={isAllowedUpdateUser ? handleRemoveUser : undefined}
+            handleRemoveUser={isAllowedRemoveUser ? handleRemoveUser : undefined}
             handleUpdateUserRole={isCourseManager ? handleUpdateUserRole : undefined}
-            onlyShowActions={isCourseManager ? undefined : isAllowedUpdateUser ? ['REMOVE', 'ROLE'] : ['ROLE']}
+            onlyShowActions={isCourseManager ? undefined : isAllowedRemoveUser ? ['REMOVE', 'ROLE'] : ['ROLE']}
           />
         </Card>
-        {(isAllowedInviteUser || iAmAdmin) && (
+        {isAllowedInviteUser && (
           <Card>
             <InviteTable userInfo={userInfo} invites={invites} onResendInvite={sendEmail} />
           </Card>

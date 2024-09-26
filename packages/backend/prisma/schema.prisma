@@ -354,6 +354,8 @@ enum Action {
   // Api key actions
   create_api_key
   read_api_key
+  // Invite actions
+  send_invite
 }
 
 enum BacklogType {

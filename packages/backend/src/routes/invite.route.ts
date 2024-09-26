@@ -8,15 +8,11 @@ import project from '../controllers/project';
 const router = express.Router();
 
 // Send project invitation to destination email
-router.post(
-  `/project/:projectId`,
-  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
-  invite.sendInvite,
-);
+router.post(`/project/:projectId`, hasAuthForProject(Action.send_invite, projectPolicy.POLICY_NAME), invite.sendInvite);
 
 router.get(
   `/project/:projectId`,
-  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  hasAuthForProject(Action.send_invite, projectPolicy.POLICY_NAME),
   invite.getInfoFromProjectId,
 );
 
