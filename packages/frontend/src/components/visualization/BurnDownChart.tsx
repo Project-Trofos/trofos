@@ -53,6 +53,7 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
         type: 'line',  // Vertical line for sprint end
         start: [sprint.end_date, 'min'],
         end: [sprint.end_date, 'max'],
+        offsetX: -10,
         style: {
           stroke: '#52c41a', // Green color for the line
           lineDash: [4, 4],  // Dashed line style
