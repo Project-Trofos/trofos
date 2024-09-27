@@ -7,11 +7,11 @@ import { RetrospectiveType } from '../api/types';
 import store from '../app/store';
 import RetrospectiveContainerCard from '../components/cards/RetrospectiveContainerCard';
 import './Retrospective.css';
-import { useSprintIdParam } from '../api/hooks';
+import { useProjectIdParam, useSprintIdParam } from '../api/hooks';
 
 export default function Retrospective({ sprintId, readOnly }: { sprintId?: number; readOnly?: boolean }): JSX.Element {
   const retrospectiveSprintId = sprintId ?? useSprintIdParam();
-
+  const projectId = useProjectIdParam();
   // Refetch retrospectives of 'type'
   const handleReset = useCallback((type?: string) => {
     store.dispatch(

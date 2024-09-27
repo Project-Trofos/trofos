@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Col, Form, Modal, Row } from 'antd';
+import { Button, Col, Form, Modal, Row, Tooltip, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useAddBacklogMutation } from '../../api/socket/backlogHooks';
 import BacklogSummaryInput from '../fields/BacklogSummaryInput';
@@ -11,19 +11,24 @@ import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/Backlo
 import './BacklogCreationModal.css';
 import { useGetProjectQuery } from '../../api/project';
 import { Sprint } from '../../api/sprint';
-import { DefaultBacklog } from '../../api/types';
+import { DefaultBacklog, Retrospective } from '../../api/types';
 import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
+import { getErrorMessage } from '../../helpers/error';
 
 function BacklogCreationModal({
   fixedSprint,
   title,
   modalKey,
   defaultBacklog,
+  disabled,
+  retrospective,
 }: {
   fixedSprint?: Sprint;
   title?: string;
   modalKey?: string | number;
   defaultBacklog?: DefaultBacklog;
+  disabled?: boolean;
+  retrospective?: Retrospective;
 }): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
@@ -68,15 +73,16 @@ function BacklogCreationModal({
     const payload: BacklogFormFields = {
       ...data,
       projectId: Number(params.projectId),
+      retrospective,
     };
 
     try {
       await addBacklog(payload).unwrap();
       setIsModalVisible(false);
       form.resetFields();
-      console.log('Success');
     } catch (e) {
       console.error(e);
+      message.error(getErrorMessage(e));
     } finally {
       setIsLoading(false);
     }
@@ -185,9 +191,24 @@ function BacklogCreationModal({
 
   return (
     <>
-      <Button className="new-backlog-btn" type="primary" onClick={showModal}>
+      {disabled ?
+      <Tooltip title={`Backlog has already been created for this action`}>
+        <Button
+          className="new-backlog-btn"
+          type="primary"
+          disabled={disabled}
+        >
+          {title ?? 'New Backlog'}
+        </Button>
+      </Tooltip> :
+      <Button
+        className="new-backlog-btn"
+        type="primary"
+        onClick={showModal}
+      >
         {title ?? 'New Backlog'}
       </Button>
+      }
       <Modal
         title={title ?? 'New Backlog'}
         open={isModalVisible}

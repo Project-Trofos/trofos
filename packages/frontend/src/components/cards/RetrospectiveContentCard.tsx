@@ -111,6 +111,8 @@ function RetrospectiveContentCard(props: RetrospectiveContentCardProps): JSX.Ele
                 type: 'task',
                 priority: 'medium',
               }}
+              disabled={retroEntry.is_action_taken}
+              retrospective={retroEntry}
             />
           ) : (
             <></>

@@ -5,14 +5,36 @@ import { BacklogFields } from '../helpers/types/backlog.service.types';
 import { AppAbility } from '../policies/policyTypes';
 
 async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
-  const { summary, type, sprintId, priority, reporterId, assigneeId, points, description, projectId, epicId } =
-    backlogFields;
+  const {
+    summary,
+    type,
+    sprintId,
+    priority,
+    reporterId,
+    assigneeId,
+    points,
+    description,
+    projectId,
+    epicId,
+    retrospective,
+  } = backlogFields;
 
   return prisma.$transaction<Backlog>(async (tx: Prisma.TransactionClient) => {
     const backlogCounter = await tx.project.findUniqueOrThrow({
       where: { id: projectId },
       select: { backlog_counter: true },
     });
+
+    // Throw error if resprospective already has is_action_taken
+    if (retrospective) {
+      const retrospectiveEntry = await tx.retrospective.findUniqueOrThrow({
+        where: { id: retrospective.id },
+      });
+
+      if (retrospectiveEntry?.is_action_taken) {
+        throw new Error('Cannot create backlog from retrospective that already has action taken');
+      }
+    }
 
     const defaultBacklogStatus = await tx.backlogStatus.findFirst({
       where: {
@@ -118,6 +140,16 @@ async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
         },
       },
     });
+
+    // If this is from retrospective, set is_action_taken to true
+    if (retrospective) {
+      await tx.retrospective.update({
+        where: { id: retrospective.id },
+        data: {
+          is_action_taken: true,
+        },
+      });
+    }
 
     return createdBacklog;
   });
