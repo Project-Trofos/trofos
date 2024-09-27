@@ -16,7 +16,7 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint, includeTitle } = props;
   const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
   const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
-
+  
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
     theme: isDarkTheme ? 'dark' : 'default',
@@ -27,6 +27,11 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
       date: {
         type: 'time',
       },
+    },
+    yAxis: {
+      title: {
+        text: 'Story Points',
+      }
     },
     tooltip: {
       // eslint-disable-next-line react/no-unstable-nested-components
