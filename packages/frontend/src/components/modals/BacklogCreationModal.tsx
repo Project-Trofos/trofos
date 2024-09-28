@@ -14,6 +14,8 @@ import { Sprint } from '../../api/sprint';
 import { DefaultBacklog, Retrospective } from '../../api/types';
 import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
+import { emitUpdateEvent } from '../../api/socket/useSocket';
+import { UpdateType } from '../../api/socket/socket';
 
 function BacklogCreationModal({
   fixedSprint,
@@ -80,6 +82,7 @@ function BacklogCreationModal({
       await addBacklog(payload).unwrap();
       setIsModalVisible(false);
       form.resetFields();
+      message.success('Backlog created successfully');
     } catch (e) {
       console.error(e);
       message.error(getErrorMessage(e));
