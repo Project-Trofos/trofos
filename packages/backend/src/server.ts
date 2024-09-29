@@ -15,6 +15,7 @@ import epicRouter from './routes/epic.route';
 import inviteRouter from './routes/invite.route';
 import apiKeyRouter from './routes/apiKey.route';
 import routerExternalV1 from './routes/external/v1/route.external.v1';
+import setUpSwagger from './swagger/swagger';
 
 const app = express();
 
@@ -29,6 +30,9 @@ export const corsOptions = {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
+
+// Set up swagger documentation
+setUpSwagger(app);
 
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
