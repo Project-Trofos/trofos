@@ -324,8 +324,8 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
         id: projectId,
       },
       include: {
-        course: true
-      }
+        course: true,
+      },
     });
 
     if (!projectInfo.course.shadow_course) {
@@ -335,7 +335,7 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
           user_id_course_id: {
             course_id: projectInfo.course_id,
             user_id: userInfo.user_id,
-          }
+          },
         },
       });
     } else {
@@ -366,6 +366,53 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
   });
 }
 
+// Special addUser method that avoids shadow_course check
+// This is to be called after invite has added user to course
+async function addUserByInvite(projectId: number, userEmail: string): Promise<UsersOnProjects> {
+  return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
+    const userInfo = await tx.user.findUniqueOrThrow({
+      where: {
+        user_email: userEmail,
+      },
+    });
+
+    const projectInfo = await tx.project.findFirstOrThrow({
+      where: {
+        id: projectId,
+      },
+      include: {
+        course: true,
+      },
+    });
+
+    // A user can only be added if they are already part of the parent course
+    await tx.usersOnRolesOnCourses.findUniqueOrThrow({
+      where: {
+        user_id_course_id: {
+          course_id: projectInfo.course_id,
+          user_id: userInfo.user_id,
+        },
+      },
+    });
+
+    const userOnProjects = await tx.usersOnProjects.create({
+      data: {
+        project_id: projectId,
+        user_id: userInfo.user_id,
+      },
+    });
+
+    await tx.usersOnProjectOnSettings.create({
+      data: {
+        project_id: projectId,
+        user_id: userInfo.user_id,
+      },
+    });
+
+    return userOnProjects;
+  });
+}
+
 async function removeUser(projectId: number, userId: number): Promise<UsersOnProjects> {
   return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     const projectInfo = await tx.project.findFirstOrThrow({
@@ -373,8 +420,8 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
         id: projectId,
       },
       include: {
-        course: true
-      }
+        course: true,
+      },
     });
 
     const userOnProjects = await tx.usersOnProjects.delete({
@@ -397,7 +444,6 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
         },
       });
     }
-
 
     return userOnProjects;
   });
@@ -568,11 +614,11 @@ async function deleteGitUrl(projectId: number): Promise<ProjectGitLink> {
 async function setTelegramId(projectId: number, telegramId: string): Promise<Project> {
   const result = await prisma.project.update({
     where: {
-      id: projectId
+      id: projectId,
     },
     data: {
-      telegramChannelLink: telegramId
-    }
+      telegramChannelLink: telegramId,
+    },
   });
 
   return result;
@@ -581,13 +627,13 @@ async function setTelegramId(projectId: number, telegramId: string): Promise<Pro
 async function getTelegramId(projectId: number) {
   const result = await prisma.project.findFirst({
     where: {
-      id: projectId
+      id: projectId,
     },
     select: {
-      telegramChannelLink: true
-    }
-  })
-  return result
+      telegramChannelLink: true,
+    },
+  });
+  return result;
 }
 
 async function getUserSettings(projectId: number, userId: number): Promise<UsersOnProjectOnSettings | null> {
@@ -631,6 +677,7 @@ export default {
   remove,
   getUsers,
   addUser,
+  addUserByInvite,
   removeUser,
   createBacklogStatus,
   getBacklogStatus,
@@ -646,5 +693,5 @@ export default {
   setTelegramId,
   getTelegramId,
   archiveProject,
-  unarchiveProject
+  unarchiveProject,
 };

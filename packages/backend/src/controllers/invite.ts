@@ -74,7 +74,7 @@ async function processInvite(req: express.Request, res: express.Response) {
     if (!courseUsers.some((user) => user.user_id == userRes.user_id)) {
       await course.addUser(projectRes.course_id, inviteRes.email);
     }
-    await project.addUser(inviteRes.project_id, inviteRes.email);
+    await project.addUserByInvite(inviteRes.project_id, inviteRes.email);
 
     const result = await invite.deleteInvite(inviteRes.project_id, inviteRes.email);
     return res.status(StatusCodes.OK).json(result);
