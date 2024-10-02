@@ -1,9 +1,8 @@
 import express from 'express';
-import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
+import { hasAuthForProject } from '../middleware/auth.middleware';
 import { Action } from '@prisma/client';
 import projectPolicy from '../policies/project.policy';
 import invite from '../controllers/invite';
-import project from '../controllers/project';
 
 const router = express.Router();
 
