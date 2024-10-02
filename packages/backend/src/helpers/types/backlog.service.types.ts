@@ -1,4 +1,4 @@
-import { BacklogType, BacklogPriority } from '@prisma/client';
+import { BacklogType, BacklogPriority, Retrospective } from '@prisma/client';
 
 export type BacklogFields = {
   summary: string;
@@ -11,4 +11,5 @@ export type BacklogFields = {
   description?: string;
   projectId: number;
   epicId?: number;
+  retrospective?: Retrospective;
 };
