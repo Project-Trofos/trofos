@@ -15,7 +15,7 @@ import { DefaultBacklog, Retrospective } from '../../api/types';
 import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
 import SprintCreationModal from './SprintCreationModal';
-import { GENERIC_NEW_SPRINT, autoSuggestNewSprint } from '../../pages/projectPages/ProjectSprints';
+import { GENERIC_NEW_SPRINT, autoSuggestNewSprint } from '../../helpers/sprintCreationHelper';
 
 function BacklogCreationModal({
   fixedSprint,
