@@ -202,39 +202,38 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                   </div>
                 </div>
                 <div
-                  class="ant-form-item"
+                  class="ant-row"
+                  style="margin-left: -4px; margin-right: -4px;"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-col"
+                    style="padding-left: 4px; padding-right: 4px;"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class=""
-                        for="sprintId"
-                        title="Sprint"
-                      >
-                        Sprint
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-form-item"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-row ant-form-item-row"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="sprintId"
+                            title="Sprint"
+                          >
+                            Sprint
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-row"
-                            id="sprintId"
-                            style="margin-left: -4px; margin-right: -4px;"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-col"
-                              style="padding-left: 4px; padding-right: 4px;"
+                              class="ant-form-item-control-input-content"
                             >
                               <div
                                 class="ant-select ant-select-in-form-item backlog-select sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
