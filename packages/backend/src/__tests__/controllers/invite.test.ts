@@ -26,7 +26,7 @@ const spies = {
   deleteInvite: jest.spyOn(invite, 'deleteInvite'),
 
   getById: jest.spyOn(project, 'getById'),
-  addUserToProj: jest.spyOn(project, 'addUser'),
+  addUserToProj: jest.spyOn(project, 'addUserByInvite'),
   addUserToCourse: jest.spyOn(course, 'addUser'),
   getCourseUsers: jest.spyOn(course, 'getUsers'),
   getByEmail: jest.spyOn(user, 'getByEmail'),
