@@ -3,6 +3,7 @@ import { hasAuthForExternalApi, hasAuthForProjectExternalApi } from '../../../mi
 import projectPolicy from '../../../policies/project.policy';
 import project from '../../../controllers/project';
 import { Action } from '@prisma/client';
+import sprint from '../../../controllers/sprint';
 
 const router = express.Router();
 
@@ -57,5 +58,46 @@ router.get('/', hasAuthForExternalApi(Action.read_project, projectPolicy.POLICY_
  *        description: Internal server error
  */
 router.get('/:projectId', hasAuthForProjectExternalApi(Action.read_project, projectPolicy.POLICY_NAME), project.get);
+
+/**
+ * @swagger
+ * /v1/project/{projectId}/sprint:
+ *  get:
+ *    description: Get all backlogs for a project, sorted by sprint. Also gets unassigned backlogs
+ *    tags: [Project]
+ *    parameters:
+ *      - in: path
+ *        name: projectId
+ *        required: true
+ *        schema:
+ *          type: integer
+ *        description: ID of the project to retrieve sprints for
+ *    responses:
+ *      200:
+ *        description: Gets all sprints and unassigned backlogs for a project
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                sprints:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/Sprint'
+ *                unassignedBacklogs:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/Backlog'
+ *        examples:
+ *          application/json:
+ *            value:
+ *              sprints: []
+ *              unassignedBacklogs: []
+ *      401:
+ *        description: Unauthorized
+ *      500:
+ *        description: Internal server error
+ */
+router.get('/:projectId/sprint', hasAuthForProjectExternalApi(Action.read_project, null), sprint.listSprintsByProjectId)
 
 export default router;
