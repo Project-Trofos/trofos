@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { rest } from 'msw';
 import { STUDENT_ROLE_ID } from '../api/role';
-import { Sprint } from '../api/sprint';
+import { Sprint, SprintWithBacklogs } from '../api/sprint';
 import { BacklogHistory, BacklogHistoryType, CourseData, ProjectData, UserOnRolesOnCourse } from '../api/types';
 
 const BASE_URL = 'http://localhost:3001/api';
@@ -309,6 +309,53 @@ export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [
   },
 ];
 
+export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
+  sprints: [
+    {
+      id: 4,
+      name: "TestSprint x",
+      duration: 2,
+      start_date: "2024-08-23T03:12:33.000Z",
+      end_date: "2024-09-06T03:12:33.000Z",
+      project_id: 56,
+      goals: "",
+      status: "closed",
+      backlogs: []
+    }, {
+      id: 5,
+      name: "TestSprint last",
+      duration: 2,
+      start_date: "2024-08-23T03:12:33.000Z",
+      end_date: "2024-09-06T03:12:33.000Z",
+      project_id: 56,
+      goals: "",
+      status: "closed",
+      backlogs: []
+    }, {
+      id: 3,
+      name: "TestSprint 3",
+      duration: 2,
+      start_date: "2024-08-23T03:12:33.000Z",
+      end_date: "2024-09-06T03:12:33.000Z",
+      project_id: 56,
+      goals: "",
+      status: "closed",
+      backlogs: []
+    }, {
+      id: 1,
+      name: "TestSprint 1",
+      duration: 2,
+      start_date: "2024-08-23T03:12:33.000Z",
+      end_date: "2024-09-06T03:12:33.000Z",
+      project_id: 56,
+      goals: "",
+      status: "closed",
+      backlogs: []
+    }, 
+  ],
+  unassignedBacklogs: []
+};
+
 const handlers = [
   // Handles GET on /project
   rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
@@ -344,6 +391,11 @@ const handlers = [
   rest.get(`${BASE_URL}/role/courseUserRoles/:id`, (req, res, ctx) =>
     res(ctx.status(200), ctx.body(JSON.stringify(MSW_COURSE_ROLES))),
   ),
+
+  // Mock sprint data of project
+  rest.get(`${BASE_URL}/sprint/listSprints/:id`, (req, res, ctx) => (
+    res(ctx.status(200), ctx.body(JSON.stringify(MSW_SPRINT_WITH_BACKLOGS)))
+  )),
 ];
 
 export default handlers;

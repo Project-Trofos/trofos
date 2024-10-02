@@ -14,6 +14,8 @@ import { emitUpdateEvent } from './useSocket';
 // Add backlog mutation hook, also emit update event to backend via socket io
 const useAddBacklogMutation = attachFunctionToRtkHookHOF(rtkUseAddBacklogMutation, (mutArgs) => {
   emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
+}, (mutArgs) => {
+  emitUpdateEvent(`${UpdateType.RETRO}/${mutArgs.retrospective?.sprint_id}`, mutArgs.retrospective?.type);
 });
 
 // Update backlog mutation hook, also emit update event to backend via socket io

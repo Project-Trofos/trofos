@@ -99,8 +99,9 @@ async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
     VALUES
       (${FACULTY_ROLE_ID}, ${Action.update_project_users}::"Action"),
       (${FACULTY_ROLE_ID}, ${Action.create_api_key}::"Action"),
-      (${FACULTY_ROLE_ID}, ${Action.read_api_key}::"Action")
-    ON CONFLICT (role_id, action) DO NOTHING;`
+      (${FACULTY_ROLE_ID}, ${Action.read_api_key}::"Action"),
+      (${FACULTY_ROLE_ID}, ${Action.send_invite}::"Action")
+    ON CONFLICT (role_id, action) DO NOTHING;`;
   console.log('created update project users action %s', updateProjectUserRow);
 }
 

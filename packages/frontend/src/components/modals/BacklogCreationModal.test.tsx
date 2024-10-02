@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import BacklogCreationModal from './BacklogCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
+import { Retrospective, RetrospectiveType } from '../../api/types';
 
 describe('BacklogModal tests', () => {
   // Establish API mocking before all tests.
@@ -30,6 +31,30 @@ describe('BacklogModal tests', () => {
 
     return { baseElement, debug };
   };
+
+  const retrospectiveMock: Retrospective = {
+    id: 1,
+    sprint_id: 5,
+    content: "Test retrospective",
+    type: RetrospectiveType.ACTION,
+    score: 0,
+    votes: [],
+    is_action_taken: false,
+  };
+
+  const setupWithRetrospective = (retro: Retrospective) => {
+    const { baseElement, debug } = render(
+      <Provider store={store}>
+        <BacklogCreationModal retrospective={retro} />
+      </Provider>,
+    );
+
+    // Open modal
+    const button = screen.getByText(/New Backlog/i);
+    fireEvent.click(button);
+
+    return { baseElement, debug };
+  }
 
   it('renders new backlog modal with correct fields', () => {
     const { baseElement } = setup();
@@ -65,7 +90,7 @@ describe('BacklogModal tests', () => {
     const sprintIds = sprintOptions.map((option) => option.textContent);
 
     expect(sprintIds).toEqual(['TestSprint last', 'TestSprint x', 'TestSprint 3', 'TestSprint 1']);
-  })
+  });
 
   it('should be able to search sprints', async () => {
     const { baseElement } = setup();
@@ -89,5 +114,39 @@ describe('BacklogModal tests', () => {
     const sprintIds = sprintOptions.map((option) => option.textContent);
 
     expect(sprintIds).toEqual(['TestSprint last']);
-  })
+  });
+
+  it('should have new sprint modal if retrospective is provided and retrospective is for latest sprint', async () => {
+    setupWithRetrospective(retrospectiveMock);
+
+    // There should be "New Sprint" button
+    expect(screen.getByText('New Sprint')).toBeInTheDocument();
+  });
+
+  it('should not have new sprint modal if retrospective is provided and retrospective is not for latest sprint', async () => {
+    setupWithRetrospective({
+      ...retrospectiveMock,
+      sprint_id: 1,
+    });
+
+    // There should not be "New Sprint" button
+    expect(screen.queryByText('New Sprint')).not.toBeInTheDocument();
+  });
+
+  it('should tell user which sprint is the retrospective for in sprint options', async () => {
+    setupWithRetrospective(retrospectiveMock);
+
+    const sprintSelect = screen.getByText('Select Sprint');
+    fireEvent.mouseDown(sprintSelect);
+
+    const sprintOptions = await screen.findAllByText((content, element) => {
+      if (!element) {
+        return false;
+      }
+      return element.classList.contains('ant-select-item-option-content') && /TestSprint/i.test(content);
+    });
+
+    const curSprintOptionText = sprintOptions.find((option) => /TestSprint last/)?.textContent;
+    expect(curSprintOptionText).toEqual('TestSprint last (This retrospective)')
+  });
 });

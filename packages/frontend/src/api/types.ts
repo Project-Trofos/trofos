@@ -299,6 +299,7 @@ export type Retrospective = {
   type: RetrospectiveType;
   score: number;
   votes: RetrospectiveVote[];
+  is_action_taken: boolean;
 };
 
 export enum RetrospectiveType {
