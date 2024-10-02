@@ -85,7 +85,7 @@ describe('auth.middleware tests', () => {
         cookies: {
           [TROFOS_SESSIONCOOKIE_NAME]: testCookie,
         },
-      } as express.Request;
+      } as unknown as express.Request;
       const mockResponse = {
         send() {},
         status(s: number) {
@@ -109,7 +109,7 @@ describe('auth.middleware tests', () => {
         cookies: {
           [TROFOS_SESSIONCOOKIE_NAME]: testCookie,
         },
-      } as express.Request;
+      } as unknown as express.Request;
       const mockResponse = {
         send() {},
         json(j) {
@@ -141,7 +141,7 @@ describe('auth.middleware tests', () => {
         cookies: {
           [TROFOS_SESSIONCOOKIE_NAME]: testCookie,
         },
-      } as express.Request;
+      } as unknown as express.Request;
       const mockResponse = {
         send() {},
         json(j) {
@@ -174,7 +174,7 @@ describe('auth.middleware tests', () => {
         cookies: {
           [TROFOS_SESSIONCOOKIE_NAME]: testCookie,
         },
-      } as express.Request;
+      } as unknown as express.Request;
       const mockResponse = {
         send() {},
         json(j) {
@@ -208,7 +208,7 @@ describe('auth.middleware tests', () => {
         cookies: {
           [TROFOS_SESSIONCOOKIE_NAME]: testCookie,
         },
-      } as express.Request;
+      } as unknown as express.Request;
       const mockResponse = {
         send() {},
         json(j) {
