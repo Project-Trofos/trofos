@@ -16,7 +16,7 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint, includeTitle } = props;
   const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
   const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
-
+  
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
     theme: isDarkTheme ? 'dark' : 'default',
@@ -28,6 +28,44 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
         type: 'time',
       },
     },
+    yAxis: {
+      title: {
+        text: 'Story Points',
+      }
+    },
+    annotations: sprint ? [
+      {
+        type: 'line',  // Vertical line for sprint start
+        start: [sprint.start_date, 'min'],
+        end: [sprint.start_date, 'max'],
+        style: {
+          stroke: '#ff4d4f', // Red color for the line
+          lineDash: [4, 4],  // Dashed line style
+          lineWidth: 2,
+        },
+        text: {
+          content: 'Sprint Start',
+          position: 'start',
+          style: { fill: '#ff4d4f' }, // Red color for the text
+        },
+      },
+      {
+        type: 'line',  // Vertical line for sprint end
+        start: [sprint.end_date, 'min'],
+        end: [sprint.end_date, 'max'],
+        offsetX: -10,
+        style: {
+          stroke: '#52c41a', // Green color for the line
+          lineDash: [4, 4],  // Dashed line style
+          lineWidth: 2,
+        },
+        text: {
+          content: 'Sprint End',
+          position: 'start',
+          style: { fill: '#52c41a' }, // Green color for the text
+        },
+      },
+    ] : undefined,
     tooltip: {
       // eslint-disable-next-line react/no-unstable-nested-components
       customContent: (title, items) => {

@@ -283,6 +283,7 @@ model Retrospective {
   type        RetrospectiveType
   score       Int                         @default(0)
   votes       RetrospectiveVote[]
+  is_action_taken Boolean                 @default(false)
 }
 
 model RetrospectiveVote {

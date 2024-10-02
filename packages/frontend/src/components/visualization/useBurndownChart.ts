@@ -11,36 +11,72 @@ export type StoryPointData = {
 };
 
 export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: number, sprintEndDate?: string) {
-  // When a backlog is moved to another sprint, add a dummy delete history
-  const backlogHistoryAddMove = useMemo(() => {
-    const backlogSorted = [...backlogHistory].sort((a, b) => (new Date(a.date) > new Date(b.date) ? 1 : -1));
 
-    const groups: { [key: number]: BacklogHistory[] } = {};
-    for (const backlog of backlogSorted) {
-      if (groups[backlog.backlog_id] === undefined) {
-        groups[backlog.backlog_id] = [];
-      }
-      groups[backlog.backlog_id].push(backlog);
-    }
-
-    const newHistory = backlogSorted;
-
-    for (const [id, group] of Object.entries(groups)) {
-      for (let i = 1; i < group.length; i += 1) {
-        if (group[i - 1].sprint_id !== group[i].sprint_id) {
-          // A backlog has been moved to another sprint
-          newHistory.push({ ...group[i], sprint_id: group[i - 1].sprint_id, history_type: BacklogHistoryType.DELETE });
-        }
-      }
-    }
-
-    return newHistory;
-  }, [backlogHistory]);
+  //TOOD: consider moving operations to backend where possible
 
   // Filter backlog history to only belong to a certain sprint
+  // if no sprint specified, return all history
+  // else, return only history that belongs to the sprint. also, if any backlog in this sprint is moved:
+  //     case 1- moved to another sprint: treat as delete
+  //     case 2- moved in from another sprint: treat as create
   const backlogFiltered = useMemo(() => {
-    return sprintId ? backlogHistoryAddMove.filter((b) => b.sprint_id === sprintId) : backlogHistoryAddMove;
-  }, [backlogHistoryAddMove, sprintId]);
+    if (!sprintId) {
+      return [...backlogHistory].sort((a, b) => (new Date(a.date) > new Date(b.date) ? 1 : -1));
+    } else {
+      const backlogSorted = [...backlogHistory].sort((a, b) => (new Date(a.date) > new Date(b.date) ? 1 : -1));
+
+      // all backlogs that have appeared in this sprint should be kept
+      const backlogIdsThatAppearedInThisSprint = new Set<number>();
+
+      // map the backlogId to corresponding date of the case
+      const backlogIdsNotCreatedInThisSprintMap = new Map<number, Date>();
+      // key: a backlog id where the backlog has been moved out of sprint permanently. val: earliest date this happened
+      const backlogIdsWhereLastHistoryNotInThisSprintMap = new Map<number, Date>();
+
+      for (const backlog of backlogSorted) {
+        if (backlog.sprint_id === sprintId) {
+          // first history of this backlog for cur sprint isn't create -> case 2
+          if (!backlogIdsThatAppearedInThisSprint.has(backlog.backlog_id) && backlog.history_type !== BacklogHistoryType.CREATE) {
+            backlogIdsNotCreatedInThisSprintMap.set(backlog.backlog_id, new Date(backlog.date));
+          }
+          backlogIdsThatAppearedInThisSprint.add(backlog.backlog_id);
+          // we found a backlog moved out of sprint then back into sprint -> still to be displayed in this sprint's burndown
+          if (backlogIdsWhereLastHistoryNotInThisSprintMap.has(backlog.backlog_id)) {
+            backlogIdsWhereLastHistoryNotInThisSprintMap.delete(backlog.backlog_id);
+          }
+        } else {
+          // if backlog has been in current sprint before and now is in another spring -> check case 1
+          // this will be removed if subsequently, this backlog re-appears in current sprint (moved out and back into cur sprint)
+          if (backlogIdsThatAppearedInThisSprint.has(backlog.backlog_id) && !backlogIdsWhereLastHistoryNotInThisSprintMap.has(backlog.backlog_id)) {
+            backlogIdsWhereLastHistoryNotInThisSprintMap.set(backlog.backlog_id, new Date(backlog.date));
+          }
+        }
+      }
+
+      // case 1 backlog ids = backlogIdsWhereLastHistoryNotInThisSprint
+      // case 2 backlog ids = backlogIdsThatAppearedInThisSprint <set difference> backlogIdsCreatedInThisSprint
+      const case1IdDateMap = backlogIdsWhereLastHistoryNotInThisSprintMap;
+      const case2IdDateMap = backlogIdsNotCreatedInThisSprintMap;
+
+      // filter to keep backlogs relevant to this sprint, keeping in mind case 1 and case 2
+      // case 1- need to check what was last history entry that was in this sprint- subsequently filtered out
+      // case 2- check first history that was in this sprint- all entries before that are filtered out
+      const relevantBacklogs = backlogSorted.filter((b) => {
+        if (!backlogIdsThatAppearedInThisSprint.has(b.backlog_id)) {
+          return false;
+        }
+        if (case1IdDateMap.has(b.backlog_id) && case1IdDateMap.get(b.backlog_id)!! < new Date(b.date)) {
+          return false;
+        }
+        if (case2IdDateMap.has(b.backlog_id) && case2IdDateMap.get(b.backlog_id)!! > new Date(b.date)) {
+          return false;
+        }
+        return true;
+      });
+      
+      return relevantBacklogs;
+    }
+  }, [backlogHistory, sprintId]);
 
   // Group backlog history by backlog id
   const backlogGrouped = useMemo(() => {
@@ -92,25 +128,42 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: nu
         currentPoint += delta;
         message = `Issue ${backlog.backlog_id} created. Story point +${delta}.`;
       } else if (backlog.history_type === BacklogHistoryType.UPDATE && backlog.status !== BacklogStatus.DONE) {
-        if (!prevBacklog) {
+        if (sprintId && (!prevBacklog || (prevBacklog.sprint_id !== sprintId && backlog.sprint_id === sprintId))) {
+          // Moved in from another sprint and sprintId provided
+          const delta = backlog.points ?? 0;
+          currentPoint += delta;
+          message = `Issue ${backlog.backlog_id} moved in. Story point +${delta}.`;
+        } else if (!sprintId && (!prevBacklog)) { // at this point, prevBacklog = undefined is handled for both sprintId given/not given
           // Moved in from another sprint
           const delta = backlog.points ?? 0;
           currentPoint += delta;
           message = `Issue ${backlog.backlog_id} moved in. Story point +${delta}.`;
-        } else if (prevBacklog.status === BacklogStatus.DONE) {
+        } else if (prevBacklog!!.status === BacklogStatus.DONE) {
           // done => not done
           const delta = backlog.points ?? 0;
           currentPoint += delta;
           message = `Issue ${backlog.backlog_id} marked as not done. Story point +${delta}.`;
-        } else if (prevBacklog.points !== backlog.points) {
-          // Update story point value
-          const delta = (backlog.points ?? 0) - (prevBacklog.points ?? 0);
+        }else if (sprintId && (prevBacklog!!.points !== backlog.points && backlog.sprint_id === sprintId)) {
+          // Update story point value if it's in the same sprint
+          const delta = (backlog.points ?? 0) - (prevBacklog!!.points ?? 0);
           currentPoint += delta;
           message = `Issue ${backlog.backlog_id} updated. Story point ${
             delta > 0 ? `+${delta}` : `-${Math.abs(delta)}`
           }.`;
+        }  else if (!sprintId && (prevBacklog!!.points !== backlog.points)) {
+          // Update story point value
+          const delta = (backlog.points ?? 0) - (prevBacklog!!.points ?? 0);
+          currentPoint += delta;
+          message = `Issue ${backlog.backlog_id} updated. Story point ${
+            delta > 0 ? `+${delta}` : `-${Math.abs(delta)}`
+          }.`;
+        } else if (sprintId && (backlog.sprint_id !== prevBacklog!!.sprint_id)) {
+          //handle move issue out of sprint, treat as delete
+          const delta = prevBacklog!!.points ?? 0;
+          currentPoint -= delta;
+          message = `Issue ${backlog.backlog_id} moved out of sprint. Story point -${Math.abs(delta)}.`;
         } else {
-          message = `Issue ${backlog.backlog_id} updated from [${prevBacklog.status}] to [${backlog.status}]`;
+          message = `Issue ${backlog.backlog_id} updated from [${prevBacklog!!.status}] to [${backlog.status}]`;
         }
       } else if (backlog.history_type === BacklogHistoryType.UPDATE && backlog.status === BacklogStatus.DONE) {
         if (!prevBacklog) {
@@ -137,7 +190,8 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: nu
       if (
         backlog.history_type !== BacklogHistoryType.UPDATE ||
         backlog.status !== prevBacklog?.status ||
-        backlog.points !== prevBacklog?.points
+        backlog.points !== prevBacklog?.points || 
+        (sprintId && backlog.sprint_id !== prevBacklog?.sprint_id)
       ) {
         data.push({
           date: new Date(backlog.date),

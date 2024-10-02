@@ -1,5 +1,8 @@
+import { Retrospective } from "../api/types";
+
 export interface BacklogFormFields extends FormData {
   projectId: number;
+  retrospective?: Retrospective;
 }
 
 export type BacklogSelectTypes = {

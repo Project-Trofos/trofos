@@ -35,6 +35,7 @@ export const mockRetrospectiveData: Retrospective = {
   content: 'Test retrospective',
   type: RetrospectiveType.positive,
   score: 1,
+  is_action_taken: false,
 };
 
 export const mockRetrospectiveFields = {

@@ -3,6 +3,7 @@
 const attachFunctionToRtkHookHOF = <T extends (...args: any[]) => readonly any[]>(
   originalHook: T,
   fn: (...args: Parameters<ReturnType<T>[0]>) => void,
+  fn2?: (...args: Parameters<ReturnType<T>[0]>) => void | undefined,
 ) => {
   const func = (...hookArgs: Parameters<T>): ReturnType<T> => {
     const [originalFunc, ...rest] = originalHook(...hookArgs);
@@ -13,7 +14,8 @@ const attachFunctionToRtkHookHOF = <T extends (...args: any[]) => readonly any[]
 
       // Only emit event after return value is resolved
       // TODO(Luoyi): Is it possible to avoid this typecast?
-      returnValue.then(() => fn(...(mutArgs as Parameters<ReturnType<T>[0]>)));
+      returnValue.then(() => fn(...(mutArgs as Parameters<ReturnType<T>[0]>)))
+        .then(() => {fn2 && fn2(...(mutArgs as Parameters<ReturnType<T>[0]>));});
 
       return returnValue;
     };
