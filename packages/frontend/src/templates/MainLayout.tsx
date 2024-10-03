@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image } from 'antd';
 import { BookOutlined, HomeOutlined, KeyOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -86,7 +86,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   return (
     <Space>
       <Col>
-      <ThemeSwitch />
+        <ThemeSwitch />
       </Col>
       <Col>
         <GlobalSearch />
@@ -214,7 +214,7 @@ export default function MainLayout() {
         ),
         [UserPermissionActions.READ_API_KEY, UserPermissionActions.ADMIN],
         userInfo?.userRoleActions,
-      )
+      ),
     ],
     [projects, courses, userInfo],
   );
@@ -222,8 +222,9 @@ export default function MainLayout() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint="lg" collapsedWidth="0" onBreakpoint={setIsBroken} className="main-layout-sider">
-        <Link to="/">
-          <div className="logo">Trofos</div>
+        <Link to="/" className="logo">
+          <Image width={40} src="favicon.ico" preview={false} alt="Trofos logo" />
+          <div>Trofos</div>
         </Link>
         <Menu
           mode="inline"
@@ -236,7 +237,7 @@ export default function MainLayout() {
       <Layout>
         <Header style={{ padding: '0 10px' }}>
           <Row justify={'space-between'}>
-            <Col style={{paddingLeft: isBroken ? "30px" : 0}} span={10}>
+            <Col style={{ paddingLeft: isBroken ? '30px' : 0 }} span={10}>
               <MenuSwitch />
             </Col>
             <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
