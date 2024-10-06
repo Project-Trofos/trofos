@@ -1,9 +1,8 @@
 import React from 'react';
-import { message, Switch } from 'antd';
+import { message, Switch, Typography, Row, Col } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useUpdateUserSettingsMutation } from '../../api/project';
 import { ProjectUserSettings } from '../../api/types';
-import './ProjectUserSettingsForm.css';
 
 export default function ProjectUserSettingsForm(props: { projectUserSettings: ProjectUserSettings }): JSX.Element {
   const { projectUserSettings } = props;
@@ -26,8 +25,14 @@ export default function ProjectUserSettingsForm(props: { projectUserSettings: Pr
 
   return (
     <div className="project-user-settings-container">
-      <span className="settings-label">Email notification: </span>
-      <Switch checked={projectUserSettings?.email_notification} onChange={handleEmailNotificationOnChange} />
+      <Row gutter={4}>
+        <Col>
+          <Typography>Email Notification:</Typography>
+        </Col>
+        <Col>
+          <Switch checked={projectUserSettings?.email_notification} onChange={handleEmailNotificationOnChange} />
+        </Col>
+      </Row>
     </div>
   );
 }

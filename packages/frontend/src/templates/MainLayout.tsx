@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image } from 'antd';
-import { BookOutlined, HomeOutlined, KeyOutlined, ProjectOutlined, SettingOutlined } from '@ant-design/icons';
+import { BookOutlined, HomeOutlined, KeyOutlined, ProjectOutlined, SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -116,6 +116,7 @@ export default function MainLayout() {
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
+  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -221,7 +222,13 @@ export default function MainLayout() {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider breakpoint="lg" collapsedWidth="0" onBreakpoint={setIsBroken} className="main-layout-sider">
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={setIsBroken}
+        className="main-layout-sider"
+        trigger={<UnorderedListOutlined style={{color: isDarkTheme ? '#FFF' : '#000'}}/>}
+      >
         <Link to="/" className="logo">
           <Image width={40} src="favicon.ico" preview={false} alt="Trofos logo" />
           <div>Trofos</div>
