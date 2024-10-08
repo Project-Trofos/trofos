@@ -227,6 +227,7 @@ async function create(
             user_id: userId,
           },
         },
+        owner_id: userId,
         backlogStatuses: {
           createMany: {
             data: defaultBacklogStatus,

@@ -19,6 +19,7 @@ model User {
   user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
   projects      UsersOnProjects[]
+  ownedProjects  Project[]
   courses UsersOnRolesOnCourses[]
   basicRoles UsersOnRoles[]
   feedbacks Feedback[]
@@ -62,6 +63,11 @@ model Project {
   // A project might not belong to a course (open project)
   course_id       Int
   course          Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+
+  // A project has at most one owner
+  // Optional for backwards compatibility
+  owner_id        Int?
+  owner           User?              @relation(fields: [owner_id], references: [user_id], onDelete: Restrict)
 
   users           UsersOnProjects[]
   public          Boolean           @default(false)

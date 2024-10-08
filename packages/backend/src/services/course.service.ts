@@ -375,12 +375,12 @@ async function removeUser(courseId: number, userId: number): Promise<UsersOnRole
 
   // User is removed from all projects they are part of as well
   await prisma.usersOnProjects.deleteMany({
-    where : {
-      user_id : userId,
-      project : {
-        course_id : courseId
-      }
-    }
+    where: {
+      user_id: userId,
+      project: {
+        course_id: courseId,
+      },
+    },
   });
 
   return usersOnRolesOnCourses;
@@ -452,6 +452,11 @@ async function addProjectAndCourse(
       },
       users: {
         create: {
+          user_id: userId,
+        },
+      },
+      owner: {
+        connect: {
           user_id: userId,
         },
       },
@@ -580,13 +585,13 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
 
     // Remove the user in usersOnRolesOnCourses for the previous course
     await tx.usersOnRolesOnCourses.deleteMany({
-      where : {
-        course_id : courseId,
-        user_id : {
-          in : userIds
-        }
-      }
-    })
+      where: {
+        course_id: courseId,
+        user_id: {
+          in: userIds,
+        },
+      },
+    });
 
     return result;
   });

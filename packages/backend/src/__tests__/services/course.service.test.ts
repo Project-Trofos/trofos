@@ -11,6 +11,9 @@ import { userData } from '../mocks/userData';
 import { STUDENT_ROLE_ID } from '../../helpers/constants';
 
 describe('course.service tests', () => {
+  // Mock project owner
+  const projectOwnerId = 1;
+
   // Mock data for projects
   const projectData: Project[] = [
     {
@@ -24,6 +27,7 @@ describe('course.service tests', () => {
       backlog_counter: 0,
       telegramChannelLink: '',
       is_archive: null,
+      owner_id: projectOwnerId,
     },
   ];
 
@@ -364,7 +368,7 @@ describe('course.service tests', () => {
         throw Error('Result mock is not valid!');
       }
 
-      const result = await course.addProjectAndCourse(1, '1', 2022, 1, 'c1', projectData[0].pname);
+      const result = await course.addProjectAndCourse(projectOwnerId, '1', 2022, 1, 'c1', projectData[0].pname);
       expect(result).toEqual<Project>(resultMock);
     });
   });
