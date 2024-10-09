@@ -14,12 +14,13 @@ type BurnDownChartProps = {
 
 export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint, includeTitle } = props;
-  const { storyPointData } = useBurndownChart(backlogHistory, sprint?.id, sprint?.end_date);
+  const { storyPointData } = useBurndownChart(backlogHistory, sprint);
   const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
   
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,
     theme: isDarkTheme ? 'dark' : 'default',
+    padding: 'auto',
     xField: 'date',
     yField: 'point',
     stepType: 'hv',
@@ -27,6 +28,9 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
       date: {
         type: 'time',
       },
+    },
+    xAxis: {
+      min: sprint ? sprint.start_date : undefined,
     },
     yAxis: {
       title: {
@@ -69,6 +73,17 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
     tooltip: {
       // eslint-disable-next-line react/no-unstable-nested-components
       customContent: (title, items) => {
+        if (!items || items.length === 0 || !items[0].data.message) return null;
+
+        let aggregatedMessages: string[] = items[0].data.message.split(/\r?\n/);
+        const totalMessages = aggregatedMessages.length;
+
+        // if too many aggregated messages, only show the first 6 and add '...' at the end
+        if (totalMessages > 5) {
+          aggregatedMessages = aggregatedMessages.slice(0, 5);
+          aggregatedMessages.push(`... ${totalMessages - 5} more lines.`);
+        }
+
         return (
           <>
             <h4 style={{ marginTop: '12px' }}>{title}</h4>
@@ -86,7 +101,9 @@ export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
 
             {items.length > 0 && (
               <div style={{ marginBottom: '20px', maxWidth: '130px' }} key={items[0].data.backlog_id}>
-                {items[0].data.message}
+                {aggregatedMessages.map((line: string, index: number) => (
+                  <div key={index} style={{ marginTop: '4px' }}>{line}</div>
+                ))}
               </div>
             )}
           </>

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { BacklogHistory, BacklogHistoryType, BacklogStatus } from '../../api/types';
+import { Sprint } from '../../api/sprint';
 
 export type StoryPointData = {
   date: Date;
@@ -10,8 +11,10 @@ export type StoryPointData = {
   backlog_id: number;
 };
 
-export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: number, sprintEndDate?: string) {
-
+export function useBurndownChart(backlogHistory: BacklogHistory[], sprint? : Sprint) {
+  const sprintId = sprint?.id;
+  const sprintEndDate = sprint?.end_date;
+  const sprintStartDate = sprint?.start_date;
   //TOOD: consider moving operations to backend where possible
 
   // Filter backlog history to only belong to a certain sprint
@@ -203,10 +206,49 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: nu
       }
     }
 
+    // aggregate changes that happen within the same hour
+    let aggregatedData = data.reduce((acc, cur) => {
+      if (acc.length === 0) {
+        acc.push(cur);
+      } else {
+        const last = acc[acc.length - 1];
+        if (last.message !== 'Start' && dayjs(last.date).isSame(cur.date, 'hour')) {
+          last.message += `\n${cur.message}`
+          // if mulitple data points for that hour, just agg. to the 1 pt at x h 30 min
+          last.date = new Date(last.date.setMinutes(30));
+          last.point = cur.point;
+        } else {
+          acc.push(cur);
+        }
+      }
+      return acc;
+    }, [] as StoryPointData[]);
+
+    // aggregate points before sprint start date if there is one (tickets moved into this sprint
+    // from prev sprint)
+    if (sprintStartDate) {
+      aggregatedData = aggregatedData.reduce((acc, cur) => {
+        if (dayjs(cur.date).isBefore(sprintStartDate)) {
+          if (acc.length === 0) {
+            acc.push(cur);
+          } else {
+            const last = acc[acc.length - 1];
+            last.message += `\n${cur.message}`
+            // if mulitple data points for that hour, just agg. to the 1 pt at x h 30 min
+            last.date = new Date(sprintStartDate);
+            last.point = cur.point;
+          }
+        } else {
+          acc.push(cur);
+        }
+        return acc;
+      }, [] as StoryPointData[]);
+    }
+
     // Add a dummy end point if today is before end of sprint
     if (backlogFiltered.length > 0 && (!sprintEndDate || dayjs(sprintEndDate).isAfter(new Date()))) {
       // Have an artificial gap
-      data.push({
+      aggregatedData.push({
         date: new Date(),
         point: currentPoint,
         type: BacklogHistoryType.CREATE,
@@ -215,7 +257,7 @@ export function useBurndownChart(backlogHistory: BacklogHistory[], sprintId?: nu
       });
     }
 
-    return data;
+    return aggregatedData;
   }, [backlogGrouped, backlogFiltered, sprintEndDate]);
 
   return { storyPointData, backlogGrouped, backlogSorted: backlogFiltered };
