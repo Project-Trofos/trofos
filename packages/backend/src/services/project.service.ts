@@ -425,6 +425,11 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
       },
     });
 
+    // Prevent remove project owner
+    if (projectInfo.owner_id == userId) {
+      throw Error('Cannot remove project owner!');
+    }
+
     const userOnProjects = await tx.usersOnProjects.delete({
       where: {
         project_id_user_id: {

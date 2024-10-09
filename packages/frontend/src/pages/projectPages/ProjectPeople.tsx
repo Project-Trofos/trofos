@@ -122,6 +122,7 @@ export default function ProjectPeople(): JSX.Element {
               iAmAdmin: iAmAdmin,
               isHideIdByRole: true,
             }}
+            ownerId={project?.owner_id}
             control={
               <Space direction="horizontal">
                 {isProjectOwner ? (
