@@ -170,6 +170,18 @@ describe('project.service tests', () => {
       const result = await project.removeUser(PROJECT_ID, USER_ID);
       expect(result).toEqual<UsersOnProjects>(resultMock);
     });
+
+    it('should fail to remove project owner', async () => {
+      const INDEX = 0;
+      const mockProjectInfo = {
+        ...projectsData[INDEX],
+        course: {},
+      };
+
+      prismaMock.project.findFirstOrThrow.mockResolvedValueOnce(mockProjectInfo);
+
+      await expect(project.removeUser(mockProjectInfo.id, mockProjectInfo.owner_id!)).rejects.toThrow(Error);
+    });
   });
 
   describe('createBacklogStatus', () => {
