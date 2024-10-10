@@ -33,7 +33,7 @@ const spies = {
   findByEmail: jest.spyOn(user, 'findByEmail'),
 
   isSESEnabled: jest.spyOn(ses, 'isSESEnabled'),
-  sendEmail: jest.spyOn(ses, 'sendEmail'),
+  sendInviteEmail: jest.spyOn(ses, 'sendInviteEmail'),
 };
 
 describe('invite controller tests', () => {
@@ -60,7 +60,7 @@ describe('invite controller tests', () => {
 
       // Pretend send email
       spies.isSESEnabled.mockReturnValue(true);
-      spies.sendEmail.mockImplementation(async (email, subject, body) => {});
+      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
         params: {
@@ -89,7 +89,7 @@ describe('invite controller tests', () => {
 
       // Pretend send email
       spies.isSESEnabled.mockReturnValue(true);
-      spies.sendEmail.mockImplementation(async (email, subject, body) => {});
+      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
         params: {

@@ -1,5 +1,7 @@
 import {
   CreateTemplateCommand,
+  DeleteTemplateCommand,
+  GetTemplateCommand,
   ListTemplatesCommand,
   SESClient,
   SendEmailCommand,
@@ -11,7 +13,8 @@ const sesClient = new SESClient({
   region: 'ap-southeast-1',
 });
 
-const TEMPLATE_NAME = 'TROFOS_INVITE';
+// templates will defer by FRONTEND_BASE_URL env var
+const TEMPLATE_NAME = `TROFOS_INVITE_${process.env.FRONTEND_BASE_URL}`;
 
 // Disable SES features if in test env or email service is not provided
 function isSESEnabled() {
@@ -65,11 +68,25 @@ async function tryCreateEmailTemplate(templateName: string) {
   const listTemplatesCommand = new ListTemplatesCommand({});
   const response = await sesClient.send(listTemplatesCommand);
 
+  // Check if template exists and matches html template
+  // This ensures that we can easily update html template if needed
   if (response.TemplatesMetadata?.find((metadata) => metadata.Name == templateName)) {
-    return;
+    const getTemplateCommand = new GetTemplateCommand({
+      TemplateName: templateName,
+    });
+    const res = await sesClient.send(getTemplateCommand);
+
+    if (res.Template?.HtmlPart == inviteHTMLTemplate) {
+      return;
+    }
+
+    const deleteTemplateCommand = new DeleteTemplateCommand({
+      TemplateName: templateName,
+    });
+    await sesClient.send(deleteTemplateCommand);
   }
 
-  // Create email template if not existing
+  // Create email template
   const input = {
     Template: {
       TemplateName: templateName,

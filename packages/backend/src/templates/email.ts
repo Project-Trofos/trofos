@@ -17,7 +17,7 @@ export const inviteHTMLTemplate = `
     margin: 0 auto;
     padding: 20px;
     border-radius: 8px;
-    background-color: #ffffff0;
+    background-color: #f5f5f5;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: #333;
   ">
