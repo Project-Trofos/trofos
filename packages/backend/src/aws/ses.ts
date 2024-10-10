@@ -1,6 +1,6 @@
 import {
   CreateTemplateCommand,
-  DeleteTemplateCommand,
+  UpdateTemplateCommand,
   GetTemplateCommand,
   ListTemplatesCommand,
   SESClient,
@@ -65,6 +65,15 @@ async function sendInviteEmail(emailDest: string, projectName: string, uniqueTok
 }
 
 async function tryCreateEmailTemplate(templateName: string) {
+  // Create template
+  const input = {
+    Template: {
+      TemplateName: templateName,
+      SubjectPart: 'Trofos - Invitation to join project {{projectName}}',
+      HtmlPart: inviteHTMLTemplate,
+    },
+  };
+
   const listTemplatesCommand = new ListTemplatesCommand({});
   const response = await sesClient.send(listTemplatesCommand);
 
@@ -76,24 +85,13 @@ async function tryCreateEmailTemplate(templateName: string) {
     });
     const res = await sesClient.send(getTemplateCommand);
 
-    if (res.Template?.HtmlPart == inviteHTMLTemplate) {
-      return;
+    if (res.Template?.HtmlPart != inviteHTMLTemplate) {
+      const updateTemplateCommand = new UpdateTemplateCommand(input);
+      await sesClient.send(updateTemplateCommand);
     }
 
-    const deleteTemplateCommand = new DeleteTemplateCommand({
-      TemplateName: templateName,
-    });
-    await sesClient.send(deleteTemplateCommand);
+    return;
   }
-
-  // Create email template
-  const input = {
-    Template: {
-      TemplateName: templateName,
-      SubjectPart: 'Trofos - Invitation to join project {{projectName}}',
-      HtmlPart: inviteHTMLTemplate,
-    },
-  };
 
   const createTemplateCommand = new CreateTemplateCommand(input);
   await sesClient.send(createTemplateCommand);
