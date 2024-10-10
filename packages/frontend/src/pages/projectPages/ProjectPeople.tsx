@@ -50,8 +50,6 @@ export default function ProjectPeople(): JSX.Element {
       try {
         await sendProjectInvitation({
           projectId: project.id,
-          senderName: userInfo.userDisplayName,
-          senderEmail: userInfo.userEmail,
           destEmail: destEmail,
         }).unwrap();
 

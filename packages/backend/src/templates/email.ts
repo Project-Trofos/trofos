@@ -10,16 +10,48 @@ export function commentBody(username: string, comment: string, projectId: number
   `;
 }
 
-export function projectInviteSubject(projectName: string) {
-  return `Trofos - Invitation to join project ${projectName}`;
-}
+export const inviteHTMLTemplate = `
+  <div style="
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+  ">
+    <div style="
+      background-color: #c5e3d7;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+    ">
+      <h1 style="
+        margin: 0;
+        font-size: 24px;
+      ">Project Invitation</h1>
+    </div>
 
-export function projectInviteBody(invitationToken: string, senderName: string, senderEmail: string) {
-  const invitationLink = `${process.env.FRONTEND_BASE_URL}/join?token=${invitationToken}`;
+    <div style="
+      padding: 20px;
+      text-align: left;
+    ">
+      <p style="
+        font-size: 16px;
+        line-height: 1.6;
+      ">You have been invited to join a project.</p>
 
-  return `
-    ${senderName} (${senderEmail}) has invited you to join a project.
-  
-    Click to join: ${invitationLink}
-  `;
-}
+      <a 
+        href="${process.env.FRONTEND_BASE_URL}/join?token={{invitationToken}}"
+        style="
+          display: inline-block;
+          background-color: #32a2ac;
+          color: #ffffff;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+          font-size: 18px;"
+      >Join</a>
+    </div>
+  </div>`;
