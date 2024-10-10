@@ -1,4 +1,9 @@
 version: '1'
+
+networks:
+  monitoring:
+    external: true
+
 services:
   frontend:
     image: ghcr.io/project-trofos/trofos/frontend:main
@@ -8,6 +13,8 @@ services:
     restart: always
     links:
       - backend
+    networks:
+      - monitoring
   backend:
     image: ghcr.io/project-trofos/trofos/backend:main
     ports:
@@ -26,6 +33,8 @@ services:
         condition: service_healthy
     links:
       - postgres
+    networks:
+      - monitoring
   postgres:
     image: postgres:14.1-alpine
     restart: always
@@ -40,5 +49,7 @@ services:
       retries: 5
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - monitoring
 volumes:
   postgres:
