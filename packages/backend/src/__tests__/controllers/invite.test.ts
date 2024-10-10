@@ -141,12 +141,10 @@ describe('invite controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(validInviteData));
     });
 
-    it('should reject and delete expired invite', async () => {
+    it('should reject expired invite', async () => {
       spies.getInviteByToken.mockResolvedValue(expiredInviteData);
 
       // Mock delete invite
-      spies.deleteInvite.mockImplementation(async (project_id, email) => expiredInviteData);
-
       const mockReq = createRequest({
         params: {
           token: expiredInviteData.unique_token,
@@ -158,7 +156,6 @@ describe('invite controller tests', () => {
 
       expect(spies.addUserToCourse).not.toHaveBeenCalled();
       expect(spies.addUserToProj).not.toHaveBeenCalled();
-      expect(spies.deleteInvite).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
