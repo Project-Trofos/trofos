@@ -54,8 +54,9 @@ const mockProjectData: ProjectData = {
   users: [],
   sprints: [],
   backlogStatuses: [],
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   is_archive: null,
+  owner_id: null,
 };
 
 describe('test import data modal', () => {
@@ -109,8 +110,8 @@ describe('test import data modal', () => {
     const input = screen.getByTestId('upload-button') as HTMLInputElement;
     /* eslint-disable testing-library/no-unnecessary-act */
     await act(async () => {
-      fireEvent.change(input, {target: {files: [mockFile]}});
-    })
+      fireEvent.change(input, { target: { files: [mockFile] } });
+    });
     /* eslint-enable */
 
     expect(input.files![0]).toStrictEqual(mockFile);
@@ -121,13 +122,12 @@ describe('test import data modal', () => {
   });
 
   it('should prevent the user from uploading a csv if the course has projects', async () => {
-
     setup(mockCourseData, [mockProjectData]);
     const input = screen.getByTestId('upload-button') as HTMLInputElement;
     /* eslint-disable testing-library/no-unnecessary-act */
     await act(async () => {
-      fireEvent.change(input, {target: {files: [mockFile]}});
-    })
+      fireEvent.change(input, { target: { files: [mockFile] } });
+    });
     /* eslint-enable */
 
     expect(input.files![0]).toStrictEqual(mockFile);
