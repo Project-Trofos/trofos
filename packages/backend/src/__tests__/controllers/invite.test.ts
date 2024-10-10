@@ -33,7 +33,7 @@ const spies = {
   findByEmail: jest.spyOn(user, 'findByEmail'),
 
   isSESEnabled: jest.spyOn(ses, 'isSESEnabled'),
-  sendEmail: jest.spyOn(ses, 'sendEmail'),
+  sendInviteEmail: jest.spyOn(ses, 'sendInviteEmail'),
 };
 
 describe('invite controller tests', () => {
@@ -60,7 +60,7 @@ describe('invite controller tests', () => {
 
       // Pretend send email
       spies.isSESEnabled.mockReturnValue(true);
-      spies.sendEmail.mockImplementation(async (email, subject, body) => {});
+      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
         params: {
@@ -89,7 +89,7 @@ describe('invite controller tests', () => {
 
       // Pretend send email
       spies.isSESEnabled.mockReturnValue(true);
-      spies.sendEmail.mockImplementation(async (email, subject, body) => {});
+      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
         params: {
@@ -141,12 +141,10 @@ describe('invite controller tests', () => {
       expect(mockRes._getData()).toEqual(JSON.stringify(validInviteData));
     });
 
-    it('should reject and delete expired invite', async () => {
+    it('should reject expired invite', async () => {
       spies.getInviteByToken.mockResolvedValue(expiredInviteData);
 
       // Mock delete invite
-      spies.deleteInvite.mockImplementation(async (project_id, email) => expiredInviteData);
-
       const mockReq = createRequest({
         params: {
           token: expiredInviteData.unique_token,
@@ -158,7 +156,6 @@ describe('invite controller tests', () => {
 
       expect(spies.addUserToCourse).not.toHaveBeenCalled();
       expect(spies.addUserToProj).not.toHaveBeenCalled();
-      expect(spies.deleteInvite).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 

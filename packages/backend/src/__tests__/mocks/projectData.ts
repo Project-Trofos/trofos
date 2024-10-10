@@ -1,6 +1,9 @@
 import { BacklogStatus, BacklogStatusType, Project, ProjectGitLink, UsersOnProjectOnSettings } from '@prisma/client';
 import { UserSettingsType } from '../../services/types/project.service.types';
 
+// Mock project owner
+export const projectOwnerId = 1;
+
 // Mock data for projects
 export const projectsData: Project[] = [
   {
@@ -12,8 +15,9 @@ export const projectsData: Project[] = [
     description: 'd1',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: "",
+    telegramChannelLink: '',
     is_archive: null,
+    owner_id: projectOwnerId,
   },
   {
     id: 2,
@@ -24,8 +28,9 @@ export const projectsData: Project[] = [
     description: 'd2',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: "",
+    telegramChannelLink: '',
     is_archive: null,
+    owner_id: null,
   },
   {
     id: 3,
@@ -36,8 +41,9 @@ export const projectsData: Project[] = [
     description: 'd3',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: "",
+    telegramChannelLink: '',
     is_archive: null,
+    owner_id: null,
   },
   {
     id: 4,
@@ -48,8 +54,9 @@ export const projectsData: Project[] = [
     description: 'd4',
     public: false,
     backlog_counter: 0,
-    telegramChannelLink: "",
+    telegramChannelLink: '',
     is_archive: null,
+    owner_id: null,
   },
 ];
 
@@ -62,8 +69,9 @@ export const mockBacklogReturnedProject: Project = {
   description: 'd1',
   public: false,
   backlog_counter: 1,
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   is_archive: null,
+  owner_id: null,
 };
 
 export const mockInProgressBacklogStatus: BacklogStatus = {

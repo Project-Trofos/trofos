@@ -227,6 +227,7 @@ async function create(
             user_id: userId,
           },
         },
+        owner_id: userId,
         backlogStatuses: {
           createMany: {
             data: defaultBacklogStatus,
@@ -423,6 +424,11 @@ async function removeUser(projectId: number, userId: number): Promise<UsersOnPro
         course: true,
       },
     });
+
+    // Prevent remove project owner
+    if (projectInfo.owner_id == userId) {
+      throw Error('Cannot remove project owner!');
+    }
 
     const userOnProjects = await tx.usersOnProjects.delete({
       where: {

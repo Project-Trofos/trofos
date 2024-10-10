@@ -14,13 +14,14 @@ type UserTableProps = {
   control?: React.ReactNode;
   onlyShowActions?: ('REMOVE' | 'ROLE')[];
   myUserId?: number | undefined;
-  hideIdByRoleProp?: { iAmAdmin: boolean | undefined, isHideIdByRole: true } | undefined;
+  hideIdByRoleProp?: { iAmAdmin: boolean | undefined; isHideIdByRole: true } | undefined;
   handleRemoveUser?: (userId: number) => void;
   handleUpdateUserRole?: (roleId: number, userId: number) => void;
   showSelect?: boolean;
   onSelectChange?: (selectedKeys: React.Key[]) => void;
   footer?: string;
   pagination?: false;
+  ownerId?: number | null;
 };
 
 /**
@@ -43,6 +44,7 @@ export default function UserTable(props: UserTableProps) {
     userRoles,
     footer,
     pagination,
+    ownerId,
   } = props;
 
   const userIdToRole = useMemo(() => {
@@ -58,9 +60,10 @@ export default function UserTable(props: UserTableProps) {
     return map;
   }, [users, userRoles]);
 
-
   const currentUserIsFacultyOrAdmin = useMemo(() => {
-    return hideIdByRoleProp?.iAmAdmin || userRoles?.some((ur) => ur.user_id === myUserId && ur.role_id === FACULTY_ROLE_ID);
+    return (
+      hideIdByRoleProp?.iAmAdmin || userRoles?.some((ur) => ur.user_id === myUserId && ur.role_id === FACULTY_ROLE_ID)
+    );
   }, [hideIdByRoleProp, userRoles, myUserId]);
 
   return (
@@ -89,24 +92,33 @@ export default function UserTable(props: UserTableProps) {
         footer={footer ? () => footer : undefined}
         pagination={pagination}
       >
-        {((hideIdByRoleProp?.isHideIdByRole && currentUserIsFacultyOrAdmin) || !hideIdByRoleProp) && <Table.Column
-          width={150}
-          title="ID"
-          dataIndex={['user', 'user_id']}
-          sorter={(a: UserData, b: UserData) => a.user.user_id - b.user.user_id}
-          render={(_values, record, _) => (
-            <>
-              {record.user.user_id} {Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
-            </>
-          )}
-        />}
+        {((hideIdByRoleProp?.isHideIdByRole && currentUserIsFacultyOrAdmin) || !hideIdByRoleProp) && (
+          <Table.Column
+            width={150}
+            title="ID"
+            dataIndex={['user', 'user_id']}
+            sorter={(a: UserData, b: UserData) => a.user.user_id - b.user.user_id}
+            render={(_values, record, _) => (
+              <>
+                {record.user.user_id} {Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
+                {Number(record.user.user_id) === ownerId && <Tag color="orange">Owner</Tag>}
+              </>
+            )}
+          />
+        )}
         <Table.Column
           title="Email"
           dataIndex={['user', 'user_email']}
           sorter={(a: UserData, b: UserData) => a.user.user_email.localeCompare(b.user.user_email)}
           render={(_values, record, _) => (
             <>
-              {record.user.user_email} {hideIdByRoleProp?.isHideIdByRole && !currentUserIsFacultyOrAdmin && Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
+              {record.user.user_email}{' '}
+              {hideIdByRoleProp?.isHideIdByRole && !currentUserIsFacultyOrAdmin && (
+                <>
+                  {Number(record.user.user_id) === myUserId && <Tag color="blue">You</Tag>}
+                  {Number(record.user.user_id) === ownerId && <Tag color="orange">Owner</Tag>}
+                </>
+              )}
             </>
           )}
         />
@@ -132,6 +144,7 @@ export default function UserTable(props: UserTableProps) {
                   userId={record.user.user_id}
                   roles={actionsOnRoles}
                   handleRoleChange={handleUpdateUserRole}
+                  isProjectOwner={record.user.user_id == ownerId}
                 />
               ) : (
                 userIdToRole.get(record.user.user_id)?.role.role_name
@@ -149,11 +162,13 @@ export default function UserTable(props: UserTableProps) {
                 {handleRemoveUser && (
                   <Button
                     size="small"
-                    onClick={() =>
+                    onClick={() => {
                       users?.length === 1
-                        ? message.error('There must be atleast one user in a project')
-                        : handleRemoveUser(record.user.user_id)
-                    }
+                        ? message.error('There must be at least one user in a project')
+                        : record.user.user_id == ownerId
+                        ? message.error('Cannot remove project owner')
+                        : handleRemoveUser(record.user.user_id);
+                    }}
                   >
                     Remove
                   </Button>

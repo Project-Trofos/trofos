@@ -30,14 +30,16 @@ export default function ProjectPeople(): JSX.Element {
 
   const myRoleId = projectUserRoles?.find((pur) => pur.user_id === userInfo?.userId)?.role_id;
   const iAmAdmin = userInfo?.userRoleActions.includes(UserPermissionActions.ADMIN);
+  const allowableActions = actionsOnRoles?.find((aor) => aor.id === myRoleId)?.actions;
   const isAllowedRemoveUser =
-    actionsOnRoles
-      ?.find((aor) => aor.id === myRoleId)
-      ?.actions?.find((act) => act.action === UserPermissionActions.UPDATE_PROJECT_USERS) || iAmAdmin;
-  const isAllowedInviteUser =
-    actionsOnRoles
-      ?.find((aor) => aor.id === myRoleId)
-      ?.actions?.find((act) => act.action === UserPermissionActions.SEND_INVITE) || iAmAdmin;
+    allowableActions?.find((act) => act.action === UserPermissionActions.UPDATE_PROJECT_USERS) || iAmAdmin;
+  const isAllowedAddUser =
+    (allowableActions?.find((act) => act.action === UserPermissionActions.UPDATE_PROJECT) &&
+      allowableActions?.find((act) => act.action === UserPermissionActions.SEND_INVITE)) ||
+    iAmAdmin;
+  const isProjectOwner =
+    userInfo?.userId == project?.owner_id &&
+    allowableActions?.find((act) => act.action === UserPermissionActions.SEND_INVITE);
 
   const sendEmail = useCallback(
     async (destEmail: string) => {
@@ -48,8 +50,6 @@ export default function ProjectPeople(): JSX.Element {
       try {
         await sendProjectInvitation({
           projectId: project.id,
-          senderName: userInfo.userDisplayName,
-          senderEmail: userInfo.userEmail,
           destEmail: destEmail,
         }).unwrap();
 
@@ -61,7 +61,25 @@ export default function ProjectPeople(): JSX.Element {
     [project, userInfo],
   );
 
-  const handleOnClick = async (userEmail: string) => {
+  const handleOnClickInvite = async (userEmail: string) => {
+    try {
+      validateEmailPattern(userEmail);
+
+      if (project) {
+        if (project.users.some((u) => u.user.user_email === userEmail)) {
+          message.error('User already in this course!');
+          return;
+        }
+        confirmInviteUserToProject(async () => {
+          await sendEmail(userEmail);
+        });
+      }
+    } catch (err) {
+      message.error(getErrorMessage(err));
+    }
+  };
+
+  const handleOnClickAdd = async (userEmail: string) => {
     try {
       validateEmailPattern(userEmail);
 
@@ -80,7 +98,7 @@ export default function ProjectPeople(): JSX.Element {
           message.error('User already in this course!');
           return;
         }
-        await sendEmail(userEmail);
+        await handleAddUser(userEmail);
       }
     } catch (err) {
       message.error(getErrorMessage(err));
@@ -102,17 +120,23 @@ export default function ProjectPeople(): JSX.Element {
               iAmAdmin: iAmAdmin,
               isHideIdByRole: true,
             }}
+            ownerId={project?.owner_id}
             control={
               <Space direction="horizontal">
-                {iAmAdmin && (
-                  <InputWithButton handleClick={handleAddUser} buttonText="Add" inputPlaceholder="Add user by email" />
-                )}
-                {isAllowedInviteUser && (
+                {isProjectOwner ? (
                   <InputWithButton
-                    handleClick={handleOnClick}
+                    handleClick={handleOnClickInvite}
                     buttonText="Invite"
                     inputPlaceholder="Invite user by email"
                   />
+                ) : (
+                  isAllowedAddUser && (
+                    <InputWithButton
+                      handleClick={handleOnClickAdd}
+                      buttonText="Add"
+                      inputPlaceholder="Add user by email"
+                    />
+                  )
                 )}
               </Space>
             }
@@ -121,7 +145,7 @@ export default function ProjectPeople(): JSX.Element {
             onlyShowActions={isCourseManager ? undefined : isAllowedRemoveUser ? ['REMOVE', 'ROLE'] : ['ROLE']}
           />
         </Card>
-        {isAllowedInviteUser && (
+        {(isAllowedAddUser || isProjectOwner) && (
           <Card>
             <InviteTable userInfo={userInfo} invites={invites} onResendInvite={sendEmail} />
           </Card>

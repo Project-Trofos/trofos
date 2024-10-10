@@ -21,6 +21,7 @@ export const validInviteProject: Project = {
   backlog_counter: 0,
   telegramChannelLink: '',
   is_archive: null,
+  owner_id: null,
 };
 
 export const updatedInviteData: Invite = {

@@ -14,6 +14,7 @@ import {
   mockReturnedUserSettings,
   mockUpdatedUserSettings,
   projectsData,
+  projectOwnerId,
 } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
@@ -82,7 +83,7 @@ describe('project.service tests', () => {
       prismaMock.$transaction.mockResolvedValueOnce(newProject);
 
       const result = await project.create(
-        1,
+        projectOwnerId,
         newProject.pname,
         newProject.pkey ?? undefined,
         newProject.public,
