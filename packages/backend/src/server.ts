@@ -57,8 +57,9 @@ app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
     const responseTimeInMs = Date.now() - start;
+    const route = req.originalUrl.replace(/\d+/g, ':id');
     httpRequestTimer
-      .labels(req.method, req.route?.path, res.statusCode.toString())
+      .labels(req.method, route, res.statusCode.toString())
       .observe(responseTimeInMs);
   });
   next();

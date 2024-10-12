@@ -124,7 +124,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_request_duration_ms_count{code=~\"2.*\"}[1m]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\", code=~\"2.*\"}[1m]))",
           "instant": false,
           "legendFormat": "Valid requests",
           "range": true,
@@ -137,7 +137,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(http_request_duration_ms_count{code!~\"2.*\"}[1m]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\", code!~\"2.*\"}[1m]))",
           "hide": false,
           "instant": false,
           "legendFormat": "Error requests",
@@ -236,7 +236,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_request_duration_ms_count{code=~\"2.*\"}[1h]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\", code=~\"2.*\"}[1h]))",
           "instant": false,
           "legendFormat": "2xx {{method}} {{route}}",
           "range": true,
@@ -248,7 +248,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_request_duration_ms_count{code=~\"4.*\"}[1h]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\", code=~\"4.*\"}[1h]))",
           "hide": false,
           "instant": false,
           "legendFormat": "4xx {{method}} {{route}}",
@@ -261,7 +261,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_request_duration_ms_count{code=~\"5.*\"}[1m]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\", code=~\"5.*\"}[1m]))",
           "hide": false,
           "instant": false,
           "legendFormat": "5xx {{method}} {{route}}",
@@ -360,7 +360,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_request_duration_ms_count[1m]))",
+          "expr": "sum(increase(http_request_duration_ms_count{route!~\"/api/external/.*\"}[1m]))",
           "instant": false,
           "legendFormat": "Requests per minute",
           "range": true,
@@ -458,7 +458,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(rate(http_request_duration_ms_sum[$__range]) / rate(http_request_duration_ms_count[$__range])) by (route, method)",
+          "expr": "avg(rate(http_request_duration_ms_sum{route!~\"/api/external/.*\"}[$__range]) / rate(http_request_duration_ms_count{route!~\"/api/external/.*\"}[$__range])) by (route, method)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -556,7 +556,7 @@
             "uid": "ds-prometheus"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.90, sum(rate(http_request_duration_ms_bucket[1m])) by (le, route, method))",
+          "expr": "histogram_quantile(0.90, sum(rate(http_request_duration_ms_bucket{route!~\"/api/external/.*\"}[1m])) by (le, route, method))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -579,7 +579,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Nodejs Application Request Response Dashboard",
+  "title": "Nodejs Application Internal Request Response Dashboard",
   "uid": "be0fmwlpi1q0wb",
   "version": 7,
   "weekStart": ""
