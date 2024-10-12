@@ -1,8 +1,9 @@
 version: '3.8'
 
 networks:
-  monitoring:
-    driver: bridge
+  application:
+    external: true
+    name: trofos-application
 
 volumes:
   prometheus_data: {}
@@ -28,7 +29,7 @@ services:
     expose:
       - 9100
     networks:
-      - monitoring
+      - application
 
   prometheus:
     image: prom/prometheus:latest
@@ -48,7 +49,7 @@ services:
     expose:
       - 9090
     networks:
-      - monitoring
+      - application
     depends_on:
       - node-exporter
       - cadvisor
@@ -69,7 +70,7 @@ services:
     depends_on:
       - redis
     networks:
-      - monitoring
+      - application
   
   # For cAdvisor: https://prometheus.io/docs/guides/cadvisor/
   redis:
@@ -79,7 +80,7 @@ services:
     ports:
       - 6379:6379
     networks:
-      - monitoring
+      - application
 
   grafana:
     image: grafana/grafana:latest
@@ -97,4 +98,4 @@ services:
     expose:
       - 9000
     networks:
-      - monitoring
+      - application

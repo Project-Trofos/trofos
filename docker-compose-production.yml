@@ -1,9 +1,19 @@
+# This Dockerfile is to simulate how deployed servers run the 
+# application, but you build the images locally. Frontend has
+# a different Dockerfile to simulate the reverse proxy forwarding
+# api traffic to backend
 version: '3.8'
+
+networks:
+  application:
+    driver: bridge
+    name: trofos-application
+
 services:
   frontend:
     build:
       context: ./packages/frontend
-      dockerfile: Dockerfile.production
+      dockerfile: ./local_dev_docker/Dockerfile.dev
       target: prod
     ports:
       - '3000:80'
@@ -11,6 +21,8 @@ services:
     restart: always
     links:
       - backend
+    networks:
+      - application
   backend:
     build:
       context: ./packages/backend
@@ -20,8 +32,17 @@ services:
       - '3001:3001'
     container_name: trofos-backend-production
     restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
     links:
       - postgres
+    networks:
+      - application
   postgres:
     image: postgres:14.1-alpine
     restart: always
@@ -33,5 +54,7 @@ services:
       - '5432:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - application
 volumes:
   postgres:
