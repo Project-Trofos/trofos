@@ -93,8 +93,9 @@ export const projectOnePrismaCreateMock: Project = {
   public: false,
   backlog_counter: 0,
   created_at: new Date(Date.now()),
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   is_archive: null,
+  owner_id: null,
 };
 
 export const projectTwoPrismaCreateMock: Project = {
@@ -106,8 +107,9 @@ export const projectTwoPrismaCreateMock: Project = {
   public: false,
   backlog_counter: 0,
   created_at: new Date(Date.now()),
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   is_archive: null,
+  owner_id: null,
 };
 
 export const studentOnePrismaUserUpsertMock: User = {

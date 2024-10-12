@@ -240,7 +240,7 @@ export const MSW_PROJECT: ProjectData = {
   course: MSW_COURSE,
   backlogStatuses: [],
   sprints: MSW_SPRINT,
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   users: [
     {
       user: {
@@ -252,6 +252,7 @@ export const MSW_PROJECT: ProjectData = {
     },
   ],
   is_archive: null,
+  owner_id: null,
 };
 
 export const MSW_PROJECT_BY_ID: ProjectData = {
@@ -280,9 +281,9 @@ export const MSW_PROJECT_BY_ID: ProjectData = {
     {
       id: 1,
       name: 'TestSprint 1',
-    }
+    },
   ],
-  telegramChannelLink: "",
+  telegramChannelLink: '',
   users: [
     {
       user: {
@@ -294,6 +295,7 @@ export const MSW_PROJECT_BY_ID: ProjectData = {
     },
   ],
   is_archive: null,
+  owner_id: null,
 };
 
 export const MSW_COURSE_ROLES: UserOnRolesOnCourse[] = [
@@ -313,47 +315,50 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
   sprints: [
     {
       id: 4,
-      name: "TestSprint x",
+      name: 'TestSprint x',
       duration: 2,
-      start_date: "2024-08-23T03:12:33.000Z",
-      end_date: "2024-09-06T03:12:33.000Z",
+      start_date: '2024-08-23T03:12:33.000Z',
+      end_date: '2024-09-06T03:12:33.000Z',
       project_id: 56,
-      goals: "",
-      status: "closed",
-      backlogs: []
-    }, {
+      goals: '',
+      status: 'closed',
+      backlogs: [],
+    },
+    {
       id: 5,
-      name: "TestSprint last",
+      name: 'TestSprint last',
       duration: 2,
-      start_date: "2024-08-23T03:12:33.000Z",
-      end_date: "2024-09-06T03:12:33.000Z",
+      start_date: '2024-08-23T03:12:33.000Z',
+      end_date: '2024-09-06T03:12:33.000Z',
       project_id: 56,
-      goals: "",
-      status: "closed",
-      backlogs: []
-    }, {
+      goals: '',
+      status: 'closed',
+      backlogs: [],
+    },
+    {
       id: 3,
-      name: "TestSprint 3",
+      name: 'TestSprint 3',
       duration: 2,
-      start_date: "2024-08-23T03:12:33.000Z",
-      end_date: "2024-09-06T03:12:33.000Z",
+      start_date: '2024-08-23T03:12:33.000Z',
+      end_date: '2024-09-06T03:12:33.000Z',
       project_id: 56,
-      goals: "",
-      status: "closed",
-      backlogs: []
-    }, {
+      goals: '',
+      status: 'closed',
+      backlogs: [],
+    },
+    {
       id: 1,
-      name: "TestSprint 1",
+      name: 'TestSprint 1',
       duration: 2,
-      start_date: "2024-08-23T03:12:33.000Z",
-      end_date: "2024-09-06T03:12:33.000Z",
+      start_date: '2024-08-23T03:12:33.000Z',
+      end_date: '2024-09-06T03:12:33.000Z',
       project_id: 56,
-      goals: "",
-      status: "closed",
-      backlogs: []
-    }, 
+      goals: '',
+      status: 'closed',
+      backlogs: [],
+    },
   ],
-  unassignedBacklogs: []
+  unassignedBacklogs: [],
 };
 
 const handlers = [
@@ -361,7 +366,9 @@ const handlers = [
   rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
 
   // Handles GET on /project/:id
-  rest.get(`${BASE_URL}/project/:id`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify(MSW_PROJECT_BY_ID)))),
+  rest.get(`${BASE_URL}/project/:id`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.body(JSON.stringify(MSW_PROJECT_BY_ID))),
+  ),
 
   // Handles GET on /course
   rest.get(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_COURSE])))),
@@ -393,9 +400,9 @@ const handlers = [
   ),
 
   // Mock sprint data of project
-  rest.get(`${BASE_URL}/sprint/listSprints/:id`, (req, res, ctx) => (
-    res(ctx.status(200), ctx.body(JSON.stringify(MSW_SPRINT_WITH_BACKLOGS)))
-  )),
+  rest.get(`${BASE_URL}/sprint/listSprints/:id`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.body(JSON.stringify(MSW_SPRINT_WITH_BACKLOGS))),
+  ),
 ];
 
 export default handlers;

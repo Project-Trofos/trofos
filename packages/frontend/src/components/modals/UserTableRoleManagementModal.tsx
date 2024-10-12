@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Select } from 'antd';
+import { Button, Modal, Select, message } from 'antd';
 import { ActionsOnRoles } from '../../api/types';
 
 type UserRoleManagement = {
@@ -9,10 +9,11 @@ type UserRoleManagement = {
   userId: number | undefined;
   roles: ActionsOnRoles[] | undefined;
   handleRoleChange: (roleId: number, userId: number) => void;
+  isProjectOwner: boolean;
 };
 
 export default function UserTableRoleManagementModal(props: UserRoleManagement): JSX.Element {
-  const { userRoleId, userRoleName, userEmail, userId, roles, handleRoleChange } = props;
+  const { userRoleId, userRoleName, userEmail, userId, roles, handleRoleChange, isProjectOwner } = props;
 
   const [currentRole, setCurrentRole] = useState(userRoleId);
 
@@ -25,6 +26,10 @@ export default function UserTableRoleManagementModal(props: UserRoleManagement):
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
+    if (isProjectOwner) {
+      message.error('Owner must be FACULTY role');
+      return;
+    }
     setIsModalOpen(true);
   };
 

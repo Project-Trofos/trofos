@@ -4,16 +4,11 @@ import { Invite } from './types';
 // Invite management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    sendProjectInvitation: builder.mutation<
-      void,
-      { projectId: number; senderName: string; senderEmail: string; destEmail: string }
-    >({
-      query: ({ projectId, senderName, senderEmail, destEmail }) => ({
+    sendProjectInvitation: builder.mutation<void, { projectId: number; destEmail: string }>({
+      query: ({ projectId, destEmail }) => ({
         url: `invite/project/${projectId}`,
         method: 'POST',
         body: {
-          senderName,
-          senderEmail,
           destEmail,
         },
         credentials: 'include',
