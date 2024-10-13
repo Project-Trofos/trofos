@@ -7,6 +7,9 @@ import accountService from '../services/account.service';
 import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import axios from 'axios';
+import fs from 'fs';
+import { ServiceProvider, IdentityProvider } from 'samlify';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -136,8 +139,58 @@ async function register(req: express.Request, res: express.Response) {
   } catch (error) {
     console.error(error);
     const err = error as PrismaClientKnownRequestError;
-    if (err.code == "P2002") return res.status(StatusCodes.BAD_REQUEST).json({ error: "Email already in use"})
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    if (err.code == 'P2002') return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Email already in use' });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+  }
+}
+
+async function configureSp() {
+  const spMetadataXml = fs.readFileSync('./sp.xml');
+  const sp = ServiceProvider({
+    metadata: spMetadataXml,
+  });
+
+  return sp;
+}
+
+async function configureIdp() {
+  const idpMetadataUrl = 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
+  const { data: idpMetadataXml } = await axios.get(idpMetadataUrl);
+
+  const idp = IdentityProvider({
+    metadata: idpMetadataXml,
+  });
+
+  return idp;
+}
+
+async function generateSAMLRequest(req: express.Request, res: express.Response) {
+  try {
+    const sp = await configureSp();
+    const idp = await configureIdp();
+
+    // Create auth SAML request
+    const { id, context } = sp.createLoginRequest(idp, 'redirect');
+    return res.status(StatusCodes.OK).json({ redirectUrl: context });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function processSAMLResponse(req: express.Request, res: express.Response) {
+  try {
+    const sp = await configureSp();
+    const idp = await configureIdp();
+
+    const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
+    const { extract } = parsedResponse;
+    console.log('SAML Response Parsed:', extract);
+
+    // Handle user login and session creation
+
+    res.redirect('/');
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 }
 
@@ -148,5 +201,7 @@ export default {
   changePassword,
   updateUser,
   oauth2Login,
-  register
+  register,
+  generateSAMLRequest,
+  processSAMLResponse,
 };

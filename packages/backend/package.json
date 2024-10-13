@@ -47,6 +47,7 @@
     "multer": "^1.4.5-lts.1",
     "node-mocks-http": "^1.11.0",
     "prisma": "4.8.1",
+    "samlify": "^2.8.11",
     "socket.io": "^4.5.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

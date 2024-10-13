@@ -96,7 +96,14 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'POST',
         body: user,
       }),
-    })
+    }),
+    generateSAMLRequest: builder.mutation<{ redirectUrl: string }, void>({
+      query: () => ({
+        url: '/account/generateSAMLReq',
+        method: 'POST',
+        credentials: 'include',
+      }),
+    }),
   }),
 });
 
@@ -108,4 +115,5 @@ export const {
   useUpdateUserInfoMutation,
   useOauth2LoginMutation,
   useRegisterMutation,
+  useGenerateSAMLRequestMutation,
 } = extendedApi;
