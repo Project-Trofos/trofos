@@ -2,7 +2,7 @@
 
 # Variables
 REPO_URL="https://github.com/Project-Trofos/trofos.git"
-TARGET_DIR="/home/sadm//monitoring"
+TARGET_DIR="/home/sadm/monitoring"
 MONITORING_DIR="/home/sadm/monitoring/monitoring"
 
 # Navigate to the target directory or clone the repo if it doesn't exist

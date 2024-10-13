@@ -1,0 +1,38 @@
+name: Deploy Monitoring
+
+on:
+  push:
+    paths:
+      - 'monitoring/**'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI Test for staging"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Notify deployment start
+        run: |
+          message="[Deployment Started]
+          Commit: ${{ github.sha }}
+          "
+          curl --data-urlencode "text=${message}" ${{ secrets.NOTIFICATION_API }}
+
+      - name: Send deployment request to webhook
+        run: curl ${{ secrets.MONITORING_DEPLOYMENT_WEBHOOK_API }}
+
+      - name: Send notification on failure
+        if: failure()
+        run: |
+          message="[Build Failed]
+          Commit: ${{ github.sha }}
+          View full log here: https://github.com/Project-Trofos/trofos/actions/runs/${{ github.run_id }}
+          "
+          curl --data-urlencode "text=${message}" ${{ secrets.NOTIFICATION_API }}

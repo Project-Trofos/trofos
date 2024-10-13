@@ -94,8 +94,8 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     ports:
-      - 9000:3000
+      - 9001:3000
     expose:
-      - 9000
+      - 9001
     networks:
       - application
