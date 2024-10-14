@@ -32,3 +32,22 @@ At project root:
 1. `pnpm run start-prod`
 2. If running the local postgres container **for the first time**, populate the postgres docker volume with data using:
    1. `pnpm run seed`
+
+### Start Production local instance with docker
+
+1. Ensure database has been seeded and set up
+
+2. Create a `.env.docker`:
+
+```
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin
+POSTGRES_DB=trofos
+DATABASE_URL="postgresql://admin:admin@postgres:5432/trofos?schema=public"
+trofos?schema=public"
+TELEGRAM_TOKEN=<TOKEN>
+```
+
+At project root:
+
+3. `docker compose -f .\docker-compose-production.yml --env-file ./.env.docker up`
