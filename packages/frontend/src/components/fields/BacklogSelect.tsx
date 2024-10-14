@@ -78,7 +78,7 @@ function BacklogSelect(props: BacklogSelectPropsTypes): JSX.Element {
         >
           {options.map((option) => (
             <Option key={option.id} value={option.id}>
-              {option.name}
+              {option.labelComponent || option.name}
             </Option>
           ))}
         </Select>
