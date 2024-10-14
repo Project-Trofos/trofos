@@ -187,6 +187,14 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
     console.log('SAML Response Parsed:', extract);
 
     // Handle user login and session creation
+    const userInfo = await authenticationService.samlHandler(extract);
+    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+    const sessionId = await sessionService.createUserSession(
+      userInfo.user_email,
+      userRoleInformation,
+      userInfo.user_id,
+    );
+    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
 
     res.redirect('/');
   } catch (error) {
