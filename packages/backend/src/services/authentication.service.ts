@@ -59,7 +59,36 @@ async function oauth2Handler(code: string, state: string, callbackUrl: string): 
   return userInfo;
 }
 
+async function samlHandler(extract: any): Promise<User> {
+  if (!extract.attribute.emailAddress || !extract.attribute.givenName || !extract.attribute.surname) {
+    throw new Error('Invalid extract!');
+  }
+
+  const userEmail = extract.attribute.emailAddress;
+
+  // If the user does not exist, we create an account for them
+  // Otherwise, we return their account information
+  const userInfo = await prisma.user.upsert({
+    where: {
+      user_email: userEmail,
+    },
+    update: {},
+    create: {
+      user_email: userEmail,
+      user_display_name: `${extract.attribute.givenName} ${extract.attribute.surname}`,
+      basicRoles: {
+        create: {
+          role_id: STUDENT_ROLE_ID, // Default role of a new user
+        },
+      },
+    },
+  });
+
+  return userInfo;
+}
+
 export default {
   validateUser,
   oauth2Handler,
+  samlHandler,
 };

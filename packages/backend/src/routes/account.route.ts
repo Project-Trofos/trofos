@@ -18,5 +18,8 @@ router.post('/changePassword', hasAuth(null, userPolicy.POLICY_NAME), account.ch
 
 router.post('/updateUser', hasAuth(null, userPolicy.POLICY_NAME), account.updateUser);
 
+router.post('/generateSAMLReq', account.generateSAMLRequest);
+
+router.post('/callback/saml', account.processSAMLResponse);
 
 export default router;

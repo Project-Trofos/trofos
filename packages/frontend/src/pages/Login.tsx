@@ -57,20 +57,22 @@ export default function LoginPage(): JSX.Element {
             <Form.Item>
               <Row gutter={6}>
                 <Col span={12}>
-                  <Button type="primary" htmlType="submit" style={{width: "100%"}} >
+                  <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
                     Sign in
                   </Button>
                 </Col>
                 <Col span={12}>
                   <Link to="/register">
-                    <Button type="default" style={{width: "100%"}}>Register</Button>
+                    <Button type="default" style={{ width: '100%' }}>
+                      Register
+                    </Button>
                   </Link>
                 </Col>
               </Row>
             </Form.Item>
           </Form>
-          {/* <Typography>Sign in with</Typography> */}
-          {/* <NusSsoButton /> */}
+          <Typography>Sign in with</Typography>
+          <NusSsoButton />
         </div>
       </Space>
     </Layout>
