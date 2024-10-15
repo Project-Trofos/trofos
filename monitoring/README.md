@@ -1,5 +1,7 @@
 # Quick start
 
+1. Create a `.env` based off the .env.example
+
 1. `docker compose -f docker-compose-monitoring.yml up --build`
 
 ## Grafana
@@ -12,4 +14,4 @@ Stores all the metric data from various sources like cadvisor (gets metrics on c
 
 ## Deployment
 
-Run `/home/sadm/hooks/monitoring_cd.sh`. TODO: automate with GH acitons calling a webhook that runs `monitoring_cd.sh` on the staging VM.
+Run `/home/sadm/hooks/monitoring_cd.sh`.

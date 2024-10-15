@@ -53,6 +53,7 @@ services:
     depends_on:
       - node-exporter
       - cadvisor
+      - postgres-exporter
   
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -69,6 +70,21 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     depends_on:
       - redis
+    networks:
+      - application
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-exporter
+    restart: unless-stopped
+    ports:
+      - 9187:9187
+    expose:
+      - 9187
+    environment:
+      - DATA_SOURCE_URI=${DATA_SOURCE_URI}
+      - DATA_SOURCE_USER=${DATA_SOURCE_USER}
+      - DATA_SOURCE_PASS=${DATA_SOURCE_PASS}
     networks:
       - application
   
