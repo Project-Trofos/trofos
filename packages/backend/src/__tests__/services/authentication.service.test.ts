@@ -107,4 +107,37 @@ describe('authentication.service tests', () => {
       );
     });
   });
+
+  describe('samlHandler', () => {
+    it('should throw error if extract has no email address attribute', async () => {
+      const mockExtract = {
+        givenName: 'firstName',
+        surname: 'lastName',
+      };
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+    });
+    it('should throw error if extract has no given name attribute', async () => {
+      const mockExtract = {
+        emailAddress: 'testEmail@test.com',
+        surname: 'lastName',
+      };
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+    });
+    it('should throw error if extract has no surname attribute', async () => {
+      const mockExtract = {
+        emailAddress: 'testEmail@test.com',
+        givenName: 'firstName',
+      };
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+    });
+    it('should return user information if the extract is valid', async () => {
+      const mockExtract = {
+        emailAddress: 'testUser@test.com',
+        givenName: 'Test User',
+        surname: '',
+      };
+      prismaMock.user.upsert.mockResolvedValueOnce(userData[0]);
+      await expect(authenticationService.samlHandler(mockExtract)).resolves.toEqual(userData[0]);
+    });
+  });
 });

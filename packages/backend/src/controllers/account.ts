@@ -195,10 +195,11 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
       userInfo.user_id,
     );
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
-
-    res.redirect('/');
+    return res.status(StatusCodes.OK).send();
   } catch (error) {
     return getDefaultErrorRes(error, res);
+  } finally {
+    res.redirect('/');
   }
 }
 

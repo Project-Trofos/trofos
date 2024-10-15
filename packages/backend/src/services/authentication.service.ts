@@ -75,7 +75,7 @@ async function samlHandler(extract: any): Promise<User> {
     update: {},
     create: {
       user_email: userEmail,
-      user_display_name: `${extract.attribute.givenName} ${extract.attribute.surname}`,
+      user_display_name: `${extract.attribute.givenName} ${extract.attribute.surname || ''}`.trim(),
       basicRoles: {
         create: {
           role_id: STUDENT_ROLE_ID, // Default role of a new user
