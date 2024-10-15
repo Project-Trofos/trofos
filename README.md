@@ -44,8 +44,14 @@ POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
 POSTGRES_DB=trofos
 DATABASE_URL="postgresql://admin:admin@postgres:5432/trofos?schema=public"
-trofos?schema=public"
 TELEGRAM_TOKEN=<TOKEN>
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+NODE_ENV=
+EMAIL_SERVICE=
+AWS_SES_FROM_EMAIL=
+
 ```
 
 At project root:

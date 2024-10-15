@@ -21,3 +21,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['backend:3001']
+  
+  - job_name: 'postgres'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['postgres-exporter:9187']
