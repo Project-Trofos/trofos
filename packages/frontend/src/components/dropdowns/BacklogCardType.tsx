@@ -3,14 +3,9 @@ import { message, Select } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useUpdateBacklogMutation } from '../../api/socket/backlogHooks';
 import './BacklogCardType.css';
+import { BACKLOG_TYPE_OPTIONS } from '../../helpers/constants';
 
 type BacklogType = 'story' | 'task' | 'bug';
-
-const BACKLOG_TYPE_OPTIONS = [
-  { value: 'story', label: 'Story' },
-  { value: 'task', label: 'Task' },
-  { value: 'bug', label: 'Bug' },
-];
 
 export default function BacklogCardType(props: { backlogId: number; currentType: BacklogType }) {
   const { currentType, backlogId } = props;
