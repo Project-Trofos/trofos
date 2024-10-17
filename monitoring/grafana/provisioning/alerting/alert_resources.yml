@@ -7,7 +7,8 @@ contactPoints:
           type: telegram
           settings:
             bottoken: $GF_TELEGRAM_BOT_TOKEN
-            chatid: "-4591565687" #TODO: put this into env variable when grafana merges fix https://github.com/grafana/grafana/issues/69950
+            chatid: |
+              $GF_TELEGRAM_CHAT_ID
             disable_notification: false
             disable_web_page_preview: false
             message: '{{ template "Generic alert template" . }}'
@@ -20,8 +21,8 @@ contactPoints:
           type: telegram
           settings:
             bottoken: $GF_TELEGRAM_BOT_TOKEN
-            chatid: "-4591565687" # TODO: put in env var
-            disable_notification: false
+            chatid: |
+              $GF_TELEGRAM_CHAT_ID
             disable_web_page_preview: false
             message: '{{ template "Generic alert template" . }}'
             protect_content: false
@@ -34,7 +35,8 @@ contactPoints:
           type: telegram
           settings:
             bottoken: $GF_TELEGRAM_BOT_TOKEN
-            chatid: "-4591565687" # TODO: put in env var
+            chatid: |
+              $GF_TELEGRAM_CHAT_ID
             disable_notification: false
             disable_web_page_preview: false
             message: '{{ template "Generic alert template" . }}'
