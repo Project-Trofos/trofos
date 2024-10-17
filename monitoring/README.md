@@ -12,7 +12,7 @@ Used to visualize time series data stored in prometheus
 
 Think of the files in grafana dir like IAC, storing dashboard and alerting configs as files. Alerts can be configured with terraform, but will likely need to change insignificant amounts of things compared to file provisioning
 
-**TODO: set telegram_chat_id in env var when grafana fixes some parsing issue. Now chat id is written directly in alert_resources.contact points**
+**TODO: set telegram_chat_id in env var when grafana fixes some parsing issue. Now chat id is written directly in alert_resources.contact points. Remember to change it for staging/production**
 
 ## Prometheus
 

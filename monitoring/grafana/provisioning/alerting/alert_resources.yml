@@ -27,6 +27,21 @@ contactPoints:
             protect_content: false
           disableResolveMessage: false
 
+    - orgId: 1
+      name: telegram_bot_vm_metrics
+      receivers:
+        - uid: de15ie7aw78qof
+          type: telegram
+          settings:
+            bottoken: $GF_TELEGRAM_BOT_TOKEN
+            chatid: "-4591565687" # TODO: put in env var
+            disable_notification: false
+            disable_web_page_preview: false
+            message: '{{ template "Generic alert template" . }}'
+            protect_content: false
+          disableResolveMessage: false
+
+
 templates:
     - orgId: 1
       name: Generic alert template
@@ -51,3 +66,11 @@ policies:
               - Backend recently restarted
           group_interval: 2m
           repeat_interval: 2m
+
+        - receiver: telegram_bot_vm_metrics
+          object_matchers:
+            - - policy
+              - =
+              - VM metrics
+          group_interval: 2m
+          repeat_interval: 1h

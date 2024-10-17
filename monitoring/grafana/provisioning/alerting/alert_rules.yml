@@ -116,3 +116,185 @@ groups:
           labels:
             policy: Backend recently restarted
           isPaused: false
+    - orgId: 1
+      name: VM metrics
+      folder: Metric Monitoring
+      interval: 1m
+      rules:
+        - uid: de14ze4vshfcwe
+          title: CPU Busy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ds-prometheus
+              model:
+                editorMode: code
+                expr: 100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle", instance="node-exporter:9100"}[10m15s])))
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 90
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: rYdddlPWk
+          panelId: 20
+          noDataState: OK
+          execErrState: Error
+          for: 3m
+          annotations:
+            __dashboardUid__: rYdddlPWk
+            __panelId__: "20"
+            description: The CPU usage has exceeded 90% for the past 3 minutes
+            summary: VM CPU usage is high
+          labels:
+            policy: VM metrics
+          isPaused: false
+        - uid: ee15hvtlj0xdsb
+          title: RAM usage high
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ds-prometheus
+              model:
+                editorMode: code
+                expr: (1 - (node_memory_MemAvailable_bytes{instance="node-exporter:9100", job="node_exporter"} / node_memory_MemTotal_bytes{instance="node-exporter:9100", job="node_exporter"})) * 100
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 90
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: rYdddlPWk
+          panelId: 16
+          noDataState: OK
+          execErrState: Error
+          for: 3m
+          annotations:
+            __dashboardUid__: rYdddlPWk
+            __panelId__: "16"
+            description: The RAM usage has exceeded 90% for the past 3 minutes
+            summary: VM RAM usage is high
+          labels:
+            policy: VM metrics
+          isPaused: false
+        - uid: ce15i97lvnv28d
+          title: Free disk space low
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ds-prometheus
+              model:
+                editorMode: code
+                expr: 100 - ((node_filesystem_avail_bytes{instance="node-exporter:9100",job="node_exporter",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{instance="node-exporter:9100",job="node_exporter",mountpoint="/",fstype!="rootfs"})
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 90
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: rYdddlPWk
+          panelId: 154
+          noDataState: OK
+          execErrState: Error
+          for: 0s
+          annotations:
+            __dashboardUid__: rYdddlPWk
+            __panelId__: "154"
+            description: DIsk usage has reached 90%
+            summary: Low disk space
+          labels:
+            policy: VM metrics
+          isPaused: false
