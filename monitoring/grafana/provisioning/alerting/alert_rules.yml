@@ -1,0 +1,118 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: Backend restarts
+      folder: Metric Monitoring
+      interval: 30s
+      rules:
+        - uid: fe11auxrwqpkwd
+          title: Backend recently restarted
+          condition: B
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ds-prometheus
+              model:
+                editorMode: code
+                expr: time() - process_start_time_seconds{job="trofos-backend"}
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: $A < 60
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: B
+                type: math
+          dashboardUid: PTSqcpJWk
+          panelId: 4
+          noDataState: OK
+          execErrState: Error
+          for: 0s
+          annotations:
+            __dashboardUid__: PTSqcpJWk
+            __panelId__: "4"
+            description: This alert is triggered if the backend application start time started less than 1m ago
+            summary: Trofos backend has recently restarted
+          labels:
+            policy: Backend recently restarted
+          isPaused: false
+        - uid: be11bt47q55a8d
+          title: Backend is not running
+          condition: B
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: ds-prometheus
+              model:
+                editorMode: code
+                expr: process_start_time_seconds{job="trofos-backend"}
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: '!($A > 1)'
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: B
+                type: math
+          noDataState: Alerting
+          execErrState: Error
+          for: 1m
+          annotations:
+            description: This alert is triggered if prometheus is unable to reach the /metrics endpoint of the backend for at least 1 minute
+            summary: Trofos backend is not running
+          labels:
+            policy: Backend recently restarted
+          isPaused: false
