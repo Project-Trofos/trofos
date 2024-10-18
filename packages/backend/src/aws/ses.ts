@@ -14,7 +14,7 @@ const sesClient = new SESClient({
 });
 
 // templates will defer by FRONTEND_BASE_URL env var
-const TEMPLATE_NAME = `TROFOS_INVITE_${process.env.FRONTEND_BASE_URL}`;
+const TEMPLATE_NAME = `TROFOS_INVITE_${process.env.NODE_ENV}`;
 
 // Disable SES features if in test env or email service is not provided
 function isSESEnabled() {
