@@ -11,6 +11,6 @@ test('renders main page', async () => {
       <App />
     </Provider>,
   );
-  const linkElement = await screen.findByText('Trofos', { exact: false });
-  expect(linkElement).toBeInTheDocument();
+  const linkElement = await screen.findAllByText('TROFOS', { exact: false });
+  expect(linkElement[0]).toBeInTheDocument();
 });
