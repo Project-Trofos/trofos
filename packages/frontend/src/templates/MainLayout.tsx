@@ -1,6 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image } from 'antd';
-import { BookOutlined, HomeOutlined, KeyOutlined, ProjectOutlined, SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import {
+  BookOutlined,
+  HomeOutlined,
+  KeyOutlined,
+  ProjectOutlined,
+  SettingOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -50,14 +57,6 @@ function LogoutText() {
     >
       Log Out
     </Typography.Link>
-  );
-}
-
-function LoggedOutHeader() {
-  return (
-    <>
-      <Link to="/login">Log in</Link>
-    </>
   );
 }
 
@@ -220,6 +219,11 @@ export default function MainLayout() {
     [projects, courses, userInfo],
   );
 
+  // User is not logged in
+  if (!userInfo) {
+    return <Outlet />;
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
@@ -227,10 +231,10 @@ export default function MainLayout() {
         collapsedWidth="0"
         onBreakpoint={setIsBroken}
         className="main-layout-sider"
-        trigger={<UnorderedListOutlined style={{color: isDarkTheme ? '#FFF' : '#000'}}/>}
+        trigger={<UnorderedListOutlined style={{ color: isDarkTheme ? '#FFF' : '#000' }} />}
       >
         <Link to="/" className="logo">
-          <Image width={40} src="favicon.ico" preview={false} alt="Trofos logo" />
+          <Image width={40} src="favicon.ico" preview={false} />
           <div>Trofos</div>
         </Link>
         <Menu
@@ -247,7 +251,9 @@ export default function MainLayout() {
             <Col style={{ paddingLeft: isBroken ? '30px' : 0 }} span={10}>
               <MenuSwitch />
             </Col>
-            <Col> {userInfo ? <LoggedInHeader userInfo={userInfo} /> : <LoggedOutHeader />}</Col>
+            <Col>
+              <LoggedInHeader userInfo={userInfo} />
+            </Col>
           </Row>
         </Header>
         <Content style={{ minHeight: 360, display: 'flex', flexDirection: 'column' }}>
