@@ -109,6 +109,8 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_TELEGRAM_BOT_TOKEN=${GF_TELEGRAM_BOT_TOKEN}
+      - GF_TELEGRAM_CHAT_ID=${GF_TELEGRAM_CHAT_ID}
     ports:
       - 9001:3000
     expose:
