@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, message, Typography, Card, Space } from 'antd';
+import { Alert, message, Typography, Card, Space, Layout } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
 import { useUpdateBacklogMutation } from '../../api/backlog';
@@ -13,6 +13,7 @@ import './ScrumBoard.css';
 import { StandUp } from '../../api/standup';
 
 const { Title } = Typography;
+const { Content } = Layout;
 
 type ScrumBoardProps = {
   projectId: number;
@@ -154,7 +155,7 @@ export default function ScrumBoard({ projectId, sprint, standUp }: ScrumBoardPro
   };
 
   return (
-    <div className="scrum-board-drag-drop-context">
+    <Content style={{ paddingBottom: '40px', overflowX: 'auto' }}>
       {!backlogs && (
         <Alert
           className="scrum-board-warning"
@@ -171,6 +172,6 @@ export default function ScrumBoard({ projectId, sprint, standUp }: ScrumBoardPro
         ))}
       </div>
       <DragDropContext onDragEnd={onDragEnd}>{renderDroppables()}</DragDropContext>
-    </div>
+    </Content>
   );
 }

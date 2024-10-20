@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Card } from 'antd';
+import { Typography, Card, Layout } from 'antd';
 import StandUpColumn from './StandUpColumn';
 import { StandUp } from '../../../api/standup';
 import { useGetProjectQuery } from '../../../api/project';
@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import './StandUpBoard.css';
 
 const { Title } = Typography;
+const { Content } = Layout;
 
 type StandUpBoardProps = { standUp: StandUp; readOnly?: boolean };
 
@@ -26,7 +27,7 @@ export default function StandUpBoard({ standUp, readOnly }: StandUpBoardProps): 
 
   const columnNames = ["What's Done?", 'What Next?', 'Blockers?'];
   return (
-    <>
+    <Content style={{ overflowX: 'auto' }}>
       <Heading>{dayjs(standUp.date).format('dddd, DD MMM YYYY')}</Heading>
       <div className="standup-board-status-container">
         {columnNames.map((columnName, index) => {
@@ -63,6 +64,6 @@ export default function StandUpBoard({ standUp, readOnly }: StandUpBoardProps): 
           </div>
         );
       })}
-    </>
+    </Content>
   );
 }

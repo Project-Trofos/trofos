@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Carousel, Spin } from 'antd';
+import { Button, Carousel, Space, Spin } from 'antd';
 import type { CarouselRef } from 'antd/es/carousel';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import Container from '../../components/layouts/Container';
@@ -59,22 +59,22 @@ export default function ActiveScrumBoardPage(): JSX.Element {
 
   const renderBody = () => {
     return (
-      <Carousel draggable={false} ref={carouselRef}>
-        <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      <Carousel draggable={false} ref={carouselRef} dots={false}>
+        <Space direction='vertical'>
           {activeSprint && todaysStandUp && (
             <Button onClick={handleViewStandUpBoard}>
             View Today's Stand Up Board
             </Button> 
           )}
           <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
-        </div>
+        </Space>
         {activeSprint && todaysStandUp ? (
-          <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+          <Space direction='vertical'>
             <Button onClick={handleViewScrumBoard}>
               View Active Scrum Board
             </Button>
             <StandUpBoard standUp={todaysStandUp} />
-          </div>
+          </Space>
         ) : null}
       </Carousel>
     );
