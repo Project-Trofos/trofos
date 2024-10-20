@@ -60,7 +60,6 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   const renderBody = () => {
     return (
       <Carousel draggable={false} ref={carouselRef} dots={false}>
-        {/* <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}> */}
         <Space direction='vertical'>
           {activeSprint && todaysStandUp && (
             <Button onClick={handleViewStandUpBoard}>
@@ -70,7 +69,6 @@ export default function ActiveScrumBoardPage(): JSX.Element {
           <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
         </Space>
         {activeSprint && todaysStandUp ? (
-          // <div> style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
           <Space direction='vertical'>
             <Button onClick={handleViewScrumBoard}>
               View Active Scrum Board
