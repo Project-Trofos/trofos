@@ -16,19 +16,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 'lts/hydrogen'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8  
       - name: Install wait-on
         run: pnpm i -g wait-on@6.0.1
-      - name: Setup Postgres
+      - name: Setup Postgres container
         run: pnpm run setup:ci
       - name: Build and test backend
         run: docker compose -f docker-compose-ci.yml build backend
