@@ -164,6 +164,7 @@ exports[`SprintModal tests > renders new sprint modal with correct fields 1`] = 
                                   aria-controls="duration_list"
                                   aria-expanded="false"
                                   aria-haspopup="listbox"
+                                  aria-label="Search"
                                   aria-owns="duration_list"
                                   aria-required="true"
                                   autocomplete="off"

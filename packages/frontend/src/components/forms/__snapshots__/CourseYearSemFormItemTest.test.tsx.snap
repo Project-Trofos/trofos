@@ -119,6 +119,7 @@ exports[`CourseYearSemesterFormItem test > when rendering > should have correct 
                         aria-controls="courseSem_list"
                         aria-expanded="false"
                         aria-haspopup="listbox"
+                        aria-label="Search"
                         aria-owns="courseSem_list"
                         aria-required="true"
                         autocomplete="off"
