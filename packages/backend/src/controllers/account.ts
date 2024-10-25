@@ -145,7 +145,8 @@ async function register(req: express.Request, res: express.Response) {
 }
 
 async function configureSp() {
-  const spMetadataXml = fs.readFileSync('./sp.xml');
+  const spMetadataXmlFile = process.env.NODE_ENV == 'staging' ? './sp-staging.xml' : './sp-prod.xml';
+  const spMetadataXml = fs.readFileSync(spMetadataXmlFile);
   const sp = ServiceProvider({
     metadata: spMetadataXml,
   });

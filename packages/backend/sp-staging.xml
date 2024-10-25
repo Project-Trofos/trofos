@@ -1,5 +1,5 @@
 <EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
-                  entityID="https://trofos-production.comp.nus.edu.sg/sp">
+                  entityID="https://trofos.comp.nus.edu.sg/sp">
     <SPSSODescriptor WantAssertionsSigned="true"
                      protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 
@@ -9,7 +9,7 @@
                 <X509Data>
                     <X509Certificate>
                         <!-- Place your X509 certificate here -->
-                        MIICtjCCAh+gAwIBAgIBADANBgkqhkiG9w0BAQ0FADB4MQswCQYDVQQGEwJzZzESMBAGA1UECAwJU2luZ2Fwb3JlMSkwJwYDVQQKDCBOYXRpb25hbCBVbml2ZXJzaXR5IG9mIFNpbmdhcG9yZTEqMCgGA1UEAwwhdHJvZm9zLXByb2R1Y3Rpb24uY29tcC5udXMuZWR1LnNnMB4XDTI0MDkyNDE1MzEyM1oXDTI1MDkyNDE1MzEyM1oweDELMAkGA1UEBhMCc2cxEjAQBgNVBAgMCVNpbmdhcG9yZTEpMCcGA1UECgwgTmF0aW9uYWwgVW5pdmVyc2l0eSBvZiBTaW5nYXBvcmUxKjAoBgNVBAMMIXRyb2Zvcy1wcm9kdWN0aW9uLmNvbXAubnVzLmVkdS5zZzCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA6hdJlrRvyXPpvFXLBHfzv/A+HM6MaJpgQ1rv776Yi8qjrrV+wfF2UOy4B+dPuS3KBhYOE/FyZXcu0eke9QTXq/5AY1m89sJY+OWrH59kMatpa2Vd0ePA/HF9veLe0eQzLV2UZH2dCHDI6euNwOvlv0UFJGbuWVkrHxnuss347fMCAwEAAaNQME4wHQYDVR0OBBYEFMa8PDENyWfzlzdsVBoC1Utn3oXcMB8GA1UdIwQYMBaAFMa8PDENyWfzlzdsVBoC1Utn3oXcMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQENBQADgYEANLl4d2YMWXwy+WhinBFwfAnVpQTxPHrX92vJY9Ti4iusCW+T+QAWOLZQsKcYQjvaX04e+NHJwRkmTeH9BEHMWfL9xNhIEsJa/nSjbJkQ1MgAfmTOKUmyBvy6Amr0/ojgrFbtXLvG3GL6RbROjIlowzaKUNHT7ksDlz8HgQj3ovw=
+                        MIIChDCCAe2gAwIBAgIBADANBgkqhkiG9w0BAQ0FADBfMQswCQYDVQQGEwJ1czESMBAGA1UECAwJU2luZ2Fwb3JlMRMwEQYDVQQKDApUcm9mb3MgTlVTMScwJQYDVQQDDB5odHRwczovL3Ryb2Zvcy5jb21wLm51cy5lZHUuc2cwHhcNMjQxMDIyMDExMjI0WhcNMjUxMDIyMDExMjI0WjBfMQswCQYDVQQGEwJ1czESMBAGA1UECAwJU2luZ2Fwb3JlMRMwEQYDVQQKDApUcm9mb3MgTlVTMScwJQYDVQQDDB5odHRwczovL3Ryb2Zvcy5jb21wLm51cy5lZHUuc2cwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOgtp7lcgW5ovReMv4cZIRgLblVMWr2muQIRlzDS7y/i27t8TYL2jeu3CKrTr3C6Oa/q0EjPAimPSnTdfP6KbFkorvVnmrn514Sr5XE7Y9EpWDRL7hmwpyasAkkYciVX7X/t6u4upc1WV9c+YaTXnBln4V5VXSS36Af0WUPxVL25AgMBAAGjUDBOMB0GA1UdDgQWBBQNvsIN/kWIewc+70Y4I5gidMjjQzAfBgNVHSMEGDAWgBQNvsIN/kWIewc+70Y4I5gidMjjQzAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBDQUAA4GBAEwkkLPDSyuBF4+HQehRJeKvdRh/WhWCFGKzX2IbBfab5GIySBC1Ie+vp9upJmxEgogox7Tbll+sDujlqDGLU5T8cYQM/7uSspBL41PvFcWWvdNoniXRkWj4ubYwD1VM6MiG86GpUvYsqp5dPQd2bsx+axfxbsykswVhfYB1LdNO
                     </X509Certificate>
                 </X509Data>
             </KeyInfo>
