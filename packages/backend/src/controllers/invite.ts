@@ -29,7 +29,7 @@ async function sendInvite(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
     assertEmailIsValid(destEmail);
 
-    if (!ses.isSESEnabled()) {
+    if (!ses.isESPEnabled()) {
       throw new BadRequestError('Email service not enabled');
     }
 
