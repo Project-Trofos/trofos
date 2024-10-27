@@ -32,7 +32,7 @@ const spies = {
   getByEmail: jest.spyOn(user, 'getByEmail'),
   findByEmail: jest.spyOn(user, 'findByEmail'),
 
-  isSESEnabled: jest.spyOn(ses, 'isSESEnabled'),
+  isESPEnabled: jest.spyOn(ses, 'isESPEnabled'),
   sendInviteEmail: jest.spyOn(ses, 'sendInviteEmail'),
 };
 
@@ -59,7 +59,7 @@ describe('invite controller tests', () => {
       spies.createInvite.mockResolvedValue(validInviteData);
 
       // Pretend send email
-      spies.isSESEnabled.mockReturnValue(true);
+      spies.isESPEnabled.mockReturnValue('key');
       spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
@@ -88,7 +88,7 @@ describe('invite controller tests', () => {
       spies.updateInvite.mockResolvedValue(updatedInviteData);
 
       // Pretend send email
-      spies.isSESEnabled.mockReturnValue(true);
+      spies.isESPEnabled.mockReturnValue('key');
       spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
 
       const mockReq = createRequest({
