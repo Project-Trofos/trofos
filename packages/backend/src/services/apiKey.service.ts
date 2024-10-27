@@ -1,12 +1,11 @@
 import { Prisma, User, UserApiKey, UsersOnRoles } from "@prisma/client";
 import prisma from "../models/prismaClient";
-import { randomUUID, createHash } from "crypto";
+import crypto, { createHash } from "crypto";
 import { ApiKeyAuth } from "./types/apiKey.service.types";
 import { ADMIN_ROLE_ID } from "../helpers/constants";
 
 async function generateApiKey(userId: number): Promise<UserApiKey> {
-  const newApiKey = randomUUID();
-  // Generate and hash with salt an API key
+  const newApiKey = crypto.randomBytes(32).toString('base64');
   const apiKeyHash = hashApiKey(newApiKey);
 
   const { api_key, ...newUserApiKeyWithoutApiKey } = await prisma.$transaction<UserApiKey>(async (tx: Prisma.TransactionClient) => {
