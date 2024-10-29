@@ -12,8 +12,10 @@ RUN mkdir -p /usr/src/app/frontend
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/frontend
 
-COPY . .
+COPY package.json .
+COPY pnpm-lock.yaml .
 RUN pnpm i --frozen-lockfile
+COPY . .
 RUN pnpm run build
 
 # Test stage for CI
