@@ -14,6 +14,9 @@ importers:
       '@ant-design/plots':
         specifier: ^1.2.5
         version: 1.2.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@hocuspocus/provider':
+        specifier: ^2.13.7
+        version: 2.13.7(y-protocols@1.0.6(yjs@13.6.20))(yjs@13.6.20)
       '@lexical/code':
         specifier: ^0.8.0
         version: 0.8.1(lexical@0.8.1)
@@ -31,7 +34,7 @@ importers:
         version: 0.8.1(@lexical/clipboard@0.8.1(lexical@0.8.1))(@lexical/selection@0.8.1(lexical@0.8.1))(lexical@0.8.1)
       '@lexical/react':
         specifier: ^0.8.0
-        version: 0.8.1(lexical@0.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(yjs@13.6.8)
+        version: 0.8.1(lexical@0.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(yjs@13.6.20)
       '@lexical/rich-text':
         specifier: ^0.8.0
         version: 0.8.1(@lexical/clipboard@0.8.1(lexical@0.8.1))(@lexical/selection@0.8.1(lexical@0.8.1))(@lexical/utils@0.8.1(lexical@0.8.1))(lexical@0.8.1)
@@ -113,6 +116,9 @@ importers:
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
+      yjs:
+        specifier: ^13.6.20
+        version: 13.6.20
     devDependencies:
       '@testing-library/user-event':
         specifier: ^13.5.0
@@ -484,6 +490,15 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@hocuspocus/common@2.13.7':
+    resolution: {integrity: sha512-ROqYfW15XlAGd+qb/FVyp0zUC9Rosv7kdcck9LRMdfW3jT66wK9pDDWL2ily4Qj/zhbLCFtjAUPB4UKln/GYNQ==}
+
+  '@hocuspocus/provider@2.13.7':
+    resolution: {integrity: sha512-BjZIIV8tWf/MD/8IcEMSFA+sW4wtR/M9MmhN+XSssYJOZxnszw44Gdwda23TmhsXvCV+qggS8lGEs+SfZSzEag==}
+    peerDependencies:
+      y-protocols: ^1.0.6
+      yjs: ^13.6.8
+
   '@jest/expect-utils@29.7.0':
     resolution: {integrity: sha512-GlsNBWiFQFCVi9QVSx7f5AgMeLxe9YCCs5PuP2O2LdjDAA8Jh9eX7lA1Jq/xdXw3Wb3hyvlFNfZIfcRetSzYcA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -622,6 +637,9 @@ packages:
     peerDependencies:
       lexical: 0.8.1
       yjs: '>=13.5.22'
+
+  '@lifeomic/attempt@3.1.0':
+    resolution: {integrity: sha512-QZqem4QuAnAyzfz+Gj5/+SLxqwCAw2qmt7732ZXodr6VDWGeYLG6w1i/vYLa55JQM9wRuBKLmXmiZ2P0LtE5rw==}
 
   '@mswjs/cookies@0.2.2':
     resolution: {integrity: sha512-mlN83YSrcFgk7Dm1Mys40DLssI1KdJji2CMKN8eOlBqsTADYzj2+jWzsANsUTFbxDMWPD5e9bfA1RGqBpS3O1g==}
@@ -1813,8 +1831,8 @@ packages:
   lexical@0.8.1:
     resolution: {integrity: sha512-+dVoQZldtPCLyMgnvbgeYCmfIQilEHrZYGf6Fdpw4Ck0Xvg7IpvMpIKuMsXYsH1t2TlrTQ3qR6cDYvobuU7kMA==}
 
-  lib0@0.2.86:
-    resolution: {integrity: sha512-kxigQTM4Q7NwJkEgdqQvU21qiR37twcqqLmh+/SbiGbRLfPlLVbHyY9sWp7PwXh0Xus9ELDSjsUOwcrdt5yZ4w==}
+  lib0@0.2.98:
+    resolution: {integrity: sha512-XteTiNO0qEXqqweWx+b21p/fBnNHUA1NwAtJNJek1oPrewEZs2uiT4gWivHKr9GqCjDPAhchz0UQO8NwU3bBNA==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -2937,6 +2955,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -2947,6 +2977,12 @@ packages:
   xmlhttprequest-ssl@2.0.0:
     resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}
     engines: {node: '>=0.4.0'}
+
+  y-protocols@1.0.6:
+    resolution: {integrity: sha512-vHRF2L6iT3rwj1jub/K5tYcTT/mEYDUppgNPXwp8fmLpui9f7Yeq3OEtTLVF012j39QnV+KEQpNqoN7CWU7Y9Q==}
+    engines: {node: '>=16.0.0', npm: '>=8.0.0'}
+    peerDependencies:
+      yjs: ^13.0.0
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -2966,8 +3002,8 @@ packages:
   yargs@3.10.0:
     resolution: {integrity: sha512-QFzUah88GAGy9lyDKGBqZdkYApt63rCXYBGYnEP4xDJPXNqXXnBDACnbrXnViV6jRSqAePwrATi2i8mfYm4L1A==}
 
-  yjs@13.6.8:
-    resolution: {integrity: sha512-ZPq0hpJQb6f59B++Ngg4cKexDJTvfOgeiv0sBc4sUm8CaBWH7OQC4kcCgrqbjJ/B2+6vO49exvTmYfdlPtcjbg==}
+  yjs@13.6.20:
+    resolution: {integrity: sha512-Z2YZI+SYqK7XdWlloI3lhMiKnCdFCVC4PchpdO+mCYwtiTwncjUbnRK9R1JmkNfdmHyDXuWN3ibJAt0wsqTbLQ==}
     engines: {node: '>=16.0.0', npm: '>=8.0.0'}
 
   yocto-queue@1.0.0:
@@ -3392,6 +3428,22 @@ snapshots:
   '@esbuild/win32-x64@0.18.20':
     optional: true
 
+  '@hocuspocus/common@2.13.7':
+    dependencies:
+      lib0: 0.2.98
+
+  '@hocuspocus/provider@2.13.7(y-protocols@1.0.6(yjs@13.6.20))(yjs@13.6.20)':
+    dependencies:
+      '@hocuspocus/common': 2.13.7
+      '@lifeomic/attempt': 3.1.0
+      lib0: 0.2.98
+      ws: 8.18.0
+      y-protocols: 1.0.6(yjs@13.6.20)
+      yjs: 13.6.20
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@jest/expect-utils@29.7.0':
     dependencies:
       jest-get-type: 29.6.3
@@ -3502,7 +3554,7 @@ snapshots:
       '@lexical/utils': 0.8.1(lexical@0.8.1)
       lexical: 0.8.1
 
-  '@lexical/react@0.8.1(lexical@0.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(yjs@13.6.8)':
+  '@lexical/react@0.8.1(lexical@0.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(yjs@13.6.20)':
     dependencies:
       '@lexical/clipboard': 0.8.1(lexical@0.8.1)
       '@lexical/code': 0.8.1(lexical@0.8.1)
@@ -3520,7 +3572,7 @@ snapshots:
       '@lexical/table': 0.8.1(lexical@0.8.1)
       '@lexical/text': 0.8.1(lexical@0.8.1)
       '@lexical/utils': 0.8.1(lexical@0.8.1)
-      '@lexical/yjs': 0.8.1(lexical@0.8.1)(yjs@13.6.8)
+      '@lexical/yjs': 0.8.1(lexical@0.8.1)(yjs@13.6.20)
       lexical: 0.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3555,11 +3607,13 @@ snapshots:
       '@lexical/table': 0.8.1(lexical@0.8.1)
       lexical: 0.8.1
 
-  '@lexical/yjs@0.8.1(lexical@0.8.1)(yjs@13.6.8)':
+  '@lexical/yjs@0.8.1(lexical@0.8.1)(yjs@13.6.20)':
     dependencies:
       '@lexical/offset': 0.8.1(lexical@0.8.1)
       lexical: 0.8.1
-      yjs: 13.6.8
+      yjs: 13.6.20
+
+  '@lifeomic/attempt@3.1.0': {}
 
   '@mswjs/cookies@0.2.2':
     dependencies:
@@ -4922,7 +4976,7 @@ snapshots:
 
   lexical@0.8.1: {}
 
-  lib0@0.2.86:
+  lib0@0.2.98:
     dependencies:
       isomorphic.js: 0.2.5
 
@@ -6145,11 +6199,18 @@ snapshots:
 
   ws@8.14.2: {}
 
+  ws@8.18.0: {}
+
   xml-name-validator@4.0.0: {}
 
   xmlchars@2.2.0: {}
 
   xmlhttprequest-ssl@2.0.0: {}
+
+  y-protocols@1.0.6(yjs@13.6.20):
+    dependencies:
+      lib0: 0.2.98
+      yjs: 13.6.20
 
   y18n@5.0.8: {}
 
@@ -6174,8 +6235,8 @@ snapshots:
       decamelize: 1.2.0
       window-size: 0.1.0
 
-  yjs@13.6.8:
+  yjs@13.6.20:
     dependencies:
-      lib0: 0.2.86
+      lib0: 0.2.98
 
   yocto-queue@1.0.0: {}

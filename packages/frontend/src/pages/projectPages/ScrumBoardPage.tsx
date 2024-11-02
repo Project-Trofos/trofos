@@ -17,6 +17,7 @@ import useSocket from '../../api/socket/useSocket';
 import { UpdateType } from '../../api/socket/socket';
 import { useProjectIdParam } from '../../api/hooks';
 import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
+import LiveEditor from '../../components/editor/LiveEditor';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -73,7 +74,8 @@ export default function ActiveScrumBoardPage(): JSX.Element {
             <Button onClick={handleViewScrumBoard}>
               View Active Scrum Board
             </Button>
-            <StandUpBoard standUp={todaysStandUp} />
+            {/* <StandUpBoard standUp={todaysStandUp} /> */}
+            <LiveEditor key={'example-document'}/>
           </Space>
         ) : null}
       </Carousel>

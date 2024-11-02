@@ -17,6 +17,7 @@ import apiKeyRouter from './routes/apiKey.route';
 import routerExternalV1 from './routes/external/v1/route.external.v1';
 import setUpSwagger from './swagger/swagger';
 import promClient from 'prom-client';
+import expressWebsockets from "express-ws";
 
 // Prometheus metrics stuff
 const register = new promClient.Registry();
@@ -39,6 +40,7 @@ register.registerMetric(httpRequestTimer);
 // end of prometheus metrics stuff
 
 const app = express();
+export const expressWsApp = expressWebsockets(app);
 
 export const port = 3001;
 export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';

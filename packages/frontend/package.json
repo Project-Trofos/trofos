@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/plots": "^1.2.5",
+    "@hocuspocus/provider": "^2.13.7",
     "@lexical/code": "^0.8.0",
     "@lexical/html": "^0.8.0",
     "@lexical/link": "^0.8.0",
@@ -37,7 +38,8 @@
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.34.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yjs": "^13.6.20"
   },
   "devDependencies": {
     "@testing-library/user-event": "^13.5.0",
