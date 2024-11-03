@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate",
     "build": "tsc --project tsconfig.build.json",
     "start-dev": "dotenv -e .env.development.local -- pnpm run build && dotenv -e .env.development.local -- nodemon"
   },
@@ -11,12 +12,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hocuspocus/extension-database": "^2.13.7",
     "@hocuspocus/extension-logger": "^2.13.7",
-    "@hocuspocus/extension-sqlite": "^2.13.7",
     "@hocuspocus/server": "^2.13.7",
+    "@prisma/client": "4.8.1",
     "dotenv-cli": "^6.0.0",
     "express": "^4.18.1",
     "express-ws": "^5.0.2",
+    "prisma": "4.8.1",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.20"
   },

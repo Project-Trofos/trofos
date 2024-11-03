@@ -1,10 +1,13 @@
 import express from 'express';
 import { Server, onListenPayload } from "@hocuspocus/server";
 import { Logger } from "@hocuspocus/extension-logger";
-import { SQLite } from "@hocuspocus/extension-sqlite";
+import { Database } from "@hocuspocus/extension-database";
 import expressWebsockets from "express-ws";
+import { PrismaClient } from '@prisma/client';
 
 const app = expressWebsockets(express());
+
+const prisma = new PrismaClient();
 
 const server = Server.configure({
   port: 3002,
@@ -13,7 +16,42 @@ const server = Server.configure({
   name: 'hocuspocus-trofos-01',
   extensions: [
     new Logger(),
-    new SQLite(),
+    new Database({
+      fetch: async ({ documentName }) => {
+        // Lets standardize document name to be sprint id
+        const sprintId = Number(documentName);
+        try {
+          const sprint = await prisma.sprint.findUnique({
+            where: {
+              id: sprintId,
+            }
+          });
+      
+          if (sprint && sprint.collab_notes) {
+            return sprint.collab_notes
+          } else {
+            return null;
+          }
+        } catch (error) {
+          throw error;
+        }
+      },
+      store: async ({ documentName, state }) => {
+        const sprintId = Number(documentName);
+        try {
+          await prisma.sprint.update({
+            where: {
+              id: sprintId,
+            },
+            data: {
+              collab_notes: state,
+            }
+          });
+        } catch (error) {
+          throw error;
+        }
+      },
+    })
   ],
 })
 

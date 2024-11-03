@@ -62,7 +62,7 @@ function createWebsocketProvider(
   // @ts-ignore
   return new HocuspocusProvider({
     websocketProvider: socket,
-    name: `test-${id}`,
+    name: `${id}`,
     document: doc,
     onSynced: () => {
       console.log("synced");
