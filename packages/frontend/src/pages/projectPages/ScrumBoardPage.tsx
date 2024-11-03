@@ -92,7 +92,10 @@ export default function ActiveScrumBoardPage(): JSX.Element {
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
         {!todaysStandUp && activeSprint && <StandUpCreationModal projectId={projectId} isToday/>}
       </div>
-      {<Tabs defaultActiveKey='scrum-board' items={tabs} />}
+      {activeSprint ?
+        <Tabs defaultActiveKey='scrum-board' items={tabs} />:
+        <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
+      }
     </Container>
   );
 }
