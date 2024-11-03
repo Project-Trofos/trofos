@@ -62,7 +62,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
     {
       key: 'live-notes',
       label: 'Notes',
-      children: <LiveEditor docId={String(activeSprint?.id)}/>
+      children: <LiveEditor sprintId={String(activeSprint?.id)}/>
     }
   ];
 
@@ -113,7 +113,7 @@ export function SprintScrumBoardPage(): JSX.Element {
     {
       key: 'live-notes',
       label: 'Notes',
-      children: <LiveEditor docId={String(sprint?.id)}/>
+      children: <LiveEditor sprintId={String(sprint?.id)}/>
     }
   ];
 
