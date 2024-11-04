@@ -41,6 +41,17 @@ services:
       - postgres
     networks:
       - application
+  hocus_pocus_server:
+    image: ghcr.io/project-trofos/trofos/hocus_pocus_server:main
+    ports:
+      - '3002:3002'
+    container_name: trofos-hocus-pocus-server-production
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - BACKEND_URL=${BACKEND_URL}
+    networks:
+      - application
   postgres:
     image: postgres:14.1-alpine
     restart: always

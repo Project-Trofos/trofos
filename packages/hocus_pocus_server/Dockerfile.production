@@ -17,6 +17,10 @@ COPY pnpm-lock.yaml .
 RUN pnpm i
 COPY . .
 
+# Test stage to check build
+FROM base as test
+RUN pnpm run build
+
 # Production stage
 FROM base as prod
 # Command to run our app
