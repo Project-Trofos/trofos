@@ -75,7 +75,8 @@ export default function Editor({ sprintId }: { sprintId: string }) {
           });
         });
         activeUsersRef.current = updatedActiveUsers;
-      }
+      },
+      token: 'token', // we will use req header for auth, this enables auth
     });
     // @ts-ignore
     return provider;
@@ -165,22 +166,3 @@ const socket = new HocuspocusProviderWebsocket({
   url: `${protocol}//${window.location.host}/api/ws/collaboration`,
   connect: false,
 });
-
-function createWebsocketProvider(
-  id: string,
-  yjsDocMap: Map<string, Y.Doc>
-): Provider {
-  const doc = new Y.Doc();
-  yjsDocMap.set(id, doc);
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return new HocuspocusProvider({
-    websocketProvider: socket,
-    name: `${id}`,
-    document: doc,
-    onSynced: () => {
-      console.log("synced");
-    },
-  });
-}

@@ -8,6 +8,8 @@ Ideally, this should be part of `backend` server, as we would want to share the 
 
 ## Quick start
 
+0. Copy `.env.example` into `.env` and populate it accordingly
+
 1. `pnpm run prisma-generate-dev`
 
 2. `pnpm run start-dev`

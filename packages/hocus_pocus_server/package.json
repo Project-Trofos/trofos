@@ -16,6 +16,7 @@
     "@hocuspocus/extension-logger": "^2.13.7",
     "@hocuspocus/server": "^2.13.7",
     "@prisma/client": "4.8.1",
+    "dotenv": "^16.4.5",
     "dotenv-cli": "^6.0.0",
     "express": "^4.18.1",
     "express-ws": "^5.0.2",

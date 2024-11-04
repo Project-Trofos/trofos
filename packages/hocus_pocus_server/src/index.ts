@@ -4,6 +4,9 @@ import { Logger } from "@hocuspocus/extension-logger";
 import { Database } from "@hocuspocus/extension-database";
 import expressWebsockets from "express-ws";
 import { PrismaClient } from '@prisma/client';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = expressWebsockets(express());
 
@@ -53,6 +56,22 @@ const server = Server.configure({
       },
     })
   ],
+  async onAuthenticate(data) {
+    const url = `${process.env.BACKEND_URL}/api/sprint/${data.documentName}/live-notes/auth`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Cookie': data.requestHeaders.cookie || '',
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to authenticate");
+    }
+
+    return data;
+  }
 })
 
 app.app.ws("/api/ws/collaboration", (ws, req) => {
