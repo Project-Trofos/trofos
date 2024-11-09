@@ -16,10 +16,18 @@ services:
       - backend
     networks:
       - application
+  api_gateway:
+    image: ghcr.io/project-trofos/trofos/api_gateway:main
+    ports:
+      - '3001:80'
+    container_name: trofos-api-gateway-production
+    restart: always
+    networks:
+      - application
   backend:
     image: ghcr.io/project-trofos/trofos/backend:main
     ports:
-      - '3001:3001'
+      - '3003:3003'
     container_name: trofos-backend-production
     restart: always
     environment:

@@ -40,7 +40,7 @@ register.registerMetric(httpRequestTimer);
 
 const app = express();
 
-export const port = 3001;
+export const port = 3003;
 export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 
 export const corsOptions = {

@@ -23,13 +23,23 @@ services:
       - backend
     networks:
       - application
+  api_gateway:
+    build:
+      context: ./packages/api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - '3001:80'
+    container_name: trofos-api-gateway-production
+    restart: always
+    networks:
+      - application
   backend:
     build:
       context: ./packages/backend
       dockerfile: Dockerfile.production
       target: prod
     ports:
-      - '3001:3001'
+      - '3003:3003'
     container_name: trofos-backend-production
     restart: always
     environment:

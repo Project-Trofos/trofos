@@ -54,7 +54,7 @@ NODE_ENV=
 EMAIL_SERVICE=
 AWS_SES_FROM_EMAIL=
 
-BACKEND_URL="http://backend:3001"
+BACKEND_URL="http://backend:3003"
 
 ```
 
