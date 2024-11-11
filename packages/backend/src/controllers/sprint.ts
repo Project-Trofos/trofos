@@ -198,6 +198,10 @@ const deleteRetrospectiveVote = async (req: express.Request, res: express.Respon
   }
 };
 
+const authLiveNotes = async (req: express.Request, res: express.Response) => {
+  return res.status(StatusCodes.OK).json({});
+};
+
 export default {
   newSprint,
   listSprints,
@@ -212,4 +216,5 @@ export default {
   addRetrospectiveVote,
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
+  authLiveNotes,
 };

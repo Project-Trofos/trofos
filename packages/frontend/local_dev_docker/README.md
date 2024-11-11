@@ -1,0 +1,1 @@
+This is needed as if you want to run the whole setup in docker containers locally, we need to configure the forwarding, as the deployed VM already has a reverse proxy under the domain name, forwarding traffic to the backend when frontend calls domain_name/api/... . This replicates what the reverse proxy is doing locally.

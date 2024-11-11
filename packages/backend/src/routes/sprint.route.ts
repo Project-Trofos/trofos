@@ -28,4 +28,6 @@ router.delete(
 
 router.get('/notes/:sprintId', hasAuth(Action.read_project, null), sprint.getSprintNotes);
 
+router.get('/:sprintId/live-notes/auth', hasAuth(Action.read_project, null), sprint.authLiveNotes);
+
 export default router;

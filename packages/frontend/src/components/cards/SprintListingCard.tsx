@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Collapse, message } from 'antd';
+import React, { useRef, useState } from 'react';
+import { Button, Collapse, message, Tour } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ import SprintMenu from '../dropdowns/SprintMenu';
 import StrictModeDroppable from '../dnd/StrictModeDroppable';
 import SprintNotesModal from '../modals/SprintNotesModal';
 import './SprintListingCard.css';
+import type { TourProps } from 'antd';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible } = props;
@@ -72,10 +73,46 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
     navigate(`../board/${sprintId}`);
   };
 
-  const openSprintNotesModal = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    e.stopPropagation();
+  // const openSprintNotesModal = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  //   e.stopPropagation();
+  //   setIsNotesOpen(true);
+  // };
+  // TODO: revert when remove tour
+  const openSprintNotesModal = () => {
     setIsNotesOpen(true);
-  };
+  }
+
+  // TODO: delete following when remove tour
+  const sprintNotesButtonRef = useRef(null);
+  const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+  const tourSteps: TourProps['steps'] = [
+    {
+      title: "This version of sprint notes will be deprecated soon!",
+      description: "We have concurrent sprint notes available in the sprint board",
+      cover: (
+        <Button 
+          onClick={() => {
+            navigateToBoard(sprint.id);
+          }}
+        >
+          Click to view new notes
+        </Button>
+      ),
+      target: () => sprintNotesButtonRef.current,
+      nextButtonProps: {
+        children: (
+          <>
+            View deprecated notes
+          </>
+        ),
+        onClick: () => {
+          setIsTourOpen(false);
+          openSprintNotesModal();
+        }
+      }
+    }
+  ];
+  // TODO: delete above when remove tour
 
   return (
     <>
@@ -105,7 +142,8 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                       )}`}</div>
                     )}
                     <div className="sprint-card-notes-icon">
-                      <BookOutlined onClick={openSprintNotesModal} style={{ fontSize: '18px' }} />
+                      {/* <BookOutlined onClick={openSprintNotesModal} style={{ fontSize: '18px' }} /> */}
+                      <BookOutlined onClick={() => {setIsTourOpen(true)}} style={{ fontSize: '18px' }} ref={sprintNotesButtonRef}/>
                     </div>
                     <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
                       <SprintMenu
@@ -125,6 +163,15 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
         )}
       </StrictModeDroppable>
       {isNotesOpen && <SprintNotesModal isOpen={isNotesOpen} setIsOpen={setIsNotesOpen} sprintId={sprint.id} />}
+      {/* TODO: delete the following when remove tour */}
+      <Tour
+        open={isTourOpen}
+        onClose={() => {
+          setIsTourOpen(false);
+        }}
+        steps={tourSteps}
+        mask={false}
+      />
     </>
   );
 }

@@ -32,6 +32,8 @@ jobs:
         run: docker compose -f docker-compose-ci.yml build backend
       - name: Build and test frontend
         run: docker compose -f docker-compose-ci.yml build frontend
+      - name: Build hocus pocus server
+        run: docker compose -f docker-compose-ci.yml build hocus_pocus_server
       # e2e test currently removed from CI as it is unstable
       # - name: Start backend and frontend
       #   run: npm start &

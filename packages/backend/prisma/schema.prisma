@@ -228,6 +228,7 @@ model Sprint {
   backlog_history BacklogHistory[]
   retrospective   Retrospective[]
   feedback        Feedback[]
+  collab_notes    Bytes?
 }
 
 model Feedback {

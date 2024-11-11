@@ -30,6 +30,22 @@ services:
     restart: always
     links:
       - postgres
+  hocus_pocus_server:
+    build:
+      context: ./packages/hocus_pocus_server
+      dockerfile: Dockerfile.production
+      target: test
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        CI: ${CI}
+      network: host
+    image: trofos_hocus_pocus_server
+    ports:
+      - '3002:3002'
+    container_name: trofos-hocus-pocus-server-ci
+    restart: always
+    links:
+      - backend
   postgres:
     image: postgres:14.1-alpine
     restart: always

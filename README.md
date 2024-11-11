@@ -25,6 +25,8 @@ At project root:
 2. If running the local postgres container **for the first time**, populate the postgres docker volume with data using:
    1. `pnpm run migrate:reset`
 
+   2. Do `pnpm run prisma-generate-dev` in `./packages/hocus_pocus_server`
+
 ### Start Production Local Instance (Production configs for testing)
 
 At project root:
@@ -51,6 +53,8 @@ AWS_SECRET_ACCESS_KEY=
 NODE_ENV=
 EMAIL_SERVICE=
 AWS_SES_FROM_EMAIL=
+
+BACKEND_URL="http://backend:3003"
 
 ```
 
