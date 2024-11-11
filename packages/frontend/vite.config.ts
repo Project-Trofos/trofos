@@ -11,6 +11,13 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
+      '/api/socket.io/ws': {
+        target: 'ws://localhost:3002',
+        ws: true,
+        rewrite(path) {
+          return path.replace('/socket.io', ''); // SOC VM cant change rev proxy forwarding. must use existing socket.io endpoint. Consider changing if not using SOC VM
+        },
+      },
       '/api/socket.io': {
         target: 'ws://localhost:3003',
         ws: true,
@@ -20,10 +27,6 @@ export default defineConfig({
       },
       '/api': {
         target: 'http://localhost:3003',
-      },
-      '/api/ws': {
-        target: 'ws://localhost:3002',
-        ws: true,
       },
     },
   },

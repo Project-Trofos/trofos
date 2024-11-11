@@ -163,6 +163,7 @@ export default function Editor({ sprintId }: { sprintId: string }) {
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
 const socket = new HocuspocusProviderWebsocket({
-  url: `${protocol}//${window.location.host}/api/ws/collaboration`,
+  // SOC VM cant change rev proxy forwarding. must use existing socket.io endpoint. Consider changing if not using SOC VM
+  url: `${protocol}//${window.location.host}/api/socket.io/ws/collaboration`,
   connect: false,
 });
