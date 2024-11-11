@@ -20,7 +20,7 @@ scrape_configs:
   - job_name: 'trofos-backend'
     scrape_interval: 5s
     static_configs:
-      - targets: ['backend:3001']
+      - targets: ['backend:3003']
   
   - job_name: 'postgres'
     scrape_interval: 5s
