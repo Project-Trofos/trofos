@@ -20,8 +20,8 @@ export default function NusSsoButton() {
       window.location.href = redirectUrl;
     } catch (err) {
       console.error(err);
+      message.error('Something went wrong while signing in.');
     }
-    message.error('Something went wrong while signing in.');
   }, [generateSAMLRequest]);
 
   return (
