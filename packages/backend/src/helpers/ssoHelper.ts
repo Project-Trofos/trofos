@@ -1,6 +1,15 @@
 import axios from 'axios';
 import fs from 'fs';
-import { ServiceProvider, IdentityProvider, ServiceProviderInstance, IdentityProviderInstance } from 'samlify';
+import {
+  ServiceProvider,
+  IdentityProvider,
+  ServiceProviderInstance,
+  IdentityProviderInstance,
+  setSchemaValidator,
+} from 'samlify';
+import * as validator from '@authenio/samlify-xsd-schema-validator';
+
+setSchemaValidator(validator);
 
 const configureSp = async () => {
   try {
@@ -51,4 +60,10 @@ const getCachedIdpStaff = async () => {
   return ws1_idp;
 };
 
-export { getCachedSp, getCachedIdp, getCachedIdpStaff };
+const SAML_CLAIMS = {
+  EMAIL: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+  SURNAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+  GIVEN_NAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+};
+
+export { getCachedSp, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS };

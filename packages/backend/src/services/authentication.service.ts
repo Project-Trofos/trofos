@@ -4,6 +4,7 @@ import oauth2Engine from '../auth/engine.oauth2';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 import { UserAuth } from './types/authentication.service.types';
+import { SAML_CLAIMS } from '../helpers/ssoHelper';
 
 async function validateUser(userEmail: string, userPassword: string): Promise<UserAuth> {
   let userAuth: UserAuth;
@@ -59,12 +60,14 @@ async function oauth2Handler(code: string, state: string, callbackUrl: string): 
   return userInfo;
 }
 
-async function samlHandler(extract: any): Promise<User> {
-  if (!extract.attribute.emailAddress || !extract.attribute.givenName || !extract.attribute.surname) {
-    throw new Error('Invalid extract!');
-  }
+async function samlHandler(attributes: any): Promise<User> {
+  const userEmail = attributes[SAML_CLAIMS.EMAIL];
+  const surname = attributes[SAML_CLAIMS.SURNAME];
+  const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
-  const userEmail = extract.attribute.emailAddress;
+  if (!userEmail || !surname || !givenName) {
+    throw new Error('Invalid SAML response: Missing required attributes.');
+  }
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
@@ -75,7 +78,7 @@ async function samlHandler(extract: any): Promise<User> {
     update: {},
     create: {
       user_email: userEmail,
-      user_display_name: `${extract.attribute.givenName} ${extract.attribute.surname || ''}`.trim(),
+      user_display_name: `${givenName} ${surname || ''}`.trim(),
       basicRoles: {
         create: {
           role_id: STUDENT_ROLE_ID, // Default role of a new user

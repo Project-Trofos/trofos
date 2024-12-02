@@ -179,9 +179,6 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
     const sp = await getCachedSp();
     const idp = await getCachedIdp();
 
-    console.log('Request Body:', req.body);
-    console.log('Request Headers:', req.headers);
-
     const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
 
     if (!SAMLResponse) {
@@ -193,27 +190,25 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
     const { extract } = parsedResponse;
 
     // Validate parsed response
-    if (!extract) {
-      throw new Error('Invalid SAML response: Missing required attributes.');
+    if (!extract || !extract.attributes) {
+      throw new Error('Invalid SAML extract.');
     }
-    console.log('Attributes:', extract.attribute);
 
-    // // Handle user authentication and session creation
-    // const userInfo = await authenticationService.samlHandler(extract);
-    // const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
-    // const sessionId = await sessionService.createUserSession(
-    //   userInfo.user_email,
-    //   userRoleInformation,
-    //   userInfo.user_id,
-    // );
+    // Handle user authentication and session creation
+    const userInfo = await authenticationService.samlHandler(extract.attributes);
+    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+    const sessionId = await sessionService.createUserSession(
+      userInfo.user_email,
+      userRoleInformation,
+      userInfo.user_id,
+    );
 
-    // // Set secure cookie for session
-    // res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    // });
+    // Set secure cookie for session
+    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
 
-    // console.log('Session created successfully for user:', userInfo.user_email);
     return res.status(StatusCodes.OK).send();
   } catch (error) {
     console.error('Error processing SAML Response:', error);
