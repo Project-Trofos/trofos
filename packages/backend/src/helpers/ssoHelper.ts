@@ -13,10 +13,11 @@ const configureSp = async () => {
   }
 };
 
-const configureIdp = async () => {
+const configureIdp = async (isStaff = false) => {
   try {
-    const idpMetadataUrl =
-      process.env.IDP_METADATA_URL || 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
+    const idpMetadataUrl = isStaff
+      ? process.env.IDP_METADATA_STAFF_URL || 'https://nus.vmwareidentity.asia/SAAS/API/1.0/GET/metadata/idp.xml'
+      : process.env.IDP_METADATA_URL || 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
     const { data: idpMetadataXml } = await axios.get(idpMetadataUrl);
     return IdentityProvider({ metadata: idpMetadataXml });
   } catch (error) {
@@ -26,7 +27,8 @@ const configureIdp = async () => {
 };
 
 let sp: ServiceProviderInstance;
-let idp: IdentityProviderInstance;
+let adfs_idp: IdentityProviderInstance;
+let ws1_idp: IdentityProviderInstance;
 
 const getCachedSp = async () => {
   if (!sp) {
@@ -36,10 +38,17 @@ const getCachedSp = async () => {
 };
 
 const getCachedIdp = async () => {
-  if (!idp) {
-    idp = await configureIdp();
+  if (!adfs_idp) {
+    adfs_idp = await configureIdp();
   }
-  return idp;
+  return adfs_idp;
 };
 
-export { getCachedSp, getCachedIdp };
+const getCachedIdpStaff = async () => {
+  if (!ws1_idp) {
+    ws1_idp = await configureIdp(true);
+  }
+  return ws1_idp;
+};
+
+export { getCachedSp, getCachedIdp, getCachedIdpStaff };

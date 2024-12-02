@@ -7,7 +7,7 @@ import accountService from '../services/account.service';
 import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { getCachedIdp, getCachedSp } from '../helpers/ssoHelper';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff } from '../helpers/ssoHelper';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -160,45 +160,64 @@ async function generateSAMLRequest(req: express.Request, res: express.Response) 
   }
 }
 
+async function generateSAMLRequestStaff(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSp();
+    const idp = await getCachedIdpStaff();
+
+    // Create auth SAML request
+    const { id, context } = sp.createLoginRequest(idp, 'redirect');
+    return res.status(StatusCodes.OK).json({ redirectUrl: context });
+  } catch (error) {
+    console.error('Error generating SAML request:', error);
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 async function processSAMLResponse(req: express.Request, res: express.Response) {
   try {
     const sp = await getCachedSp();
     const idp = await getCachedIdp();
 
+    console.log('Request Body:', req.body);
+    console.log('Request Headers:', req.headers);
+
+    const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
+
+    if (!SAMLResponse) {
+      throw new Error('Missing SAMLResponse');
+    }
+
     // Parse the SAML response
     const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
     const { extract } = parsedResponse;
-    console.log('SAML Response Parsed:', extract);
 
     // Validate parsed response
-    if (!extract || !extract.user_id || !extract.user_email) {
+    if (!extract) {
       throw new Error('Invalid SAML response: Missing required attributes.');
     }
+    console.log('Attributes:', extract.attribute);
 
-    // Handle user authentication and session creation
-    const userInfo = await authenticationService.samlHandler(extract);
-    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
-    const sessionId = await sessionService.createUserSession(
-      userInfo.user_email,
-      userRoleInformation,
-      userInfo.user_id,
-    );
+    // // Handle user authentication and session creation
+    // const userInfo = await authenticationService.samlHandler(extract);
+    // const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+    // const sessionId = await sessionService.createUserSession(
+    //   userInfo.user_email,
+    //   userRoleInformation,
+    //   userInfo.user_id,
+    // );
 
-    // Set secure cookie for session
-    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
+    // // Set secure cookie for session
+    // res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    // });
 
-    console.log('Session created successfully for user:', userInfo.user_email);
+    // console.log('Session created successfully for user:', userInfo.user_email);
     return res.status(StatusCodes.OK).send();
   } catch (error) {
     console.error('Error processing SAML Response:', error);
     return getDefaultErrorRes(error, res);
-  } finally {
-    if (res.headersSent) {
-      res.redirect('/');
-    }
   }
 }
 
@@ -211,5 +230,6 @@ export default {
   oauth2Login,
   register,
   generateSAMLRequest,
+  generateSAMLRequestStaff,
   processSAMLResponse,
 };
