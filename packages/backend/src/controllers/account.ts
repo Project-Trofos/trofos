@@ -209,7 +209,8 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
       secure: process.env.NODE_ENV === 'production',
     });
 
-    return res.status(StatusCodes.OK).send();
+    // Redirect the user to the homepage
+    return res.redirect('/');
   } catch (error) {
     console.error('Error processing SAML Response:', error);
     return getDefaultErrorRes(error, res);
