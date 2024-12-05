@@ -5,9 +5,8 @@ import { UserInfo } from '../api/auth';
 import ProjectTable from '../components/tables/ProjectTable';
 import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';
-import { Heading, WelcomeMessage } from '../components/typography';
 import CourseTable from '../components/tables/CourseTable';
-import PageTitle from '../components/pageheader/PageTitle';
+import PageHeader from '../components/pageheader/PageHeader';
 
 export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const [isPastProject, setIsPastProject] = useState(false);
@@ -38,7 +37,7 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <PageTitle
+        <PageHeader
           title="Home"
           subTitle={`Welcome, ${userInfo.userDisplayName}`}
         />

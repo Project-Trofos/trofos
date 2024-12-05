@@ -4,14 +4,14 @@ import { UserInfo } from '../api/auth';
 
 import { useCurrentAndPastProjects } from '../api/hooks';
 import Container from '../components/layouts/Container';
-import { Heading, Subheading } from '../components/typography';
+import { Subheading } from '../components/typography';
 import ProjectTable from '../components/tables/ProjectTable';
 import BacklogTable from '../components/tables/BacklogTable';
 import { useGetBacklogsQuery } from '../api/backlog';
 import { useGetAllProjectsQuery } from '../api/project';
 import { Sprint, useGetSprintsQuery } from '../api/sprint';
 import { Backlog } from '../api/types';
-import PageTitle from '../components/pageheader/PageTitle';
+import PageHeader from '../components/pageheader/PageHeader';
 
 export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const { currentProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
@@ -54,7 +54,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <PageTitle
+        <PageHeader
           title="Home"
           subTitle={`Welcome, ${userInfo.userDisplayName}`}
         />

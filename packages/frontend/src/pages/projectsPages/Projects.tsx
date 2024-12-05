@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Typography, Space } from 'antd';
+import React from 'react';
+import { Typography } from 'antd';
 
 import ProjectCreationModal from '../../components/modals/ProjectCreationModal';
 import Container from '../../components/layouts/Container';
@@ -7,7 +7,7 @@ import { useGetUserInfoQuery } from '../../api/auth';
 import conditionalRender from '../../helpers/conditionalRender';
 import { UserPermissionActions } from '../../helpers/constants';
 import { Outlet } from 'react-router-dom';
-import PageTitle from '../../components/pageheader/PageTitle';
+import PageHeader from '../../components/pageheader/PageHeader';
 
 const { Title } = Typography;
 
@@ -21,7 +21,7 @@ export default function ProjectsPage(): JSX.Element {
 
   return (
     <Container fullWidth noGap>
-      <PageTitle
+      <PageHeader
         title="Projects"
         buttons={headerButtons}
       />

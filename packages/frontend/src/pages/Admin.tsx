@@ -4,7 +4,7 @@ import UserManagementTab from '../components/tabs/UserManagement';
 import RoleManagementTab from '../components/tabs/RoleManagement';
 import SettingsManagementTab from '../components/tabs/SettingsManagement';
 import './Admin.css';
-import PageTitle from '../components/pageheader/PageTitle';
+import PageHeader from '../components/pageheader/PageHeader';
 import Container from '../components/layouts/Container';
 
 const { Content } = Layout;
@@ -14,7 +14,7 @@ function Admin(): JSX.Element {
 
   return (
     <Container fullWidth noGap>
-      <PageTitle title="Admin Console" />
+      <PageHeader title="Admin Console" />
       <Tabs
         items={[
           { key: 'user-management', label: 'User Management', children: <UserManagementTab /> },
