@@ -11,6 +11,7 @@ import { useGetBacklogsQuery } from '../api/backlog';
 import { useGetAllProjectsQuery } from '../api/project';
 import { Sprint, useGetSprintsQuery } from '../api/sprint';
 import { Backlog } from '../api/types';
+import PageTitle from '../components/pageheader/PageTitle';
 
 export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const { currentProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
@@ -53,7 +54,10 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Heading>Home</Heading>
+        <PageTitle
+          title="Home"
+          subTitle={`Welcome, ${userInfo.userDisplayName}`}
+        />
         <Row gutter={[16, 16]} itemType="flex">
           <Col xs={24} xl={12}>
             <UserDashboardStatistics

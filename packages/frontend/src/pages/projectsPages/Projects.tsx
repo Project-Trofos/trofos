@@ -7,21 +7,24 @@ import { useGetUserInfoQuery } from '../../api/auth';
 import conditionalRender from '../../helpers/conditionalRender';
 import { UserPermissionActions } from '../../helpers/constants';
 import { Outlet } from 'react-router-dom';
+import PageTitle from '../../components/pageheader/PageTitle';
 
 const { Title } = Typography;
 
 export default function ProjectsPage(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
 
+  const headerButtons = [conditionalRender(<ProjectCreationModal />, userInfo?.userRoleActions ?? [], [
+    UserPermissionActions.ADMIN,
+    UserPermissionActions.CREATE_PROJECT,
+  ])];
+
   return (
     <Container fullWidth noGap>
-      <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Title>Projects</Title>
-        {conditionalRender(<ProjectCreationModal />, userInfo?.userRoleActions ?? [], [
-          UserPermissionActions.ADMIN,
-          UserPermissionActions.CREATE_PROJECT,
-        ])}
-      </Space>
+      <PageTitle
+        title="Projects"
+        buttons={headerButtons}
+      />
       <Outlet />
     </Container>
   );

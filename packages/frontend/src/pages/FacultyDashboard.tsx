@@ -7,6 +7,7 @@ import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hook
 import Container from '../components/layouts/Container';
 import { Heading, WelcomeMessage } from '../components/typography';
 import CourseTable from '../components/tables/CourseTable';
+import PageTitle from '../components/pageheader/PageTitle';
 
 export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const [isPastProject, setIsPastProject] = useState(false);
@@ -37,8 +38,10 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
   return (
     <Container>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Heading>Home</Heading>
-        <WelcomeMessage username={userInfo.userEmail} />
+        <PageTitle
+          title="Home"
+          subTitle={`Welcome, ${userInfo.userDisplayName}`}
+        />
         <Card>
           <CourseTable
             courses={isPastCourse ? pastCourses : currentCourses}
