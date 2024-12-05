@@ -127,9 +127,21 @@ export default function MainLayout() {
   }, [userInfo, location, navigate, isLoading]);
 
   const selectedKeys = useMemo(() => {
+    // Handle viewing all courses
+    if (location.pathname.split('/', 2)[1] === 'courses') {
+      return ['/courses']
+    }
+    // Handle viewing all projects
+    if (location.pathname.split('/', 2)[1] === 'projects') {
+      return ['/projects']
+    }
     // Check if a course is selected
     if (location.pathname.split('/', 2)[1] === 'course') {
-      return [location.pathname.split('/', 5).join('/')];
+      return [location.pathname.split('/', 5).slice(0,3).join('/')];
+    }
+    // Handle manage api key tab selected
+    if (location.pathname.split('/', 2)[1] === 'manage-api-key') {
+      return ['/api-key']
     }
     return [location.pathname.split('/', 3).join('/')];
   }, [location.pathname]);
