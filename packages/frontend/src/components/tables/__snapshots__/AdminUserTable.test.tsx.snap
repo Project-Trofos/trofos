@@ -77,7 +77,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         class="ant-table-cell"
                       >
                         <button
-                          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+                          class="ant-btn ant-btn-default"
                           type="button"
                         >
                           <span>

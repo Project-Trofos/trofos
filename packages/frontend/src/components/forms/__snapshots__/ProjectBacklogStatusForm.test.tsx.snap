@@ -23,7 +23,7 @@ exports[`ProjectBacklogStatusForm test > when rendering > should render accordin
               >
                 <input
                   aria-required="true"
-                  class="ant-input ant-input-outlined"
+                  class="ant-input"
                   id="To do"
                   type="text"
                   value="To do"
@@ -64,7 +64,7 @@ exports[`ProjectBacklogStatusForm test > when rendering > should render accordin
                     class="ant-form-item-control-input-content"
                   >
                     <span
-                      class="ant-input-group-wrapper ant-input-group-wrapper-outlined"
+                      class="ant-input-group-wrapper"
                     >
                       <span
                         class="ant-input-wrapper ant-input-group"
@@ -98,7 +98,7 @@ exports[`ProjectBacklogStatusForm test > when rendering > should render accordin
                         </span>
                         <input
                           aria-required="true"
-                          class="ant-input ant-input-outlined"
+                          class="ant-input"
                           id="In progress"
                           type="text"
                           value="In progress"
@@ -157,7 +157,7 @@ exports[`ProjectBacklogStatusForm test > when rendering > should render accordin
               >
                 <input
                   aria-required="true"
-                  class="ant-input ant-input-outlined"
+                  class="ant-input"
                   id="Done"
                   type="text"
                   value="Done"
@@ -169,7 +169,7 @@ exports[`ProjectBacklogStatusForm test > when rendering > should render accordin
       </div>
     </form>
     <button
-      class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
+      class="ant-btn ant-btn-primary"
       type="button"
     >
       <span>

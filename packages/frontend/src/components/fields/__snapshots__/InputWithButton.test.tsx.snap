@@ -11,7 +11,7 @@ exports[`test InputWithButton > when rendering > should render correct fields 1`
         class="ant-space-item"
       >
         <input
-          class="ant-input ant-input-outlined"
+          class="ant-input"
           placeholder="placeholder"
           type="text"
           value=""
@@ -21,7 +21,7 @@ exports[`test InputWithButton > when rendering > should render correct fields 1`
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+          class="ant-btn ant-btn-default"
           type="submit"
         >
           <span>

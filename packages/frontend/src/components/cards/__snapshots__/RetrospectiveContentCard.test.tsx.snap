@@ -16,7 +16,7 @@ exports[`RetrospectiveContentCard test > renders retrospective card with correct
             class="vote-container"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined up "
+              class="ant-btn ant-btn-default up "
               type="button"
             >
               <span
@@ -45,7 +45,7 @@ exports[`RetrospectiveContentCard test > renders retrospective card with correct
               1
             </span>
             <button
-              class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined down "
+              class="ant-btn ant-btn-default down "
               type="button"
             >
               <span
@@ -78,7 +78,7 @@ exports[`RetrospectiveContentCard test > renders retrospective card with correct
             class="retrospective-content-delete-container-create"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined delete"
+              class="ant-btn ant-btn-default delete"
               type="button"
             >
               <span
@@ -102,7 +102,7 @@ exports[`RetrospectiveContentCard test > renders retrospective card with correct
               </span>
             </button>
             <button
-              class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid new-backlog-btn"
+              class="ant-btn ant-btn-primary new-backlog-btn"
               type="button"
             >
               <span>

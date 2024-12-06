@@ -56,7 +56,7 @@ exports[`CourseCodeFormItem test > when rendering > should have correct fields 1
                 class="ant-form-item-control-input-content"
               >
                 <input
-                  class="ant-input ant-input-outlined"
+                  class="ant-input"
                   id="courseCode"
                   type="text"
                   value=""
@@ -67,7 +67,7 @@ exports[`CourseCodeFormItem test > when rendering > should have correct fields 1
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        class="ant-btn ant-btn-default"
         type="submit"
       >
         <span>

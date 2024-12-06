@@ -51,7 +51,7 @@ exports[`RetrospectiveContainerCard test > renders retrospective card with corre
                       class="ant-form-item-control-input-content"
                     >
                       <input
-                        class="ant-input ant-input-outlined"
+                        class="ant-input"
                         id="content"
                         placeholder="Type something here..."
                         type="text"

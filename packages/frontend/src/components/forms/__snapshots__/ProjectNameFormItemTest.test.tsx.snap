@@ -34,7 +34,7 @@ exports[`ProjectNameFormItem test > when rendering > should have correct fields 
               >
                 <input
                   aria-required="true"
-                  class="ant-input ant-input-outlined"
+                  class="ant-input"
                   id="projectName"
                   type="text"
                   value=""
@@ -45,7 +45,7 @@ exports[`ProjectNameFormItem test > when rendering > should have correct fields 
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        class="ant-btn ant-btn-default"
         type="submit"
       >
         <span>

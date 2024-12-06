@@ -103,10 +103,10 @@ exports[`test AnnouncementCard > when rendering > should render correctly 1`] = 
             </div>
           </div>
           <div
-            class="ant-list-pagination"
+            class="ant-list-pagination ant-list-pagination-align-end"
           >
             <ul
-              class="ant-pagination ant-pagination-end"
+              class="ant-pagination"
             >
               <li
                 aria-disabled="true"

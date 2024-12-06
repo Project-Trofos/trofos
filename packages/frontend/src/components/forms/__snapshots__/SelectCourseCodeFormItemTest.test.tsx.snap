@@ -52,7 +52,7 @@ exports[`SelectCourseCodeFormItem test > when rendering > should have correct fi
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+        class="ant-btn ant-btn-default"
         type="submit"
       >
         <span>
