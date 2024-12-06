@@ -244,6 +244,11 @@ export default function MainLayout() {
         onBreakpoint={setIsBroken}
         className="main-layout-sider"
         trigger={<UnorderedListOutlined style={{ color: isDarkTheme ? '#FFF' : '#000' }} />}
+        zeroWidthTriggerStyle={{
+          position: 'absolute',
+          margin: '8px',
+          zIndex: 1000,
+        }}
       >
         <Link to="/" className="logo">
           <Image width={40} src="favicon.ico" preview={false} />
