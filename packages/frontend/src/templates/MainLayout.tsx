@@ -83,7 +83,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <Space>
+    <Space size={"middle"}>
       <Col>
         <ThemeSwitch />
       </Col>
@@ -258,7 +258,7 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: '0 10px' }}>
+        <Header style={{ padding: '0 10px', overflowX: 'auto' }}>
           <Row justify={'space-between'}>
             <Col style={{ paddingLeft: isBroken ? '30px' : 0 }} span={10}>
               <MenuSwitch />
