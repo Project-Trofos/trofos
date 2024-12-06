@@ -83,7 +83,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <Space>
+    <Space size={"middle"}>
       <Col>
         <ThemeSwitch />
       </Col>
@@ -127,9 +127,21 @@ export default function MainLayout() {
   }, [userInfo, location, navigate, isLoading]);
 
   const selectedKeys = useMemo(() => {
+    // Handle viewing all courses
+    if (location.pathname.split('/', 2)[1] === 'courses') {
+      return ['/courses']
+    }
+    // Handle viewing all projects
+    if (location.pathname.split('/', 2)[1] === 'projects') {
+      return ['/projects']
+    }
     // Check if a course is selected
     if (location.pathname.split('/', 2)[1] === 'course') {
-      return [location.pathname.split('/', 5).join('/')];
+      return [location.pathname.split('/', 5).slice(0,3).join('/')];
+    }
+    // Handle manage api key tab selected
+    if (location.pathname.split('/', 2)[1] === 'manage-api-key') {
+      return ['/api-key']
     }
     return [location.pathname.split('/', 3).join('/')];
   }, [location.pathname]);
@@ -232,6 +244,11 @@ export default function MainLayout() {
         onBreakpoint={setIsBroken}
         className="main-layout-sider"
         trigger={<UnorderedListOutlined style={{ color: isDarkTheme ? '#FFF' : '#000' }} />}
+        zeroWidthTriggerStyle={{
+          position: 'absolute',
+          margin: '8px',
+          zIndex: 1000,
+        }}
       >
         <Link to="/" className="logo">
           <Image width={40} src="favicon.ico" preview={false} />
@@ -246,7 +263,7 @@ export default function MainLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: '0 10px' }}>
+        <Header style={{ padding: '0 10px', overflowX: 'auto' }}>
           <Row justify={'space-between'}>
             <Col style={{ paddingLeft: isBroken ? '30px' : 0 }} span={10}>
               <MenuSwitch />

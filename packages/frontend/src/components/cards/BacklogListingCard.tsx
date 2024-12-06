@@ -10,12 +10,17 @@ import BacklogCardPoints from '../fields/BacklogCardPoints';
 import BacklogCardSummary from '../fields/BacklogCardSummary';
 import './BacklogListingCard.css';
 import BacklogCardEpic from '../dropdowns/BacklogCardEpic';
+import GenericBoxWithBackground from '../layouts/GenericBoxWithBackground';
 
 function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
   const { backlog, projectKey, users } = props;
 
   return (
-    <>
+    <GenericBoxWithBackground
+      style={{boxShadow: undefined, marginBottom: undefined, overflowX: 'auto'}}
+      withBorder
+      isHorizontal
+    >
       <div className="backlog-card-id">
         {projectKey ? `${projectKey}-` : ''}
         {backlog.backlog_id}
@@ -27,7 +32,7 @@ function BacklogListingCard(props: BacklogListingCardProps): JSX.Element {
       <BacklogCardAssignee backlogId={backlog.backlog_id} currentAssignee={backlog.assignee_id} projectUsers={users} />
       <BacklogCardPoints backlogId={backlog.backlog_id} currentPoints={backlog.points} />
       <BacklogCardEpic backlogId={backlog.backlog_id} currentEpic={backlog.epic_id ?? undefined} />
-    </>
+    </GenericBoxWithBackground>
   );
 }
 

@@ -1,11 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons/lib/icons';
-import { AutoComplete, Button, Input, InputRef, Space, Switch } from 'antd';
+import { AutoComplete, Grid, Input, InputRef, Popover, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllCoursesQuery } from '../../api/course';
 import { useGetAllProjectsQuery } from '../../api/project';
 
 import './GlobalSearch.css';
+
+const { useBreakpoint } = Grid;
 
 export default function GlobalSearch(): JSX.Element {
   const [isInputHidden, setIsInputHidden] = useState(true);
@@ -13,6 +15,7 @@ export default function GlobalSearch(): JSX.Element {
   const inputRef = useRef<InputRef>(null);
 
   const navigate = useNavigate();
+  const screens = useBreakpoint();
 
   const { data: courses } = useGetAllCoursesQuery();
   const { data: projects } = useGetAllProjectsQuery();
@@ -58,7 +61,7 @@ export default function GlobalSearch(): JSX.Element {
   );
 
   const handleClick = () => {
-    setIsInputHidden(!isInputHidden);
+    setIsInputHidden(false);
     if (inputRef) {
       inputRef.current?.focus();
     }
@@ -81,19 +84,45 @@ export default function GlobalSearch(): JSX.Element {
     setSearchString(e.target.value);
   };
 
+  const handleInputHiddenChange = (newOpen: boolean) => {
+    setIsInputHidden(!newOpen);
+  };
+
   return (
     <Space size={"small"}>
       <SearchOutlined className="search-icon" onClick={handleClick} />
-      <AutoComplete
-        // className={`search-input  ${isInputHidden ? 'search-input-hidden' : ''} `}
-        options={allOptions}
-        value={searchString}
-        onSelect={handleSelect}
-        notFoundContent={<span>No Result</span>}
-        listHeight={200}
-      >
-        <Input placeholder="type to search" onChange={handleChange} ref={inputRef} onBlur={handleBlur} />
-      </AutoComplete>
+      {
+        !screens.xs ?
+        (<AutoComplete
+          // className={`search-input  ${isInputHidden ? 'search-input-hidden' : ''} `}
+          options={allOptions}
+          value={searchString}
+          onSelect={handleSelect}
+          notFoundContent={<span>No Result</span>}
+          listHeight={200}
+        >
+          <Input placeholder="type to search" onChange={handleChange} ref={inputRef} onBlur={handleBlur} />
+        </AutoComplete>) :
+        (<Popover
+          trigger={"click"}
+          open={!isInputHidden}
+          content={
+            <AutoComplete
+              // className={`search-input  ${isInputHidden ? 'search-input-hidden' : ''} `}
+              options={allOptions}
+              value={searchString}
+              onSelect={handleSelect}
+              notFoundContent={<span>No Result</span>}
+              listHeight={200}
+              style={{ width:'100%' }}
+            >
+              <Input placeholder="type to search" onChange={handleChange} ref={inputRef} onBlur={handleBlur} />
+            </AutoComplete>
+          }
+          onOpenChange={handleInputHiddenChange}
+          overlayStyle={{ width: '80vw' }}
+        />)
+      }
     </Space>
   );
 }

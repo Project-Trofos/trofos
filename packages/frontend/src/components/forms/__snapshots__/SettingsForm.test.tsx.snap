@@ -146,7 +146,6 @@ exports[`SettingsForm test > when rendering > should render according to the sna
                         aria-controls="current-semester_list"
                         aria-expanded="false"
                         aria-haspopup="listbox"
-                        aria-label="Search"
                         aria-owns="current-semester_list"
                         aria-required="true"
                         autocomplete="off"

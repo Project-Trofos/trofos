@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import Container from '../../components/layouts/Container';
 import StandUpBoard from '../../components/board/StandUpBoard';
 import { useParams } from 'react-router-dom';
 import { useGetStandUpQuery } from '../../api/standup';
@@ -8,6 +7,7 @@ import trofosApiSlice from '../../api';
 import useSocket from '../../api/socket/useSocket';
 import { UpdateType } from '../../api/socket/socket';
 import { Spin } from 'antd';
+import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 
 export default function StandUpBoardPage(): JSX.Element {
   const params = useParams();
@@ -31,8 +31,8 @@ export default function StandUpBoardPage(): JSX.Element {
     return <div>Stand Up not found</div>;
   }
   return (
-    <Container noGap fullWidth style={{ display: 'inline-block', minWidth: '100%', minHeight: '100%' }}>
+    <GenericBoxWithBackground>
       <StandUpBoard standUp={standUp} />
-    </Container>
+    </GenericBoxWithBackground>
   );
 }

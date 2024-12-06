@@ -8,21 +8,24 @@ import { useGetUserInfoQuery } from '../../api/auth';
 import conditionalRender from '../../helpers/conditionalRender';
 import { UserPermissionActions } from '../../helpers/constants';
 import { Outlet } from 'react-router-dom';
+import PageHeader from '../../components/pageheader/PageHeader';
 
 const { Title } = Typography;
 
 export default function CoursesPage(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
 
+  const headerButtons = [conditionalRender(<CourseCreationModal />, userInfo?.userRoleActions ?? [], [
+    UserPermissionActions.ADMIN,
+    UserPermissionActions.CREATE_COURSE,
+  ])];
+
   return (
     <Container fullWidth noGap>
-      <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Title>Courses</Title>
-        {conditionalRender(<CourseCreationModal />, userInfo?.userRoleActions ?? [], [
-          UserPermissionActions.ADMIN,
-          UserPermissionActions.CREATE_COURSE,
-        ])}
-      </Space>
+      <PageHeader
+          title="Courses"
+          buttons={headerButtons}
+        />
       <Outlet />
     </Container>
   );

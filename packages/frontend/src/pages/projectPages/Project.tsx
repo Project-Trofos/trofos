@@ -9,13 +9,14 @@ import ProjectAttachModal from '../../components/modals/ProjectAttachModal';
 import { getErrorMessage } from '../../helpers/error';
 import { useProject } from '../../api/hooks';
 import './Project.css';
-import PageHeader from '../../components/pageheader/PageHeader';
 import useSocket from '../../api/socket/useSocket';
 import trofosApiSlice from '../../api';
 import store from '../../app/store';
 import { UpdateType } from '../../api/socket/socket';
 import { useGetUserInfoQuery } from '../../api/auth';
 import { UserPermissionActions } from '../../helpers/constants';
+import Container from '../../components/layouts/Container';
+import PageHeader from '../../components/pageheader/PageHeader';
 
 const { Text } = Typography;
 
@@ -140,13 +141,15 @@ export default function ProjectPage(): JSX.Element {
   );
 
   return (
-    <>
-      <PageHeader extra={[<DropdownMenu projectMenu={projectMenu} key="more" />]} breadcrumb={breadCrumbs}>
-        {project.description && <Text>{project.description}</Text>}
-      </PageHeader>
-      <section className="overflow-scroll-container">
-        <Outlet />
-      </section>
-    </>
+    <Container fullWidth noGap>
+      <PageHeader
+        buttons={[<DropdownMenu projectMenu={projectMenu} key="more" />]}
+        breadCrumbs={breadCrumbs}
+        title={project.pname}
+        subTitle={project.description ? project.description : undefined}
+        tagText={project.pkey ? project.pkey : undefined}
+      />
+      <Outlet />
+    </Container>
   );
 }

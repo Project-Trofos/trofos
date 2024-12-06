@@ -6,9 +6,10 @@ import { useRemoveCourseMutation } from '../../api/course';
 import { confirmDeleteCourse } from '../../components/modals/confirm';
 import ProjectCreationModal from '../../components/modals/ProjectCreationModal';
 import { useCourse } from '../../api/hooks';
-import PageHeader from '../../components/pageheader/PageHeader';
 import ImportDataModal from '../../components/modals/ImportDataModal';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import Container from '../../components/layouts/Container';
+import PageHeader from '../../components/pageheader/PageHeader';
 
 const { Text } = Typography;
 
@@ -82,26 +83,22 @@ export default function CoursePage(): JSX.Element {
   );
 
   return (
-    <>
+    <Container fullWidth noGap>
       <PageHeader
         title={course.cname}
-        subTitle={<Tag>{course.code}</Tag>}
-        extra={
-          isCourseManager
-            ? [
-                <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
-                <ProjectCreationModal key="create-project" course={course} />,
-                <DropdownMenu key="more" courseMenu={courseMenu} />,
-              ]
-            : undefined
+        subTitle={course.description === null ? '' : course.description}
+        breadCrumbs={breadCrumbs}
+        tagText={course.code}
+        buttons={isCourseManager
+          ? [
+              <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
+              <ProjectCreationModal key="create-project" course={course} />,
+              <DropdownMenu key="more" courseMenu={courseMenu} />,
+            ]
+          : undefined
         }
-        breadcrumb={breadCrumbs}
-      >
-        {course.description && <Text>{course.description}</Text>}
-      </PageHeader>
-      <section className="overflow-scroll-container">
-        <Outlet />
-      </section>
-    </>
+      />
+      <Outlet />
+    </Container>
   );
 }

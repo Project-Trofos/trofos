@@ -29,12 +29,6 @@ import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected } from '
 import CourseMilestones from '../pages/coursePages/CourseMilestones';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
-import CurrentProjects from '../pages/projectsPages/CurrentProjects';
-import PastProjects from '../pages/projectsPages/PastProjects';
-import FutureProjects from '../pages/projectsPages/FutureProjects';
-import CurrentCourses from '../pages/coursesPages/CurrentCourses';
-import PastCourses from '../pages/coursesPages/PastCourses';
-import FutureCourses from '../pages/coursesPages/FutureCourses';
 import ThemeProvider from '../components/theming/ThemeProvider';
 import StandUpBoardPage from '../pages/projectPages/StandUpBoardPage';
 import StandUpsPage from '../pages/projectPages/StandUpsPage';
@@ -43,6 +37,8 @@ import useMessage from 'antd/es/message/useMessage';
 import { ProjectReportPage } from '../pages/projectPages/ProjectReportPage';
 import Invite from '../pages/Invite';
 import ApiKey from '../pages/ApiKey';
+import ProjectsBody from '../pages/projectsPages/ProjectsBody';
+import CoursesBody from '../pages/coursesPages/CoursesBody';
 
 function App() {
   const [_, contextHolder] = useMessage();
@@ -54,9 +50,9 @@ function App() {
             <Route path="" element={<Home />} />
             <Route path="projects" element={<Projects />}>
               <Route path="" element={<Navigate to="current" />} />
-              <Route path="current" element={<CurrentProjects />} />
-              <Route path="past" element={<PastProjects />} />
-              <Route path="future" element={<FutureProjects />} />
+              <Route path="current" element={<ProjectsBody currentPastOrFuture="cur" />} />
+              <Route path="past" element={<ProjectsBody currentPastOrFuture="past" />} />
+              <Route path="future" element={<ProjectsBody currentPastOrFuture="future" />} />
             </Route>
             <Route path="project/:projectId" element={<Project />}>
               <Route path="" element={<Navigate to="overview" />} />
@@ -77,9 +73,9 @@ function App() {
             </Route>
             <Route path="courses" element={<Courses />}>
               <Route path="" element={<Navigate to="current" />} />
-              <Route path="current" element={<CurrentCourses />} />
-              <Route path="past" element={<PastCourses />} />
-              <Route path="future" element={<FutureCourses />} />
+              <Route path="current" element={<CoursesBody currentPastOrFuture="cur" />} />
+              <Route path="past" element={<CoursesBody currentPastOrFuture="past" />} />
+              <Route path="future" element={<CoursesBody currentPastOrFuture='future' />} />
             </Route>
             <Route path="course/:courseId" element={<Course />}>
               <Route path="" element={<Navigate to="overview" />} />
