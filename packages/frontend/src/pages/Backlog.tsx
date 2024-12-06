@@ -20,6 +20,7 @@ import BacklogList from '../components/lists/BacklogList';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { BACKLOG_TYPE_OPTIONS } from '../helpers/constants';
+import GenericBoxWithBackground from '../components/layouts/GenericBoxWithBackground';
 
 function Backlog(): JSX.Element {
   const { Title } = Typography;
@@ -137,7 +138,7 @@ function Backlog(): JSX.Element {
   }
 
   return (
-    <>
+    <GenericBoxWithBackground>
       <div>
         <Form
           form={form}
@@ -235,7 +236,7 @@ function Backlog(): JSX.Element {
         <BacklogComment />
         <Comment />
       </div>
-    </>
+    </GenericBoxWithBackground>
   );
 }
 
