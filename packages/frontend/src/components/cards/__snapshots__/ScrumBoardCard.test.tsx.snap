@@ -96,7 +96,7 @@ exports[`ScrumBoardCard test > renders scrum board card with correct details 1`]
                   >
                     <span
                       class="ant-avatar-string"
-                      style="transform: scale(1) translateX(-50%);"
+                      style="transform: scale(1);"
                     >
                       B2
                     </span>
@@ -224,7 +224,7 @@ exports[`ScrumBoardCard test > renders scrum board card with standup options if 
                   >
                     <span
                       class="ant-avatar-string"
-                      style="transform: scale(1) translateX(-50%);"
+                      style="transform: scale(1);"
                     >
                       B2
                     </span>

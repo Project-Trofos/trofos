@@ -4,7 +4,7 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
 <body>
   <div>
     <button
-      class="ant-btn ant-btn-primary new-backlog-btn"
+      class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid new-backlog-btn"
       type="button"
     >
       <span>
@@ -28,498 +28,121 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
           aria-modal="true"
           class="ant-modal ant-zoom-appear ant-zoom-appear-prepare ant-zoom"
           role="dialog"
-          style="width: 600px; transform-origin: 0px 0px;"
+          style="width: 600px;"
         >
           <div
-            aria-hidden="true"
-            style="width: 0px; height: 0px; overflow: hidden; outline: none;"
+            style="outline: none;"
             tabindex="0"
-          />
-          <div
-            class="ant-modal-content"
           >
-            <button
-              aria-label="Close"
-              class="ant-modal-close"
-              type="button"
+            <div
+              class="ant-modal-content"
             >
-              <span
-                class="ant-modal-close-x"
+              <button
+                aria-label="Close"
+                class="ant-modal-close"
+                type="button"
               >
                 <span
-                  aria-label="close"
-                  class="anticon anticon-close ant-modal-close-icon"
-                  role="img"
+                  class="ant-modal-close-x"
                 >
-                  <svg
-                    aria-hidden="true"
-                    data-icon="close"
-                    fill="currentColor"
-                    fill-rule="evenodd"
-                    focusable="false"
-                    height="1em"
-                    viewBox="64 64 896 896"
-                    width="1em"
+                  <span
+                    aria-label="close"
+                    class="anticon anticon-close ant-modal-close-icon"
+                    role="img"
                   >
-                    <path
-                      d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"
-                    />
-                  </svg>
+                    <svg
+                      aria-hidden="true"
+                      data-icon="close"
+                      fill="currentColor"
+                      fill-rule="evenodd"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M799.86 166.31c.02 0 .04.02.08.06l57.69 57.7c.04.03.05.05.06.08a.12.12 0 010 .06c0 .03-.02.05-.06.09L569.93 512l287.7 287.7c.04.04.05.06.06.09a.12.12 0 010 .07c0 .02-.02.04-.06.08l-57.7 57.69c-.03.04-.05.05-.07.06a.12.12 0 01-.07 0c-.03 0-.05-.02-.09-.06L512 569.93l-287.7 287.7c-.04.04-.06.05-.09.06a.12.12 0 01-.07 0c-.02 0-.04-.02-.08-.06l-57.69-57.7c-.04-.03-.05-.05-.06-.07a.12.12 0 010-.07c0-.03.02-.05.06-.09L454.07 512l-287.7-287.7c-.04-.04-.05-.06-.06-.09a.12.12 0 010-.07c0-.02.02-.04.06-.08l57.7-57.69c.03-.04.05-.05.07-.06a.12.12 0 01.07 0c.03 0 .05.02.09.06L512 454.07l287.7-287.7c.04-.04.06-.05.09-.06a.12.12 0 01.07 0z"
+                      />
+                    </svg>
+                  </span>
                 </span>
-              </span>
-            </button>
-            <div
-              class="ant-modal-header"
-            >
+              </button>
               <div
-                class="ant-modal-title"
-                id="test-id"
+                class="ant-modal-header"
               >
-                New Backlog
+                <div
+                  class="ant-modal-title"
+                  id="test-id"
+                >
+                  New Backlog
+                </div>
               </div>
-            </div>
-            <div
-              class="ant-modal-body"
-            >
-              <form
-                class="ant-form ant-form-horizontal"
-                id="newBacklog"
+              <div
+                class="ant-modal-body"
               >
-                <div
-                  class="ant-form-item"
+                <form
+                  class="ant-form ant-form-horizontal"
+                  id="newBacklog"
                 >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <textarea
-                            class="ant-input summary-input "
-                            placeholder="* Type summary here..."
-                            style="resize: none; height: 2px; min-height: 2px;"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="type"
-                        title="Type"
-                      >
-                        Type
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-form-item-control-input"
                         >
                           <div
-                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-show-arrow"
+                            class="ant-form-item-control-input-content"
                           >
-                            <div
-                              class="ant-select-selector"
-                            >
-                              <span
-                                class="ant-select-selection-search"
-                              >
-                                <input
-                                  aria-autocomplete="list"
-                                  aria-controls="rc_select_TEST_OR_SSR_list"
-                                  aria-expanded="false"
-                                  aria-haspopup="listbox"
-                                  aria-label="Search"
-                                  aria-owns="rc_select_TEST_OR_SSR_list"
-                                  autocomplete="off"
-                                  class="ant-select-selection-search-input"
-                                  id="rc_select_TEST_OR_SSR"
-                                  readonly=""
-                                  role="combobox"
-                                  style="opacity: 0;"
-                                  type="search"
-                                  unselectable="on"
-                                  value=""
-                                />
-                              </span>
-                              <span
-                                class="ant-select-selection-placeholder"
-                              >
-                                Type of backlog
-                              </span>
-                            </div>
-                            <span
-                              aria-hidden="true"
-                              class="ant-select-arrow"
-                              style="user-select: none;"
-                              unselectable="on"
-                            >
-                              <span
-                                aria-label="down"
-                                class="anticon anticon-down ant-select-suffix"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="64 64 896 896"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
+                            <textarea
+                              class="ant-input ant-input-outlined summary-input "
+                              placeholder="* Type summary here..."
+                              style="resize: none; height: 2px; min-height: 2px;"
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="ant-row"
-                  style="margin-left: -4px; margin-right: -4px;"
-                >
                   <div
-                    class="ant-col"
-                    style="padding-left: 4px; padding-right: 4px;"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-form-item"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-col ant-form-item-label"
+                      >
+                        <label
+                          class="ant-form-item-required"
+                          for="type"
+                          title="Type"
+                        >
+                          Type
+                        </label>
+                      </div>
+                      <div
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="sprintId"
-                            title="Sprint"
-                          >
-                            Sprint
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
+                          class="ant-form-item-control-input"
                         >
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-form-item-control-input-content"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-select ant-select-outlined ant-select-in-form-item backlog-select  ant-select-single ant-select-show-arrow"
                             >
                               <div
-                                class="ant-select ant-select-in-form-item backlog-select sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                                class="ant-select-selector"
                               >
-                                <div
-                                  class="ant-select-selector"
-                                >
-                                  <span
-                                    class="ant-select-selection-search"
-                                  >
-                                    <input
-                                      aria-autocomplete="list"
-                                      aria-controls="rc_select_TEST_OR_SSR_list"
-                                      aria-expanded="false"
-                                      aria-haspopup="listbox"
-                                      aria-label="Search"
-                                      aria-owns="rc_select_TEST_OR_SSR_list"
-                                      autocomplete="off"
-                                      class="ant-select-selection-search-input"
-                                      id="rc_select_TEST_OR_SSR"
-                                      role="combobox"
-                                      type="search"
-                                      value=""
-                                    />
-                                  </span>
-                                  <span
-                                    class="ant-select-selection-placeholder"
-                                  >
-                                    Select Sprint
-                                  </span>
-                                </div>
                                 <span
-                                  aria-hidden="true"
-                                  class="ant-select-arrow"
-                                  style="user-select: none;"
-                                  unselectable="on"
-                                >
-                                  <span
-                                    aria-label="down"
-                                    class="anticon anticon-down ant-select-suffix"
-                                    role="img"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="down"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class=""
-                        for="epicId"
-                        title="Epic"
-                      >
-                        Epic
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
-                          >
-                            <div
-                              class="ant-select-selector"
-                            >
-                              <span
-                                class="ant-select-selection-search"
-                              >
-                                <input
-                                  aria-autocomplete="list"
-                                  aria-controls="rc_select_TEST_OR_SSR_list"
-                                  aria-expanded="false"
-                                  aria-haspopup="listbox"
-                                  aria-label="Search"
-                                  aria-owns="rc_select_TEST_OR_SSR_list"
-                                  autocomplete="off"
-                                  class="ant-select-selection-search-input"
-                                  id="rc_select_TEST_OR_SSR"
-                                  readonly=""
-                                  role="combobox"
-                                  style="opacity: 0;"
-                                  type="search"
-                                  unselectable="on"
-                                  value=""
-                                />
-                              </span>
-                              <span
-                                class="ant-select-selection-placeholder"
-                              >
-                                Select Epic
-                              </span>
-                            </div>
-                            <span
-                              aria-hidden="true"
-                              class="ant-select-arrow"
-                              style="user-select: none;"
-                              unselectable="on"
-                            >
-                              <span
-                                aria-label="down"
-                                class="anticon anticon-down ant-select-suffix"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="64 64 896 896"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class=""
-                        for="priority"
-                        title="Priority"
-                      >
-                        Priority
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="ant-select ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
-                          >
-                            <div
-                              class="ant-select-selector"
-                            >
-                              <span
-                                class="ant-select-selection-search"
-                              >
-                                <input
-                                  aria-autocomplete="list"
-                                  aria-controls="rc_select_TEST_OR_SSR_list"
-                                  aria-expanded="false"
-                                  aria-haspopup="listbox"
-                                  aria-label="Search"
-                                  aria-owns="rc_select_TEST_OR_SSR_list"
-                                  autocomplete="off"
-                                  class="ant-select-selection-search-input"
-                                  id="rc_select_TEST_OR_SSR"
-                                  readonly=""
-                                  role="combobox"
-                                  style="opacity: 0;"
-                                  type="search"
-                                  unselectable="on"
-                                  value=""
-                                />
-                              </span>
-                              <span
-                                class="ant-select-selection-placeholder"
-                              >
-                                Select Priority
-                              </span>
-                            </div>
-                            <span
-                              aria-hidden="true"
-                              class="ant-select-arrow"
-                              style="user-select: none;"
-                              unselectable="on"
-                            >
-                              <span
-                                aria-label="down"
-                                class="anticon anticon-down ant-select-suffix"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="64 64 896 896"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-row"
-                  style="margin-left: -4px; margin-right: -4px;"
-                >
-                  <div
-                    class="ant-col ant-col-12"
-                    style="padding-left: 4px; padding-right: 4px;"
-                  >
-                    <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class="ant-form-item-required"
-                            for="reporterId"
-                            title="Reporter"
-                          >
-                            Reporter
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-select ant-select-in-form-item backlog-user-select  ant-select-single ant-select-show-arrow"
-                              >
-                                <div
-                                  class="ant-select-selector"
+                                  class="ant-select-selection-wrap"
                                 >
                                   <span
                                     class="ant-select-selection-search"
@@ -529,7 +152,6 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                                       aria-controls="rc_select_TEST_OR_SSR_list"
                                       aria-expanded="false"
                                       aria-haspopup="listbox"
-                                      aria-label="Search"
                                       aria-owns="rc_select_TEST_OR_SSR_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
@@ -545,208 +167,19 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                                   <span
                                     class="ant-select-selection-placeholder"
                                   >
-                                    Select User
-                                  </span>
-                                </div>
-                                <span
-                                  aria-hidden="true"
-                                  class="ant-select-arrow"
-                                  style="user-select: none;"
-                                  unselectable="on"
-                                >
-                                  <span
-                                    aria-label="down"
-                                    class="anticon anticon-down ant-select-suffix"
-                                    role="img"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="down"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                      />
-                                    </svg>
+                                    Type of backlog
                                   </span>
                                 </span>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-12"
-                    style="padding-left: 4px; padding-right: 4px;"
-                  >
-                    <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="assigneeId"
-                            title="Assignee"
-                          >
-                            Assignee
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-select ant-select-in-form-item backlog-user-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
-                              >
-                                <div
-                                  class="ant-select-selector"
-                                >
-                                  <span
-                                    class="ant-select-selection-search"
-                                  >
-                                    <input
-                                      aria-autocomplete="list"
-                                      aria-controls="rc_select_TEST_OR_SSR_list"
-                                      aria-expanded="false"
-                                      aria-haspopup="listbox"
-                                      aria-label="Search"
-                                      aria-owns="rc_select_TEST_OR_SSR_list"
-                                      autocomplete="off"
-                                      class="ant-select-selection-search-input"
-                                      id="rc_select_TEST_OR_SSR"
-                                      readonly=""
-                                      role="combobox"
-                                      style="opacity: 0;"
-                                      type="search"
-                                      unselectable="on"
-                                      value=""
-                                    />
-                                  </span>
-                                  <span
-                                    class="ant-select-selection-placeholder"
-                                  >
-                                    Assign to
-                                  </span>
-                                </div>
-                                <span
-                                  aria-hidden="true"
-                                  class="ant-select-arrow"
-                                  style="user-select: none;"
-                                  unselectable="on"
-                                >
-                                  <span
-                                    aria-label="down"
-                                    class="anticon anticon-down ant-select-suffix"
-                                    role="img"
-                                  >
-                                    <svg
-                                      aria-hidden="true"
-                                      data-icon="down"
-                                      fill="currentColor"
-                                      focusable="false"
-                                      height="1em"
-                                      viewBox="64 64 896 896"
-                                      width="1em"
-                                    >
-                                      <path
-                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                      />
-                                    </svg>
-                                  </span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class=""
-                        for="points"
-                        title="Points"
-                      >
-                        Points
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <div
-                            class="ant-input-number ant-input-number-in-form-item backlog-inputnumber "
-                          >
-                            <div
-                              class="ant-input-number-handler-wrap"
-                            >
                               <span
-                                aria-disabled="false"
-                                aria-label="Increase Value"
-                                class="ant-input-number-handler ant-input-number-handler-up"
-                                role="button"
-                                unselectable="on"
-                              >
-                                <span
-                                  aria-label="up"
-                                  class="anticon anticon-up ant-input-number-handler-up-inner"
-                                  role="img"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="up"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
-                                    />
-                                  </svg>
-                                </span>
-                              </span>
-                              <span
-                                aria-disabled="false"
-                                aria-label="Decrease Value"
-                                class="ant-input-number-handler ant-input-number-handler-down"
-                                role="button"
+                                aria-hidden="true"
+                                class="ant-select-arrow"
+                                style="user-select: none;"
                                 unselectable="on"
                               >
                                 <span
                                   aria-label="down"
-                                  class="anticon anticon-down ant-input-number-handler-down-inner"
+                                  class="anticon anticon-down ant-select-suffix"
                                   role="img"
                                 >
                                   <svg
@@ -765,68 +198,652 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
                                 </span>
                               </span>
                             </div>
-                            <div
-                              class="ant-input-number-input-wrap"
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                    style="margin-left: -4px; margin-right: -4px;"
+                  >
+                    <div
+                      class="ant-col"
+                      style="padding-left: 4px; padding-right: 4px;"
+                    >
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="sprintId"
+                              title="Sprint"
                             >
-                              <input
-                                aria-valuemin="1"
-                                autocomplete="off"
-                                class="ant-input-number-input"
-                                placeholder=""
-                                role="spinbutton"
-                                step="1"
-                                value=""
-                              />
+                              Sprint
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-outlined ant-select-in-form-item backlog-select sprint-select ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <span
+                                      class="ant-select-selection-wrap"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-autocomplete="list"
+                                          aria-controls="rc_select_TEST_OR_SSR_list"
+                                          aria-expanded="false"
+                                          aria-haspopup="listbox"
+                                          aria-owns="rc_select_TEST_OR_SSR_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          id="rc_select_TEST_OR_SSR"
+                                          role="combobox"
+                                          type="search"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-placeholder"
+                                      >
+                                        Select Sprint
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ant-select-arrow"
+                                    style="user-select: none;"
+                                    unselectable="on"
+                                  >
+                                    <span
+                                      aria-label="down"
+                                      class="anticon anticon-down ant-select-suffix"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="down"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="ant-form-item"
-                >
                   <div
-                    class="ant-row ant-form-item-row"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-label"
+                      >
+                        <label
+                          class=""
+                          for="epicId"
+                          title="Epic"
+                        >
+                          Epic
+                        </label>
+                      </div>
+                      <div
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-form-item-control-input"
                         >
-                          <textarea
-                            class="ant-input backlog-textarea "
-                            placeholder="Description..."
-                            style="resize: none; height: -54px; min-height: -30px; max-height: -54px;"
-                          />
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <div
+                              class="ant-select ant-select-outlined ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                            >
+                              <div
+                                class="ant-select-selector"
+                              >
+                                <span
+                                  class="ant-select-selection-wrap"
+                                >
+                                  <span
+                                    class="ant-select-selection-search"
+                                  >
+                                    <input
+                                      aria-autocomplete="list"
+                                      aria-controls="rc_select_TEST_OR_SSR_list"
+                                      aria-expanded="false"
+                                      aria-haspopup="listbox"
+                                      aria-owns="rc_select_TEST_OR_SSR_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="rc_select_TEST_OR_SSR"
+                                      readonly=""
+                                      role="combobox"
+                                      style="opacity: 0;"
+                                      type="search"
+                                      unselectable="on"
+                                      value=""
+                                    />
+                                  </span>
+                                  <span
+                                    class="ant-select-selection-placeholder"
+                                  >
+                                    Select Epic
+                                  </span>
+                                </span>
+                              </div>
+                              <span
+                                aria-hidden="true"
+                                class="ant-select-arrow"
+                                style="user-select: none;"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="down"
+                                  class="anticon anticon-down ant-select-suffix"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="down"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <div
-              class="ant-modal-footer"
-            >
-              <button
-                class="ant-btn ant-btn-primary"
-                form="newBacklog"
-                type="submit"
+                  <div
+                    class="ant-form-item"
+                  >
+                    <div
+                      class="ant-row ant-form-item-row"
+                    >
+                      <div
+                        class="ant-col ant-form-item-label"
+                      >
+                        <label
+                          class=""
+                          for="priority"
+                          title="Priority"
+                        >
+                          Priority
+                        </label>
+                      </div>
+                      <div
+                        class="ant-col ant-form-item-control"
+                      >
+                        <div
+                          class="ant-form-item-control-input"
+                        >
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <div
+                              class="ant-select ant-select-outlined ant-select-in-form-item backlog-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                            >
+                              <div
+                                class="ant-select-selector"
+                              >
+                                <span
+                                  class="ant-select-selection-wrap"
+                                >
+                                  <span
+                                    class="ant-select-selection-search"
+                                  >
+                                    <input
+                                      aria-autocomplete="list"
+                                      aria-controls="rc_select_TEST_OR_SSR_list"
+                                      aria-expanded="false"
+                                      aria-haspopup="listbox"
+                                      aria-owns="rc_select_TEST_OR_SSR_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="rc_select_TEST_OR_SSR"
+                                      readonly=""
+                                      role="combobox"
+                                      style="opacity: 0;"
+                                      type="search"
+                                      unselectable="on"
+                                      value=""
+                                    />
+                                  </span>
+                                  <span
+                                    class="ant-select-selection-placeholder"
+                                  >
+                                    Select Priority
+                                  </span>
+                                </span>
+                              </div>
+                              <span
+                                aria-hidden="true"
+                                class="ant-select-arrow"
+                                style="user-select: none;"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="down"
+                                  class="anticon anticon-down ant-select-suffix"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="down"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                    style="margin-left: -4px; margin-right: -4px;"
+                  >
+                    <div
+                      class="ant-col ant-col-12"
+                      style="padding-left: 4px; padding-right: 4px;"
+                    >
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class="ant-form-item-required"
+                              for="reporterId"
+                              title="Reporter"
+                            >
+                              Reporter
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-outlined ant-select-in-form-item backlog-user-select  ant-select-single ant-select-show-arrow"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <span
+                                      class="ant-select-selection-wrap"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-autocomplete="list"
+                                          aria-controls="rc_select_TEST_OR_SSR_list"
+                                          aria-expanded="false"
+                                          aria-haspopup="listbox"
+                                          aria-owns="rc_select_TEST_OR_SSR_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          id="rc_select_TEST_OR_SSR"
+                                          readonly=""
+                                          role="combobox"
+                                          style="opacity: 0;"
+                                          type="search"
+                                          unselectable="on"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-placeholder"
+                                      >
+                                        Select User
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ant-select-arrow"
+                                    style="user-select: none;"
+                                    unselectable="on"
+                                  >
+                                    <span
+                                      aria-label="down"
+                                      class="anticon anticon-down ant-select-suffix"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="down"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-12"
+                      style="padding-left: 4px; padding-right: 4px;"
+                    >
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="assigneeId"
+                              title="Assignee"
+                            >
+                              Assignee
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-outlined ant-select-in-form-item backlog-user-select  ant-select-single ant-select-allow-clear ant-select-show-arrow"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <span
+                                      class="ant-select-selection-wrap"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-autocomplete="list"
+                                          aria-controls="rc_select_TEST_OR_SSR_list"
+                                          aria-expanded="false"
+                                          aria-haspopup="listbox"
+                                          aria-owns="rc_select_TEST_OR_SSR_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          id="rc_select_TEST_OR_SSR"
+                                          readonly=""
+                                          role="combobox"
+                                          style="opacity: 0;"
+                                          type="search"
+                                          unselectable="on"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-placeholder"
+                                      >
+                                        Assign to
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <span
+                                    aria-hidden="true"
+                                    class="ant-select-arrow"
+                                    style="user-select: none;"
+                                    unselectable="on"
+                                  >
+                                    <span
+                                      aria-label="down"
+                                      class="anticon anticon-down ant-select-suffix"
+                                      role="img"
+                                    >
+                                      <svg
+                                        aria-hidden="true"
+                                        data-icon="down"
+                                        fill="currentColor"
+                                        focusable="false"
+                                        height="1em"
+                                        viewBox="64 64 896 896"
+                                        width="1em"
+                                      >
+                                        <path
+                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                        />
+                                      </svg>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-form-item"
+                  >
+                    <div
+                      class="ant-row ant-form-item-row"
+                    >
+                      <div
+                        class="ant-col ant-form-item-label"
+                      >
+                        <label
+                          class=""
+                          for="points"
+                          title="Points"
+                        >
+                          Points
+                        </label>
+                      </div>
+                      <div
+                        class="ant-col ant-form-item-control"
+                      >
+                        <div
+                          class="ant-form-item-control-input"
+                        >
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <div
+                              class="ant-input-number ant-input-number-in-form-item ant-input-number-outlined backlog-inputnumber "
+                            >
+                              <div
+                                class="ant-input-number-handler-wrap"
+                              >
+                                <span
+                                  aria-disabled="false"
+                                  aria-label="Increase Value"
+                                  class="ant-input-number-handler ant-input-number-handler-up"
+                                  role="button"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="up"
+                                    class="anticon anticon-up ant-input-number-handler-up-inner"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="up"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                                <span
+                                  aria-disabled="false"
+                                  aria-label="Decrease Value"
+                                  class="ant-input-number-handler ant-input-number-handler-down"
+                                  role="button"
+                                  unselectable="on"
+                                >
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-input-number-handler-down-inner"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </div>
+                              <div
+                                class="ant-input-number-input-wrap"
+                              >
+                                <input
+                                  aria-valuemin="1"
+                                  autocomplete="off"
+                                  class="ant-input-number-input"
+                                  placeholder=""
+                                  role="spinbutton"
+                                  step="1"
+                                  value=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-form-item"
+                  >
+                    <div
+                      class="ant-row ant-form-item-row"
+                    >
+                      <div
+                        class="ant-col ant-form-item-control"
+                      >
+                        <div
+                          class="ant-form-item-control-input"
+                        >
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <textarea
+                              class="ant-input ant-input-outlined backlog-textarea "
+                              placeholder="Description..."
+                              style="resize: none; height: -54px; min-height: -30px; max-height: -54px;"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div
+                class="ant-modal-footer"
               >
-                <span>
-                  Create
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
+                  form="newBacklog"
+                  type="submit"
+                >
+                  <span>
+                    Create
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
           <div
-            aria-hidden="true"
             style="width: 0px; height: 0px; overflow: hidden; outline: none;"
             tabindex="0"
           />
@@ -836,6 +853,7 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
   </div>
   <textarea
     aria-hidden="true"
+    name="hiddenTextarea"
     style="letter-spacing:normal;line-height:1.5714285714285714;padding-top:4px;padding-bottom:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-weight:;font-size:14px;font-variant:;text-rendering:auto;text-transform:none;width:100%;text-indent:0;padding-left:11px;padding-right:11px;border-width:1px;box-sizing:border-box;word-break:;white-space:pre-wrap;
   min-height:0 !important;
   max-height:none !important;
