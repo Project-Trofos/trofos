@@ -6,13 +6,13 @@ import { useGetUserSettingsQuery, useUpdateProjectMutation } from '../../api/pro
 import DefaultForm from '../../components/forms/DefaultForm';
 import ProjectKeyFormInput from '../../components/forms/ProjectKeyFormItem';
 import ProjectNameFormInput from '../../components/forms/ProjectNameFormItem';
-import Container from '../../components/layouts/Container';
 import { Subheading } from '../../components/typography';
 import { getErrorMessage } from '../../helpers/error';
 import ProjectBacklogStatusForm from '../../components/forms/ProjectBacklogStatusForm';
 import ProjectGitLinkForm from '../../components/forms/ProjectGitLinkForm';
 import ProjectUserSettingsForm from '../../components/forms/ProjectUserSettingsForm';
 import ProjectTelegramForm from '../../components/forms/ProjectTelegramForm';
+import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 
 export default function ProjectSettings(): JSX.Element {
   const params = useParams();
@@ -41,7 +41,7 @@ export default function ProjectSettings(): JSX.Element {
   };
 
   return (
-    <Container>
+    <GenericBoxWithBackground>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Subheading>Project details</Subheading>
         <DefaultForm
@@ -79,6 +79,6 @@ export default function ProjectSettings(): JSX.Element {
           <ProjectUserSettingsForm projectUserSettings={projectUserSettings} />
         </Space>
       )}
-    </Container>
+    </GenericBoxWithBackground>
   );
 }

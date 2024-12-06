@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Space, Spin, Tabs } from 'antd';
+import { Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
-import Container from '../../components/layouts/Container';
 import ScrumBoard from '../../components/board/ScrumBoard';
 import { Heading } from '../../components/typography';
 
@@ -18,6 +17,7 @@ import { UpdateType } from '../../api/socket/socket';
 import { useProjectIdParam } from '../../api/hooks';
 import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
 import LiveEditor from '../../components/editor/LiveEditor';
+import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -84,7 +84,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   }
 
   return (
-    <Container noGap className="scrum-board-container">
+    <GenericBoxWithBackground>
       <div className="scrum-board-header">
         <Heading style={{ marginLeft: '10px', marginTop: '0px', marginBottom: '0px' }}>
           {getSprintHeading(activeSprint, activeSprint)}
@@ -96,7 +96,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
         <Tabs defaultActiveKey='scrum-board' items={tabs} />:
         <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
       }
-    </Container>
+    </GenericBoxWithBackground>
   );
 }
 
@@ -121,9 +121,9 @@ export function SprintScrumBoardPage(): JSX.Element {
   ];
 
   return (
-    <Container noGap fullWidth className="scrum-board-container">
+    <GenericBoxWithBackground>
       <Heading style={{ marginLeft: '10px' }}>{getSprintHeading(sprint, undefined)}</Heading>
       {<Tabs defaultActiveKey='scrum-board' items={tabs} />}
-    </Container>
+    </GenericBoxWithBackground>
   );
 }
