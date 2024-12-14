@@ -5,6 +5,8 @@ import authenticationService from '../../services/authentication.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import { userData } from '../mocks/userData';
 import engineOauth2 from '../../auth/engine.oauth2';
+import { SAML_CLAIMS } from '../../helpers/ssoHelper';
+import { STUDENT_ROLE_ID } from '../../helpers/constants';
 
 const MOCK_CODE = 'mockCode';
 const MOCK_STATE = 'mockState';
@@ -111,33 +113,68 @@ describe('authentication.service tests', () => {
   describe('samlHandler', () => {
     it('should throw error if extract has no email address attribute', async () => {
       const mockExtract = {
-        givenName: 'firstName',
-        surname: 'lastName',
+        [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
+        [SAML_CLAIMS.SURNAME]: 'lastName',
       };
-      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
     });
     it('should throw error if extract has no given name attribute', async () => {
       const mockExtract = {
-        emailAddress: 'testEmail@test.com',
-        surname: 'lastName',
+        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
+        [SAML_CLAIMS.SURNAME]: 'lastName',
       };
-      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
     });
     it('should throw error if extract has no surname attribute', async () => {
       const mockExtract = {
-        emailAddress: 'testEmail@test.com',
-        givenName: 'firstName',
+        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
+        [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
       };
-      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow(new Error());
+      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
     });
-    it('should return user information if the extract is valid', async () => {
+    it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
-        emailAddress: 'testUser@test.com',
-        givenName: 'Test User',
-        surname: '',
+        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+        [SAML_CLAIMS.GIVEN_NAME]: 'New',
+        [SAML_CLAIMS.SURNAME]: 'User',
       };
+
+      const newUser = {
+        user_id: 1,
+        user_email: 'newUser@test.com',
+        user_display_name: 'New User',
+        user_password_hash: null,
+      };
+
+      prismaMock.user.upsert.mockResolvedValueOnce(newUser);
+
+      const result = await authenticationService.samlHandler(mockExtract);
+
+      expect(result).toEqual(newUser);
+      expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+      expect(prismaMock.user.upsert).toHaveBeenCalledWith({
+        where: { user_email: 'newUser@test.com' },
+        update: {},
+        create: {
+          user_email: 'newUser@test.com',
+          user_display_name: 'New User',
+          basicRoles: { create: { role_id: STUDENT_ROLE_ID } },
+        },
+      });
+    });
+    it('should return existing user information if the email already exists', async () => {
+      const mockExtract = {
+        [SAML_CLAIMS.EMAIL]: 'testUser@test.com',
+        [SAML_CLAIMS.GIVEN_NAME]: 'Test',
+        [SAML_CLAIMS.SURNAME]: 'User',
+      };
+
       prismaMock.user.upsert.mockResolvedValueOnce(userData[0]);
-      await expect(authenticationService.samlHandler(mockExtract)).resolves.toEqual(userData[0]);
+
+      const result = await authenticationService.samlHandler(mockExtract);
+
+      expect(result).toEqual(userData[0]);
+      expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
     });
   });
 });

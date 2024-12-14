@@ -7,7 +7,7 @@ import accountService from '../services/account.service';
 import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { getCachedIdp, getCachedSp, getCachedIdpStaff } from '../helpers/ssoHelper';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../helpers/ssoHelper';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -162,7 +162,7 @@ async function generateSAMLRequest(req: express.Request, res: express.Response) 
 
 async function generateSAMLRequestStaff(req: express.Request, res: express.Response) {
   try {
-    const sp = await getCachedSp();
+    const sp = await getCachedSpStaff();
     const idp = await getCachedIdpStaff();
 
     // Create auth SAML request

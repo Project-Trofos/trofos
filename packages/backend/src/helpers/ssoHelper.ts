@@ -11,39 +11,49 @@ import * as validator from '@authenio/samlify-xsd-schema-validator';
 
 setSchemaValidator(validator);
 
-const configureSp = async () => {
-  try {
-    const spMetadataXmlFile = process.env.NODE_ENV === 'staging' ? './sp-staging.xml' : './sp-prod.xml';
-    const spMetadataXml = fs.readFileSync(spMetadataXmlFile, 'utf-8');
-    return ServiceProvider({ metadata: spMetadataXml });
-  } catch (error) {
-    console.error('Error configuring SP:', error);
-    throw new Error('Failed to configure Service Provider');
-  }
+const configureSp = async (isStaff = false) => {
+  const spMetadataXmlFile = process.env.NODE_ENV === 'staging' ? './sp-staging.xml' : './sp-prod.xml';
+  const spMetadataXml = fs.readFileSync(spMetadataXmlFile, 'utf-8');
+
+  // if (isStaff) {
+  //   // If staff SSO login, configure SP with authnRequestsSigned set to true
+  //   return ServiceProvider({
+  //     metadata: spMetadataXml,
+  //     authnRequestsSigned: true,
+  //     privateKey: ,
+  //     privateKeyPass:'',
+  //   });
+  // }
+
+  // Default configuration for ADFS logins
+  return ServiceProvider({ metadata: spMetadataXml });
 };
 
 const configureIdp = async (isStaff = false) => {
-  try {
-    const idpMetadataUrl = isStaff
-      ? process.env.IDP_METADATA_STAFF_URL || 'https://nus.vmwareidentity.asia/SAAS/API/1.0/GET/metadata/idp.xml'
-      : process.env.IDP_METADATA_URL || 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
-    const { data: idpMetadataXml } = await axios.get(idpMetadataUrl);
-    return IdentityProvider({ metadata: idpMetadataXml });
-  } catch (error) {
-    console.error('Error configuring IdP:', error);
-    throw new Error('Failed to configure Identity Provider');
-  }
+  const idpMetadataUrl = isStaff
+    ? process.env.IDP_METADATA_STAFF_URL || 'https://nus.vmwareidentity.asia/SAAS/API/1.0/GET/metadata/idp.xml'
+    : process.env.IDP_METADATA_URL || 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
+  const { data: idpMetadataXml } = await axios.get(idpMetadataUrl);
+  return IdentityProvider({ metadata: idpMetadataXml });
 };
 
-let sp: ServiceProviderInstance;
+let adfs_sp: ServiceProviderInstance;
+let ws1_sp: ServiceProviderInstance;
 let adfs_idp: IdentityProviderInstance;
 let ws1_idp: IdentityProviderInstance;
 
 const getCachedSp = async () => {
-  if (!sp) {
-    sp = await configureSp();
+  if (!adfs_sp) {
+    adfs_sp = await configureSp();
   }
-  return sp;
+  return adfs_sp;
+};
+
+const getCachedSpStaff = async () => {
+  if (!ws1_sp) {
+    ws1_sp = await configureSp(true);
+  }
+  return ws1_sp;
 };
 
 const getCachedIdp = async () => {
@@ -66,4 +76,4 @@ const SAML_CLAIMS = {
   GIVEN_NAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
 };
 
-export { getCachedSp, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS };
+export { getCachedSp, getCachedSpStaff, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS };
