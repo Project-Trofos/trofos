@@ -1,0 +1,27 @@
+# Base image
+FROM node:lts-alpine3.17 as base
+
+RUN npm i -g pnpm
+
+# Expose port to access server
+EXPOSE 3002
+
+# Make folder to put our files in
+RUN mkdir -p /usr/src/app/hocus_pocus_server
+
+# Set working directory so that all subsequent command runs in this folder
+WORKDIR /usr/src/app/hocus_pocus_server
+
+COPY package.json .
+COPY pnpm-lock.yaml .
+RUN pnpm i
+COPY . .
+
+# Test stage to check build
+FROM base as test
+RUN pnpm run build
+
+# Production stage
+FROM base as prod
+# Command to run our app
+ENTRYPOINT ["sh", "-c", "pnpm run prisma-generate; pnpm run start-prod"]

@@ -1,0 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Minimal prisma client for hocus pocus notes
+model Sprint {
+  id              Int               @id @default(autoincrement())
+  collab_notes    Bytes?
+}

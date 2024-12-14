@@ -8,7 +8,7 @@ import InputWithButton from '../../components/fields/InputWithButton';
 import Container from '../../components/layouts/Container';
 import UserTable from '../../components/tables/UserTable';
 import InviteTable from '../../components/tables/InviteTable';
-import { confirmInviteUserToProject } from '../../components/modals/confirm';
+import { confirmInviteNonExistingUserToProject, confirmInviteUserToProject } from '../../components/modals/confirm';
 import { getErrorMessage } from '../../helpers/error';
 import { useFindUserByEmailMutation } from '../../api/user';
 import { useSendProjectInvitationMutation, useGetInfoFromProjectIdQuery } from '../../api/invite';
@@ -86,7 +86,7 @@ export default function ProjectPeople(): JSX.Element {
       const res = await findUserByEmail(userEmail).unwrap();
 
       if (!res.exists) {
-        confirmInviteUserToProject(async () => {
+        confirmInviteNonExistingUserToProject(async () => {
           await sendEmail(userEmail);
         });
 

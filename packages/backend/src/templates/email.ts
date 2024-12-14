@@ -10,7 +10,9 @@ export function commentBody(username: string, comment: string, projectId: number
   `;
 }
 
-export const inviteHTMLTemplate = `
+export const inviteHTMLSubject = (pName: string) => `Trofos - Invitation to join project ${pName}`;
+
+export const inviteHTMLTemplate = (invitationToken: string) => `
   <div style="
     width: 100%;
     max-width: 600px;
@@ -43,7 +45,7 @@ export const inviteHTMLTemplate = `
       ">You have been invited to join a project.</p>
 
       <a 
-        href="${process.env.FRONTEND_BASE_URL}/join?token={{invitationToken}}"
+        href="${process.env.FRONTEND_BASE_URL}/join?token=${invitationToken}"
         style="
           display: inline-block;
           background-color: #32a2ac;

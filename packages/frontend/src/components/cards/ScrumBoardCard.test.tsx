@@ -14,7 +14,7 @@ describe('ScrumBoardCard test', () => {
     const mockProjectKey = 'TEST';
     const mockIndex = 0;
     const mockDroppableId = '0';
-    const { baseElement, debug } = render(
+    const { baseElement, debug, container } = render(
       <Provider store={store}>
         <BrowserRouter>
           <DragDropContext onDragEnd={vi.fn()}>
@@ -35,7 +35,7 @@ describe('ScrumBoardCard test', () => {
         </BrowserRouter>
       </Provider>,
     );
-    return { baseElement, debug };
+    return { baseElement, debug, container };
   }
   const mockBacklog: Backlog = {
     backlog_id: 111,
@@ -68,9 +68,10 @@ describe('ScrumBoardCard test', () => {
   };
 
   it('renders scrum board card with correct details', () => {
-    const { baseElement } = setup(mockBacklog);
+    const { baseElement, container } = setup(mockBacklog);
+    const storySvg = container.querySelector("[data-icon='wallet']") as HTMLImageElement;
+    expect(storySvg).toBeInTheDocument();
     expect(screen.getByText(mockBacklog.summary)).toBeInTheDocument();
-    expect(screen.getByText(mockBacklog.type)).toBeInTheDocument();
     expect(screen.getByText(mockBacklog?.points?.toString() as string)).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same
@@ -78,9 +79,10 @@ describe('ScrumBoardCard test', () => {
   });
 
   it('renders scrum board card with standup options if stand up param is provided', async () => {
-    const { baseElement, debug } = setup(mockBacklog, mockStandUp);
+    const { baseElement, debug, container } = setup(mockBacklog, mockStandUp);
+    const storySvg = container.querySelector("[data-icon='wallet']") as HTMLImageElement;
+    expect(storySvg).toBeInTheDocument();
     expect(screen.getByText(mockBacklog.summary)).toBeInTheDocument();
-    expect(screen.getByText(mockBacklog.type)).toBeInTheDocument();
     expect(screen.getByText(mockBacklog?.points?.toString() as string)).toBeInTheDocument();
     const dropdownButton = screen.getByLabelText(/setting/i);
     fireEvent.mouseOver(dropdownButton);

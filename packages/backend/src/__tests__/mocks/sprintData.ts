@@ -11,6 +11,7 @@ export const mockSprintData: Sprint = {
   goals: 'Some test goals',
   notes: '',
   status: 'upcoming',
+  collab_notes: null,
 };
 
 export const mockSprintFields: SprintFields = {

@@ -29,43 +29,79 @@ exports[`ScrumBoardCard test > renders scrum board card with correct details 1`]
               A Test Summary
             </div>
             <div
-              class="scrum-board-card-details"
+              class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
+              style="flex-wrap: wrap; padding-top: 20px;"
             >
               <div
-                class="backlog-card-id"
-              >
-                TEST-
-                111
-              </div>
-              <div
-                class="scrum-board-card-type"
-              >
-                story
-              </div>
-              <div
-                class="scrum-board-card-points points-active"
-              >
-                3
-              </div>
-              <div
-                class="scrum-board-card-priority very_high-priority"
-              >
-                Very High
-              </div>
-              <div
-                class="scrum-board-card-assignee"
+                class="ant-space-item"
               >
                 <span
-                  class="ant-avatar ant-avatar-sm ant-avatar-circle assignee-avatar"
-                  style="background-color: rgb(105, 193, 165); color: black;"
+                  aria-label="wallet"
+                  class="anticon anticon-wallet"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="wallet"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM580 512a40 40 0 1080 0 40 40 0 10-80 0z"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div>
+                  TEST-111
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  style="margin-left: 6px;"
                 >
                   <span
-                    class="ant-avatar-string"
-                    style="transform: scale(1) translateX(-50%);"
+                    class="ant-tag ant-tag-orange"
                   >
-                    B2
+                    3
                   </span>
-                </span>
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="scrum-board-card-priority very_high-priority"
+                >
+                  Very High
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="scrum-board-card-assignee"
+                >
+                  <span
+                    class="ant-avatar ant-avatar-sm ant-avatar-circle assignee-avatar"
+                    style="background-color: rgb(105, 193, 165); color: black;"
+                  >
+                    <span
+                      class="ant-avatar-string"
+                      style="transform: scale(1) translateX(-50%);"
+                    >
+                      B2
+                    </span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -121,43 +157,79 @@ exports[`ScrumBoardCard test > renders scrum board card with standup options if 
               A Test Summary
             </div>
             <div
-              class="scrum-board-card-details"
+              class="ant-space ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small"
+              style="flex-wrap: wrap; padding-top: 20px;"
             >
               <div
-                class="backlog-card-id"
-              >
-                TEST-
-                111
-              </div>
-              <div
-                class="scrum-board-card-type"
-              >
-                story
-              </div>
-              <div
-                class="scrum-board-card-points points-active"
-              >
-                3
-              </div>
-              <div
-                class="scrum-board-card-priority very_high-priority"
-              >
-                Very High
-              </div>
-              <div
-                class="scrum-board-card-assignee"
+                class="ant-space-item"
               >
                 <span
-                  class="ant-avatar ant-avatar-sm ant-avatar-circle assignee-avatar"
-                  style="background-color: rgb(105, 193, 165); color: black;"
+                  aria-label="wallet"
+                  class="anticon anticon-wallet"
+                  role="img"
+                >
+                  <svg
+                    aria-hidden="true"
+                    data-icon="wallet"
+                    fill="currentColor"
+                    focusable="false"
+                    height="1em"
+                    viewBox="64 64 896 896"
+                    width="1em"
+                  >
+                    <path
+                      d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM580 512a40 40 0 1080 0 40 40 0 10-80 0z"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div>
+                  TEST-111
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  style="margin-left: 6px;"
                 >
                   <span
-                    class="ant-avatar-string"
-                    style="transform: scale(1) translateX(-50%);"
+                    class="ant-tag ant-tag-orange"
                   >
-                    B2
+                    3
                   </span>
-                </span>
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="scrum-board-card-priority very_high-priority"
+                >
+                  Very High
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="scrum-board-card-assignee"
+                >
+                  <span
+                    class="ant-avatar ant-avatar-sm ant-avatar-circle assignee-avatar"
+                    style="background-color: rgb(105, 193, 165); color: black;"
+                  >
+                    <span
+                      class="ant-avatar-string"
+                      style="transform: scale(1) translateX(-50%);"
+                    >
+                      B2
+                    </span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>

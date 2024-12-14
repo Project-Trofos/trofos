@@ -1,3 +1,11 @@
+import React from 'react';
+import {
+  CheckSquareOutlined,
+  BugOutlined,
+  WalletOutlined,
+} from '@ant-design/icons';
+import { Space } from 'antd';
+
 /* eslint-disable import/prefer-default-export */
 const UserPermissionActions = {
   READ_COURSE: 'read_course',
@@ -33,4 +41,41 @@ const BACKLOG_PRIORITY_OPTIONS = [
   { value: 'very_low', label: 'Very Low' },
 ];
 
-export { UserPermissionActions, COURSE_MANAGER_ACTIONS, BACKLOG_PRIORITY_OPTIONS, MANAGE_API_KEY_ACTIONS };
+const BACKLOG_TYPE_OPTIONS = [
+  {
+    value: 'story',
+    label: (
+      <Space>
+        <WalletOutlined />
+        Story
+      </Space>
+    ),
+    icon: <WalletOutlined />
+  },
+  {
+    value: 'task',
+    label: (
+      <Space>
+        <CheckSquareOutlined />
+        Task
+      </Space>
+    ),
+    icon: <CheckSquareOutlined /> },
+  { 
+    value: 'bug',
+    label: (
+      <Space>
+        <BugOutlined />
+        Bug
+      </Space>
+    ),
+    icon: <BugOutlined /> },
+];
+
+export {
+  UserPermissionActions,
+  COURSE_MANAGER_ACTIONS,
+  BACKLOG_PRIORITY_OPTIONS,
+  MANAGE_API_KEY_ACTIONS,
+  BACKLOG_TYPE_OPTIONS,
+};

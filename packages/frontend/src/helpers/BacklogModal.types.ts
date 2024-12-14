@@ -8,6 +8,7 @@ export interface BacklogFormFields extends FormData {
 export type BacklogSelectTypes = {
   id: string | number;
   name: string;
+  labelComponent?: JSX.Element;
 };
 
 export type BacklogUserSelectTypes = {

@@ -16,10 +16,31 @@ import inviteRouter from './routes/invite.route';
 import apiKeyRouter from './routes/apiKey.route';
 import routerExternalV1 from './routes/external/v1/route.external.v1';
 import setUpSwagger from './swagger/swagger';
+import promClient from 'prom-client';
+
+// Prometheus metrics stuff
+const register = new promClient.Registry();
+register.setDefaultLabels({
+  app: 'monitoring-article',
+});
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+// Probe every 5th second.
+collectDefaultMetrics({ register });
+
+const httpRequestTimer = new promClient.Histogram({
+  name: 'http_request_duration_ms',
+  help: 'Duration of HTTP requests in ms',
+  labelNames: ['method', 'route', 'code'],
+  // buckets for response time from 0.1ms to 1s
+  buckets: [0.1, 5, 15, 50, 100, 200, 300, 400, 500, 1000],
+});
+register.registerMetric(httpRequestTimer);
+
+// end of prometheus metrics stuff
 
 const app = express();
 
-export const port = 3001;
+export const port = 3003;
 export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 
 export const corsOptions = {
@@ -31,11 +52,29 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
+// prometheus middleware to get metrics of response time
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const responseTimeInMs = Date.now() - start;
+    const route = req.originalUrl.replace(/\d+/g, ':id');
+    httpRequestTimer
+      .labels(req.method, route, res.statusCode.toString())
+      .observe(responseTimeInMs);
+  });
+  next();
+});
+
 // Set up swagger documentation
 setUpSwagger(app);
 
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
+});
+
+app.get('/metrics', async (req: express.Request, res: express.Response) => {
+  res.setHeader('Content-Type', register.contentType);
+  res.send(await register.metrics());
 });
 
 const router = express.Router();

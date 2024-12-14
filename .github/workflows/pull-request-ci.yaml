@@ -24,22 +24,16 @@ jobs:
         with:
           node-version: 'lts/hydrogen'
           cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
       - name: Install wait-on
         run: pnpm i -g wait-on@6.0.1
-      - name: Setup Postgres
-        run: docker compose -f docker-compose-ci.yml up -d postgres
-      - name: Wait for Postgres to start
-        run: |-
-          wait-on --timeout 60000 tcp:5432
-          sleep 3
-      - name: Setup Prisma client
-        run: |-
-          cd packages/backend
-          pnpm run prisma-migrate-ci
-      - name: Run test
-        run: pnpm run test
+      - name: Setup Postgres container
+        run: pnpm run setup:ci
+      - name: Build and test backend
+        run: docker compose -f docker-compose-ci.yml build backend
+      - name: Build and test frontend
+        run: docker compose -f docker-compose-ci.yml build frontend
+      - name: Build hocus pocus server
+        run: docker compose -f docker-compose-ci.yml build hocus_pocus_server
       # e2e test currently removed from CI as it is unstable
       # - name: Start backend and frontend
       #   run: npm start &

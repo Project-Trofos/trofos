@@ -29,14 +29,21 @@ async function sendInvite(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(projectId);
     assertEmailIsValid(destEmail);
 
-    if (!ses.isSESEnabled()) {
+    if (!ses.isESPEnabled()) {
       throw new BadRequestError('Email service not enabled');
     }
 
     const token = await createToken(Number(projectId), destEmail);
 
     const projectName = (await project.getById(Number(projectId))).pname;
-    await ses.sendInviteEmail(destEmail, projectName, token.unique_token);
+
+    try {
+      await ses.sendInviteEmail(destEmail, projectName, token.unique_token);
+    } catch (error) {
+      // Delete token if email sending fails
+      await invite.deleteInvite(Number(projectId), destEmail);
+      return getDefaultErrorRes(error, res);
+    }
 
     if (token) {
       token.unique_token = '';

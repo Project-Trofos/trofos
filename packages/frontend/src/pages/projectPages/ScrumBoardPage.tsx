@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Carousel, Spin } from 'antd';
-import type { CarouselRef } from 'antd/es/carousel';
+import { Button, Space, Spin, Tabs } from 'antd';
+import type { TabsProps } from 'antd';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import Container from '../../components/layouts/Container';
 import ScrumBoard from '../../components/board/ScrumBoard';
@@ -17,6 +17,7 @@ import useSocket from '../../api/socket/useSocket';
 import { UpdateType } from '../../api/socket/socket';
 import { useProjectIdParam } from '../../api/hooks';
 import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
+import LiveEditor from '../../components/editor/LiveEditor';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -37,48 +38,33 @@ export default function ActiveScrumBoardPage(): JSX.Element {
     { project_id: projectId, id: {id: todaysStandUpId!} }, 
     { skip: todaysStandUpId === undefined } // Skip the query if there's no standupId
   );
-  const carouselRef = useRef<CarouselRef>(null);
-
   // Refetch active standup data upon update
   const handleReset = useCallback(() => {
     store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'StandUp', id: todaysStandUpId }]));
   }, [todaysStandUpId]);
   useSocket(UpdateType.STAND_UP_NOTES, todaysStandUpId?.toString(), handleReset);
 
-  const handleViewStandUpBoard = () => {
-    if (carouselRef) {
-      carouselRef.current?.goTo(1);
+  const tabs: TabsProps['items'] = [
+    {
+      key: 'scrum-board',
+      label: 'Scrum Board',
+      children: <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
+    },
+    ...(todaysStandUp
+      ? [
+          {
+            key: 'stand-up-board',
+            label: 'Today\'s Stand Up Board',
+            children: <StandUpBoard standUp={todaysStandUp} />,
+          },
+        ]
+      : []),
+    {
+      key: 'live-notes',
+      label: 'Notes',
+      children: <LiveEditor sprintId={String(activeSprint?.id)}/>
     }
-  }
-
-  const handleViewScrumBoard = () => {
-    if (carouselRef) {
-      carouselRef.current?.goTo(0);
-    }
-  };
-
-  const renderBody = () => {
-    return (
-      <Carousel draggable={false} ref={carouselRef}>
-        <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-          {activeSprint && todaysStandUp && (
-            <Button onClick={handleViewStandUpBoard}>
-            View Today's Stand Up Board
-            </Button> 
-          )}
-          <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
-        </div>
-        {activeSprint && todaysStandUp ? (
-          <div style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-            <Button onClick={handleViewScrumBoard}>
-              View Active Scrum Board
-            </Button>
-            <StandUpBoard standUp={todaysStandUp} />
-          </div>
-        ) : null}
-      </Carousel>
-    );
-  }
+  ];
 
   useEffect(() => {
     if (standUps && standUps.length > 0) {
@@ -106,7 +92,10 @@ export default function ActiveScrumBoardPage(): JSX.Element {
         {activeSprint && <BacklogCreationModal fixedSprint={activeSprint} title={'Create Backlog For This Sprint'} />}
         {!todaysStandUp && activeSprint && <StandUpCreationModal projectId={projectId} isToday/>}
       </div>
-      {renderBody()}
+      {activeSprint ?
+        <Tabs defaultActiveKey='scrum-board' items={tabs} />:
+        <ScrumBoard projectId={projectId} sprint={activeSprint} standUp={todaysStandUp}/>
+      }
     </Container>
   );
 }
@@ -118,10 +107,23 @@ export function SprintScrumBoardPage(): JSX.Element {
   const { data: sprints } = useGetSprintsByProjectIdQuery(projectId);
   const sprint = sprints?.sprints.find((s) => s.id === sprintId);
 
+  const tabs: TabsProps['items'] = [
+    {
+      key: 'scrum-board',
+      label: 'Scrum Board',
+      children: <ScrumBoard projectId={projectId} sprint={sprint} />
+    },
+    {
+      key: 'live-notes',
+      label: 'Notes',
+      children: <LiveEditor sprintId={String(sprint?.id)}/>
+    }
+  ];
+
   return (
     <Container noGap fullWidth className="scrum-board-container">
       <Heading style={{ marginLeft: '10px' }}>{getSprintHeading(sprint, undefined)}</Heading>
-      <ScrumBoard projectId={projectId} sprint={sprint} />
+      {<Tabs defaultActiveKey='scrum-board' items={tabs} />}
     </Container>
   );
 }

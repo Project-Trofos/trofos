@@ -19,6 +19,7 @@ import BacklogComment from '../components/fields/BacklogComment';
 import BacklogList from '../components/lists/BacklogList';
 import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { BACKLOG_TYPE_OPTIONS } from '../helpers/constants';
 
 function Backlog(): JSX.Element {
   const { Title } = Typography;
@@ -26,13 +27,15 @@ function Backlog(): JSX.Element {
   const [form] = Form.useForm();
   const [updateBacklog] = useUpdateBacklogMutation();
 
-  // These constants will most likely be passed down as props or
-  // fetched from an API. Currently hardcoded for developement.
-  const TYPES: BacklogSelectTypes[] = [
-    { id: 'story', name: 'Story' },
-    { id: 'task', name: 'Task' },
-    { id: 'bug', name: 'Bug' },
-  ];
+  const TYPES: BacklogSelectTypes[] = BACKLOG_TYPE_OPTIONS.map((type) => (
+    {
+      id: type.value,
+      name: type.value,
+      labelComponent: type.label,
+    }
+  ))
+
+
   const PRIORITIES: BacklogSelectTypes[] = [
     { id: 'very_high', name: 'Very High' },
     { id: 'high', name: 'High' },
