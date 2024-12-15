@@ -7,6 +7,7 @@ import accountService from '../services/account.service';
 import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../helpers/ssoHelper';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -136,8 +137,83 @@ async function register(req: express.Request, res: express.Response) {
   } catch (error) {
     console.error(error);
     const err = error as PrismaClientKnownRequestError;
-    if (err.code == "P2002") return res.status(StatusCodes.BAD_REQUEST).json({ error: "Email already in use"})
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    if (err.code == 'P2002') return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Email already in use' });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+  }
+}
+
+async function generateSAMLRequest(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSp();
+    const idp = await getCachedIdp();
+
+    // Create auth SAML request
+    const { id, context } = sp.createLoginRequest(idp, 'redirect');
+
+    console.log('Generated SAML Request ID:', id);
+    console.log('Redirect URL:', context);
+
+    return res.status(StatusCodes.OK).json({ redirectUrl: context });
+  } catch (error) {
+    console.error('Error generating SAML request:', error);
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function generateSAMLRequestStaff(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSpStaff();
+    const idp = await getCachedIdpStaff();
+
+    // Create auth SAML request
+    const { id, context } = sp.createLoginRequest(idp, 'redirect');
+    return res.status(StatusCodes.OK).json({ redirectUrl: context });
+  } catch (error) {
+    console.error('Error generating SAML request:', error);
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function processSAMLResponse(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSp();
+    const idp = await getCachedIdp();
+
+    const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
+
+    if (!SAMLResponse) {
+      throw new Error('Missing SAMLResponse');
+    }
+
+    // Parse the SAML response
+    const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
+    const { extract } = parsedResponse;
+
+    // Validate parsed response
+    if (!extract || !extract.attributes) {
+      throw new Error('Invalid SAML extract.');
+    }
+
+    // Handle user authentication and session creation
+    const userInfo = await authenticationService.samlHandler(extract.attributes);
+    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+    const sessionId = await sessionService.createUserSession(
+      userInfo.user_email,
+      userRoleInformation,
+      userInfo.user_id,
+    );
+
+    // Set secure cookie for session
+    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    // Redirect the user to the homepage
+    return res.redirect('/');
+  } catch (error) {
+    console.error('Error processing SAML Response:', error);
+    return getDefaultErrorRes(error, res);
   }
 }
 
@@ -148,5 +224,8 @@ export default {
   changePassword,
   updateUser,
   oauth2Login,
-  register
+  register,
+  generateSAMLRequest,
+  generateSAMLRequestStaff,
+  processSAMLResponse,
 };

@@ -1,25 +1,53 @@
-import React from 'react';
-import { Button } from 'antd';
+import React, { useCallback } from 'react';
+import { Button, message } from 'antd';
+import { redirect } from 'react-router-dom';
 import Icon from '@ant-design/icons';
+import { useGenerateSAMLRequestMutation, useGenerateSAMLRequestStaffMutation } from '../../api/auth';
 
 const nusIcon = <Icon component={() => <img src="nus-icon.ico" />} />;
-const BASE_URL = 'https://vafs.nus.edu.sg/adfs/oauth2/authorize';
-const RESPONSE_TYPE = 'code';
-const CLIENT_ID = 'INC000002767827';
-const STATE = 'NUS_OAUTH2';
-const REDIRECT_URI = `${encodeURIComponent(window.location.origin.toString())}%2Fcallback%2Foauth2`;
-const RESOURCE = 'sg_edu_nus_oauth';
-const HREF_URL = `${BASE_URL}?
-response_type=${RESPONSE_TYPE}&
-client_id=${CLIENT_ID}&
-state=${STATE}&
-redirect_uri=${REDIRECT_URI}&
-resource=${RESOURCE}`;
 
 export default function NusSsoButton() {
+  const [generateSAMLRequest] = useGenerateSAMLRequestMutation();
+  const [generateSAMLRequestStaff] = useGenerateSAMLRequestStaffMutation();
+
+  const ssoLogin = useCallback(async () => {
+    try {
+      const { redirectUrl } = await generateSAMLRequest().unwrap();
+
+      if (!redirectUrl) {
+        throw Error('Failed to get redirect URL');
+      }
+
+      window.location.href = redirectUrl;
+    } catch (err) {
+      console.error(err);
+      message.error('Something went wrong while signing in.');
+    }
+  }, [generateSAMLRequest]);
+
+  const ssoLoginStaff = useCallback(async () => {
+    try {
+      const { redirectUrl } = await generateSAMLRequestStaff().unwrap();
+
+      if (!redirectUrl) {
+        throw Error('Failed to get redirect URL');
+      }
+
+      window.location.href = redirectUrl;
+    } catch (err) {
+      console.error(err);
+      message.error('Something went wrong while signing in.');
+    }
+  }, [generateSAMLRequestStaff]);
+
   return (
-    <Button icon={nusIcon} href={HREF_URL}>
-      NUS
-    </Button>
+    <>
+      <Button icon={nusIcon} onClick={ssoLogin}>
+        NUS (Student)
+      </Button>
+      <Button icon={nusIcon} onClick={ssoLoginStaff}>
+        NUS (Staff)
+      </Button>
+    </>
   );
 }

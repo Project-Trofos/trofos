@@ -9,6 +9,7 @@ import accountService from '../../services/account.service';
 import { RoleInformation } from '../../services/types/role.service.types';
 import userService from '../../services/user.service';
 import { userData } from '../mocks/userData';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../../helpers/ssoHelper';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 const MOCK_CODE = 'mockCode';
@@ -18,6 +19,7 @@ const MOCK_CALLBACK_URL = 'mockUrl';
 const spies = {
   authenticationServiceValidateUser: jest.spyOn(authenticationService, 'validateUser'),
   authenticationServiceOauth2Handler: jest.spyOn(authenticationService, 'oauth2Handler'),
+  authenticationServiceSamlHandler: jest.spyOn(authenticationService, 'samlHandler'),
   sessionServiceCreateUserSession: jest.spyOn(sessionService, 'createUserSession'),
   sessionServiceDeleteUserSession: jest.spyOn(sessionService, 'deleteUserSession'),
   sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
@@ -26,6 +28,24 @@ const spies = {
   accountServiceUpdateUser: jest.spyOn(accountService, 'updateUser'),
   userServiceGet: jest.spyOn(userService, 'get'),
 };
+
+jest.mock('../../helpers/ssoHelper');
+
+let mockSp: any;
+let mockIdp: any;
+
+beforeEach(() => {
+  mockSp = {
+    createLoginRequest: jest.fn(),
+    parseLoginResponse: jest.fn(),
+  };
+  mockIdp = {};
+
+  (getCachedSp as jest.Mock).mockResolvedValue(mockSp);
+  (getCachedIdp as jest.Mock).mockResolvedValue(mockIdp);
+  (getCachedSpStaff as jest.Mock).mockResolvedValue(mockSp);
+  (getCachedIdpStaff as jest.Mock).mockResolvedValue(mockIdp);
+});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -373,6 +393,74 @@ describe('account.controller tests', () => {
       expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, 'New Test User');
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Unable to update user' });
+    });
+  });
+
+  describe('generateSAMLRequest', () => {
+    it('should return status 200 OK with a redirect URL', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      mockSp.createLoginRequest.mockReturnValue({
+        id: '12345',
+        context: 'https://example.com/login',
+      });
+
+      await authentication.generateSAMLRequest(mockReq, mockRes);
+
+      expect(getCachedSp).toHaveBeenCalled();
+      expect(getCachedIdp).toHaveBeenCalled();
+      expect(mockSp.createLoginRequest).toHaveBeenCalledWith(mockIdp, 'redirect');
+      expect(mockRes.statusCode).toBe(StatusCodes.OK);
+      expect(mockRes._getJSONData()).toEqual({ redirectUrl: 'https://example.com/login' });
+    });
+
+    it('should return status 500 INTERNAL SERVER ERROR if an error occurs', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      (getCachedSp as jest.Mock).mockRejectedValue(new Error('Failed to fetch SP'));
+
+      await authentication.generateSAMLRequest(mockReq, mockRes);
+
+      expect(getCachedSp).toHaveBeenCalled();
+      expect(getCachedIdp).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Failed to fetch SP' });
+    });
+  });
+
+  describe('generateSAMLRequestStaff', () => {
+    it('should return status 200 OK with a redirect URL', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      mockSp.createLoginRequest.mockReturnValue({
+        id: '67890',
+        context: 'https://example.com/staff-login',
+      });
+
+      await authentication.generateSAMLRequestStaff(mockReq, mockRes);
+
+      expect(getCachedSpStaff).toHaveBeenCalled();
+      expect(getCachedIdpStaff).toHaveBeenCalled();
+      expect(mockSp.createLoginRequest).toHaveBeenCalledWith(mockIdp, 'redirect');
+      expect(mockRes.statusCode).toBe(StatusCodes.OK);
+      expect(mockRes._getJSONData()).toEqual({ redirectUrl: 'https://example.com/staff-login' });
+    });
+
+    it('should return status 500 INTERNAL SERVER ERROR if an error occurs', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      (getCachedSpStaff as jest.Mock).mockRejectedValue(new Error('Failed to fetch Staff SP'));
+
+      await authentication.generateSAMLRequestStaff(mockReq, mockRes);
+
+      expect(getCachedSpStaff).toHaveBeenCalled();
+      expect(getCachedIdpStaff).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Failed to fetch Staff SP' });
     });
   });
 });

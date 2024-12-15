@@ -1,0 +1,51 @@
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+                  entityID="https://trofos.comp.nus.edu.sg/sp">
+    <SPSSODescriptor WantAssertionsSigned="true"
+                     protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+
+        <!-- Signing/Encryption Key -->
+        <KeyDescriptor use="signing">
+            <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                <X509Data>
+                    <X509Certificate>
+                        <!-- Place your X509 certificate here -->
+                        MIIChDCCAe2gAwIBAgIBADANBgkqhkiG9w0BAQ0FADBfMQswCQYDVQQGEwJ1czESMBAGA1UECAwJU2luZ2Fwb3JlMRMwEQYDVQQKDApUcm9mb3MgTlVTMScwJQYDVQQDDB5odHRwczovL3Ryb2Zvcy5jb21wLm51cy5lZHUuc2cwHhcNMjQxMDIyMDExMjI0WhcNMjUxMDIyMDExMjI0WjBfMQswCQYDVQQGEwJ1czESMBAGA1UECAwJU2luZ2Fwb3JlMRMwEQYDVQQKDApUcm9mb3MgTlVTMScwJQYDVQQDDB5odHRwczovL3Ryb2Zvcy5jb21wLm51cy5lZHUuc2cwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOgtp7lcgW5ovReMv4cZIRgLblVMWr2muQIRlzDS7y/i27t8TYL2jeu3CKrTr3C6Oa/q0EjPAimPSnTdfP6KbFkorvVnmrn514Sr5XE7Y9EpWDRL7hmwpyasAkkYciVX7X/t6u4upc1WV9c+YaTXnBln4V5VXSS36Af0WUPxVL25AgMBAAGjUDBOMB0GA1UdDgQWBBQNvsIN/kWIewc+70Y4I5gidMjjQzAfBgNVHSMEGDAWgBQNvsIN/kWIewc+70Y4I5gidMjjQzAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBDQUAA4GBAEwkkLPDSyuBF4+HQehRJeKvdRh/WhWCFGKzX2IbBfab5GIySBC1Ie+vp9upJmxEgogox7Tbll+sDujlqDGLU5T8cYQM/7uSspBL41PvFcWWvdNoniXRkWj4ubYwD1VM6MiG86GpUvYsqp5dPQd2bsx+axfxbsykswVhfYB1LdNO
+                    </X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </KeyDescriptor>
+
+        <!-- Supported NameID formats -->
+        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</NameIDFormat>
+
+        <!-- Assertion Consumer Service URL (ACS) -->
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                  Location="https://trofos.comp.nus.edu.sg/api/account/callback/saml"
+                                  index="0"
+                                  isDefault="true"/>
+
+        <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                  Location="https://trofos.comp.nus.edu.sg/callback/saml"
+                                  index="1"/>
+
+    </SPSSODescriptor>
+
+    <!-- Organization Information -->
+    <Organization>
+        <OrganizationName xml:lang="en">TROFOS</OrganizationName>
+        <OrganizationDisplayName xml:lang="en">TROFOS</OrganizationDisplayName>
+        <OrganizationURL xml:lang="en">https://trofos.comp.nus.edu.sg/</OrganizationURL>
+    </Organization>
+
+    <!-- Contact Information -->
+    <ContactPerson contactType="technical">
+        <GivenName>Tham Rui Cong</GivenName>
+        <EmailAddress>e0726692@u.nus.edu</EmailAddress>
+    </ContactPerson>
+
+    <ContactPerson contactType="administrative">
+        <GivenName>Ganesh Neelakanta Iyer</GivenName>
+        <EmailAddress>gni@nus.edu.sg</EmailAddress>
+    </ContactPerson>
+
+</EntityDescriptor>
