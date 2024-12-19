@@ -49,6 +49,7 @@ export const corsOptions = {
 };
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
@@ -58,9 +59,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     const responseTimeInMs = Date.now() - start;
     const route = req.originalUrl.replace(/\d+/g, ':id');
-    httpRequestTimer
-      .labels(req.method, route, res.statusCode.toString())
-      .observe(responseTimeInMs);
+    httpRequestTimer.labels(req.method, route, res.statusCode.toString()).observe(responseTimeInMs);
   });
   next();
 });

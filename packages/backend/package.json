@@ -46,7 +46,7 @@
     "grammy": "^1.20.4",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "1.4.5-lts.1",
     "node-mocks-http": "^1.11.0",
     "prisma": "4.8.1",
     "prom-client": "^15.1.3",

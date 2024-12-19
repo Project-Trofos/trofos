@@ -1,9 +1,12 @@
 import express from 'express';
+import multer from 'multer';
 import account from '../controllers/account';
 import { hasAuth } from '../middleware/auth.middleware';
 import userPolicy from '../policies/user.policy';
 
 const router = express.Router();
+const upload = multer();
+
 router.post('/register', account.register);
 
 router.post('/login', account.loginUser);
@@ -22,8 +25,8 @@ router.post('/generateSAMLReq/student', account.generateSAMLRequest);
 
 router.post('/generateSAMLReq/staff', account.generateSAMLRequestStaff);
 
-router.post('/callback/saml', account.processSAMLResponse);
+router.post('/callback/saml', upload.none(), account.processSAMLResponse);
 
-router.post('/callback/samlStaff', account.processSAMLResponseStaff);
+router.post('/callback/samlStaff', upload.none(), account.processSAMLResponseStaff);
 
 export default router;

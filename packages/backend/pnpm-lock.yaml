@@ -69,7 +69,7 @@ importers:
         specifier: ^9.0.0
         version: 9.0.2
       multer:
-        specifier: ^1.4.5-lts.1
+        specifier: 1.4.5-lts.1
         version: 1.4.5-lts.1
       node-mocks-http:
         specifier: ^1.11.0
