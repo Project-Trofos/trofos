@@ -11,6 +11,7 @@ import Container from '../../components/layouts/Container';
 import { Subheading } from '../../components/typography';
 import { getErrorMessage } from '../../helpers/error';
 import CourseYearSemFormItems from '../../components/forms/CourseYearSemFormItems';
+import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 
 export default function CourseSettings(): JSX.Element {
   const params = useParams();
@@ -58,8 +59,7 @@ export default function CourseSettings(): JSX.Element {
   };
 
   return (
-    <Container>
-      <Space direction="vertical" style={{ width: '100%' }}>
+    <GenericBoxWithBackground>
         <Subheading>Course details</Subheading>
         <DefaultForm
           initialValues={{
@@ -95,7 +95,6 @@ export default function CourseSettings(): JSX.Element {
             <Input.TextArea rows={4} />
           </Form.Item>
         </DefaultForm>
-      </Space>
-    </Container>
+      </GenericBoxWithBackground>
   );
 }

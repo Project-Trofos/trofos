@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Card, Dropdown, Menu, message, MenuProps } from 'antd';
+import { Card, Dropdown, Menu, message, MenuProps, theme } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
@@ -18,6 +18,7 @@ type ProjectCardProps = {
 
 export default function ProjectCard(props: ProjectCardProps): JSX.Element {
   const { project } = props;
+  const { token } = theme.useToken();
   const [removeProject] = useRemoveProjectMutation();
   const [archiveProject] = useArchiveProjectMutation();
   const [unarchiveProject] = useUnarchiveProjectMutation();
@@ -94,6 +95,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
           <EllipsisOutlined key="more" />
         </Dropdown>,
       ]}
+      style={{ boxShadow: token.boxShadowSecondary, }}
     >
       <Meta
         title={<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>}

@@ -44,7 +44,11 @@ export const useSprintIdParam = () => {
 };
 
 // Filter projects by current and past
-export const useCurrentAndPastProjects = () => {
+export const useCurrentAndPastProjects = ({
+  searchNameParam
+}: {
+  searchNameParam?: string
+} = {}) => {
   const projectsData = useGetAllProjectsQuery();
   const { data: settings } = useGetSettingsQuery();
 
@@ -63,6 +67,10 @@ export const useCurrentAndPastProjects = () => {
       return project;
     });
 
+    const projectsFilteredByName = searchNameParam ? projects.filter((p) => (
+      p.pname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase())
+    )) : projects;
+
     // archive false, date current or future -> move to current or future
     // archive null, date current or future -> move to current or future
     // archive true , date current or future -> move to past
@@ -70,7 +78,7 @@ export const useCurrentAndPastProjects = () => {
     // archive null, date in the past -> move to past
     // archive true, date in the past -> move to past
     return {
-      pastProjects: projects.filter(
+      pastProjects: projectsFilteredByName.filter(
         (p) =>
           !(p.is_archive === false) &&
           (p.is_archive ||
@@ -83,7 +91,7 @@ export const useCurrentAndPastProjects = () => {
               CURRENT_SEM,
             )),
       ),
-      currentProjects: projects.filter(
+      currentProjects: projectsFilteredByName.filter(
         (p) =>
           !p.is_archive && // if is_archive is true, don't put it in current projects even if date is current
           ((p.is_archive === false &&
@@ -105,7 +113,7 @@ export const useCurrentAndPastProjects = () => {
               CURRENT_SEM,
             )),
       ),
-      futureProjects: projects.filter(
+      futureProjects: projectsFilteredByName.filter(
         (p) =>
           !p.is_archive &&
           isFuture(
@@ -118,13 +126,17 @@ export const useCurrentAndPastProjects = () => {
           ),
       ),
     };
-  }, [projectsData, settings]);
+  }, [projectsData, settings, searchNameParam]);
 
   return { ...projectsData, ...filteredProjects };
 };
 
 // Filter courses by current and past
-export const useCurrentAndPastCourses = () => {
+export const useCurrentAndPastCourses = ({
+  searchNameParam
+}: {
+  searchNameParam?: string
+} = {}) => {
   const coursesData = useGetAllCoursesQuery();
   const { data: settings } = useGetSettingsQuery();
 
@@ -135,18 +147,23 @@ export const useCurrentAndPastCourses = () => {
     if (coursesData.isError || coursesData.isLoading) {
       return undefined;
     }
+
+    const coursesFilteredByName = searchNameParam ? (coursesData.data as Course[]).filter((c) => (
+      c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase())
+    )) : coursesData.data as Course[];
+
     return {
-      pastCourses: (coursesData.data as Course[]).filter((c) =>
+      pastCourses: coursesFilteredByName.filter((c) =>
         isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
-      currentCourses: (coursesData.data as Course[]).filter((c) =>
+      currentCourses: coursesFilteredByName.filter((c) =>
         isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
-      futureCourses: (coursesData.data as Course[]).filter((c) =>
+      futureCourses: coursesFilteredByName.filter((c) =>
         isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
-  }, [coursesData, settings]);
+  }, [coursesData, settings, searchNameParam]);
 
   return { ...coursesData, ...filteredCourses };
 };

@@ -1,37 +1,48 @@
-import { Typography } from 'antd';
 import React from 'react';
-import styles from './PageHeader.module.css';
+import { Space, Tag, Typography } from 'antd';
+import GenericBoxWithBackground from '../layouts/GenericBoxWithBackground';
 
 const { Title } = Typography;
 
-export type PageHeaderProps = {
-  title?: string;
-  subTitle?: JSX.Element;
-  extra?: JSX.Element[];
-  breadcrumb?: JSX.Element;
-  footer?: JSX.Element;
-};
-
-export default function PageHeader(props: React.ComponentPropsWithoutRef<'div'> & PageHeaderProps): JSX.Element {
-  // TODO: Make breadcrumb a useContext
-  const { style, title, subTitle, extra, breadcrumb, footer, children } = props;
+/**
+ * This component renders a card containing Title, followed by a smaller subtitle. You can specify action buttons in
+ * `buttons` props, an arr of react components. They will be displayed as a row of buttons.
+ */
+function PageHeader({
+  title,
+  subTitle,
+  buttons,
+  tagText,
+  breadCrumbs,
+}: {
+  title: string,
+  subTitle?: string,
+  buttons?: React.ReactNode[],
+  tagText?: string,
+  breadCrumbs?: React.ReactNode,
+}) {
   return (
-    <div className={styles.container} style={style}>
-      <div className={styles['title-row']}>
-        <>{breadcrumb}</>
-        {!title && <div>{extra}</div>}
+    <GenericBoxWithBackground>
+      {breadCrumbs}  
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <Title style={{ margin: 0 }} level={3}>{title}</Title>
+        <Space>{buttons}</Space>
       </div>
-      {title && (
-        <div className={styles['title-row']}>
-          <div>
-            <Title level={4}>{title}</Title>
-            {subTitle}
-          </div>
-          <div>{extra}</div>
-        </div>
-      )}
-      {children}
-      {footer}
-    </div>
+      {(subTitle || tagText) &&
+        <Space>
+          {subTitle && <Title level={5}>{subTitle}</Title>}
+          {tagText && <Tag>{tagText}</Tag>}
+        </Space>
+      }
+      </GenericBoxWithBackground>
   );
 }
+
+export default PageHeader;

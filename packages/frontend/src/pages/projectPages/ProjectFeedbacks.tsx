@@ -4,8 +4,6 @@ import { LexicalEditor } from 'lexical';
 import { useParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useProject } from '../../api/hooks';
-
-import Container from '../../components/layouts/Container';
 import Editor from '../../components/editor/Editor';
 import { useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import conditionalRender from '../../helpers/conditionalRender';
@@ -17,6 +15,7 @@ import { Feedback } from '../../api/types';
 
 import './ProjectFeedbacks.css';
 import { useProjectActions } from '../../api/hooks/roleHooks';
+import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 
 const { Panel } = Collapse;
 
@@ -28,7 +27,7 @@ export default function ProjectFeedbacks(): JSX.Element {
   const { actions: projectActions } = useProjectActions({ projectId: project?.id });
 
   return (
-    <Container>
+    <GenericBoxWithBackground>
       {project && sprints?.sprints && sprints.sprints.length > 0 ? (
         <Collapse>
           {sprints?.sprints?.map((s) => {
@@ -48,7 +47,7 @@ export default function ProjectFeedbacks(): JSX.Element {
       ) : (
         <Empty description="No sprint has been created." />
       )}
-    </Container>
+    </GenericBoxWithBackground>
   );
 }
 
