@@ -12,28 +12,58 @@ import * as validator from '@authenio/samlify-xsd-schema-validator';
 setSchemaValidator(validator);
 
 const configureSp = async (isStaff = false) => {
-  const spMetadataXmlFile = process.env.NODE_ENV === 'staging' ? './sp-staging.xml' : './sp-prod.xml';
-  const spMetadataXml = fs.readFileSync(spMetadataXmlFile, 'utf-8');
+  if (isStaff) {
+    let privateKey: string = '';
 
-  // if (isStaff) {
-  //   // If staff SSO login, configure SP with authnRequestsSigned set to true
-  //   return ServiceProvider({
-  //     metadata: spMetadataXml,
-  //     authnRequestsSigned: true,
-  //     privateKey: ,
-  //     privateKeyPass:'',
-  //   });
-  // }
+    // Retrieve the private key from the environment
+    if (process.env.SP_PRIVATE_KEY) {
+      privateKey = process.env.SP_PRIVATE_KEY; // Directly stored as plaintext
+    } else if (process.env.SP_PRIVATE_KEY_BASE64) {
+      privateKey = Buffer.from(process.env.SP_PRIVATE_KEY_BASE64, 'base64').toString('utf-8'); // Decode from Base64
+    }
 
-  // Default configuration for ADFS logins
-  return ServiceProvider({ metadata: spMetadataXml });
+    const privateKeyPass: string = process.env.SP_PRIVATE_KEY_PASSPHRASE || '';
+
+    if (!privateKey) {
+      throw new Error('SP private key is required.');
+    }
+
+    if (!process.env.FRONTEND_BASE_URL) {
+      throw new Error('FRONTEND_BASE_URL is required.');
+    }
+
+    // Define the SP configuration
+    return ServiceProvider({
+      entityID: `${process.env.FRONTEND_BASE_URL}/sp`,
+      wantAssertionsSigned: true,
+      authnRequestsSigned: true,
+      privateKey: privateKey,
+      privateKeyPass: privateKeyPass,
+      assertionConsumerService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          Location: `${process.env.FRONTEND_BASE_URL}/api/account/callback/samlStaff`,
+          isDefault: true,
+        },
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+          Location: `${process.env.FRONTEND_BASE_URL}/callback/samlStaff`,
+        },
+      ],
+      nameIDFormat: ['saml.Constants.namespace.nameid.unspecified'],
+    });
+  } else {
+    const spMetadataXmlFile = process.env.NODE_ENV === 'staging' ? './sp-staging.xml' : './sp-prod.xml';
+    const spMetadataXml = fs.readFileSync(spMetadataXmlFile, 'utf-8');
+
+    // Define the SP configuration
+    return ServiceProvider({ metadata: spMetadataXml });
+  }
 };
 
 const configureIdp = async (isStaff = false) => {
-  const idpMetadataUrl = isStaff
-    ? process.env.IDP_METADATA_STAFF_URL || 'https://nus.vmwareidentity.asia/SAAS/API/1.0/GET/metadata/idp.xml'
-    : process.env.IDP_METADATA_URL || 'https://vafs.u.nus.edu/FederationMetadata/2007-06/FederationMetadata.xml';
-  const { data: idpMetadataXml } = await axios.get(idpMetadataUrl);
+  const idpMetadataXmlFile = isStaff ? './ws1_idp.xml' : './adfs_idp.xml';
+  const idpMetadataXml = fs.readFileSync(idpMetadataXmlFile, 'utf-8');
   return IdentityProvider({ metadata: idpMetadataXml });
 };
 
