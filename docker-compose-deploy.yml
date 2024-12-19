@@ -40,6 +40,7 @@ services:
       - EMAIL_KEY=${EMAIL_KEY}
       - NODE_ENV=${NODE_ENV}
       - AWS_SES_FROM_EMAIL=${AWS_SES_FROM_EMAIL}
+      - SP_PRIVATE_KEY_BASE64=${SP_PRIVATE_KEY_BASE64}
     depends_on:
       postgres:
         condition: service_healthy
