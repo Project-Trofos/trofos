@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import oauth2Engine from '../auth/engine.oauth2';
-import { STUDENT_ROLE_ID } from '../helpers/constants';
+import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 import { UserAuth } from './types/authentication.service.types';
 import { SAML_CLAIMS } from '../helpers/ssoHelper';
@@ -90,8 +90,39 @@ async function samlHandler(attributes: any): Promise<User> {
   return userInfo;
 }
 
+async function samlHandlerStaff(attributes: any): Promise<User> {
+  const userEmail = attributes[SAML_CLAIMS.EMAIL];
+  const surname = attributes[SAML_CLAIMS.SURNAME];
+  const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
+
+  if (!userEmail || !surname || !givenName) {
+    throw new Error('Invalid SAML response: Missing required attributes.');
+  }
+
+  // If the user does not exist, we create an account for them
+  // Otherwise, we return their account information
+  const userInfo = await prisma.user.upsert({
+    where: {
+      user_email: userEmail,
+    },
+    update: {},
+    create: {
+      user_email: userEmail,
+      user_display_name: `${givenName} ${surname || ''}`.trim(),
+      basicRoles: {
+        create: {
+          role_id: FACULTY_ROLE_ID, // Default role of a new staff
+        },
+      },
+    },
+  });
+
+  return userInfo;
+}
+
 export default {
   validateUser,
   oauth2Handler,
   samlHandler,
+  samlHandlerStaff,
 };

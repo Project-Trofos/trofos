@@ -167,6 +167,10 @@ async function generateSAMLRequestStaff(req: express.Request, res: express.Respo
 
     // Create auth SAML request
     const { id, context } = sp.createLoginRequest(idp, 'redirect');
+
+    console.log('Generated SAML Request ID:', id);
+    console.log('Redirect URL:', context);
+
     return res.status(StatusCodes.OK).json({ redirectUrl: context });
   } catch (error) {
     console.error('Error generating SAML request:', error);
@@ -217,6 +221,49 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
   }
 }
 
+async function processSAMLResponseStaff(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSpStaff();
+    const idp = await getCachedIdpStaff();
+
+    const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
+
+    if (!SAMLResponse) {
+      throw new Error('Missing SAMLResponse');
+    }
+
+    // Parse the SAML response
+    const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
+    const { extract } = parsedResponse;
+
+    // Validate parsed response
+    if (!extract || !extract.attributes) {
+      throw new Error('Invalid SAML extract.');
+    }
+
+    // Handle user authentication and session creation
+    const userInfo = await authenticationService.samlHandlerStaff(extract.attributes);
+    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+    const sessionId = await sessionService.createUserSession(
+      userInfo.user_email,
+      userRoleInformation,
+      userInfo.user_id,
+    );
+
+    // Set secure cookie for session
+    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    // Redirect the user to the homepage
+    return res.redirect('/');
+  } catch (error) {
+    console.error('Error processing SAML Response:', error);
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   loginUser,
   logoutUser,
@@ -228,4 +275,5 @@ export default {
   generateSAMLRequest,
   generateSAMLRequestStaff,
   processSAMLResponse,
+  processSAMLResponseStaff,
 };
