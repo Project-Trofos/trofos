@@ -30,6 +30,15 @@ theme: minima
 plugins:
   - jekyll-feed
 
+defaults:
+  - scope:
+      path: "pages"
+    values:
+      permalink: /:basename/
+
+exclude:
+  - README.md
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
