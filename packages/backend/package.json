@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate",
-    "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate",
+    "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate && dotenv -e .env.production.local -- pnpm exec prisma generate --schema prisma_pgvector/schema_ai.prisma",
+    "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate && dotenv -e .env.development.local -- pnpm exec prisma generate --schema prisma_pgvector/schema_ai.prisma",
     "prisma-seed-dev": "pnpm exec prisma db seed",
     "prisma-db-push": "dotenv -e .env.development.local -- pnpm exec prisma db push",
     "prisma-migrate-prod": "dotenv -e .env.production.local -- pnpm exec prisma migrate deploy",

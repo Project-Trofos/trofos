@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "./generated/pgvector_client"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("AI_DATABASE_URL")
+  extensions = [vector]
+}
+
+model UserGuideEmbedding {
+  id              Int @id @default(autoincrement())
+  embedding       Unsupported("vector(1536)")?
+  section_title   String
+  created_at      DateTime @default(now())
+  content         String
+  endpoint        String
+}
