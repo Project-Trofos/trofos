@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useCurrentAndPastCourses } from '../../api/hooks';
 import getPane from '../../helpers/getPane';
-import { Input, Spin, Tooltip } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Input, Spin, Space } from 'antd';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
+import ToggleButtonGroup from '../../components/button/ToggleButtons';
+
+export const sortOptions = {
+  SORT_BY_COURSE: 'Sort by Course',
+  SORT_BY_YEAR: 'Sort by Year',
+};
 
 export default function CoursesBody({
   currentPastOrFuture,
@@ -12,20 +17,16 @@ export default function CoursesBody({
 }): JSX.Element {
   const [searchNameParam, setSearchNameParam] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState(searchNameParam);
+  const [toggleValue, setToggleValue] = useState<string | null>(null);
   const { currentCourses, pastCourses, futureCourses, isLoading } = useCurrentAndPastCourses({
     searchNameParam: debouncedSearch,
+    sortOption: toggleValue ?? undefined,
   });
 
   const coursesData =
     currentPastOrFuture === 'cur' ? currentCourses : currentPastOrFuture === 'past' ? pastCourses : futureCourses;
 
   const noCoursesText = currentPastOrFuture === 'cur' ? 'current' : currentPastOrFuture === 'past' ? 'past' : 'future';
-  const tooltipText = (
-    <>
-      Projects are sorted in the order: <br />
-      Course Year/Sem &gt; Course Name
-    </>
-  );
 
   // Debounce the search
   useEffect(() => {
@@ -56,10 +57,12 @@ export default function CoursesBody({
           }}
           style={{ maxWidth: '30%' }}
         />
-
-        <Tooltip placement="left" title={tooltipText}>
-          <QuestionCircleOutlined style={{ color: 'grey', fontSize: 16 }} />
-        </Tooltip>
+        <Space>
+          <ToggleButtonGroup
+            titles={[sortOptions.SORT_BY_COURSE, sortOptions.SORT_BY_YEAR]}
+            onToggle={setToggleValue}
+          />
+        </Space>
       </div>
       {isLoading ? <Spin /> : getPane(coursesData, `There are no ${noCoursesText} courses.`)}
     </GenericBoxWithBackground>
