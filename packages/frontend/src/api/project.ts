@@ -17,7 +17,13 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
       providesTags: (result, error, arg) =>
-        result ? [...result.map(({ id }) => ({ type: 'Project' as const, id })), 'Project'] : ['Project'],
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Project' as const, id })),
+              ...result.filter((p) => p.course).map((p) => ({ type: 'Course' as const, id: p.course.id })),
+              'Project',
+            ]
+          : ['Project'],
     }),
 
     getProject: builder.query<ProjectData, Pick<Project, 'id'>>({
