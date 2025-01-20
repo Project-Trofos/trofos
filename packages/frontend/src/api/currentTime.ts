@@ -13,7 +13,10 @@ export const isCurrent = (
   if (!startYear || !endYear || !startSem || !endSem) {
     return true;
   }
-  return startYear <= CURRENT_YEAR && CURRENT_YEAR <= endYear && startSem <= CURRENT_SEM && CURRENT_SEM <= endSem;
+  return (
+    (startYear < CURRENT_YEAR || (startYear === CURRENT_YEAR && startSem <= CURRENT_SEM)) &&
+    (CURRENT_YEAR < endYear || (CURRENT_YEAR === endYear && CURRENT_SEM <= endSem))
+  );
 };
 
 // Checks if a particular year/sem is in the past

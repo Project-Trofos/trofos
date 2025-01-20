@@ -4,6 +4,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useMemo } from 'react';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { confirmDeleteAnnouncement } from '../components/modals/confirm';
+import { sortOptions as projectSortOptions } from '../pages/projectsPages/ProjectsBody';
+import { sortOptions as courseSortOptions } from '../pages/coursesPages/CoursesBody';
 import { getErrorMessage } from '../helpers/error';
 import {
   useGetAllCoursesQuery,
@@ -45,9 +47,11 @@ export const useSprintIdParam = () => {
 
 // Filter projects by current and past
 export const useCurrentAndPastProjects = ({
-  searchNameParam
+  searchNameParam,
+  sortOption,
 }: {
-  searchNameParam?: string
+  searchNameParam?: string;
+  sortOption?: string;
 } = {}) => {
   const projectsData = useGetAllProjectsQuery();
   const { data: settings } = useGetSettingsQuery();
@@ -67,9 +71,55 @@ export const useCurrentAndPastProjects = ({
       return project;
     });
 
-    const projectsFilteredByName = searchNameParam ? projects.filter((p) => (
-      p.pname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase())
-    )) : projects;
+    const projectsFilteredByName = searchNameParam
+      ? projects.filter((p) => p.pname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()))
+      : projects;
+
+    const projectsSorted =
+      sortOption == projectSortOptions.SORT_BY_COURSE
+        ? projectsFilteredByName.sort((a, b) => {
+            const aHasCourse = a.course != null;
+            const bHasCourse = b.course != null;
+            // If either project has a course, put it first
+            if (aHasCourse !== bHasCourse) {
+              return aHasCourse ? -1 : 1;
+            }
+            // If both projects have a course
+            if (aHasCourse && bHasCourse) {
+              // Sort by course name
+              if (a.course!.cname !== b.course!.cname) {
+                return a.course!.cname.localeCompare(b.course!.cname);
+              }
+            }
+            // Sort by project name
+            return a.pname.localeCompare(b.pname);
+          })
+        : sortOption == projectSortOptions.SORT_BY_YEAR
+        ? projectsFilteredByName.sort((a, b) => {
+            const aHasCourse = a.course != null;
+            const bHasCourse = b.course != null;
+            // If either project has a course, put it first
+            if (aHasCourse !== bHasCourse) {
+              return aHasCourse ? -1 : 1;
+            }
+            // If both projects have a course
+            if (aHasCourse && bHasCourse) {
+              if (a.course!.startYear !== b.course!.startYear) {
+                return b.course!.startYear - a.course!.startYear;
+              }
+              if (a.course!.startSem !== b.course!.startSem) {
+                return b.course!.startSem - a.course!.startSem;
+              }
+
+              // Sort by course name
+              if (a.course!.cname !== b.course!.cname) {
+                return a.course!.cname.localeCompare(b.course!.cname);
+              }
+            }
+            // Sort by project name
+            return a.pname.localeCompare(b.pname);
+          })
+        : projectsFilteredByName;
 
     // archive false, date current or future -> move to current or future
     // archive null, date current or future -> move to current or future
@@ -78,7 +128,7 @@ export const useCurrentAndPastProjects = ({
     // archive null, date in the past -> move to past
     // archive true, date in the past -> move to past
     return {
-      pastProjects: projectsFilteredByName.filter(
+      pastProjects: projectsSorted.filter(
         (p) =>
           !(p.is_archive === false) &&
           (p.is_archive ||
@@ -91,7 +141,7 @@ export const useCurrentAndPastProjects = ({
               CURRENT_SEM,
             )),
       ),
-      currentProjects: projectsFilteredByName.filter(
+      currentProjects: projectsSorted.filter(
         (p) =>
           !p.is_archive && // if is_archive is true, don't put it in current projects even if date is current
           ((p.is_archive === false &&
@@ -113,7 +163,7 @@ export const useCurrentAndPastProjects = ({
               CURRENT_SEM,
             )),
       ),
-      futureProjects: projectsFilteredByName.filter(
+      futureProjects: projectsSorted.filter(
         (p) =>
           !p.is_archive &&
           isFuture(
@@ -126,16 +176,18 @@ export const useCurrentAndPastProjects = ({
           ),
       ),
     };
-  }, [projectsData, settings, searchNameParam]);
+  }, [projectsData, settings, searchNameParam, sortOption]);
 
   return { ...projectsData, ...filteredProjects };
 };
 
 // Filter courses by current and past
 export const useCurrentAndPastCourses = ({
-  searchNameParam
+  searchNameParam,
+  sortOption,
 }: {
-  searchNameParam?: string
+  searchNameParam?: string;
+  sortOption?: string;
 } = {}) => {
   const coursesData = useGetAllCoursesQuery();
   const { data: settings } = useGetSettingsQuery();
@@ -148,22 +200,62 @@ export const useCurrentAndPastCourses = ({
       return undefined;
     }
 
-    const coursesFilteredByName = searchNameParam ? (coursesData.data as Course[]).filter((c) => (
-      c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase())
-    )) : coursesData.data as Course[];
+    const coursesFilteredByName = searchNameParam
+      ? (coursesData.data as Course[]).filter((c) =>
+          c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()),
+        )
+      : (coursesData.data as Course[]);
+
+    const coursesSorted =
+      sortOption == courseSortOptions.SORT_BY_COURSE
+        ? [...coursesFilteredByName].sort((a, b) => {
+            if (a.shadow_course !== b.shadow_course) {
+              return a.shadow_course ? -1 : 1;
+            }
+            if (!a.shadow_course && !b.shadow_course) {
+              // Sort by course name
+              if (a.cname !== b.cname) {
+                return a.cname.localeCompare(b.cname);
+              }
+            }
+            // Sort by course code
+            return a.code.localeCompare(b.code);
+          })
+        : sortOption == courseSortOptions.SORT_BY_YEAR
+        ? [...coursesFilteredByName].sort((a, b) => {
+            if (a.shadow_course !== b.shadow_course) {
+              return a.shadow_course ? -1 : 1;
+            }
+            if (!a.shadow_course && !b.shadow_course) {
+              if (a.startYear !== b.startYear) {
+                return b.startYear - a.startYear;
+              }
+              if (a.startSem !== b.startSem) {
+                return b.startSem - a.startSem;
+              }
+
+              // Sort by course name
+              if (a.cname !== b.cname) {
+                return a.cname.localeCompare(b.cname);
+              }
+            }
+            // Sort by course code
+            return a.code.localeCompare(b.code);
+          })
+        : coursesFilteredByName;
 
     return {
-      pastCourses: coursesFilteredByName.filter((c) =>
+      pastCourses: coursesSorted.filter((c) =>
         isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
-      currentCourses: coursesFilteredByName.filter((c) =>
+      currentCourses: coursesSorted.filter((c) =>
         isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
-      futureCourses: coursesFilteredByName.filter((c) =>
+      futureCourses: coursesSorted.filter((c) =>
         isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
-  }, [coursesData, settings, searchNameParam]);
+  }, [coursesData, settings, searchNameParam, sortOption]);
 
   return { ...coursesData, ...filteredCourses };
 };

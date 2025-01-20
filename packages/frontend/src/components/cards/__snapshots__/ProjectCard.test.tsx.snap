@@ -30,7 +30,22 @@ exports[`CourseCard test > renders course card with correct details 1`] = `
             <div
               class="ant-card-meta-description"
             >
-              description
+              <div
+                class="ant-row"
+                style="row-gap: 8px;"
+              >
+                <span
+                  class="ant-tag ant-tag-blue"
+                >
+                  Independent
+                </span>
+              </div>
+              <div
+                class="ant-row"
+                style="row-gap: 8px;"
+              >
+                description
+              </div>
             </div>
           </div>
         </div>

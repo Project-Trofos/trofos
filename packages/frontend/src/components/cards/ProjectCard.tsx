@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Card, Dropdown, Menu, message, MenuProps, theme } from 'antd';
+import { Card, Dropdown, Menu, message, MenuProps, theme, Row, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
@@ -95,11 +95,19 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
           <EllipsisOutlined key="more" />
         </Dropdown>,
       ]}
-      style={{ boxShadow: token.boxShadowSecondary, }}
+      style={{ boxShadow: token.boxShadowSecondary }}
     >
       <Meta
         title={<Link to={`/project/${project.id}/overview`}>{project.pname}</Link>}
-        description={project.description ?? 'No description'}
+        description={
+          <>
+            <Row gutter={[0, 8]}>
+              <Tag color="blue">{project.course ? project.course.cname : 'Independent'}</Tag>
+              {project.course && <Tag>{`${project.course.startYear} Semester ${project.course.startSem}`}</Tag>}
+            </Row>
+            <Row gutter={[0, 8]}>{project.description ?? 'No description'}</Row>
+          </>
+        }
       />
     </Card>
   );
