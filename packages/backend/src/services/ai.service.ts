@@ -53,7 +53,7 @@ const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding
           {
             "type": "text",
             "text": `
-              You are a helpful assistant in a RAG that answers user queries on our agile project management application. This is additional context for the user query: ${context.content}
+              You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context.content}
             `
           }
         ]

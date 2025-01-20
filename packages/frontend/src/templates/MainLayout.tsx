@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton } from 'antd';
 import {
   BookOutlined,
   HomeOutlined,
@@ -24,6 +24,7 @@ import './MainLayout.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { toggleTheme } from '../app/themeSlice';
 import ThemeSwitch from '../components/theming/ThemeSwitch';
+import AiChatBase from '../components/aichat/AiChatBase';
 
 const { Header, Sider, Content } = Layout;
 
@@ -111,6 +112,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
  */
 export default function MainLayout() {
   const [isBroken, setIsBroken] = useState(false);
+  const [aiChatIsOpen, setAiChatIsOpen] = useState(false);
 
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
@@ -231,6 +233,14 @@ export default function MainLayout() {
     [projects, courses, userInfo],
   );
 
+  const onOpenAiChat = () => {
+    setAiChatIsOpen(true);
+  }
+
+  const onCloseAiChat = () => {
+    setAiChatIsOpen(false);
+  };
+
   // User is not logged in
   if (!userInfo) {
     return <Outlet />;
@@ -277,6 +287,8 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
+      <FloatButton onClick={onOpenAiChat}/>
+      <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat}/>
     </Layout>
   );
 }
