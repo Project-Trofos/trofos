@@ -9,6 +9,7 @@ import {
   useXAgent,
   useXChat,
 } from '@ant-design/x';
+import { useLazyAnswerUserGuideQueryQuery } from '../../api/ai';
 
 type AiChatBaseProps = {
   open: boolean;
@@ -20,10 +21,16 @@ type RolesType = NonNullable<BubbleListProps['roles']>;
 
 export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Element {
   const [senderValue, setSenderValue] = useState('');
+  const [triggerSend, { data, error, isLoading }] = useLazyAnswerUserGuideQueryQuery();
 
   const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess }) => {
-      onSuccess(`Mock success return. You said: ${message}`);
+    request: async ({ message }, { onSuccess, onError }) => {
+      if (!message) {
+        onError(new Error('Message cannot be empty'));
+        return;
+      }
+      const { data } = await triggerSend(message);
+      onSuccess(data?.answer || '');
     },
   });
 
