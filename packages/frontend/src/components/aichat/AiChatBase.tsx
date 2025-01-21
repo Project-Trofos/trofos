@@ -12,6 +12,7 @@ import {
   useXAgent,
   useXChat,
 } from '@ant-design/x';
+import ReactMarkdown from 'react-markdown'
 import { useLazyAnswerUserGuideQueryQuery } from '../../api/ai';
 
 type AiChatBaseProps = {
@@ -32,6 +33,10 @@ const renderTitle = (icon: React.ReactElement, title: string) => (
     <span>{title}</span>
   </Space>
 );
+
+const getLinksMarkDown = (links: string[]) => {
+  return links.map((link) => `[${link}](${link})`).join('\n\n');
+};
 
 export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Element {
   const [senderValue, setSenderValue] = useState('');
@@ -55,7 +60,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg.id !== 'loading')
         );
-        onSuccess(data?.answer || '');
+        onSuccess(data?.answer + '\n\nReferences:\n\n' + getLinksMarkDown(data?.links) || '');
       } catch (error) {
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg.id !== 'loading')
@@ -169,7 +174,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
             key: id,
             loading: status === 'loading',
             role: status === 'local' ? 'local' : 'ai',
-            content: message,
+            content: <ReactMarkdown>{message}</ReactMarkdown>,
           })) : [{ content: placeholderNode, variant: 'borderless' }]
         }
         roles={roles}

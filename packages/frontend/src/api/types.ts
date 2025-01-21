@@ -355,4 +355,5 @@ export type UserApiKey = {
 
 export type UserGuideQueryResponse = {
   answer: string;
+  links: Array<string>;
 };

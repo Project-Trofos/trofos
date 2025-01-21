@@ -10,10 +10,8 @@ const answerUserGuideQuery = async (req: express.Request, res: express.Response)
       throw new BadRequestError('query cannot be empty');
     }
     const user = res.locals.userSession.user_email;
-    const answer = await processUserGuideQuery(query, user);
-    return res.status(StatusCodes.OK).json({
-      "answer": answer,
-    })
+    const response = await processUserGuideQuery(query, user);
+    return res.status(StatusCodes.OK).json(response);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }

@@ -2,11 +2,16 @@ import OpenAI from 'openai';
 import { UserGuideEmbedding } from '../../prisma_pgvector/generated/pgvector_client';
 import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
+import { UserGuideQueryResponse } from './types/ai.service.types';
 
-const processUserGuideQuery = async (query: string, user: string): Promise<string> => {
+const processUserGuideQuery = async (query: string, user: string): Promise<UserGuideQueryResponse> => {
   const embeddedQuery = await embedUserGuideQuery(query, user);
   const similarRecord = await performUserGuideSimilaritySearch(embeddedQuery);
-  return askGptQueryWithContext(query, similarRecord, user);
+  const answer = await askGptQueryWithContext(query, similarRecord, user);
+  return {
+    answer: answer,
+    links: [`https://project-trofos.github.io/trofos${similarRecord.endpoint}`]
+  };
 }
 
 const getOpenAiClient = (): OpenAI => {
@@ -73,7 +78,7 @@ const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding
   });
   console.log(chatCompletion.choices[0].message);
   const response = chatCompletion.choices[0].message.content ?
-    chatCompletion.choices[0].message.content + `\nSource: https://project-trofos.github.io/trofos${context.endpoint}`: '';
+    chatCompletion.choices[0].message.content: '';
   return response;
 };
 
