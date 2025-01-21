@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Drawer,
+  Space,
 } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, ReadOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Bubble,
+  Prompts,
   Sender,
+  Welcome,
   useXAgent,
   useXChat,
 } from '@ant-design/x';
@@ -19,18 +22,51 @@ type AiChatBaseProps = {
 type BubbleListProps = React.ComponentProps<typeof Bubble.List>;
 type RolesType = NonNullable<BubbleListProps['roles']>;
 
+type PromptsProps = React.ComponentProps<typeof Prompts>;
+type placeholderPromptsItemsType = NonNullable<PromptsProps['items']>;
+type onPromptsItemClickType = NonNullable<PromptsProps['onItemClick']>;
+
+const renderTitle = (icon: React.ReactElement, title: string) => (
+  <Space align="start">
+    {icon}
+    <span>{title}</span>
+  </Space>
+);
+
 export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Element {
   const [senderValue, setSenderValue] = useState('');
-  const [triggerSend, { data, error, isLoading }] = useLazyAnswerUserGuideQueryQuery();
+  const [triggerSend, { data, error, isFetching }] = useLazyAnswerUserGuideQueryQuery();
+  const abortRef = useRef<(() => void) | null>(null);
 
   const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess, onError }) => {
+    request: async ({ message }, { onSuccess, onError, onUpdate }) => {
       if (!message) {
         onError(new Error('Message cannot be empty'));
         return;
       }
-      const { data } = await triggerSend(message);
-      onSuccess(data?.answer || '');
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { id: 'loading', role: 'ai', message: '...', status: 'loading' },
+      ]);
+      try {
+        const { unwrap, abort } = triggerSend(message);
+        abortRef.current = abort;
+        const data = await unwrap();
+        setMessages((prevMessages) =>
+          prevMessages.filter((msg) => msg.id !== 'loading')
+        );
+        onSuccess(data?.answer || '');
+      } catch (error) {
+        setMessages((prevMessages) =>
+          prevMessages.filter((msg) => msg.id !== 'loading')
+        );
+        const err = error as Error;
+        if (err.name === 'AbortError') {
+          onError(new Error('Request was cancelled.'));
+        } else {
+          onError(new Error(err.message));
+        }
+      } 
     },
   });
 
@@ -53,6 +89,53 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
     },
   };
 
+  const placeholderPromptsItems: placeholderPromptsItemsType = [
+    {
+      key: '1',
+      label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Getting started'),
+      description: 'Learn the basics of TROFOS?',
+      children: [
+        {
+          key: '1-1',
+          icon: <FundProjectionScreenOutlined />,
+          description: `What is a project?`,
+        },
+        {
+          key: '1-2',
+          icon: <UserOutlined />,
+          description: `How do I invite a user to a project?`,
+        }
+      ],
+    },
+  ];
+
+  const onPromptsItemClick: onPromptsItemClickType = (info) => {
+    onRequest(info.data.description as string);
+  };
+
+  const placeholderNode = (
+    <Space direction="vertical" size={16}>
+      <Welcome
+        variant="borderless"
+        title="Hello, I'm TROFOS Copilot!"
+        description="I'm here to help you with your questions on TROFOS. How can I help you today?"
+      />
+      <Prompts
+        title="Example prompts"
+        items={placeholderPromptsItems}
+        styles={{
+          list: {
+            width: '100%',
+          },
+          item: {
+            flex: 1,
+          },
+        }}
+        onItemClick={onPromptsItemClick}
+      />
+    </Space>
+  );
+
   return (
     <Drawer
       title="TROFOS Copilot"
@@ -68,18 +151,27 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
             onRequest(v);
             setSenderValue('');
           }}
-          onCancel={()=>{}}
+          onCancel={() => {
+            if (abortRef.current) {
+              abortRef.current();
+              abortRef.current = null;
+            }
+          }}
           onKeyPress={() => {}}
+          loading={agent.isRequesting()}
+          readOnly={agent.isRequesting()}
         />
       }
     >
       <Bubble.List
-        items={messages.map(({ id, message, status }) => ({
-          key: id,
-          loading: status === 'loading',
-          role: status === 'local' ? 'local' : 'ai',
-          content: message,
-        }))}
+        items={messages.length > 0 ? 
+          messages.map(({ id, message, status }) => ({
+            key: id,
+            loading: status === 'loading',
+            role: status === 'local' ? 'local' : 'ai',
+            content: message,
+          })) : [{ content: placeholderNode, variant: 'borderless' }]
+        }
         roles={roles}
       />
     </Drawer>
