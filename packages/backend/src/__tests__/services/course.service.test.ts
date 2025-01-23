@@ -372,4 +372,40 @@ describe('course.service tests', () => {
       expect(result).toEqual<Project>(resultMock);
     });
   });
+
+  describe('archiveCourse', () => {
+    it('should return archived course', async () => {
+      const INDEX = 0;
+      const targetCourse = coursesData[INDEX];
+      const resultMock: Course = {
+        ...targetCourse,
+        is_archive: true,
+      };
+
+      prismaMock.project.updateMany.mockResolvedValueOnce({ count: 0 });
+      prismaMock.course.update.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
+
+      const result = await course.archiveCourse(targetCourse.id);
+      expect(result).toEqual<Course>(resultMock);
+    });
+  });
+
+  describe('unarchiveCourse', () => {
+    it('should return unarchived course', async () => {
+      const INDEX = 0;
+      const targetCourse = coursesData[INDEX];
+      const resultMock: Course = {
+        ...targetCourse,
+        is_archive: false,
+      };
+
+      prismaMock.project.updateMany.mockResolvedValueOnce({ count: 0 });
+      prismaMock.course.update.mockResolvedValueOnce(resultMock);
+      prismaMock.$transaction.mockResolvedValueOnce(resultMock);
+
+      const result = await course.unarchiveCourse(targetCourse.id);
+      expect(result).toEqual<Course>(resultMock);
+    });
+  });
 });

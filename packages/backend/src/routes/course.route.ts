@@ -100,4 +100,18 @@ router.post(
   course.importCsv,
 );
 
+// Archive a course by courseId
+router.put(
+  '/:courseId/archive',
+  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
+  course.archiveCourse,
+);
+
+// Unarchive a course by courseId
+router.put(
+  '/:courseId/unarchive',
+  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
+  course.unarchiveCourse,
+);
+
 export default router;

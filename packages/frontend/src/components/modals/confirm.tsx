@@ -38,6 +38,23 @@ export function confirmDeleteCourse(onOk: () => Promise<void>) {
 }
 
 /**
+ * Shows a modal with prompt for archiving a project.
+ */
+export function confirmArchiveCourse(onOk: () => Promise<void>) {
+  return confirm("Are you sure you want to archive this course? Course will be moved to 'Past Courses'", onOk);
+}
+
+/**
+ * Shows a modal with prompt for unarchiving a course.
+ */
+export function confirmUnarchiveCourse(onOk: () => Promise<void>) {
+  return confirm(
+    "Are you sure you want to unarchive this course? Course will be moved to 'Current Courses' or 'Future Courses'",
+    onOk,
+  );
+}
+
+/**
  * Shows a modal with prompt for deleting a project.
  */
 export function confirmDeleteProject(onOk: () => Promise<void>) {

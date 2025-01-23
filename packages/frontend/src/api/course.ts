@@ -339,6 +339,26 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+
+    // Archiving a course will invalidate that course
+    archiveCourse: builder.mutation<Course, Pick<Course, 'id'>>({
+      query: (course) => ({
+        url: `course/${course.id}/archive`,
+        method: 'PUT',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Course', id: arg.id }, 'Project'],
+    }),
+
+    // Unarchiving a course will invalidate that course
+    unarchiveCourse: builder.mutation<Course, Pick<Course, 'id'>>({
+      query: (course) => ({
+        url: `course/${course.id}/unarchive`,
+        method: 'PUT',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Course', id: arg.id }, 'Project'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -362,4 +382,6 @@ export const {
   useDeleteAnnouncementMutation,
   useUpdateAnnouncementMutation,
   useImportCsvMutation,
+  useArchiveCourseMutation,
+  useUnarchiveCourseMutation,
 } = extendedApi;
