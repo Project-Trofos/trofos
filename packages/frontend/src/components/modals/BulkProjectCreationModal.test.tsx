@@ -35,6 +35,7 @@ describe('test course creation modal', () => {
     milestones: [],
     announcements: [],
     shadow_course: false,
+    is_archive: null,
     users: [
       {
         user: {

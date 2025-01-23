@@ -17,6 +17,7 @@ export const MSW_COURSE: CourseData = {
   endSem: 1,
   description: null,
   shadow_course: false,
+  is_archive: false,
   milestones: [
     {
       id: 1,

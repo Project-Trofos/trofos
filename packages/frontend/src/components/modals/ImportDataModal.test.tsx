@@ -23,6 +23,7 @@ const mockCourseData: CourseData = {
   milestones: [],
   announcements: [],
   shadow_course: false,
+  is_archive: null,
   users: [
     {
       user: {

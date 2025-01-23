@@ -19,6 +19,7 @@ describe('test CourseTable', () => {
       public: false,
       created_at: '2022-09-15T01:58:01.735Z',
       shadow_course: false,
+      is_archive: null,
     },
   ];
 
