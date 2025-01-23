@@ -295,6 +295,32 @@ async function importCsv(req: express.Request, res: express.Response) {
   }
 }
 
+async function archiveCourse(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+
+    assertCourseIdIsValid(courseId);
+
+    const result = await course.archiveCourse(Number(courseId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function unarchiveCourse(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+
+    assertCourseIdIsValid(courseId);
+
+    const result = await course.unarchiveCourse(Number(courseId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -310,4 +336,6 @@ export default {
   removeProject,
   addProjectAndCourse,
   importCsv,
+  archiveCourse,
+  unarchiveCourse,
 };

@@ -245,14 +245,20 @@ export const useCurrentAndPastCourses = ({
         : coursesFilteredByName;
 
     return {
-      pastCourses: coursesSorted.filter((c) =>
-        isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
+      pastCourses: coursesSorted.filter(
+        (c) =>
+          !(c.is_archive === false) &&
+          (c.is_archive || isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
       ),
-      currentCourses: coursesSorted.filter((c) =>
-        isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
+      currentCourses: coursesSorted.filter(
+        (c) =>
+          !c.is_archive &&
+          ((c.is_archive === false &&
+            !isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)) ||
+            isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
       ),
-      futureCourses: coursesSorted.filter((c) =>
-        isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
+      futureCourses: coursesSorted.filter(
+        (c) => !c.is_archive && isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
       ),
     };
   }, [coursesData, settings, searchNameParam, sortOption]);

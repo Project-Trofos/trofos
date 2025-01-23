@@ -51,6 +51,7 @@ model Course {
   created_at    DateTime          @default(now())
   courseRoles UsersOnRolesOnCourses[]
   shadow_course Boolean           @default(false)
+  is_archive      Boolean?
   @@unique([code, startYear, startSem])
 }
 

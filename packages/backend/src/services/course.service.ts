@@ -597,6 +597,52 @@ async function removeProject(courseId: number, projectId: number): Promise<Proje
   });
 }
 
+// Archiving a course will archive all projects in the course as well
+async function archiveCourse(id: number): Promise<Course> {
+  return prisma.$transaction(async (tx) => {
+    await tx.project.updateMany({
+      where: {
+        course_id: id,
+      },
+      data: {
+        is_archive: true,
+      },
+    });
+
+    return tx.course.update({
+      where: {
+        id,
+      },
+      data: {
+        is_archive: true,
+      },
+    });
+  });
+}
+
+// Unarchiving a course will unarchive all projects in the course as well
+async function unarchiveCourse(id: number): Promise<Course> {
+  return prisma.$transaction(async (tx) => {
+    await tx.project.updateMany({
+      where: {
+        course_id: id,
+      },
+      data: {
+        is_archive: false,
+      },
+    });
+
+    return tx.course.update({
+      where: {
+        id,
+      },
+      data: {
+        is_archive: false,
+      },
+    });
+  });
+}
+
 export default {
   create,
   bulkCreate,
@@ -611,4 +657,6 @@ export default {
   addProject,
   removeProject,
   addProjectAndCourse,
+  archiveCourse,
+  unarchiveCourse,
 };

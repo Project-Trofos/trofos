@@ -27,6 +27,8 @@ const spies = {
   addProject: jest.spyOn(course, 'addProject'),
   removeProject: jest.spyOn(course, 'removeProject'),
   addProjectAndCourse: jest.spyOn(course, 'addProjectAndCourse'),
+  archiveCourse: jest.spyOn(course, 'archiveCourse'),
+  unarchiveCourse: jest.spyOn(course, 'unarchiveCourse'),
   getSettings: jest.spyOn(settings, 'get'),
 };
 
@@ -612,6 +614,72 @@ describe('course controller tests', () => {
       await courseController.addProjectAndCourse(mockReq, mockRes);
 
       expect(spies.addProjectAndCourse).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('archiveCourse', () => {
+    it('should return archived course', async () => {
+      const INDEX = 0;
+      const archivedCourse = { ...coursesData[INDEX], is_archive: true };
+      spies.archiveCourse.mockResolvedValueOnce(archivedCourse);
+      const mockReq = createRequest({
+        params: {
+          courseId: coursesData[INDEX].id,
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.archiveCourse(mockReq, mockRes);
+
+      expect(spies.archiveCourse).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(archivedCourse));
+    });
+
+    it('should return error if no courseId given', async () => {
+      const mockReq = createRequest({
+        params: {},
+        body: {},
+      });
+      const mockRes = createResponse();
+
+      await courseController.archiveCourse(mockReq, mockRes);
+
+      expect(spies.archiveCourse).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('unarchiveCourse', () => {
+    it('should return unarchived course', async () => {
+      const INDEX = 0;
+      const unarchivedCourse = { ...coursesData[INDEX], is_archive: false };
+      spies.unarchiveCourse.mockResolvedValueOnce(unarchivedCourse);
+      const mockReq = createRequest({
+        params: {
+          courseId: coursesData[INDEX].id,
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.unarchiveCourse(mockReq, mockRes);
+
+      expect(spies.unarchiveCourse).toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(mockRes._getData()).toEqual(JSON.stringify(unarchivedCourse));
+    });
+
+    it('should return error if no courseId given', async () => {
+      const mockReq = createRequest({
+        params: {},
+        body: {},
+      });
+      const mockRes = createResponse();
+
+      await courseController.unarchiveCourse(mockReq, mockRes);
+
+      expect(spies.unarchiveCourse).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
   });

@@ -14,6 +14,7 @@ const coursesData: Course[] = [
     description: 'd1',
     public: false,
     shadow_course: false,
+    is_archive: null,
   },
   {
     id: 2,
@@ -27,6 +28,7 @@ const coursesData: Course[] = [
     description: 'd2',
     public: true,
     shadow_course: false,
+    is_archive: null,
   },
   {
     id: 3,
@@ -40,6 +42,7 @@ const coursesData: Course[] = [
     description: 'd3',
     public: false,
     shadow_course: false,
+    is_archive: null,
   },
   {
     id: 4,
@@ -53,6 +56,7 @@ const coursesData: Course[] = [
     description: 'd4',
     public: false,
     shadow_course: false,
+    is_archive: null,
   },
   {
     id: 5,
@@ -66,6 +70,7 @@ const coursesData: Course[] = [
     description: 'd5',
     public: false,
     shadow_course: true,
+    is_archive: null,
   },
   {
     id: 6,
@@ -79,6 +84,7 @@ const coursesData: Course[] = [
     description: 'd6',
     public: false,
     shadow_course: true,
+    is_archive: null,
   },
 ];
 

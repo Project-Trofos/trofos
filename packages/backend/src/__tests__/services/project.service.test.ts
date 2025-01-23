@@ -376,4 +376,28 @@ describe('project.service tests', () => {
       expect(result).toEqual<UsersOnProjectOnSettings>(resultMock);
     });
   });
+
+  describe('archiveProject', () => {
+    it('should return archived project', async () => {
+      const INDEX = 0;
+      const archivedProject = { ...projectsData[INDEX], is_archive: true };
+
+      prismaMock.project.update.mockResolvedValueOnce(archivedProject);
+
+      const result = await project.archiveProject(archivedProject.id);
+      expect(result).toEqual<Project>(archivedProject);
+    });
+  });
+
+  describe('unarchiveProject', () => {
+    it('should return unarchived project', async () => {
+      const INDEX = 0;
+      const unarchivedProject = { ...projectsData[INDEX], is_archive: false };
+
+      prismaMock.project.update.mockResolvedValueOnce(unarchivedProject);
+
+      const result = await project.unarchiveProject(unarchivedProject.id);
+      expect(result).toEqual<Project>(unarchivedProject);
+    });
+  });
 });
