@@ -4,27 +4,21 @@ import { Heading } from '../components/typography';
 import { RegisterUser } from '../api/types';
 import { useRegisterMutation } from '../api/auth';
 import { FormProps } from 'antd/lib';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [registerUser] = useRegisterMutation();
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-  const location = useLocation();
   const onFinish = async (user: RegisterUser) => {
     try {
       messageApi.open({ key: 'key', type: 'loading', content: 'Registering...' });
       await registerUser(user).unwrap();
       messageApi.info({ key: 'key', type: 'success', content: 'Successfully registered! Returning to login screen.' });
 
-      if (location.state && location.state.isFromInvite) {
-        // Go back to invite page
-        navigate(-1);
-      } else {
-        setTimeout(() => {
-          navigate('/login');
-        }, 1000);
-      }
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } catch (err: any) {
       messageApi.open({ key: 'key', type: 'error', content: err.data.error });
     }
@@ -53,13 +47,8 @@ const Register = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Email"
-          name="userEmail"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-          initialValue={location.state && location.state.isFromInvite ? location.state.email : ''}
-        >
-          <Input autoFocus disabled={location.state && location.state.isFromInvite} />
+        <Form.Item label="Email" name="userEmail" rules={[{ required: true, message: 'Please input your username!' }]}>
+          <Input autoFocus />
         </Form.Item>
 
         <Form.Item

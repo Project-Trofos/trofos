@@ -39,12 +39,8 @@ export default function InvitePage() {
       return;
     }
 
-    navigate('/register', {
-      state: {
-        isFromInvite: true,
-        email: user.email,
-      },
-    });
+    navigate('/login');
+    message.error('Register or login using SSO first, then try again.');
   }, [searchParams, handleInvite]);
 
   useEffect(() => {

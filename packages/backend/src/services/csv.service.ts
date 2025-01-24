@@ -26,11 +26,10 @@ function validateTeamName(data: ImportCourseDataCsv): boolean {
   return true;
 }
 
+// Validate that non-STUDENT roles requires a password
+// THis is because student SSO is working currently while staff SSO is not
 function validatePassword(data: ImportCourseDataCsv): boolean {
-  const ssoProvider = true;
-  // TODO (kishen) : Add SSO validation once it is integrated.
-  // For now we just return true as long as there is an email
-  if (!ssoProvider && !data.password) {
+  if (ROLE_ID_MAP.get(data.role) != STUDENT_ROLE_ID && !data.password) {
     return false;
   }
 
@@ -98,7 +97,6 @@ async function processImportCourseData(
             },
           },
         },
-        
       });
       groupData.projectId = project.id;
       groupDetailsMap.set(groupName, groupData);
