@@ -6,7 +6,7 @@ export const IMPORT_COURSE_DATA_CONFIG = {
 };
 
 export const INVALID_EMAIL = 'Email provided has an invalid format';
-export const INVALID_PASSWORD = 'Password cannot be empty if non-SSO email is provided';
+export const INVALID_PASSWORD = 'Password cannot be empty for FACULTY role';
 export const INVALID_ROLE = 'Role provided is invalid';
 export const INVALID_TEAM_NAME = 'Team name cannot be empty';
 export const MESSAGE_SPACE = ' ';
