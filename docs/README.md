@@ -2,13 +2,17 @@
 
 This user guide is deployed using Github Pages with Jekyll. The guide will serve as a user guide and the source information to be parsed and broken down to populate the vector DB in the Retrieve Augmented Generation (RAG) copilot, so it needs to adhere to a style guide so the information can be easily parsed to be embedded
 
+## Inserting into vector db
+
+In /rag_script, run the `insert_user_guide_embeddings.py`
+
 ## Guide
 
 [Documentation](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll)
 
 ## Local testing
 
-`bundle exec jekyll serve` to start local server
+`bundle exec jekyll serve` to start local server of GH pages user guide
 
 ## Pages
 
