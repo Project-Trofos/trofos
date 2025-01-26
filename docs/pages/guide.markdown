@@ -10,7 +10,7 @@ permalink: /guide/
 Courses
 ----
 
-Find out more about how courses work in TROFOS
+[Find out more about how courses work in TROFOS](/trofos/guide/course-management)
 
 Project Management
 ----
@@ -20,4 +20,6 @@ Project Management
 API Keys
 ----
 
-As a faculty memeber, learn how to maximise the educational value of TROFOS using our external APIs
+As a faculty memeber, learn how to maximise the educational value of TROFOS using our [external APIs](/trofos/guide/api-key-management)
+
+\* This user guide was generated with the help of ChatGPT

@@ -232,18 +232,13 @@ The **Project Settings** section allows you to customize and manage key aspects 
   *Example*: Add statuses like **Under Review** or **Testing** for more detailed progress tracking.
 
 - **GitHub Linkage and Telegram Channel Notifications**  
-  - **GitHub Linkage**: Set up integration to track commits or pull requests related to your project.  
-  - **Telegram Notifications**: Receive updates in your Telegram channel by:  
+  - **GitHub Linkage**: Set up integration to your project. * 
+  - **Telegram Notifications**: Receive updates in your Telegram channel by *:  
     - Adding **@trofos_nus_bot** to your Telegram channel.  
     - Running the `/start` command.  
     - Copying your channel’s ID into the Project Settings.  
   *Note*: These features are currently being reviewed for full functionality and will be enabled in future updates.
 
-- **User Settings**  
-  Additional options for customizing user-specific preferences are included and will be fully operational soon.
-
----
-
-**Future Updates**
+**Future Updates\***
 
 Our team is actively working to ensure all features, like GitHub and Telegram integrations, are fully functional and seamless to use. Stay tuned for updates!
