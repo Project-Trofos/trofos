@@ -14,7 +14,7 @@ import {
   INVALID_TEAM_NAME,
   MESSAGE_SPACE,
 } from './types/csv.service.types';
-import { ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
+import { ADMIN_ROLE_ID, ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 
 function validateTeamName(data: ImportCourseDataCsv): boolean {
@@ -26,18 +26,12 @@ function validateTeamName(data: ImportCourseDataCsv): boolean {
   return true;
 }
 
-// Validate that non-STUDENT roles requires a password
-// THis is because student SSO is working currently while staff SSO is not
-function validatePassword(data: ImportCourseDataCsv): boolean {
-  if (ROLE_ID_MAP.get(data.role) != STUDENT_ROLE_ID && !data.password) {
-    return false;
-  }
-
-  return true;
-}
+// Default password is required for all students
+// Students can still login using SSO
+const validatePassword = (data: ImportCourseDataCsv) => !!data.password?.length;
 
 function validateRole(data: ImportCourseDataCsv): boolean {
-  return ROLE_ID_MAP.has(data.role.toUpperCase());
+  return ROLE_ID_MAP.has(data.role.toUpperCase()) && ROLE_ID_MAP.get(data.role.toUpperCase()) != ADMIN_ROLE_ID;
 }
 
 function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
