@@ -21,7 +21,7 @@
 title: TROFOS User Guide
 email: gni@comp.nus.edu.sg
 description: >- # this means to ignore newlines until "baseurl:"
-  Learn more about the features of TROFOS as a user
+  Learn more about the features of TROFOS as a user | Github: https://github.com/Project-Trofos/trofos
 baseurl: "/trofos" # the subpath of your site, e.g. /blog
 url: "https://project-trofos.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 

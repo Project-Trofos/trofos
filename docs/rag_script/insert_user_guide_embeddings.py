@@ -27,9 +27,9 @@ def process_jekyll_page(file_path: str) -> PageEmbeddingStore:
 
   is_embed_content = False
   cur_page_embedding_store = PageEmbeddingStore()
-  for document in documents:
+  for i, document in enumerate(documents):
     # get permalink source and title for rest of the page embeddings
-    if document.metadata['category'] == 'UncategorizedText' and 'permalink' in document.page_content:
+    if i == 0:
       match = re.search(r"permalink:\s*(\S+)", document.page_content)
       if match:
         cur_page_embedding_store.permalink = match.group(1)
