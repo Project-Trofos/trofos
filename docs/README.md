@@ -4,7 +4,7 @@ This user guide is deployed using Github Pages with Jekyll. The guide will serve
 
 ## Inserting into vector db
 
-In /rag_script, run the `insert_user_guide_embeddings.py`
+In /rag_script, run the `insert_user_guide_embeddings.py`. the script takes everything after toc as contents- it finds a title- then all other subsequent content is the attached to that title
 
 ## Guide
 

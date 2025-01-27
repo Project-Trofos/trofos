@@ -118,6 +118,10 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
     onRequest(info.data.description as string);
   };
 
+  const LinkRenderer = (props: any) => {
+    return <a href={props.href} target="_blank">{props.children}</a>
+  }
+
   const placeholderNode = (
     <Space direction="vertical" size={16}>
       <Welcome
@@ -174,7 +178,19 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
             key: id,
             loading: status === 'loading',
             role: status === 'local' ? 'local' : 'ai',
-            content: <ReactMarkdown>{message}</ReactMarkdown>,
+            content: (
+              <ReactMarkdown
+                components={{
+                  a: ({ href, children, ...props }) => (
+                    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                      {children}
+                    </a>
+                  ),
+                }}
+              >
+                {message}
+              </ReactMarkdown>
+            ),
           })) : [{ content: placeholderNode, variant: 'borderless' }]
         }
         roles={roles}

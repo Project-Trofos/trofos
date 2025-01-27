@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton, Button } from 'antd';
 import {
   BookOutlined,
   HomeOutlined,
@@ -7,6 +7,8 @@ import {
   ProjectOutlined,
   SettingOutlined,
   UnorderedListOutlined,
+  RobotOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -91,10 +93,13 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
       <Col>
         <GlobalSearch />
       </Col>
-      {/* TODO: To be implemented */}
-      {/* <Col>
+      <Col>
+        <Button type="text" href="https://project-trofos.github.io/trofos/" target='_blank'>
           <QuestionCircleOutlined />
-        </Col>
+        </Button>
+      </Col>
+      {/* TODO: To be implemented */}
+      {/* 
         <Col>
           <BellOutlined />
         </Col> */}
@@ -287,7 +292,7 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
-      <FloatButton onClick={onOpenAiChat}/>
+      <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type='primary'/>
       <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat}/>
     </Layout>
   );
