@@ -6,6 +6,12 @@ This user guide is deployed using Github Pages with Jekyll. The guide will serve
 
 In /rag_script, run the `insert_user_guide_embeddings.py`. the script takes everything after toc as contents- it finds a title- then all other subsequent content is the attached to that title
 
+Deployment to production of embedded data is currently manual- make a sql dump locally and manually insert in the VM. Future devs to optimise 😉
+
+`pg_dump -U <user name eg postgres> -h localhost -p 5432 -d pgvector -t '"UserGuideEmbedding"' > dump.sql` in the pgvector container
+
+`docker cp <container>:/dump.sql C:\Users\...` in local terminal
+
 ## Guide
 
 [Documentation](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll)
