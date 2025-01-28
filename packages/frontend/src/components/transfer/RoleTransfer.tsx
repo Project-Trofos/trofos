@@ -1,6 +1,7 @@
 /* eslint-disable object-shorthand */
 import React, { useState, useEffect } from 'react';
 import { Transfer } from 'antd';
+import type { TransferProps } from 'antd';
 import type { TransferDirection } from 'antd/es/transfer';
 import { ActionsOnRoles } from '../../api/types';
 import { useAddActionToRoleMutation, useRemoveActionFromRoleMutation } from '../../api/role';
@@ -25,22 +26,24 @@ export default function RoleTransfer({ actionsOnRoles, actions, activeRole }: Ro
   const [selectedKeys, setSelectedKeys] = useState<RecordType[]>([]);
   const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
-  const handleChange = async (newTargetKeys: string[], direction: TransferDirection, moveKeys: string[]) => {
+  const handleChange : TransferProps['onChange'] = async (newTargetKeys, direction, moveKeys) => {
     if (moveKeys.length > 0) {
       // TransferDirection is either left or right
       if (direction === 'right') {
         // Moving to the right represents removing a premission
-        for (const action of moveKeys) {
+        for (const key of moveKeys) {
+          const action = String(key);
           removeActionFromRole({ id: activeRole, action: action });
         }
       } else {
         // Moving to the left represents adding a permission
-        for (const action of moveKeys) {
+        for (const key of moveKeys) {
+          const action = String(key);
           addActionToRole({ id: activeRole, action: action });
         }
       }
     }
-    setTargetKeys(newTargetKeys);
+    setTargetKeys(newTargetKeys as string[]);
   };
 
   useEffect(() => {

@@ -56,6 +56,8 @@ AWS_SES_FROM_EMAIL=
 
 BACKEND_URL="http://backend:3003"
 
+OPENAI_API_KEY=<api key>
+
 ```
 
 At project root:
