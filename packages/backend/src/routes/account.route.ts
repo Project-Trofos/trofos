@@ -27,6 +27,4 @@ router.post('/generateSAMLReq/staff', account.generateSAMLRequestStaff);
 
 router.post('/callback/saml', upload.none(), account.processSAMLResponse);
 
-router.post('/callback/samlStaff', upload.none(), account.processSAMLResponseStaff);
-
 export default router;

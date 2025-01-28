@@ -1,6 +1,7 @@
 import { RetrospectiveType, RetrospectiveVoteType, UserSession } from '@prisma/client';
 import { OptionRequestBody } from '../../controllers/requestTypes';
 import { BadRequestError } from './errorTypes';
+import { SSORoles } from '../ssoHelper';
 
 export function assertStringIsNumberOrThrow(str: string | undefined, errorMessage: string) {
   if (Number.isNaN(Number(str))) {
@@ -273,5 +274,11 @@ export function assertEmailIsValid(email: string | undefined): asserts email is 
 export function assertTokenIsValid(token: string | undefined): asserts token is string {
   if (token == undefined) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('token'));
+  }
+}
+
+export function assertSSORoleIsValid(role: string | undefined) {
+  if (role && !Object.values(SSORoles).includes(role)) {
+    throw new BadRequestError('Invalid SSO role');
   }
 }
