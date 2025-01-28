@@ -53,6 +53,8 @@ services:
       - NODE_ENV=${NODE_ENV}
       - AWS_SES_FROM_EMAIL=${AWS_SES_FROM_EMAIL}
       - SP_PRIVATE_KEY_BASE64=${SP_PRIVATE_KEY_BASE64}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AI_DATABASE_URL=${AI_DATABASE_URL}
     links:
       - postgres
     networks:
@@ -72,7 +74,7 @@ services:
     networks:
       - application
   postgres:
-    image: postgres:14.1-alpine
+    image: pgvector/pgvector:pg14
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}

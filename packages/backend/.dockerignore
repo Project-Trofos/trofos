@@ -20,3 +20,8 @@ yarn-debug.log*
 yarn-error.log*
 
 prisma/generated
+prisma_pgvector/generated
+
+.env
+.env.development.local
+.env.production.local

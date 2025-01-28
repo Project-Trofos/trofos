@@ -43,7 +43,6 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
     FROM "UserGuideEmbedding" uge 
     ORDER BY uge.embedding <-> ${pgVectorEmbedding}::vector
     LIMIT 5`;
-  console.log(similarRecords[0]);
   return similarRecords[0];
 };
 
@@ -76,7 +75,6 @@ const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding
     model: 'gpt-4o-mini',
     user: user,
   });
-  console.log(chatCompletion.choices[0].message);
   const response = chatCompletion.choices[0].message.content ?
     chatCompletion.choices[0].message.content: '';
   return response;
