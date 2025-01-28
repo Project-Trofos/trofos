@@ -4,13 +4,15 @@ This user guide is deployed using Github Pages with Jekyll. The guide will serve
 
 ## Inserting into vector db
 
-In /rag_script, run the `insert_user_guide_embeddings.py`. the script takes everything after toc as contents- it finds a title- then all other subsequent content is the attached to that title
+In /rag_script, run the `insert_user_guide_embeddings.py`. the script looks into /docs/pages/rag_parse_pages, takes everything after toc as contents- it finds a title- then all other subsequent content is the attached to that title
 
-Deployment to production of embedded data is currently manual- make a sql dump locally and manually insert in the VM. Future devs to optimise 😉
+Deployment to production of embedded data is currently manual- run the script in the VM to insert directly into vectordb. Future devs to optimise 😉
 
-`pg_dump -U <user name eg postgres> -h localhost -p 5432 -d pgvector -t '"UserGuideEmbedding"' > dump.sql` in the pgvector container
+In `/docs/rag_script`:
 
-`docker cp <container>:/dump.sql C:\Users\...` in local terminal
+1. `pip install -r requirements.txt`
+
+2. `python ./insert_user_guide_embeddings.py`
 
 ## Guide
 
