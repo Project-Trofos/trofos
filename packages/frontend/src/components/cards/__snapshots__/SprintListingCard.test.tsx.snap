@@ -24,7 +24,7 @@ exports[`SprintCard test > renders sprint card with correct details 1`] = `
               class="ant-collapse-expand-icon"
             >
               <span
-                aria-label="right"
+                aria-label="collapsed"
                 class="anticon anticon-right ant-collapse-arrow"
                 role="img"
               >
@@ -58,7 +58,7 @@ exports[`SprintCard test > renders sprint card with correct details 1`] = `
                   class="sprint-status-button"
                 >
                   <button
-                    class="ant-btn ant-btn-default"
+                    class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
                     type="button"
                   >
                     <span>
@@ -70,7 +70,7 @@ exports[`SprintCard test > renders sprint card with correct details 1`] = `
                   class="sprint-card-button"
                 >
                   <button
-                    class="ant-btn ant-btn-default"
+                    class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
                     type="button"
                   >
                     <span>

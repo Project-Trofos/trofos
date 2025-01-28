@@ -10,7 +10,7 @@
     "prisma-db-push": "dotenv -e .env.development.local -- pnpm exec prisma db push",
     "prisma-migrate-prod": "dotenv -e .env.production.local -- pnpm exec prisma migrate deploy && dotenv -e .env.production.local -- pnpm exec prisma migrate deploy --schema prisma_pgvector/schema_ai.prisma",
     "prisma-migrate-dev": "dotenv -e .env.development.local -- pnpm exec prisma migrate dev",
-    "prisma-migrate-reset": "dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force && dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force --schema prisma_pgvector/schema_ai.prisma",
+    "prisma-migrate-reset": "dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force && dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force --schema prisma_pgvector/schema_ai.prisma --skip-seed",
     "prisma-migrate-ci": "pnpm run prisma-migrate-reset && pnpm run prisma-generate",
     "build": "tsc --project tsconfig.build.json",
     "start-prod": "dotenv -e .env.production.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js",

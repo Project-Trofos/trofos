@@ -33,7 +33,7 @@ exports[`UserEmailFormItem test > when rendering > should have the correct field
                 class="ant-form-item-control-input-content"
               >
                 <input
-                  class="ant-input"
+                  class="ant-input ant-input-outlined"
                   id="userEmail"
                   type="text"
                   value=""
@@ -44,7 +44,7 @@ exports[`UserEmailFormItem test > when rendering > should have the correct field
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="submit"
       >
         <span>
