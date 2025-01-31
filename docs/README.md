@@ -10,9 +10,18 @@ Deployment to production of embedded data is currently manual- run the script in
 
 In `/docs/rag_script`:
 
-1. `pip install -r requirements.txt`
+Have .env file:
 
-2. `python ./insert_user_guide_embeddings.py`
+```
+OPENAI_API_KEY=...
+PG_VECTOR_CONN_STR="postgresql://postgres:postgres@postgres:5432/pgvector"
+```
+
+In `./docs`:
+
+`docker build -t insert_script .`
+
+`docker run --rm --network trofos-application --env-file ./rag_script/.env insert_script`
 
 ## Guide
 
