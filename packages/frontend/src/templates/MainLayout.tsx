@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image } from 'antd';
+import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton, Button } from 'antd';
 import {
   BookOutlined,
   HomeOutlined,
@@ -7,6 +7,8 @@ import {
   ProjectOutlined,
   SettingOutlined,
   UnorderedListOutlined,
+  RobotOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -24,6 +26,7 @@ import './MainLayout.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { toggleTheme } from '../app/themeSlice';
 import ThemeSwitch from '../components/theming/ThemeSwitch';
+import AiChatBase from '../components/aichat/AiChatBase';
 
 const { Header, Sider, Content } = Layout;
 
@@ -90,10 +93,13 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
       <Col>
         <GlobalSearch />
       </Col>
-      {/* TODO: To be implemented */}
-      {/* <Col>
+      <Col>
+        <Button type="text" href="https://project-trofos.github.io/trofos/" target='_blank'>
           <QuestionCircleOutlined />
-        </Col>
+        </Button>
+      </Col>
+      {/* TODO: To be implemented */}
+      {/* 
         <Col>
           <BellOutlined />
         </Col> */}
@@ -111,6 +117,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
  */
 export default function MainLayout() {
   const [isBroken, setIsBroken] = useState(false);
+  const [aiChatIsOpen, setAiChatIsOpen] = useState(false);
 
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
@@ -231,6 +238,14 @@ export default function MainLayout() {
     [projects, courses, userInfo],
   );
 
+  const onOpenAiChat = () => {
+    setAiChatIsOpen(true);
+  }
+
+  const onCloseAiChat = () => {
+    setAiChatIsOpen(false);
+  };
+
   // User is not logged in
   if (!userInfo) {
     return <Outlet />;
@@ -277,6 +292,8 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
+      <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type='primary'/>
+      <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat}/>
     </Layout>
   );
 }

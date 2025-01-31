@@ -28,7 +28,7 @@ vi.mock('antd', async () => {
     const { defaultValue, id, onChange } = props;
     return (
       <input
-        id={id}
+        id={id as string | undefined}
         defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLInputElement>['defaultValue']}
         onChange={(e) => {
           if (onChange) {

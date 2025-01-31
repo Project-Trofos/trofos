@@ -1,0 +1,8 @@
+openai
+python-dotenv
+langchain
+psycopg[binary,pool]
+unstructured[md]
+nltk
+langchain-community
+tiktoken

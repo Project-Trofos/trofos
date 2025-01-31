@@ -353,3 +353,8 @@ export type UserApiKey = {
   last_used: string | null;
   active: boolean;
 };
+
+export type UserGuideQueryResponse = {
+  answer: string;
+  links: Array<string>;
+};

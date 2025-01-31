@@ -265,7 +265,7 @@ exports[`test ProjectTable > should render table with correct fields 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-sm"
+                                  class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-sm"
                                   type="button"
                                 >
                                   <span>
@@ -277,7 +277,7 @@ exports[`test ProjectTable > should render table with correct fields 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-sm"
+                                  class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined ant-btn-sm"
                                   type="button"
                                 >
                                   <span>

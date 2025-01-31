@@ -33,7 +33,7 @@ exports[`SelectCourseCodeFormItem test > when rendering > should have correct fi
                 class="ant-form-item-control-input-content"
               >
                 <input
-                  class="ant-input"
+                  class="ant-input ant-input-outlined"
                   id="NAME"
                   type="text"
                   value=""
@@ -44,7 +44,7 @@ exports[`SelectCourseCodeFormItem test > when rendering > should have correct fi
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-default"
+        class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
         type="submit"
       >
         <span>

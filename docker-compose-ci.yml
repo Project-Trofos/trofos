@@ -21,6 +21,7 @@ services:
       target: test
       args:
         DATABASE_URL: ${DATABASE_URL}
+        AI_DATABASE_URL: ${AI_DATABASE_URL}
         CI: ${CI}
       network: host
     image: trofos_backend
@@ -37,6 +38,7 @@ services:
       target: test
       args:
         DATABASE_URL: ${DATABASE_URL}
+        AI_DATABASE_URL: ${AI_DATABASE_URL}
         CI: ${CI}
       network: host
     image: trofos_hocus_pocus_server
@@ -47,7 +49,7 @@ services:
     links:
       - backend
   postgres:
-    image: postgres:14.1-alpine
+    image: pgvector/pgvector:pg14
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
