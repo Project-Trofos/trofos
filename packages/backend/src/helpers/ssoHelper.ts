@@ -11,6 +11,11 @@ import * as validator from '@authenio/samlify-xsd-schema-validator';
 
 setSchemaValidator(validator);
 
+const SSORoles = {
+  STAFF: 'staff',
+  STUDENT: 'student',
+};
+
 const configureSp = async (isStaff = false) => {
   if (isStaff) {
     let privateKey: string = '';
@@ -42,22 +47,23 @@ const configureSp = async (isStaff = false) => {
       assertionConsumerService: [
         {
           Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-          Location: `${process.env.FRONTEND_BASE_URL}/api/account/callback/samlStaff`,
+          Location: `${process.env.FRONTEND_BASE_URL}/api/account/callback/saml`,
           isDefault: true,
         },
         {
           Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-          Location: `${process.env.FRONTEND_BASE_URL}/callback/samlStaff`,
+          Location: `${process.env.FRONTEND_BASE_URL}/callback/saml`,
         },
       ],
       nameIDFormat: ['saml.Constants.namespace.nameid.unspecified'],
+      relayState: SSORoles.STAFF,
     });
   } else {
     const spMetadataXmlFile = process.env.NODE_ENV === 'staging' ? './sp-staging.xml' : './sp-prod.xml';
     const spMetadataXml = fs.readFileSync(spMetadataXmlFile, 'utf-8');
 
     // Define the SP configuration
-    return ServiceProvider({ metadata: spMetadataXml });
+    return ServiceProvider({ metadata: spMetadataXml, relayState: SSORoles.STUDENT });
   }
 };
 
@@ -106,4 +112,4 @@ const SAML_CLAIMS = {
   GIVEN_NAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
 };
 
-export { getCachedSp, getCachedSpStaff, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS };
+export { getCachedSp, getCachedSpStaff, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS, SSORoles };

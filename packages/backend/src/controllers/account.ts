@@ -7,7 +7,8 @@ import accountService from '../services/account.service';
 import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../helpers/ssoHelper';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff, SSORoles } from '../helpers/ssoHelper';
+import { assertSSORoleIsValid } from '../helpers/error/assertions';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -180,88 +181,78 @@ async function generateSAMLRequestStaff(req: express.Request, res: express.Respo
 
 async function processSAMLResponse(req: express.Request, res: express.Response) {
   try {
-    const sp = await getCachedSp();
-    const idp = await getCachedIdp();
-
-    const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
+    const { SAMLResponse, relayState } = req.body; // Extract the SAML Response from the POST body
 
     if (!SAMLResponse) {
       throw new Error('Missing SAMLResponse');
     }
+    assertSSORoleIsValid(relayState);
 
-    // Parse the SAML response
-    const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
-    const { extract } = parsedResponse;
-
-    // Validate parsed response
-    if (!extract || !extract.attributes) {
-      throw new Error('Invalid SAML extract.');
+    if (relayState === SSORoles.STAFF) {
+      await processSAMLResponseStaff(req, res);
+    } else if (relayState === SSORoles.STUDENT) {
+      await processSAMLResponseStudent(req, res);
     }
-
-    // Handle user authentication and session creation
-    const userInfo = await authenticationService.samlHandler(extract.attributes);
-    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
-    const sessionId = await sessionService.createUserSession(
-      userInfo.user_email,
-      userRoleInformation,
-      userInfo.user_id,
-    );
-
-    // Set secure cookie for session
-    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
-
-    // Redirect the user to the homepage
-    return res.redirect('/');
   } catch (error) {
     console.error('Error processing SAML Response:', error);
     return getDefaultErrorRes(error, res);
   }
 }
 
-async function processSAMLResponseStaff(req: express.Request, res: express.Response) {
-  try {
-    const sp = await getCachedSpStaff();
-    const idp = await getCachedIdpStaff();
+async function processSAMLResponseStudent(req: express.Request, res: express.Response) {
+  const sp = await getCachedSp();
+  const idp = await getCachedIdp();
 
-    const { SAMLResponse } = req.body; // Extract the SAML Response from the POST body
+  // Parse the SAML response
+  const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
+  const { extract } = parsedResponse;
 
-    if (!SAMLResponse) {
-      throw new Error('Missing SAMLResponse');
-    }
-
-    // Parse the SAML response
-    const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
-    const { extract } = parsedResponse;
-
-    // Validate parsed response
-    if (!extract || !extract.attributes) {
-      throw new Error('Invalid SAML extract.');
-    }
-
-    // Handle user authentication and session creation
-    const userInfo = await authenticationService.samlHandlerStaff(extract.attributes);
-    const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
-    const sessionId = await sessionService.createUserSession(
-      userInfo.user_email,
-      userRoleInformation,
-      userInfo.user_id,
-    );
-
-    // Set secure cookie for session
-    res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
-
-    // Redirect the user to the homepage
-    return res.redirect('/');
-  } catch (error) {
-    console.error('Error processing SAML Response:', error);
-    return getDefaultErrorRes(error, res);
+  // Validate parsed response
+  if (!extract || !extract.attributes) {
+    throw new Error('Invalid SAML extract.');
   }
+
+  // Handle user authentication and session creation
+  const userInfo = await authenticationService.samlHandler(extract.attributes);
+  const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+  const sessionId = await sessionService.createUserSession(userInfo.user_email, userRoleInformation, userInfo.user_id);
+
+  // Set secure cookie for session
+  res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  // Redirect the user to the homepage
+  return res.redirect('/');
+}
+
+async function processSAMLResponseStaff(req: express.Request, res: express.Response) {
+  const sp = await getCachedSpStaff();
+  const idp = await getCachedIdpStaff();
+
+  // Parse the SAML response
+  const parsedResponse = await sp.parseLoginResponse(idp, 'post', req);
+  const { extract } = parsedResponse;
+
+  // Validate parsed response
+  if (!extract || !extract.attributes) {
+    throw new Error('Invalid SAML extract.');
+  }
+
+  // Handle user authentication and session creation
+  const userInfo = await authenticationService.samlHandlerStaff(extract.attributes);
+  const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
+  const sessionId = await sessionService.createUserSession(userInfo.user_email, userRoleInformation, userInfo.user_id);
+
+  // Set secure cookie for session
+  res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  // Redirect the user to the homepage
+  return res.redirect('/');
 }
 
 export default {
@@ -275,5 +266,4 @@ export default {
   generateSAMLRequest,
   generateSAMLRequestStaff,
   processSAMLResponse,
-  processSAMLResponseStaff,
 };
