@@ -181,7 +181,7 @@ async function generateSAMLRequestStaff(req: express.Request, res: express.Respo
 
 async function processSAMLResponse(req: express.Request, res: express.Response) {
   try {
-    const { SAMLResponse, relayState } = req.body; // Extract the SAML Response from the POST body
+    const { SAMLResponse, RelayState: relayState } = req.body; // Extract the SAML Response from the POST body
 
     if (!SAMLResponse) {
       throw new Error('Missing SAMLResponse');
