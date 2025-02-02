@@ -58,4 +58,8 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - /var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    name: trofos_postgres_data
