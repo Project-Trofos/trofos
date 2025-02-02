@@ -50,6 +50,8 @@ jobs:
         run: docker compose -f ./docker-compose-e2e.yml up -d
       - name: Wait for backend to start
         run: npx wait-on --timeout 60000 http://127.0.0.1:3003
+      - name: Seed db
+        run: docker exec -it trofos-backend-production pnpm run prisma-migrate-ci
       - name: Run E2E tests
         run: pnpm exec playwright test --reporter=dot
         working-directory: packages/frontend
