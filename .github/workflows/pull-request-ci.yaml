@@ -29,7 +29,11 @@ jobs:
           node-version: 'lts/hydrogen'
           cache: 'pnpm'
       - name: Install wait-on
-        run: pnpm i -g wait-on@6.0.1 playwright
+        run: pnpm i -g wait-on@6.0.1
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
       - name: Setup Postgres container
         run: pnpm run setup:ci
       - name: Build and test backend
