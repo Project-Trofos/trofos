@@ -33,7 +33,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
+        working-directory: packages/frontend
       - name: Setup Postgres container
         run: pnpm run setup:ci
       - name: Build and test backend
