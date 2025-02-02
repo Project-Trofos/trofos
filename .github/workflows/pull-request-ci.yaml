@@ -14,6 +14,9 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
       AI_DATABASE_URL: ${{ secrets.AI_DATABASE_URL_CI }}
+      E2E_DATABASE_URL: ${{ secrets.E2E_DATABASE_URL_CI }}
+      E2E_AI_DATABASE_URL: ${{ secrets.E2EAI_DATABASE_URL_CI }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,7 +29,7 @@ jobs:
           node-version: 'lts/hydrogen'
           cache: 'pnpm'
       - name: Install wait-on
-        run: pnpm i -g wait-on@6.0.1
+        run: pnpm i -g wait-on@6.0.1 playwright
       - name: Setup Postgres container
         run: pnpm run setup:ci
       - name: Build and test backend
@@ -35,18 +38,19 @@ jobs:
         run: docker compose -f docker-compose-ci.yml build frontend
       - name: Build hocus pocus server
         run: docker compose -f docker-compose-ci.yml build hocus_pocus_server
-      # e2e test currently removed from CI as it is unstable
-      # - name: Start backend and frontend
-      #   run: npm start &
-      # - name: Wait for backend and frontend to start
-      #   run: wait-on --timeout 120000 http://localhost:3000 http://localhost:3001
-      # - name: Run e2e test
-      #   run: |-
-      #     cd packages/backend
-      #     npm run test-e2e
       - name: Clean up container
         if: always()
         run: pnpm run cleanup:ci
+      - name: Set up application for E2E test
+        run: docker compose -f ./docker-compose-e2e.yml up -d
+      - name: Wait for backend to start
+        run: npx wait-on --timeout 60000 http://127.0.0.1:3003
+      - name: Run E2E tests
+        run: pnpm exec playwright test --reporter=dot
+        working-directory: packages/frontend
+      - name: Stop Application
+        if: always()
+        run: docker compose -f ./docker-compose-e2e.yml down
       - name: Send notification on failure
         if: failure()
         run: |
