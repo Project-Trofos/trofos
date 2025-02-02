@@ -15,7 +15,7 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
       AI_DATABASE_URL: ${{ secrets.AI_DATABASE_URL_CI }}
       E2E_DATABASE_URL: ${{ secrets.E2E_DATABASE_URL_CI }}
-      E2E_AI_DATABASE_URL: ${{ secrets.E2EAI_DATABASE_URL_CI }}
+      E2E_AI_DATABASE_URL: ${{ secrets.E2E_AI_DATABASE_URL_CI }}
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
     steps:
       - name: Checkout
