@@ -68,10 +68,11 @@ async function canUserPerformActionForProject(
   // Edge cases check
 
   // Students cannot delete or archive projects that are under a course
-  if (routeAction === Action.delete_project && sessionInformation.user_role_id === STUDENT_ROLE_ID) {
+  if ((routeAction === Action.delete_project || routeAction === Action.archive_project)
+      && sessionInformation.user_role_id === STUDENT_ROLE_ID) {
     const project = await projectService.getById(projectId);
     const course = await courseService.getById(project.course_id);
-    // if its a shadow course attached -> independent project -> can delete
+    // if its a shadow course attached -> independent project -> can delete/archive
     return course.shadow_course;
   }
   return matchingAction.length !== 0;

@@ -350,6 +350,7 @@ enum Action {
   update_project
   delete_project
   update_project_users
+  archive_project
   // Project feedback
   create_feedback
   read_feedback
