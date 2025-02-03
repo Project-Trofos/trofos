@@ -4,6 +4,7 @@ import { OAuth2Payload, RegisterUser } from './types';
 export enum UserRole {
   FACULTY = 1,
   STUDENT = 2,
+  ADMIN = 3,
 }
 
 export type UserLoginInfo = {
@@ -16,6 +17,8 @@ export type UserInfo = {
   userDisplayName: string;
   userRoleActions: string[];
   userId: number;
+  userRoleId: UserRole;
+  hasSeenTour: boolean;
 };
 
 export type ChangePassword = {
@@ -26,7 +29,8 @@ export type ChangePassword = {
 
 export type UpdateUserInfo = {
   userId: number;
-  displayName: string;
+  displayName?: string;
+  tourStatus?: boolean;
 };
 
 // Auth APIs
@@ -77,6 +81,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: {
           userId: updateUserInfo.userId,
           displayName: updateUserInfo.displayName,
+          tourStatus: updateUserInfo.tourStatus,
         },
         credentials: 'include',
         invalidatesTags: ['UserInfo'],

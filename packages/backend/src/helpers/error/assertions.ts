@@ -98,6 +98,22 @@ export function assertInputIsNotEmpty<T>(input: T | undefined, inputName: string
   }
 }
 
+// Assert at least one of the inputs is not empty
+export function assertInputsAreNotAllEmpty(inputs: { value: unknown; name: string }[]): void {
+  const hasValidInput = inputs.some(
+    ({ value }) =>
+      value !== undefined &&
+      value !== null &&
+      (!(typeof value === 'string') || value.trim() !== '') &&
+      (!(typeof value === 'object') || Object.keys(value as object).length > 0),
+  );
+
+  if (!hasValidInput) {
+    const fieldNames = inputs.map(({ name }) => name).join(', ');
+    throw new BadRequestError(`At least one of the fields [${fieldNames}] must not be empty.`);
+  }
+}
+
 export function assertUserSessionIsValid(userSession: UserSession | undefined): asserts userSession is UserSession {
   assertInputIsNotEmpty(userSession, 'userSession');
 }

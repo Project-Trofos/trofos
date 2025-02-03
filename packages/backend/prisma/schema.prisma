@@ -18,6 +18,7 @@ model User {
   user_email String @unique @db.VarChar(320)
   user_display_name String @db.VarChar(50) @default(uuid())
   user_password_hash String? @db.VarChar(4000)
+  has_seen_tour Boolean @default(false)
   projects      UsersOnProjects[]
   ownedProjects  Project[]
   courses UsersOnRolesOnCourses[]

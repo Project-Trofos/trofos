@@ -8,7 +8,8 @@ import { assertInputIsNotEmpty, getDefaultErrorRes, getErrorMessage } from '../h
 import userService from '../services/user.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff, SSORoles } from '../helpers/ssoHelper';
-import { assertSSORoleIsValid } from '../helpers/error/assertions';
+import { assertInputsAreNotAllEmpty, assertSSORoleIsValid } from '../helpers/error/assertions';
+import { UpdateUserData } from '../helpers/types/user.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -81,7 +82,9 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
       userEmail: userAccountInformation.user_email,
       userDisplayName: userAccountInformation.user_display_name,
       userId: userAccountInformation.user_id,
+      hasSeenTour: userAccountInformation.has_seen_tour,
       userRoleActions: userRoleInformation.roleActions,
+      userRoleId: userRoleInformation.roleId,
     };
 
     return res.status(StatusCodes.OK).json(userInformation);
@@ -110,12 +113,20 @@ const changePassword = async (req: express.Request, res: express.Response) => {
 
 const updateUser = async (req: express.Request, res: express.Response) => {
   try {
-    const { userId, displayName } = req.body;
+    const { userId, displayName, tourStatus } = req.body;
 
     assertInputIsNotEmpty(userId, 'User Id');
-    assertInputIsNotEmpty(displayName, 'Display name');
+    assertInputsAreNotAllEmpty([
+      { value: displayName, name: 'Display Name' },
+      { value: tourStatus, name: 'Tour Status' },
+    ]);
 
-    await accountService.updateUser(userId, displayName);
+    // Build the update payload dynamically
+    const updateData: UpdateUserData = {};
+    if (displayName) updateData.user_display_name = displayName;
+    if (tourStatus !== undefined) updateData.has_seen_tour = tourStatus;
+
+    await accountService.updateUser(userId, updateData);
     return res.status(StatusCodes.OK).send({
       message: 'User info successfully updated',
     });
