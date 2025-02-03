@@ -92,14 +92,14 @@ router.put(
 // Archive a project by projectId
 router.put(
   '/:projectId/archive',
-  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  hasAuthForProject(Action.archive_project, projectPolicy.POLICY_NAME),
   project.archiveProject,
 );
 
 // Unarchive a project by projectId
 router.put(
   '/:projectId/unarchive',
-  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  hasAuthForProject(Action.archive_project, projectPolicy.POLICY_NAME),
   project.unarchiveProject,
 );
 

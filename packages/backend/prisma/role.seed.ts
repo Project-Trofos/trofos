@@ -14,16 +14,13 @@ async function createRoleTableSeed(prisma: PrismaClient) {
   const facultyRow = await prisma.$executeRaw`
     INSERT INTO "Role" (id, role_name)
     VALUES
-      (${FACULTY_ROLE_ID}, 'FACULTY')
+      (${FACULTY_ROLE_ID}, 'FACULTY'),
+      (${STUDENT_ROLE_ID}, 'STUDENT')
     ON CONFLICT (id) DO NOTHING;`
   console.log('created faculty role %s', facultyRow);
 
   const roles = await prisma.role.createMany({
     data: [
-      {
-        id: STUDENT_ROLE_ID,
-        role_name: 'STUDENT',
-      },
       {
         id: ADMIN_ROLE_ID,
         role_name: 'ADMIN',
