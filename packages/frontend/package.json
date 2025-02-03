@@ -45,6 +45,7 @@
     "yjs": "^13.6.20"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^29.5.5",
     "@types/lodash": "^4.14.191",

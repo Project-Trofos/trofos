@@ -1,0 +1,84 @@
+# Differece is database url env var is prefixed with E2E
+# This is for GH actions to use only
+version: '3.8'
+
+networks:
+  application:
+    driver: bridge
+    name: trofos-application
+
+services:
+  frontend:
+    build:
+      context: ./packages/frontend
+      dockerfile: ./local_dev_docker/Dockerfile.dev
+      target: prod
+    ports:
+      - '3000:80'
+    container_name: trofos-frontend-production
+    restart: always
+    links:
+      - backend
+    networks:
+      - application
+  api_gateway:
+    build:
+      context: ./packages/api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - '3001:80'
+    container_name: trofos-api-gateway-production
+    restart: always
+    networks:
+      - application
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: Dockerfile.production
+      target: prod
+    ports:
+      - '3003:3003'
+    container_name: trofos-backend-production
+    restart: always
+    environment:
+      - DATABASE_URL=${E2E_DATABASE_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - AI_DATABASE_URL=${E2E_AI_DATABASE_URL}
+    links:
+      - postgres
+    networks:
+      - application
+  hocus_pocus_server:
+    build:
+      context: ./packages/hocus_pocus_server
+      dockerfile: Dockerfile.production
+      target: prod
+    ports:
+      - '3002:3002'
+    container_name: trofos-hocus-pocus-server-production
+    restart: always
+    environment:
+      - DATABASE_URL=${E2E_DATABASE_URL}
+      - BACKEND_URL=${BACKEND_URL}
+    networks:
+      - application
+  postgres:
+    image: pgvector/pgvector:pg14
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - application
+
+volumes:
+  postgres_data:
+    name: trofos_postgres_data
