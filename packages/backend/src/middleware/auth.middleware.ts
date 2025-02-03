@@ -7,8 +7,10 @@ import apiKeyService from '../services/apiKey.service';
 import roleService from '../services/role.service';
 import policyEngine from '../policies/policyEngine';
 import { PolicyOutcome } from '../policies/policyTypes';
-import { ADMIN_ROLE_ID } from '../helpers/constants';
+import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
+import projectService from '../services/project.service';
+import courseService from '../services/course.service';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -63,6 +65,15 @@ async function canUserPerformActionForProject(
 
   const matchingAction = userActions.role.actions.filter((roleAction) => roleAction.action === routeAction);
 
+  // Edge cases check
+
+  // Students cannot delete or archive projects that are under a course
+  if (routeAction === Action.delete_project && sessionInformation.user_role_id === STUDENT_ROLE_ID) {
+    const project = await projectService.getById(projectId);
+    const course = await courseService.getById(project.course_id);
+    // if its a shadow course attached -> independent project -> can delete
+    return course.shadow_course;
+  }
   return matchingAction.length !== 0;
 }
 

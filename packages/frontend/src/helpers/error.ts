@@ -15,7 +15,13 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
 
 export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   if (isErrorWithMessage(maybeError)) return maybeError;
-
+  
+  const err = maybeError as { status: Number };
+  if (err.status === 401) {
+    return new Error("Unauthorized");
+  } else if (err.status === 500) {
+    return new Error("Internal Server Error");
+  }
   try {
     return new Error(JSON.stringify(maybeError));
   } catch {
