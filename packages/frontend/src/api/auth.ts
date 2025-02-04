@@ -18,7 +18,7 @@ export type UserInfo = {
   userRoleActions: string[];
   userId: number;
   userRoleId: UserRole;
-  hasSeenTour: boolean;
+  hasCompletedTour: boolean;
 };
 
 export type ChangePassword = {
@@ -30,7 +30,7 @@ export type ChangePassword = {
 export type UpdateUserInfo = {
   userId: number;
   displayName?: string;
-  tourStatus?: boolean;
+  hasCompletedTour?: boolean;
 };
 
 // Auth APIs
@@ -81,7 +81,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: {
           userId: updateUserInfo.userId,
           displayName: updateUserInfo.displayName,
-          tourStatus: updateUserInfo.tourStatus,
+          hasCompletedTour: updateUserInfo.hasCompletedTour,
         },
         credentials: 'include',
         invalidatesTags: ['UserInfo'],

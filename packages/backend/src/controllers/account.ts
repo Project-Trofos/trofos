@@ -82,7 +82,7 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
       userEmail: userAccountInformation.user_email,
       userDisplayName: userAccountInformation.user_display_name,
       userId: userAccountInformation.user_id,
-      hasSeenTour: userAccountInformation.has_seen_tour,
+      hasCompletedTour: userAccountInformation.has_completed_tour,
       userRoleActions: userRoleInformation.roleActions,
       userRoleId: userRoleInformation.roleId,
     };
@@ -113,18 +113,18 @@ const changePassword = async (req: express.Request, res: express.Response) => {
 
 const updateUser = async (req: express.Request, res: express.Response) => {
   try {
-    const { userId, displayName, tourStatus } = req.body;
+    const { userId, displayName, hasCompletedTour } = req.body;
 
     assertInputIsNotEmpty(userId, 'User Id');
     assertInputsAreNotAllEmpty([
       { value: displayName, name: 'Display Name' },
-      { value: tourStatus, name: 'Tour Status' },
+      { value: hasCompletedTour, name: 'Tour Status' },
     ]);
 
     // Build the update payload dynamically
     const updateData: UpdateUserData = {};
     if (displayName) updateData.user_display_name = displayName;
-    if (tourStatus !== undefined) updateData.has_seen_tour = tourStatus;
+    if (hasCompletedTour !== undefined) updateData.has_completed_tour = hasCompletedTour;
 
     await accountService.updateUser(userId, updateData);
     return res.status(StatusCodes.OK).send({
