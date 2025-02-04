@@ -118,20 +118,6 @@ describe('authentication.service tests', () => {
       };
       await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
     });
-    it('should throw error if extract has no given name attribute', async () => {
-      const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
-        [SAML_CLAIMS.SURNAME]: 'lastName',
-      };
-      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
-    });
-    it('should throw error if extract has no surname attribute', async () => {
-      const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
-        [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
-      };
-      await expect(authenticationService.samlHandler(mockExtract)).rejects.toThrow();
-    });
     it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
         [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
@@ -162,6 +148,34 @@ describe('authentication.service tests', () => {
         },
       });
     });
+    it('should create a new user if extract has no surname, given name attribute', async () => {
+      const mockExtract = {
+        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+      };
+
+      const newUser = {
+        user_id: 1,
+        user_email: 'newUser@test.com',
+        user_display_name: 'newUser@test.com',
+        user_password_hash: null,
+      };
+
+      prismaMock.user.upsert.mockResolvedValueOnce(newUser);
+
+      const result = await authenticationService.samlHandler(mockExtract);
+
+      expect(result).toEqual(newUser);
+      expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+      expect(prismaMock.user.upsert).toHaveBeenCalledWith({
+        where: { user_email: 'newUser@test.com' },
+        update: {},
+        create: {
+          user_email: 'newUser@test.com',
+          user_display_name: 'newUser@test.com',
+          basicRoles: { create: { role_id: STUDENT_ROLE_ID } },
+        },
+      });
+    });
     it('should return existing user information if the email already exists', async () => {
       const mockExtract = {
         [SAML_CLAIMS.EMAIL]: 'testUser@test.com',
@@ -183,20 +197,6 @@ describe('authentication.service tests', () => {
       const mockExtract = {
         [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
         [SAML_CLAIMS.SURNAME]: 'lastName',
-      };
-      await expect(authenticationService.samlHandlerStaff(mockExtract)).rejects.toThrow();
-    });
-    it('should throw error if extract has no given name attribute', async () => {
-      const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
-        [SAML_CLAIMS.SURNAME]: 'lastName',
-      };
-      await expect(authenticationService.samlHandlerStaff(mockExtract)).rejects.toThrow();
-    });
-    it('should throw error if extract has no surname attribute', async () => {
-      const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testEmail@test.com',
-        [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
       };
       await expect(authenticationService.samlHandlerStaff(mockExtract)).rejects.toThrow();
     });
@@ -226,6 +226,34 @@ describe('authentication.service tests', () => {
         create: {
           user_email: 'newUser@test.com',
           user_display_name: 'New User',
+          basicRoles: { create: { role_id: FACULTY_ROLE_ID } },
+        },
+      });
+    });
+    it('should create a new user if extract has no surname, given name attribute', async () => {
+      const mockExtract = {
+        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+      };
+
+      const newUser = {
+        user_id: 1,
+        user_email: 'newUser@test.com',
+        user_display_name: 'newUser@test.com',
+        user_password_hash: null,
+      };
+
+      prismaMock.user.upsert.mockResolvedValueOnce(newUser);
+
+      const result = await authenticationService.samlHandlerStaff(mockExtract);
+
+      expect(result).toEqual(newUser);
+      expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+      expect(prismaMock.user.upsert).toHaveBeenCalledWith({
+        where: { user_email: 'newUser@test.com' },
+        update: {},
+        create: {
+          user_email: 'newUser@test.com',
+          user_display_name: 'newUser@test.com',
           basicRoles: { create: { role_id: FACULTY_ROLE_ID } },
         },
       });

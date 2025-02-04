@@ -65,11 +65,11 @@ async function samlHandler(attributes: any): Promise<User> {
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
-  if (!userEmail && !surname && !givenName) {
+  if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
 
-  const displayName = `${givenName} ${surname || ''}`.trim();
+  const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
@@ -97,11 +97,11 @@ async function samlHandlerStaff(attributes: any): Promise<User> {
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
-  if (!userEmail && !surname && !givenName) {
+  if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
 
-  const displayName = `${givenName} ${surname || ''}`.trim();
+  const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
