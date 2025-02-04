@@ -84,8 +84,8 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           hasCompletedTour: updateUserInfo.hasCompletedTour,
         },
         credentials: 'include',
-        invalidatesTags: ['UserInfo'],
       }),
+      invalidatesTags: ['UserInfo'],
     }),
     oauth2Login: builder.mutation<void, OAuth2Payload>({
       query: (oauthInfo) => ({
