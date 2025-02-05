@@ -15,7 +15,17 @@ const getAllFeatureFlags = async (): Promise<FeatureFlag[]> => {
   return featureFlags;
 }
 
+const toggleFeatureFlag = async (featureName: Feature, active: boolean): Promise<FeatureFlag> => {
+  const featureFlag = await prisma.featureFlag.update({
+    where: { feature_name: featureName },
+    data: { active }
+  });
+
+  return featureFlag;
+}
+
 export default {
   checkFeatureFlagActive,
-  getAllFeatureFlags
+  getAllFeatureFlags,
+  toggleFeatureFlag,
 };
