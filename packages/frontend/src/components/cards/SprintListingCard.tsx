@@ -109,6 +109,12 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
           setIsTourOpen(false);
           openSprintNotesModal();
         }
+      },
+      placement: 'leftTop',
+      style: {
+        border: "2px solid",
+        borderRadius: "8px",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
       }
     }
   ];

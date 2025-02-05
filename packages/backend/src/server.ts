@@ -127,7 +127,7 @@ router.use('/external/v1', routerExternalV1);
 router.use('/ai', aiRouter);
 
 // Routes for feature flags
-router.use('/', featureFlagRouter);
+router.use('/feature-flags', featureFlagRouter);
 
 app.use('/api', router);
 
