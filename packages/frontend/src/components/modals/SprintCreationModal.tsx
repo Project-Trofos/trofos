@@ -6,6 +6,7 @@ import { useAddSprintMutation, useUpdateSprintMutation } from '../../api/socket/
 import type { Sprint } from '../../api/sprint';
 import type { SprintFormFields, SprintUpdatePayload, AutoSprintTypes } from '../../helpers/SprintModal.types';
 import './SprintCreationModal.css';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 const DURATION = [
   { id: 1, name: '1 Week' },
@@ -179,7 +180,12 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   return (
     <>
-      <Button className="new-sprint-btn" type="primary" onClick={showModal}>
+      <Button
+        className="new-sprint-btn"
+        type="primary"
+        onClick={showModal}
+        {...{ [STEP_PROP]: StepTarget.NEW_SPRINT_BUTTON }}
+      >
         New Sprint
       </Button>
       <Modal

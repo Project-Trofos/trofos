@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Tour, TourProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGetUserInfoQuery, useUpdateUserInfoMutation } from '../../api/auth';
 import { message } from 'antd';
 import { getErrorMessage } from '../../helpers/error';
-import { getSteps } from './TourSteps';
+import { ADMIN_ROLE_ID, STUDENT_ROLE_ID, FACULTY_ROLE_ID } from '../../api/role';
+import { getStudentSteps, getFacultySteps, getAdminSteps } from './TourSteps';
 
 const TOUR_STEP_STORAGE_KEY = 'currentTourStep';
 
@@ -15,10 +16,23 @@ export default function TourComponent(): JSX.Element {
 
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(() => {
-    const savedStep = localStorage.getItem(TOUR_STEP_STORAGE_KEY);
+    const savedStep = localStorage.getItem(TOUR_STEP_STORAGE_KEY); // Get the saved step from local storage if it exists
     return savedStep ? parseInt(savedStep, 10) : 0;
   });
   const isFirstRender = useRef(true);
+
+  const roleSteps = useMemo<TourProps['steps']>(() => {
+    switch (userInfo?.userRoleId) {
+      case ADMIN_ROLE_ID:
+        return getAdminSteps(navigate);
+      case STUDENT_ROLE_ID:
+        return getStudentSteps(navigate);
+      case FACULTY_ROLE_ID:
+        return getFacultySteps(navigate);
+      default:
+        return [];
+    }
+  }, [navigate, userInfo?.userRoleId]);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -58,7 +72,10 @@ export default function TourComponent(): JSX.Element {
       onClose={handleTourClose}
       current={currentStep}
       onChange={handleTourStepChange}
-      steps={getSteps(userInfo?.userRoleId)}
+      steps={roleSteps}
+      disabledInteraction={true}
+      mask={false}
+      type="primary"
     />
   );
 }

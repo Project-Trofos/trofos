@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useAddEpicMutation } from '../../api/socket/backlogHooks';
 import { EpicFormFields } from '../../helpers/EpicModal.types';
 
-function EpicCreationModal(): JSX.Element {
+function EpicCreationModal({ disabled }: { disabled?: boolean }): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,7 +57,7 @@ function EpicCreationModal(): JSX.Element {
   const renderContent = (): JSX.Element => (
     <Form id="newEpic" form={form} onFinish={handleFormSubmit} layout="vertical">
       <Form.Item name="name" rules={[{ required: true }]} label="Epic Name">
-        <Input placeholder='An awesome epic name...'/>
+        <Input placeholder="An awesome epic name..." />
       </Form.Item>
       <Form.Item name="description" label="Description">
         <Input.TextArea placeholder="Describe the goals of this epic..." autoSize={{ minRows: 5, maxRows: 8 }} />
@@ -67,7 +67,7 @@ function EpicCreationModal(): JSX.Element {
 
   return (
     <>
-      <Button className="new-epic-btn" type="primary" onClick={showModal}>
+      <Button disabled={disabled} className="new-epic-btn" type="primary" onClick={showModal}>
         New Epic
       </Button>
       <Modal

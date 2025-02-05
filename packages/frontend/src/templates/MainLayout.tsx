@@ -28,6 +28,7 @@ import { toggleTheme } from '../app/themeSlice';
 import ThemeSwitch from '../components/theming/ThemeSwitch';
 import AiChatBase from '../components/aichat/AiChatBase';
 import TourComponent from '../components/tour/Tour';
+import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
 
 const { Header, Sider, Content } = Layout;
 
@@ -183,7 +184,7 @@ export default function MainLayout() {
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/courses">
+          <Link {...{ [STEP_PROP]: StepTarget.COURSES_TAB }} onClick={(e) => e.stopPropagation()} to="/courses">
             Courses
           </Link>,
           '/courses',
@@ -199,7 +200,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/projects">
+          <Link {...{ [STEP_PROP]: StepTarget.PROJECTS_TAB }} onClick={(e) => e.stopPropagation()} to="/projects">
             Project
           </Link>,
           '/projects',
@@ -215,7 +216,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/admin">
+          <Link {...{ [STEP_PROP]: StepTarget.ADMIN_MENU }} onClick={(e) => e.stopPropagation()} to="/admin">
             Admin
           </Link>,
           '/admin',
