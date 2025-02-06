@@ -79,6 +79,7 @@ describe('user.controller tests', () => {
         user_email: 'testEmail@test.com',
         user_display_name: 'Test User',
         user_password_hash: 'testPassword',
+        has_completed_tour: false,
       };
       spies.userServiceCreateUser.mockResolvedValueOnce(createdUser);
 
@@ -102,6 +103,7 @@ describe('user.controller tests', () => {
           user_email: email,
           user_password_hash: '',
           user_display_name: '',
+          has_completed_tour: false,
         });
       });
 
@@ -114,6 +116,7 @@ describe('user.controller tests', () => {
     user_email: 'testEmail@test.com',
     user_display_name: 'Test User',
     user_password_hash: 'testPassword',
+    has_completed_tour: true,
   };
 
   describe('queryEmail', () => {

@@ -9,7 +9,9 @@ import accountService from '../../services/account.service';
 import { RoleInformation } from '../../services/types/role.service.types';
 import userService from '../../services/user.service';
 import { userData } from '../mocks/userData';
+import { User } from '@prisma/client';
 import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../../helpers/ssoHelper';
+import { UpdateUserData } from '../../helpers/types/user.service.types';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 const MOCK_CODE = 'mockCode';
@@ -292,11 +294,12 @@ describe('account.controller tests', () => {
         roleActions: [],
         isAdmin: false,
       };
-      const user = {
+      const user: User = {
         user_id: 1,
         user_email: 'testUser@test.com',
         user_password_hash: 'test',
         user_display_name: 'Test User',
+        has_completed_tour: false,
       };
       spies.sessionServiceGetUserSession.mockResolvedValueOnce(sessionServiceResponseObject);
       spies.roleServiceGetRoleInformation.mockResolvedValueOnce(userRoleInformation);
@@ -316,17 +319,20 @@ describe('account.controller tests', () => {
         userId: 1,
         userRoleActions: [],
         userDisplayName: 'Test User',
+        hasCompletedTour: false,
+        userRoleId: 1,
       });
     });
   });
 
   describe('changePassword', () => {
     it("should return status 200 OK if the user's password was successfully changes", async () => {
-      const changePasswordResponseObject = {
+      const changePasswordResponseObject: User = {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
         user_display_name: 'Test User',
+        has_completed_tour: true,
       };
       spies.accountServiceChangePassword.mockResolvedValueOnce(changePasswordResponseObject);
       const mockReq = createRequest();
@@ -361,36 +367,43 @@ describe('account.controller tests', () => {
 
   describe('updateUser', () => {
     it("should return status 200 OK if the user's data was successfully updated", async () => {
-      const updateUserResponseObject = {
+      const newDisplayName = 'New Test User';
+      const updateUserResponseObject: User = {
         user_email: 'testEmail@test.com',
         user_id: 1,
         user_password_hash: 'testPassword',
-        user_display_name: 'New Test User',
+        user_display_name: newDisplayName,
+        has_completed_tour: false,
       };
       spies.accountServiceUpdateUser.mockResolvedValueOnce(updateUserResponseObject);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         userId: 1,
-        displayName: 'New Test User',
+        displayName: newDisplayName,
       };
+      const updatedData: UpdateUserData = { user_display_name: newDisplayName };
+
       await authentication.updateUser(mockReq, mockRes);
-      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, 'New Test User');
+      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, updatedData);
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual({ message: 'User info successfully updated' });
     });
 
     it("should return status 500 INTERNAL SERVER ERROR if an error occured while updating the user's data", async () => {
+      const newDisplayName = 'New Test User';
       const changeDisplayNameError = new Error('Unable to update user');
       spies.accountServiceUpdateUser.mockRejectedValueOnce(changeDisplayNameError);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockReq.body = {
         userId: 1,
-        displayName: 'New Test User',
+        displayName: newDisplayName,
       };
+      const updatedData: UpdateUserData = { user_display_name: newDisplayName };
+
       await authentication.updateUser(mockReq, mockRes);
-      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, 'New Test User');
+      expect(spies.accountServiceUpdateUser).toHaveBeenCalledWith(1, updatedData);
       expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Unable to update user' });
     });

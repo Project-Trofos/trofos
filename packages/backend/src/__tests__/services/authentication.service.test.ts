@@ -120,16 +120,17 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+        [SAML_CLAIMS.EMAIL]: 'user@test.com',
         [SAML_CLAIMS.GIVEN_NAME]: 'New',
         [SAML_CLAIMS.SURNAME]: 'User',
       };
 
-      const newUser = {
+      const newUser: User = {
         user_id: 1,
-        user_email: 'newUser@test.com',
+        user_email: 'user@test.com',
         user_display_name: 'New User',
         user_password_hash: null,
+        has_completed_tour: true,
       };
 
       prismaMock.user.upsert.mockResolvedValueOnce(newUser);
@@ -139,10 +140,10 @@ describe('authentication.service tests', () => {
       expect(result).toEqual(newUser);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaMock.user.upsert).toHaveBeenCalledWith({
-        where: { user_email: 'newUser@test.com' },
+        where: { user_email: 'user@test.com' },
         update: {},
         create: {
-          user_email: 'newUser@test.com',
+          user_email: 'user@test.com',
           user_display_name: 'New User',
           basicRoles: { create: { role_id: STUDENT_ROLE_ID } },
         },
@@ -150,14 +151,15 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if extract has no surname, given name attribute', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+        [SAML_CLAIMS.EMAIL]: 'user@test.com',
       };
 
-      const newUser = {
+      const newUser: User = {
         user_id: 1,
-        user_email: 'newUser@test.com',
-        user_display_name: 'newUser@test.com',
+        user_email: 'user@test.com',
+        user_display_name: 'user@test.com',
         user_password_hash: null,
+        has_completed_tour: true,
       };
 
       prismaMock.user.upsert.mockResolvedValueOnce(newUser);
@@ -167,11 +169,11 @@ describe('authentication.service tests', () => {
       expect(result).toEqual(newUser);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaMock.user.upsert).toHaveBeenCalledWith({
-        where: { user_email: 'newUser@test.com' },
+        where: { user_email: 'user@test.com' },
         update: {},
         create: {
-          user_email: 'newUser@test.com',
-          user_display_name: 'newUser@test.com',
+          user_email: 'user@test.com',
+          user_display_name: 'user@test.com',
           basicRoles: { create: { role_id: STUDENT_ROLE_ID } },
         },
       });
@@ -189,6 +191,37 @@ describe('authentication.service tests', () => {
 
       expect(result).toEqual(userData[0]);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+    });
+    it('should create a new user with lowercase email if the email is in uppercase', async () => {
+      const mockExtract = {
+        [SAML_CLAIMS.EMAIL]: 'USER@TEST.COM',
+        [SAML_CLAIMS.GIVEN_NAME]: 'Upper',
+        [SAML_CLAIMS.SURNAME]: 'Case',
+      };
+
+      const expectedUser: User = {
+        user_id: 1,
+        user_email: 'user@test.com',
+        user_display_name: 'Upper Case',
+        user_password_hash: null,
+        has_completed_tour: true,
+      };
+
+      prismaMock.user.upsert.mockResolvedValueOnce(expectedUser);
+
+      const result = await authenticationService.samlHandler(mockExtract);
+
+      expect(result).toEqual(expectedUser);
+      expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+      expect(prismaMock.user.upsert).toHaveBeenCalledWith({
+        where: { user_email: 'user@test.com' },
+        update: {},
+        create: {
+          user_email: 'user@test.com',
+          user_display_name: 'Upper Case',
+          basicRoles: { create: { role_id: STUDENT_ROLE_ID } },
+        },
+      });
     });
   });
 
@@ -202,16 +235,17 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+        [SAML_CLAIMS.EMAIL]: 'user@test.com',
         [SAML_CLAIMS.GIVEN_NAME]: 'New',
         [SAML_CLAIMS.SURNAME]: 'User',
       };
 
-      const newUser = {
+      const newUser: User = {
         user_id: 1,
-        user_email: 'newUser@test.com',
+        user_email: 'user@test.com',
         user_display_name: 'New User',
         user_password_hash: null,
+        has_completed_tour: true,
       };
 
       prismaMock.user.upsert.mockResolvedValueOnce(newUser);
@@ -221,10 +255,10 @@ describe('authentication.service tests', () => {
       expect(result).toEqual(newUser);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaMock.user.upsert).toHaveBeenCalledWith({
-        where: { user_email: 'newUser@test.com' },
+        where: { user_email: 'user@test.com' },
         update: {},
         create: {
-          user_email: 'newUser@test.com',
+          user_email: 'user@test.com',
           user_display_name: 'New User',
           basicRoles: { create: { role_id: FACULTY_ROLE_ID } },
         },
@@ -232,14 +266,15 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if extract has no surname, given name attribute', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'newUser@test.com',
+        [SAML_CLAIMS.EMAIL]: 'user@test.com',
       };
 
-      const newUser = {
+      const newUser: User = {
         user_id: 1,
-        user_email: 'newUser@test.com',
-        user_display_name: 'newUser@test.com',
+        user_email: 'user@test.com',
+        user_display_name: 'user@test.com',
         user_password_hash: null,
+        has_completed_tour: true,
       };
 
       prismaMock.user.upsert.mockResolvedValueOnce(newUser);
@@ -249,11 +284,11 @@ describe('authentication.service tests', () => {
       expect(result).toEqual(newUser);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaMock.user.upsert).toHaveBeenCalledWith({
-        where: { user_email: 'newUser@test.com' },
+        where: { user_email: 'user@test.com' },
         update: {},
         create: {
-          user_email: 'newUser@test.com',
-          user_display_name: 'newUser@test.com',
+          user_email: 'user@test.com',
+          user_display_name: 'user@test.com',
           basicRoles: { create: { role_id: FACULTY_ROLE_ID } },
         },
       });
@@ -271,6 +306,37 @@ describe('authentication.service tests', () => {
 
       expect(result).toEqual(userData[0]);
       expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+    });
+  });
+  it('should create a new user with lowercase email if the email is in uppercase', async () => {
+    const mockExtract = {
+      [SAML_CLAIMS.EMAIL]: 'USER@TEST.COM',
+      [SAML_CLAIMS.GIVEN_NAME]: 'Upper',
+      [SAML_CLAIMS.SURNAME]: 'Case',
+    };
+
+    const expectedUser: User = {
+      user_id: 1,
+      user_email: 'user@test.com',
+      user_display_name: 'Upper Case',
+      user_password_hash: null,
+      has_completed_tour: true,
+    };
+
+    prismaMock.user.upsert.mockResolvedValueOnce(expectedUser);
+
+    const result = await authenticationService.samlHandlerStaff(mockExtract);
+
+    expect(result).toEqual(expectedUser);
+    expect(prismaMock.user.upsert).toHaveBeenCalledTimes(1);
+    expect(prismaMock.user.upsert).toHaveBeenCalledWith({
+      where: { user_email: 'user@test.com' },
+      update: {},
+      create: {
+        user_email: 'user@test.com',
+        user_display_name: 'Upper Case',
+        basicRoles: { create: { role_id: FACULTY_ROLE_ID } },
+      },
     });
   });
 });

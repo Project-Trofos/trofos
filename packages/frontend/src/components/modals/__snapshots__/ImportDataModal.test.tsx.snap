@@ -5,6 +5,7 @@ exports[`test import data modal > should display the components correctly 1`] = 
   <div>
     <button
       class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
+      data-tour="import-csv-button"
       type="button"
     >
       <span>

@@ -5,6 +5,7 @@ exports[`SprintModal tests > renders new sprint modal with correct fields 1`] = 
   <div>
     <button
       class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid new-sprint-btn"
+      data-tour="new-sprint-button"
       type="button"
     >
       <span>

@@ -347,6 +347,7 @@ model FeatureFlag {
 
 enum Feature {
   user_guide_copilot
+  onboarding_tour
 }
 
 enum Action {

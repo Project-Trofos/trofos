@@ -297,7 +297,7 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
-      <TourComponent />
+      {featureFlags?.some((flag) => flag.feature_name === 'onboarding_tour' && flag.active) && <TourComponent />}
       {featureFlags?.some((flag) => flag.feature_name === 'user_guide_copilot' && flag.active) && (
         <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type="primary" />
       )}

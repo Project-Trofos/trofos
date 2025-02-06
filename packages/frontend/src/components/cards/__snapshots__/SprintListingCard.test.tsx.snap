@@ -59,6 +59,7 @@ exports[`SprintCard test > renders sprint card with correct details 1`] = `
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+                    data-tour="start-sprint-button"
                     type="button"
                   >
                     <span>
