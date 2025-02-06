@@ -37,85 +37,79 @@ export const getStudentSteps = (navigate: NavigateFunction): TourProps['steps'] 
     title: 'Welcome to Trofos!',
     description: (
       <Space direction="vertical" size="large">
-        <Row>This is the home page of the application.</Row>
+        <Row>This is your personalized dashboard.</Row>
         <Row>
-          This is where you can view your personalized statistics, projects, and assigned backlogs. It's a great place
-          to start when you're looking for an overview of your current work.
+          Here, you can get an overview of your assigned projects, tasks, and backlogs. It's a good starting point to
+          track your progress.
         </Row>
       </Space>
     ),
   },
   {
     title: 'View courses',
-    description: 'Navigate to your courses from this menu.',
+    description: 'Use this tab to access and explore all your enrolled courses.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.COURSES_TAB}]`) as HTMLElement,
   },
   {
     title: 'View projects',
-    description: 'Navigate to your projects from this menu.',
+    description: 'Switch to the Projects tab to manage or view your active projects.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.PROJECTS_TAB}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/projects') },
   },
   {
-    title: 'Your projects',
+    title: 'Create or select a project',
     description:
-      'A list of your projects will be displayed here. You can either select an existing project or create a new one by clicking on the "Create Project" button.',
+      'Here you can view all your projects. Click on "Create Project" to start a new one or select an existing project to continue working on it.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.CREATE_PROJECT_BUTTON}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/project/example/users') },
     prevButtonProps: { onClick: () => navigate('/') },
   },
   {
     title: 'View project users',
-    description: 'Navigate to the Users tab to view all people in the project.',
+    description: 'The Users tab shows everyone involved in this project, including team members and collaborators.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.PROJECT_USERS_TAB}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/project/example/sprint') },
     prevButtonProps: { onClick: () => navigate('/projects') },
   },
   {
-    title: 'View project sprints',
-    description: 'Navigate to the Sprint tab to view all project sprints.',
+    title: 'Manage sprints',
+    description: 'Navigate to the Sprints tab to view, create, and manage your project sprints.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.PROJECT_SPRINT_TAB}]`) as HTMLElement,
     prevButtonProps: { onClick: () => navigate('/project/example/users') },
   },
   {
     title: 'Start a new sprint',
-    description: 'Create a new sprint by clicking on the "New Sprint" button.',
+    description: 'Click "New Sprint" to define goals and tasks for your next sprint.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.NEW_SPRINT_BUTTON}]`) as HTMLElement,
   },
   {
-    title: 'Create a new backlog',
-    description: 'Create a new backlog for your sprint by clicking on the "New Backlog" button.',
+    title: 'Add a backlog item',
+    description: 'Use the "New Backlog" button to add tasks that need to be completed during this sprint.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.NEW_BACKLOG_BUTTON}]`) as HTMLElement,
   },
   {
-    title: 'Begin your sprint',
-    description:
-      'Start your sprint by clicking on the "Start Sprint" button and begin completing the assigned backlogs.',
+    title: 'Start your sprint',
+    description: (
+      <Space direction="vertical">
+        <Row>Click "Start Sprint" to begin working on your tasks.</Row>
+        <Row>Assigned too many backlogs? You can always reassign them to other sprints by dragging and dropping.</Row>
+      </Space>
+    ),
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.START_SPRINT_BUTTON}]`) as HTMLElement,
   },
   {
-    title: 'Complete your sprint',
-    description: (
-      <Space direction="vertical">
-        <Row>Complete your current sprint by either:</Row>
-        <Row>1. Clicking the "Complete Sprint" button.</Row>
-        <Row>2. Dragging and dropping to the "Completed Sprints" area below.</Row>
-      </Space>
-    ),
+    title: 'Complete the sprint',
+    description: 'When all tasks are finished or the sprint ends, click "Complete Sprint" to close it.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.COMPLETE_SPRINT_BUTTON}]`) as HTMLElement,
   },
   {
-    title: 'Finish your sprint',
-    description: 'Complete the post-sprint retrospective by navigating to the Retrospective tab.',
+    title: 'Review retrospective',
+    description: 'Navigate to the Retrospective tab to document and review lessons learned from the sprint.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.RETROSPECTIVE_TAB}]`) as HTMLElement,
   },
   {
     title: "That's it!",
-    description: (
-      <Space direction="vertical">
-        <Row>You're all set to start using Trofos. Enjoy your experience!</Row>
-      </Space>
-    ),
+    description: 'Congratulations! You’re now ready to fully navigate and use Trofos effectively.',
     nextButtonProps: {
       onClick: () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -135,32 +129,33 @@ export const getFacultySteps = (navigate: NavigateFunction): TourProps['steps'] 
     title: 'Welcome to Trofos!',
     description: (
       <Space direction="vertical" size="large">
-        <Row>This is the home page of the application.</Row>
+        <Row>Welcome to the Trofos application.</Row>
         <Row>
-          This is where you can view all courses and projects you are in charge of. It's a great place to start when
-          you're looking for an overview of your current work.
+          This is your central hub where you can manage all the courses and projects you're responsible for. Use this
+          page to get an overview of your ongoing work and tasks.
         </Row>
       </Space>
     ),
   },
   {
-    title: 'View courses',
-    description: 'Navigate to your courses from this menu.',
+    title: 'Access your courses',
+    description: "Click here to navigate to the courses you're currently teaching.",
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.COURSES_TAB}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/courses') },
   },
 
   {
-    title: 'Your courses',
+    title: 'Course management',
     description:
-      'A list of your courses will be displayed here. You can either select an existing course or create a new one by clicking on the "Create Course" button.',
+      'Here, you’ll find a list of your courses. You can select an existing course or create a new one by clicking the "Create Course" button.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.CREATE_COURSE_BUTTON}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/course/example/overview') },
     prevButtonProps: { onClick: () => navigate('/') },
   },
   {
-    title: 'Course Overview',
-    description: 'View an overview of the course, including announcements, milestones and associated projects.',
+    title: 'Course overview',
+    description:
+      'This page gives you a summary of your course, including announcements, milestones, and related projects.',
     prevButtonProps: { onClick: () => navigate('/courses') },
   },
   {
@@ -168,10 +163,10 @@ export const getFacultySteps = (navigate: NavigateFunction): TourProps['steps'] 
     description: (
       <Space direction="vertical" size="large">
         <Row>
-          Click on the "Import CSV Data" button to quickly create projects and assign users for the course. This feature
-          is useful for large classes where you know the project allocations in advance.
+          Use the "Import CSV Data" button to quickly create multiple projects and assign users to them for your course.
+          This is especially useful for large classes with pre-planned project allocations.
         </Row>
-        <Row>IMPORTANT: Download the csv template and follow the correct csv format before importing!</Row>
+        <Row>IMPORTANT: Be sure to download and follow the CSV template format before importing data!</Row>
       </Space>
     ),
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.IMPORT_CSV_BUTTON}]`) as HTMLElement,
@@ -179,14 +174,14 @@ export const getFacultySteps = (navigate: NavigateFunction): TourProps['steps'] 
   {
     title: 'Bulk create projects',
     description:
-      'Alternatively, you can also create projects in bulk by clicking on the "Bulk Create" button. This feature is useful when you want to randomly allocate students to projects.',
+      'Alternatively, you can bulk create projects using the "Bulk Create" button. This option is great for randomly assigning students to projects.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.BULK_CREATE_BUTTON}]`) as HTMLElement,
   },
   {
-    title: "That's it!",
+    title: "You're ready to go!",
     description: (
       <Space direction="vertical">
-        <Row>You're all set to start using Trofos. Enjoy your experience!</Row>
+        <Row>You're all set! Enjoy using Trofos to manage your courses and projects.</Row>
       </Space>
     ),
     nextButtonProps: {
