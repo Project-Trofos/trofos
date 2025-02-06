@@ -5,6 +5,7 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useImportCsvMutation } from '../../api/course';
 import { getErrorMessage } from '../../helpers/error';
 import { CourseData, ProjectData } from '../../api/types';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 const CSV_TEMPLATE_PATH = '/download/importCourseData.csv';
 const CSV_TEMPLATE_NAME = 'importCourseData.csv';
@@ -12,9 +13,11 @@ const CSV_TEMPLATE_NAME = 'importCourseData.csv';
 export default function ImportDataModal({
   course,
   projects,
+  disableClickEvent,
 }: {
   course: CourseData | undefined;
   projects: ProjectData[] | undefined;
+  disableClickEvent?: boolean;
 }): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -70,7 +73,11 @@ export default function ImportDataModal({
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button
+        type="primary"
+        onClick={disableClickEvent ? undefined : showModal}
+        {...{ [STEP_PROP]: StepTarget.IMPORT_CSV_BUTTON }}
+      >
         Import CSV Data
       </Button>
       <Modal

@@ -13,6 +13,7 @@ import CourseNameFormItem from '../forms/CourseNameFormItem';
 import ProjectNameFormInput from '../forms/ProjectNameFormItem';
 import ProjectKeyFormInput from '../forms/ProjectKeyFormItem';
 import { Course, CourseData } from '../../api/types';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 const { Option } = Select;
 
@@ -21,7 +22,13 @@ const { Option } = Select;
  * @param course course that the project will attach to, skips second step
  */
 // eslint-disable-next-line react/require-default-props
-export default function ProjectCreationModal({ course }: { course?: Course }): JSX.Element {
+export default function ProjectCreationModal({
+  course,
+  disableClickEvent,
+}: {
+  course?: Course;
+  disableClickEvent?: boolean;
+}): JSX.Element {
   const [addProject] = useAddProjectMutation();
   const [addProjectAndCourse] = useAddProjectAndCourseMutation();
   const { data: courses } = useGetAllCoursesQuery();
@@ -89,6 +96,8 @@ export default function ProjectCreationModal({ course }: { course?: Course }): J
       formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
       onSubmit={onFinish}
       buttonType="primary"
+      tourProps={{ [STEP_PROP]: StepTarget.CREATE_PROJECT_BUTTON }}
+      disableClickEvent={disableClickEvent}
     />
   );
 }

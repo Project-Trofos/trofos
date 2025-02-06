@@ -5,6 +5,7 @@ exports[`BacklogModal tests > renders new backlog modal with correct fields 1`] 
   <div>
     <button
       class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid new-backlog-btn"
+      data-tour="new-backlog-button"
       type="button"
     >
       <span>

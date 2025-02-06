@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 export default function ProjectMenu(): JSX.Element {
   const params = useParams();
@@ -32,8 +33,8 @@ export default function ProjectMenu(): JSX.Element {
         mode="horizontal"
         items={[
           { key: 'overview', label: 'Overview' },
-          { key: 'users', label: 'Users' },
-          { key: 'sprint', label: 'Sprint' },
+          { key: 'users', label: <span {...{ [STEP_PROP]: StepTarget.PROJECT_USERS_TAB }}>Users</span> },
+          { key: 'sprint', label: <span {...{ [STEP_PROP]: StepTarget.PROJECT_SPRINT_TAB }}>Sprint</span> },
           { key: 'board', label: 'Board' },
           { key: 'standup', label: 'Stand Up' },
           { key: 'statistics', label: 'Statistics' },

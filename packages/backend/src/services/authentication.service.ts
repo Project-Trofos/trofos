@@ -61,7 +61,7 @@ async function oauth2Handler(code: string, state: string, callbackUrl: string): 
 }
 
 async function samlHandler(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL];
+  const userEmail = attributes[SAML_CLAIMS.EMAIL].toLowerCase();
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
@@ -93,7 +93,7 @@ async function samlHandler(attributes: any): Promise<User> {
 }
 
 async function samlHandlerStaff(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL];
+  const userEmail = attributes[SAML_CLAIMS.EMAIL].toLowerCase();
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 

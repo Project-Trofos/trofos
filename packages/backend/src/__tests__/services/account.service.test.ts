@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import accountService from '../../services/account.service';
 import { userData } from '../mocks/userData';
+import { UpdateUserData } from '../../helpers/types/user.service.types';
 
 const PRISMA_RECORD_NOT_FOUND = 'P2025';
 
@@ -51,13 +52,15 @@ describe('account.service tests', () => {
 
   describe('updateUser', () => {
     it("should successfully update the user's data if the fields supplied are valid", async () => {
+      const newDisplayName = 'New Display Name';
       const mockUpdateUser = {
         ...userData[0],
-        user_display_name: 'New Display Name',
+        user_display_name: newDisplayName,
         user_password_hash: null,
       };
+      const updatedData: UpdateUserData = { user_display_name: newDisplayName };
       prismaMock.user.update.mockResolvedValueOnce(mockUpdateUser);
-      await expect(accountService.updateUser(1, 'New Display Name')).resolves.toEqual(mockUpdateUser);
+      await expect(accountService.updateUser(1, updatedData)).resolves.toEqual(mockUpdateUser);
     });
   });
 });

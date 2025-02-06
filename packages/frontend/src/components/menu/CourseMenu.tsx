@@ -18,39 +18,39 @@ export default function CourseMenu(): JSX.Element {
   const { course, isLoading } = useCourse(params.courseId);
   const { isCourseManager } = useIsCourseManager();
 
-  if (isLoading || !params.courseId || !course) {
+  if (isLoading) {
     return <Spin />;
   }
+  const courseId = Number(course?.id) || -1;
 
   return (
     <ConfigProvider
-    theme={{
-      components: {
-        Menu: {
-          darkItemBg: 'rgb(10,10,10)',
-          itemBg: '',
+      theme={{
+        components: {
+          Menu: {
+            darkItemBg: 'rgb(10,10,10)',
+            itemBg: '',
+          },
         },
-      },
-    }}
-  >
-
-    <Menu        style={{ border: 'none' }}
-
-      mode="horizontal"
-      items={[
-        { key: 'overview', label: 'Overview' },
-        { key: 'users', label: 'Users' },
-        ...(isCourseManager
-          ? [
-              { key: 'milestones', label: 'Milestones' },
-              { key: 'statistics', label: 'Statistics' },
-              { key: 'settings', label: 'Settings' },
-            ]
-          : []),
-      ]}
-      selectedKeys={[selectedTab]}
-      onClick={(e) => navigate(`/course/${course.id}/${e.key}`)}
-    />
+      }}
+    >
+      <Menu
+        style={{ border: 'none' }}
+        mode="horizontal"
+        items={[
+          { key: 'overview', label: 'Overview' },
+          { key: 'users', label: 'Users' },
+          ...(isCourseManager
+            ? [
+                { key: 'milestones', label: 'Milestones' },
+                { key: 'statistics', label: 'Statistics' },
+                { key: 'settings', label: 'Settings' },
+              ]
+            : []),
+        ]}
+        selectedKeys={[selectedTab]}
+        onClick={(e) => navigate(`/course/${courseId}/${e.key}`)}
+      />
     </ConfigProvider>
   );
 }

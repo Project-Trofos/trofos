@@ -11,9 +11,10 @@ import StrictModeDroppable from '../dnd/StrictModeDroppable';
 import SprintNotesModal from '../modals/SprintNotesModal';
 import './SprintListingCard.css';
 import type { TourProps } from 'antd';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
-  const { sprint, setSprint, setIsModalVisible } = props;
+  const { sprint, setSprint, setIsModalVisible, disableClickEvent } = props;
   const { Panel } = Collapse;
   const navigate = useNavigate();
 
@@ -35,6 +36,10 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   ) => {
     e.stopPropagation();
 
+    if (disableClickEvent) {
+      return;
+    }
+
     const payload = {
       status: updatedStatus,
       sprintId: sprint.id,
@@ -54,9 +59,23 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const renderSprintStatusButton = () => {
     switch (sprint.status) {
       case 'upcoming':
-        return <Button onClick={(e) => handleSprintStatusUpdate('current', e)}>Start Sprint</Button>;
+        return (
+          <Button
+            onClick={(e) => handleSprintStatusUpdate('current', e)}
+            {...{ [STEP_PROP]: StepTarget.START_SPRINT_BUTTON }}
+          >
+            Start Sprint
+          </Button>
+        );
       case 'current':
-        return <Button onClick={(e) => handleSprintStatusUpdate('completed', e)}>Complete Sprint</Button>;
+        return (
+          <Button
+            {...{ [STEP_PROP]: StepTarget.COMPLETE_SPRINT_BUTTON }}
+            onClick={(e) => handleSprintStatusUpdate('completed', e)}
+          >
+            Complete Sprint
+          </Button>
+        );
       case 'completed':
         return <Button onClick={(e) => handleSprintStatusUpdate('current', e)}>Reopen Sprint</Button>;
       default:
@@ -80,17 +99,17 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   // TODO: revert when remove tour
   const openSprintNotesModal = () => {
     setIsNotesOpen(true);
-  }
+  };
 
   // TODO: delete following when remove tour
   const sprintNotesButtonRef = useRef(null);
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
   const tourSteps: TourProps['steps'] = [
     {
-      title: "This version of sprint notes will be deprecated soon!",
-      description: "We have concurrent sprint notes available in the sprint board",
+      title: 'This version of sprint notes will be deprecated soon!',
+      description: 'We have concurrent sprint notes available in the sprint board',
       cover: (
-        <Button 
+        <Button
           onClick={() => {
             navigateToBoard(sprint.id);
           }}
@@ -100,23 +119,19 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
       ),
       target: () => sprintNotesButtonRef.current,
       nextButtonProps: {
-        children: (
-          <>
-            View deprecated notes
-          </>
-        ),
+        children: <>View deprecated notes</>,
         onClick: () => {
           setIsTourOpen(false);
           openSprintNotesModal();
-        }
+        },
       },
       placement: 'leftTop',
       style: {
-        border: "2px solid",
-        borderRadius: "8px",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
-      }
-    }
+        border: '2px solid',
+        borderRadius: '8px',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+      },
+    },
   ];
   // TODO: delete above when remove tour
 
@@ -139,7 +154,12 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                     )}
                     {(sprint.status === 'completed' || sprint.status === 'closed') && (
                       <div className="sprint-card-button">
-                        <Button onClick={() => navigateToRetrospective(sprint.id)}>Retrospective</Button>
+                        <Button
+                          {...{ [STEP_PROP]: StepTarget.RETROSPECTIVE_TAB }}
+                          onClick={() => navigateToRetrospective(sprint.id)}
+                        >
+                          Retrospective
+                        </Button>
                       </div>
                     )}
                     {sprint.start_date && sprint.end_date && (
@@ -149,13 +169,20 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                     )}
                     <div className="sprint-card-notes-icon">
                       {/* <BookOutlined onClick={openSprintNotesModal} style={{ fontSize: '18px' }} /> */}
-                      <BookOutlined onClick={() => {setIsTourOpen(true)}} style={{ fontSize: '18px' }} ref={sprintNotesButtonRef}/>
+                      <BookOutlined
+                        onClick={() => {
+                          setIsTourOpen(true);
+                        }}
+                        style={{ fontSize: '18px' }}
+                        ref={sprintNotesButtonRef}
+                      />
                     </div>
                     <div className="sprint-card-setting-icon" onClick={(e) => e.stopPropagation()}>
                       <SprintMenu
                         sprintId={sprint.id}
                         projectId={projectId}
                         handleSprintOnClick={handleSprintOnClick}
+                        disableClickEvent={disableClickEvent}
                       />
                     </div>
                   </div>
@@ -186,6 +213,7 @@ type SprintListingCardProps = {
   sprint: Sprint;
   setSprint(sprint: Sprint): void;
   setIsModalVisible(isVisible: boolean): void;
+  disableClickEvent?: boolean;
 };
 
 export default SprintListingCard;

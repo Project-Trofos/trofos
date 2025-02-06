@@ -62,6 +62,8 @@ describe('test course creation modal', () => {
     userDisplayName: 'User 1',
     userId: 1,
     userRoleActions: [],
+    userRoleId: 1,
+    hasCompletedTour: false,
   };
 
   const setup = (course: CourseData, projects: ProjectData[]) => {

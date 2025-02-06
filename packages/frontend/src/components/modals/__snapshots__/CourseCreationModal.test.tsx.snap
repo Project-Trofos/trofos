@@ -6,6 +6,7 @@ exports[`test course creation modal > should render modal with correct fields 1`
     <button
       aria-label="open-form"
       class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
+      data-tour="create-course-button"
       type="button"
     >
       <span>

@@ -92,6 +92,7 @@ describe('apiKey.service tests', () => {
       user_email: 'test',
       user_display_name: 'test',
       user_password_hash: 'test',
+      has_completed_tour: false,
     };
 
     it('should return api key auth info and update last_used if the API key is valid', async () => {
@@ -99,7 +100,7 @@ describe('apiKey.service tests', () => {
       prismaMock.usersOnRoles.findFirst.mockResolvedValueOnce(mockUserOnRole);
       prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
       prismaMock.userApiKey.update.mockResolvedValueOnce(mockUserApiKey);
-      
+
       await expect(apiKeyService.authenticateApiKeyWithinTransaction(prismaMock, 'test')).resolves.toEqual({
         isValidUser: true,
         user_id: 1,

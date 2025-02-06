@@ -117,6 +117,7 @@ export const studentOnePrismaUserUpsertMock: User = {
   user_id: 1,
   user_email: studentOne.email,
   user_password_hash: null,
+  has_completed_tour: false,
 };
 
 export const studentTwoPrismaUserUpsertMock: User = {
@@ -124,6 +125,7 @@ export const studentTwoPrismaUserUpsertMock: User = {
   user_id: 2,
   user_email: studentTwo.email,
   user_password_hash: null,
+  has_completed_tour: false,
 };
 
 export const facultyOnePrismaUserUpsertMock: User = {
@@ -131,4 +133,5 @@ export const facultyOnePrismaUserUpsertMock: User = {
   user_id: 3,
   user_email: facultyOne.email,
   user_password_hash: null,
+  has_completed_tour: false,
 };

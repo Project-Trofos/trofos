@@ -27,6 +27,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { toggleTheme } from '../app/themeSlice';
 import ThemeSwitch from '../components/theming/ThemeSwitch';
 import AiChatBase from '../components/aichat/AiChatBase';
+import TourComponent from '../components/tour/Tour';
+import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
 import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 
 const { Header, Sider, Content } = Layout;
@@ -87,7 +89,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   ];
 
   return (
-    <Space size={"middle"}>
+    <Space size={'middle'}>
       <Col>
         <ThemeSwitch />
       </Col>
@@ -95,7 +97,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <GlobalSearch />
       </Col>
       <Col>
-        <Button type="text" href="https://project-trofos.github.io/trofos/" target='_blank'>
+        <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
           <QuestionCircleOutlined />
         </Button>
       </Col>
@@ -139,19 +141,19 @@ export default function MainLayout() {
   const selectedKeys = useMemo(() => {
     // Handle viewing all courses
     if (location.pathname.split('/', 2)[1] === 'courses') {
-      return ['/courses']
+      return ['/courses'];
     }
     // Handle viewing all projects
     if (location.pathname.split('/', 2)[1] === 'projects') {
-      return ['/projects']
+      return ['/projects'];
     }
     // Check if a course is selected
     if (location.pathname.split('/', 2)[1] === 'course') {
-      return [location.pathname.split('/', 5).slice(0,3).join('/')];
+      return [location.pathname.split('/', 5).slice(0, 3).join('/')];
     }
     // Handle manage api key tab selected
     if (location.pathname.split('/', 2)[1] === 'manage-api-key') {
-      return ['/api-key']
+      return ['/api-key'];
     }
     return [location.pathname.split('/', 3).join('/')];
   }, [location.pathname]);
@@ -185,7 +187,7 @@ export default function MainLayout() {
       getItem(<Link to="/">Home</Link>, '/', <HomeOutlined />),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/courses">
+          <Link {...{ [STEP_PROP]: StepTarget.COURSES_TAB }} onClick={(e) => e.stopPropagation()} to="/courses">
             Courses
           </Link>,
           '/courses',
@@ -201,7 +203,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/projects">
+          <Link {...{ [STEP_PROP]: StepTarget.PROJECTS_TAB }} onClick={(e) => e.stopPropagation()} to="/projects">
             Project
           </Link>,
           '/projects',
@@ -217,7 +219,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/admin">
+          <Link {...{ [STEP_PROP]: StepTarget.ADMIN_TAB }} onClick={(e) => e.stopPropagation()} to="/admin">
             Admin
           </Link>,
           '/admin',
@@ -228,7 +230,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/manage-api-key">
+          <Link {...{ [STEP_PROP]: StepTarget.API_KEY_TAB }} onClick={(e) => e.stopPropagation()} to="/manage-api-key">
             API Keys
           </Link>,
           '/api-key',
@@ -243,7 +245,7 @@ export default function MainLayout() {
 
   const onOpenAiChat = () => {
     setAiChatIsOpen(true);
-  }
+  };
 
   const onCloseAiChat = () => {
     setAiChatIsOpen(false);
@@ -295,10 +297,11 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
-      {featureFlags?.some(flag => flag.feature_name === "user_guide_copilot" && flag.active) && (
+      {featureFlags?.some((flag) => flag.feature_name === 'onboarding_tour' && flag.active) && <TourComponent />}
+      {featureFlags?.some((flag) => flag.feature_name === 'user_guide_copilot' && flag.active) && (
         <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type="primary" />
       )}
-      <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat}/>
+      <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat} />
     </Layout>
   );
 }

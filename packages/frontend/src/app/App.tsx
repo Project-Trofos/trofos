@@ -39,6 +39,11 @@ import Invite from '../pages/Invite';
 import ApiKey from '../pages/ApiKey';
 import ProjectsBody from '../pages/projectsPages/ProjectsBody';
 import CoursesBody from '../pages/coursesPages/CoursesBody';
+import ProjectExample from '../pages/examplePages/ProjectExample';
+import ProjectPeopleExample from '../pages/examplePages/ProjectPeopleExample';
+import ProjectSprintsExample from '../pages/examplePages/ProjectSprintsExample';
+import CourseExample from '../pages/examplePages/CourseExample';
+import CourseOverviewExample from '../pages/examplePages/CourseOverviewExample';
 
 function App() {
   const [_, contextHolder] = useMessage();
@@ -53,6 +58,11 @@ function App() {
               <Route path="current" element={<ProjectsBody currentPastOrFuture="cur" />} />
               <Route path="past" element={<ProjectsBody currentPastOrFuture="past" />} />
               <Route path="future" element={<ProjectsBody currentPastOrFuture="future" />} />
+            </Route>
+            <Route path="project/example" element={<ProjectExample />}>
+              <Route path="" element={<Navigate to="users" />} />
+              <Route path="users" element={<ProjectPeopleExample />} />
+              <Route path="sprint" element={<ProjectSprintsExample />} />
             </Route>
             <Route path="project/:projectId" element={<Project />}>
               <Route path="" element={<Navigate to="overview" />} />
@@ -75,7 +85,11 @@ function App() {
               <Route path="" element={<Navigate to="current" />} />
               <Route path="current" element={<CoursesBody currentPastOrFuture="cur" />} />
               <Route path="past" element={<CoursesBody currentPastOrFuture="past" />} />
-              <Route path="future" element={<CoursesBody currentPastOrFuture='future' />} />
+              <Route path="future" element={<CoursesBody currentPastOrFuture="future" />} />
+            </Route>
+            <Route path="course/example" element={<CourseExample />}>
+              <Route path="" element={<Navigate to="overview" />} />
+              <Route path="overview" element={<CourseOverviewExample />} />
             </Route>
             <Route path="course/:courseId" element={<Course />}>
               <Route path="" element={<Navigate to="overview" />} />

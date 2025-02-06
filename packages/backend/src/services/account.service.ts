@@ -2,6 +2,7 @@ import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
+import { UpdateUserData } from '../helpers/types/user.service.types';
 
 async function changePassword(userId: number, oldUserPassword: string, newUserPassword: string): Promise<User> {
   const newPasswordHash = bcrypt.hashSync(newUserPassword, 10);
@@ -31,19 +32,16 @@ async function changePassword(userId: number, oldUserPassword: string, newUserPa
   return updatedUser;
 }
 
-async function updateUser(userId: number, displayName: string): Promise<User> {
+async function updateUser(userId: number, updateData: UpdateUserData): Promise<User> {
   const updatedUser = await prisma.user.update({
     where: {
       user_id: userId,
     },
-    data: {
-      user_display_name: displayName,
-    },
+    data: updateData,
   });
 
   return updatedUser;
 }
-
 
 // User registration
 async function register(userEmail: string, userPassword: string, userDisplayName: string): Promise<User> {
@@ -66,9 +64,8 @@ async function register(userEmail: string, userPassword: string, userDisplayName
   return user;
 }
 
-
 export default {
   changePassword,
   updateUser,
-  register
+  register,
 };

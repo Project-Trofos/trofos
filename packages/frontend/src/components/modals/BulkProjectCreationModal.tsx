@@ -9,6 +9,7 @@ import { getErrorMessage } from '../../helpers/error';
 import UserTable from '../tables/UserTable';
 import { useCourse } from '../../api/hooks';
 import { STUDENT_ROLE_ID } from '../../api/role';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 type ProjectAllocation = {
   name: string;
@@ -105,7 +106,9 @@ export default function BulkProjectCreationModal({
 
   return (
     <>
-      <Button onClick={showModal}>Bulk Create</Button>
+      <Button onClick={showModal} {...{ [STEP_PROP]: StepTarget.BULK_CREATE_BUTTON }}>
+        Bulk Create
+      </Button>
       <Modal title="Bulk Project Creation" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         {studentsWithoutProject.length === 0 ? (
           <Space>

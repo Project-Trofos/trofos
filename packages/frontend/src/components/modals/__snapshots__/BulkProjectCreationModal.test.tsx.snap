@@ -5,6 +5,7 @@ exports[`test course creation modal > should render fields if there are users wi
   <div>
     <button
       class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+      data-tour="bulk-create-button"
       type="button"
     >
       <span>

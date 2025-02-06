@@ -7,6 +7,7 @@ import { getErrorMessage } from '../../helpers/error';
 import CourseNameFormItem from '../forms/CourseNameFormItem';
 import CourseCodeFormItem from '../forms/CourseCodeFormItem';
 import CourseYearSemFormItems from '../forms/CourseYearSemFormItems';
+import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 const { Paragraph } = Typography;
 
@@ -58,6 +59,7 @@ export default function CourseCreationModal() {
         </>,
       ]}
       buttonType="primary"
+      tourProps={{ [STEP_PROP]: StepTarget.CREATE_COURSE_BUTTON }}
     />
   );
 }
