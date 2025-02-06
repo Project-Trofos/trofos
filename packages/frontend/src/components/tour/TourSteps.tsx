@@ -24,7 +24,8 @@ export enum StepTarget {
   BULK_CREATE_BUTTON = 'bulk-create-button',
 
   // Admin
-  ADMIN_MENU = 'admin-menu',
+  ADMIN_TAB = 'admin-tab',
+  API_KEY_TAB = 'api-key-tab',
 }
 
 /**
@@ -200,32 +201,56 @@ export const getFacultySteps = (navigate: NavigateFunction): TourProps['steps'] 
  */
 export const getAdminSteps = (navigate: NavigateFunction): TourProps['steps'] => [
   {
-    title: 'Admin Dashboard',
-    description:
-      'This dashboard gives you an overview of platform activity, including user statistics and system metrics.',
-    // target: () => document.getElementById('admin-dashboard') as HTMLElement,
-    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.ADMIN_MENU}]`) as HTMLElement,
+    title: 'Welcome to Trofos!',
+    description: (
+      <Space direction="vertical" size="large">
+        <Row>Welcome to the Trofos application.</Row>
+        <Row>
+          This is your main hub for administrative functions. You can manage courses, projects, user roles, settings,
+          and more to support smooth application operations.
+        </Row>
+      </Space>
+    ),
+  },
+  {
+    title: 'Access the admin dashboard',
+    description: 'Click the Admin tab to open the admin console and explore administrative features.',
+    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.ADMIN_TAB}]`) as HTMLElement,
     nextButtonProps: { onClick: () => navigate('/admin') },
   },
   {
-    title: 'User Management',
-    description: 'Manage platform users here. You can add, remove, or modify user information and roles.',
-    // target: () => document.getElementById('user-management') as HTMLElement,
+    title: 'Administrative tools',
+    description:
+      'This dashboard allows you to perform key administrative tasks, such as managing users and roles, adjusting settings, and toggling feature flags.',
     prevButtonProps: { onClick: () => navigate('/') },
   },
   {
-    title: 'Reports and Analytics',
-    description: 'View detailed reports on application usage, performance metrics, and activity logs.',
-    // target: () => document.getElementById('reports-section') as HTMLElement,
+    title: 'API key management',
+    description: 'Navigate to the API Keys tab to manage and generate API keys for integrations.',
+    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.API_KEY_TAB}]`) as HTMLElement,
+    nextButtonProps: { onClick: () => navigate('/manage-api-key') },
   },
   {
-    title: 'Settings',
-    description: 'Configure system-wide settings, including application preferences and security options.',
-    // target: () => document.getElementById('settings-section') as HTMLElement,
+    title: 'Generate and manage API Keys',
+    description:
+      'Here, you can view existing API keys or generate new ones. These keys are essential for integrating Trofos with external systems.',
+    prevButtonProps: { onClick: () => navigate('/admin') },
   },
   {
-    title: 'Notifications Panel',
-    description: 'Keep track of important alerts and announcements from this panel.',
-    // target: () => document.getElementById('notifications-panel') as HTMLElement,
+    title: "You're all set!",
+    description: (
+      <Space direction="vertical">
+        <Row>
+          That's it! You are now ready to manage courses, users, and settings through the admin dashboard. Enjoy using
+          Trofos!
+        </Row>
+      </Space>
+    ),
+    nextButtonProps: {
+      onClick: () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        navigate('/');
+      },
+    },
   },
 ];

@@ -216,7 +216,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link {...{ [STEP_PROP]: StepTarget.ADMIN_MENU }} onClick={(e) => e.stopPropagation()} to="/admin">
+          <Link {...{ [STEP_PROP]: StepTarget.ADMIN_TAB }} onClick={(e) => e.stopPropagation()} to="/admin">
             Admin
           </Link>,
           '/admin',
@@ -227,7 +227,7 @@ export default function MainLayout() {
       ),
       conditionalRender(
         getItem(
-          <Link onClick={(e) => e.stopPropagation()} to="/manage-api-key">
+          <Link {...{ [STEP_PROP]: StepTarget.API_KEY_TAB }} onClick={(e) => e.stopPropagation()} to="/manage-api-key">
             API Keys
           </Link>,
           '/api-key',
