@@ -14,7 +14,7 @@ import type { TourProps } from 'antd';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
-  const { sprint, setSprint, setIsModalVisible } = props;
+  const { sprint, setSprint, setIsModalVisible, disableClickEvent } = props;
   const { Panel } = Collapse;
   const navigate = useNavigate();
 
@@ -36,6 +36,10 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   ) => {
     e.stopPropagation();
 
+    if (disableClickEvent) {
+      return;
+    }
+
     const payload = {
       status: updatedStatus,
       sprintId: sprint.id,
@@ -55,7 +59,14 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const renderSprintStatusButton = () => {
     switch (sprint.status) {
       case 'upcoming':
-        return <Button onClick={(e) => handleSprintStatusUpdate('current', e)}>Start Sprint</Button>;
+        return (
+          <Button
+            onClick={(e) => handleSprintStatusUpdate('current', e)}
+            {...{ [STEP_PROP]: StepTarget.START_SPRINT_BUTTON }}
+          >
+            Start Sprint
+          </Button>
+        );
       case 'current':
         return (
           <Button
@@ -165,6 +176,7 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                         sprintId={sprint.id}
                         projectId={projectId}
                         handleSprintOnClick={handleSprintOnClick}
+                        disableClickEvent={disableClickEvent}
                       />
                     </div>
                   </div>
@@ -195,6 +207,7 @@ type SprintListingCardProps = {
   sprint: Sprint;
   setSprint(sprint: Sprint): void;
   setIsModalVisible(isVisible: boolean): void;
+  disableClickEvent?: boolean;
 };
 
 export default SprintListingCard;

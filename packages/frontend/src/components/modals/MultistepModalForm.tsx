@@ -12,6 +12,8 @@ export type MultistepFromModalProps<T> = {
   buttonType?: 'link' | 'text' | 'primary' | 'default' | 'dashed' | undefined;
   buttonSize?: 'small' | 'middle' | 'large';
   buttonChildren?: React.ReactNode | string;
+  tourProps?: Record<string, string>; // Optional tourProps for steps targeting
+  disableClickEvent?: boolean;
 };
 
 /**
@@ -29,6 +31,8 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
     buttonType = 'default',
     buttonChildren,
     buttonSize,
+    tourProps = {},
+    disableClickEvent = false,
   } = props;
 
   // TODO: Remove deprecatedForm in next major version
@@ -86,11 +90,17 @@ export default function MultistepFormModal<T>(props: MultistepFromModalProps<T>)
   return (
     <>
       {buttonElement === 'button' && (
-        <Button aria-label="open-form" onClick={showModal} type={buttonType} size={buttonSize}>
+        <Button
+          aria-label="open-form"
+          onClick={disableClickEvent ? undefined : showModal}
+          type={buttonType}
+          size={buttonSize}
+          {...tourProps}
+        >
           {buttonChildren}
         </Button>
       )}
-      {buttonElement === 'span' && <span onClick={showModal}>{buttonChildren}</span>}
+      {buttonElement === 'span' && <span onClick={disableClickEvent ? undefined : showModal}>{buttonChildren}</span>}
       <Modal
         title={title}
         open={isModalVisible}

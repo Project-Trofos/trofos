@@ -25,6 +25,7 @@ function BacklogCreationModal({
   defaultBacklog,
   disabled,
   retrospective,
+  disableClickEvent,
 }: {
   fixedSprint?: Sprint;
   title?: string;
@@ -32,6 +33,7 @@ function BacklogCreationModal({
   defaultBacklog?: DefaultBacklog;
   disabled?: boolean;
   retrospective?: Retrospective;
+  disableClickEvent?: boolean;
 }): JSX.Element {
   const TYPES: BacklogSelectTypes[] = [
     { id: 'story', name: 'Story' },
@@ -236,17 +238,17 @@ function BacklogCreationModal({
     <>
       {disabled ? (
         <Tooltip title={`Backlog has already been created for this action`}>
-          <Button
-            className="new-backlog-btn"
-            type="primary"
-            disabled={disabled}
-            {...{ [STEP_PROP]: StepTarget.NEW_BACKLOG_BUTTON }}
-          >
+          <Button className="new-backlog-btn" type="primary" disabled={disabled}>
             {title ?? 'New Backlog'}
           </Button>
         </Tooltip>
       ) : (
-        <Button className="new-backlog-btn" type="primary" onClick={showModal}>
+        <Button
+          className="new-backlog-btn"
+          type="primary"
+          onClick={disableClickEvent ? undefined : showModal}
+          {...{ [STEP_PROP]: StepTarget.NEW_BACKLOG_BUTTON }}
+        >
           {title ?? 'New Backlog'}
         </Button>
       )}

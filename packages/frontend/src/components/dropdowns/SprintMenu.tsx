@@ -7,8 +7,9 @@ function SprintMenu(props: {
   sprintId: number;
   projectId: number;
   handleSprintOnClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
+  disableClickEvent?: boolean;
 }): JSX.Element {
-  const { sprintId, projectId, handleSprintOnClick } = props;
+  const { sprintId, projectId, handleSprintOnClick, disableClickEvent } = props;
   const [deleteSprint] = useDeleteSprintMutation();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -35,12 +36,12 @@ function SprintMenu(props: {
     items: [
       {
         key: '1',
-        label: <div onClick={handleSprintOnClick}>Edit sprint</div>,
+        label: <div onClick={disableClickEvent ? undefined : handleSprintOnClick}>Edit sprint</div>,
       },
       {
         key: '2',
         danger: true,
-        label: <div onClick={openDeleteConfirmationModal}>Delete sprint</div>,
+        label: <div onClick={disableClickEvent ? undefined : openDeleteConfirmationModal}>Delete sprint</div>,
       },
     ],
   };

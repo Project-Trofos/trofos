@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useAddEpicMutation } from '../../api/socket/backlogHooks';
 import { EpicFormFields } from '../../helpers/EpicModal.types';
 
-function EpicCreationModal({ disabled }: { disabled?: boolean }): JSX.Element {
+function EpicCreationModal({ disableClickEvent }: { disableClickEvent?: boolean }): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -67,7 +67,7 @@ function EpicCreationModal({ disabled }: { disabled?: boolean }): JSX.Element {
 
   return (
     <>
-      <Button disabled={disabled} className="new-epic-btn" type="primary" onClick={showModal}>
+      <Button className="new-epic-btn" type="primary" onClick={disableClickEvent ? undefined : showModal}>
         New Epic
       </Button>
       <Modal

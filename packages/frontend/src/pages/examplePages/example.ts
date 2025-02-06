@@ -1,4 +1,4 @@
-import { ProjectData, User, Backlog } from '../../api/types';
+import { ProjectData, CourseData, User, Backlog, Project } from '../../api/types';
 import { Sprint } from '../../api/sprint';
 
 export const exampleProject: ProjectData = {
@@ -178,5 +178,105 @@ export const exampleSprints: Sprint[] = [
     project_id: 1,
     status: 'upcoming',
     backlogs: [],
+  },
+];
+
+export const exampleCourse: CourseData = {
+  id: 1,
+  code: 'CS101',
+  startYear: 2024,
+  startSem: 1,
+  endYear: 2024,
+  endSem: 2,
+  cname: 'Introduction to Agile Methodologies',
+  description: 'A beginner-friendly course on agile practices and project management principles.',
+  public: true,
+  created_at: '2024-08-01T12:00:00Z',
+  shadow_course: false,
+  is_archive: false,
+  milestones: [
+    {
+      id: 1,
+      name: 'Milestone 1: Project Proposal',
+      start_date: '2024-09-01',
+      deadline: '2024-09-15',
+      course_id: 1,
+      created_at: '2024-08-20T10:00:00Z',
+    },
+    {
+      id: 2,
+      name: 'Milestone 2: Sprint 1 Review',
+      start_date: '2024-10-01',
+      deadline: '2024-10-10',
+      course_id: 1,
+      created_at: '2024-09-25T10:00:00Z',
+    },
+  ],
+  announcements: [
+    {
+      id: 1,
+      title: 'Welcome to CS101!',
+      content: 'Our first class will cover agile fundamentals. Please review the syllabus.',
+      user_id: 101,
+      created_at: '2024-08-01T15:00:00Z',
+    },
+    {
+      id: 2,
+      title: 'Milestone 1 Submission Reminder',
+      content: "Don't forget to submit your project proposal by the deadline.",
+      user_id: 101,
+      created_at: '2024-09-10T10:00:00Z',
+    },
+  ],
+  users: [
+    {
+      user: {
+        user_id: 101,
+        user_email: 'student1@example.edu',
+        user_display_name: 'Alice Johnson',
+        courses: [],
+      },
+    },
+    {
+      user: {
+        user_id: 102,
+        user_email: 'faculty1@example.edu',
+        user_display_name: 'Dr. Bob Smith',
+        courses: [],
+      },
+    },
+  ],
+};
+
+export const exampleProjects: Project[] = [
+  {
+    id: 1,
+    pname: 'Agile Learning Platform',
+    pkey: 'ALP101',
+    description: 'A platform to help students learn agile methodologies through interactive content.',
+    course_id: 1,
+    public: true,
+    created_at: '2024-09-01T10:00:00Z',
+    is_archive: false,
+  },
+  {
+    id: 2,
+    pname: 'Project Tracker App',
+    pkey: 'PTA202',
+    description: 'A simple tool to track project progress and manage agile sprints effectively.',
+    course_id: 1,
+    public: false,
+    created_at: '2024-09-10T11:00:00Z',
+    is_archive: false,
+  },
+  {
+    id: 3,
+    pname: 'Scrum Management Tool',
+    pkey: 'SMT303',
+    description: 'A tool to help agile teams visualize workflows and manage Scrum events.',
+    course_id: 1,
+    public: true,
+    created_at: '2024-09-20T13:00:00Z',
+    is_archive: false,
   },
 ];

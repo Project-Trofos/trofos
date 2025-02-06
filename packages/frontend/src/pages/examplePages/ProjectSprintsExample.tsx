@@ -21,7 +21,7 @@ export default function ProjectSprintsExample(): JSX.Element {
 
   const renderSprintListingCards = (sprint: Sprint) => (
     <List.Item className="sprint-card-container">
-      <SprintListingCard sprint={sprint} setSprint={() => {}} setIsModalVisible={() => {}} />
+      <SprintListingCard sprint={sprint} setSprint={() => {}} setIsModalVisible={() => {}} disableClickEvent={true} />
     </List.Item>
   );
 
@@ -43,8 +43,8 @@ export default function ProjectSprintsExample(): JSX.Element {
           setSprint={() => {}}
           latestSprint={GENERIC_NEW_SPRINT}
         />
-        <BacklogCreationModal disabled={true} />
-        <EpicCreationModal disabled={true} />
+        <BacklogCreationModal disableClickEvent={true} />
+        <EpicCreationModal disableClickEvent={true} />
       </div>
       <DragDropContext onDragEnd={() => {}}>
         <div className="sprint-list">

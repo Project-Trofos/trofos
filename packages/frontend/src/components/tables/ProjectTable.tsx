@@ -17,6 +17,7 @@ type ProjectTableProps = {
   control?: React.ReactNode;
   showCourseColumn?: boolean;
   onlyShowActions?: ('GOTO' | 'DELETE' | 'DETACH')[];
+  disableClickEvent?: boolean;
 };
 
 /**
@@ -29,6 +30,7 @@ export default function ProjectTable({
   control,
   showCourseColumn,
   onlyShowActions,
+  disableClickEvent,
 }: ProjectTableProps) {
   const [removeProject] = useRemoveProjectMutation();
   const [removeProjectFromCourse] = useRemoveProjectFromCourseMutation();
@@ -109,15 +111,18 @@ export default function ProjectTable({
           render={(_, record: Project) => (
             <Space size="middle">
               {(!onlyShowActions || onlyShowActions?.includes('GOTO')) && (
-                <Link to={`/project/${record.id}/overview`}>Go to</Link>
+                <Link to={disableClickEvent ? '' : `/project/${record.id}/overview`}>Go to</Link>
               )}
               {(!onlyShowActions || onlyShowActions?.includes('DELETE')) && (
-                <Button size="small" onClick={() => handleDeleteProject(record)}>
+                <Button size="small" onClick={disableClickEvent ? undefined : () => handleDeleteProject(record)}>
                   Delete
                 </Button>
               )}
               {(!onlyShowActions || onlyShowActions?.includes('DELETE')) && record.course_id && (
-                <Button size="small" onClick={() => handleRemoveProjectFromCourse(record)}>
+                <Button
+                  size="small"
+                  onClick={disableClickEvent ? undefined : () => handleRemoveProjectFromCourse(record)}
+                >
                   Detach
                 </Button>
               )}
