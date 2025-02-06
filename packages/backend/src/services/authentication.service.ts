@@ -65,9 +65,11 @@ async function samlHandler(attributes: any): Promise<User> {
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
-  if (!userEmail || !surname || !givenName) {
+  if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
+
+  const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
@@ -78,7 +80,7 @@ async function samlHandler(attributes: any): Promise<User> {
     update: {},
     create: {
       user_email: userEmail,
-      user_display_name: `${givenName} ${surname || ''}`.trim(),
+      user_display_name: displayName ? displayName : userEmail, // If display name is empty, use email
       basicRoles: {
         create: {
           role_id: STUDENT_ROLE_ID, // Default role of a new user
@@ -95,9 +97,11 @@ async function samlHandlerStaff(attributes: any): Promise<User> {
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
-  if (!userEmail || !surname || !givenName) {
+  if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
+
+  const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
@@ -108,7 +112,7 @@ async function samlHandlerStaff(attributes: any): Promise<User> {
     update: {},
     create: {
       user_email: userEmail,
-      user_display_name: `${givenName} ${surname || ''}`.trim(),
+      user_display_name: displayName ? displayName : userEmail, // If display name is empty, use email
       basicRoles: {
         create: {
           role_id: FACULTY_ROLE_ID, // Default role of a new staff

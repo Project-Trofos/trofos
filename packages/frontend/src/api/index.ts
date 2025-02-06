@@ -30,6 +30,7 @@ const trofosApiSlice = createApi({
     'Epic',
     'Invite',
     'UserApiKey',
+    'FeatureFlag',
   ],
   endpoints: () => ({}),
 });

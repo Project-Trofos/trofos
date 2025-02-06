@@ -358,3 +358,8 @@ export type UserGuideQueryResponse = {
   answer: string;
   links: Array<string>;
 };
+
+export type FeatureFlag = {
+  feature_name: string;
+  active: boolean;
+}

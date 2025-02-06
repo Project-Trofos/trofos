@@ -339,6 +339,16 @@ model UserApiKey {
   active Boolean @default(true)
 }
 
+model FeatureFlag {
+  id Int @id @default(autoincrement())
+  feature_name Feature @unique
+  active Boolean @default(true)
+}
+
+enum Feature {
+  user_guide_copilot
+}
+
 enum Action {
   // Course related actions
   create_course
@@ -351,6 +361,7 @@ enum Action {
   update_project
   delete_project
   update_project_users
+  archive_project
   // Project feedback
   create_feedback
   read_feedback

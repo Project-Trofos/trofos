@@ -29,6 +29,7 @@ import ThemeSwitch from '../components/theming/ThemeSwitch';
 import AiChatBase from '../components/aichat/AiChatBase';
 import TourComponent from '../components/tour/Tour';
 import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 
 const { Header, Sider, Content } = Layout;
 
@@ -124,6 +125,8 @@ export default function MainLayout() {
   const { currentProjects: projects } = useCurrentAndPastProjects();
   const { currentCourses: courses } = useCurrentAndPastCourses();
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
+
   const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
 
   const location = useLocation();
@@ -295,7 +298,9 @@ export default function MainLayout() {
         </Content>
       </Layout>
       <TourComponent />
-      <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type="primary" />
+      {featureFlags?.some((flag) => flag.feature_name === 'user_guide_copilot' && flag.active) && (
+        <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type="primary" />
+      )}
       <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat} />
     </Layout>
   );

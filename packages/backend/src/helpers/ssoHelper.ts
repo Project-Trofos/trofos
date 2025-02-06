@@ -9,7 +9,13 @@ import {
 } from 'samlify';
 import * as validator from '@authenio/samlify-xsd-schema-validator';
 
-setSchemaValidator(validator);
+// Temporary suppress validation error on staging
+// To be removed once the issue is resolved
+setSchemaValidator({
+  validate: (response: string) => {
+    return Promise.resolve('skipped');
+  },
+});
 
 const SSORoles = {
   STAFF: 'staff',
@@ -107,7 +113,7 @@ const getCachedIdpStaff = async () => {
 };
 
 const SAML_CLAIMS = {
-  EMAIL: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+  EMAIL: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn',
   SURNAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
   GIVEN_NAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
 };

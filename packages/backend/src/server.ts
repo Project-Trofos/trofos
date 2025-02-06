@@ -16,6 +16,7 @@ import inviteRouter from './routes/invite.route';
 import apiKeyRouter from './routes/apiKey.route';
 import routerExternalV1 from './routes/external/v1/route.external.v1';
 import aiRouter from './routes/ai.route';
+import featureFlagRouter from './routes/featureFlag.route';
 import setUpSwagger from './swagger/swagger';
 import promClient from 'prom-client';
 
@@ -122,9 +123,12 @@ router.use('/api-key', apiKeyRouter);
 // Routes for external api v1
 router.use('/external/v1', routerExternalV1);
 
-app.use('/api', router);
-// For unit testing
-
 // Routes for ai actions
 router.use('/ai', aiRouter);
+
+// Routes for feature flags
+router.use('/feature-flags', featureFlagRouter);
+
+app.use('/api', router);
+
 export default app;
