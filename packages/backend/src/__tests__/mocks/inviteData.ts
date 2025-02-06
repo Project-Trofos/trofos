@@ -36,6 +36,7 @@ export const validUser: User = {
   user_display_name: 'validemail@test.com',
   user_email: 'validemail@test.com',
   user_password_hash: null,
+  has_completed_tour: false,
 };
 
 const expired = new Date(Date.now());

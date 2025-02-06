@@ -47,11 +47,12 @@ describe('user.service tests', () => {
     });
   });
 
-  const prismaResponseObject = {
+  const prismaResponseObject: User = {
     user_email: 'testEmail@test.com',
     user_id: 1,
     user_display_name: 'Test User',
     user_password_hash: null,
+    has_completed_tour: false,
   };
 
   describe('get', () => {
