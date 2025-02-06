@@ -64,3 +64,8 @@ export type AnnouncementRequestBody = {
   announcementTitle?: string;
   announcementContent?: string;
 };
+
+export type ToggleFeatureFlagRequestBody = {
+  featureName: String;
+  active: boolean;
+};

@@ -6,6 +6,7 @@ import SettingsManagementTab from '../components/tabs/SettingsManagement';
 import './Admin.css';
 import PageHeader from '../components/pageheader/PageHeader';
 import Container from '../components/layouts/Container';
+import FeatureFlagManagement from '../components/tabs/FeatureFlagManagement';
 
 const { Content } = Layout;
 
@@ -20,6 +21,7 @@ function Admin(): JSX.Element {
           { key: 'user-management', label: 'User Management', children: <UserManagementTab /> },
           { key: 'role-management', label: 'Role Management', children: <RoleManagementTab /> },
           { key: 'settings-management', label: 'Settings Management', children: <SettingsManagementTab /> },
+          { key: 'feature-flags', label: 'Feature Flags', children: <FeatureFlagManagement />},
         ]}
         centered
         style={{

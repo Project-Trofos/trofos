@@ -8,9 +8,22 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         url: `/feature-flags`,
         credentials: 'include',
         method: 'GET',
-      })
-    })
+      }),
+      providesTags: ['FeatureFlag'],
+    }),
+    toggleFeatureFlag: builder.mutation<FeatureFlag, { featureName: string, active: boolean }>({
+      query: ({ featureName, active }) => ({
+        url: `/feature-flags/toggle`,
+        credentials: 'include',
+        method: 'POST',
+        body: { featureName, active },
+      }),
+      invalidatesTags: ['FeatureFlag'],
+    }),
   })
 });
 
-export const { useGetFeatureFlagsQuery } = extendedApi;
+export const {
+  useGetFeatureFlagsQuery,
+  useToggleFeatureFlagMutation,
+} = extendedApi;
