@@ -61,7 +61,7 @@ async function oauth2Handler(code: string, state: string, callbackUrl: string): 
 }
 
 async function samlHandler(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL].toLowerCase();
+  const userEmail = attributes[SAML_CLAIMS.EMAIL];
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
@@ -69,18 +69,19 @@ async function samlHandler(attributes: any): Promise<User> {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
 
+  const userEmailLowerCase = userEmail.toLowerCase();
   const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
   const userInfo = await prisma.user.upsert({
     where: {
-      user_email: userEmail,
+      user_email: userEmailLowerCase,
     },
     update: {},
     create: {
-      user_email: userEmail,
-      user_display_name: displayName ? displayName : userEmail, // If display name is empty, use email
+      user_email: userEmailLowerCase,
+      user_display_name: displayName ? displayName : userEmailLowerCase, // If display name is empty, use email
       basicRoles: {
         create: {
           role_id: STUDENT_ROLE_ID, // Default role of a new user
@@ -93,26 +94,29 @@ async function samlHandler(attributes: any): Promise<User> {
 }
 
 async function samlHandlerStaff(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL].toLowerCase();
+  const userEmail = attributes[SAML_CLAIMS.EMAIL];
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
+
+  console.log('Staff SAML attributes:', attributes);
 
   if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }
 
+  const userEmailLowerCase = userEmail.toLowerCase();
   const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
   const userInfo = await prisma.user.upsert({
     where: {
-      user_email: userEmail,
+      user_email: userEmailLowerCase,
     },
     update: {},
     create: {
-      user_email: userEmail,
-      user_display_name: displayName ? displayName : userEmail, // If display name is empty, use email
+      user_email: userEmailLowerCase,
+      user_display_name: displayName ? displayName : userEmailLowerCase, // If display name is empty, use email
       basicRoles: {
         create: {
           role_id: FACULTY_ROLE_ID, // Default role of a new staff
