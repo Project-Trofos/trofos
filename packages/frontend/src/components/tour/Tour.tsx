@@ -6,15 +6,16 @@ import { message } from 'antd';
 import { getErrorMessage } from '../../helpers/error';
 import { ADMIN_ROLE_ID, STUDENT_ROLE_ID, FACULTY_ROLE_ID } from '../../api/role';
 import { getStudentSteps, getFacultySteps, getAdminSteps } from './TourSteps';
+import { useTourContext } from './TourProvider';
 
 const TOUR_STEP_STORAGE_KEY = 'currentTourStep';
 
 export default function TourComponent(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
+  const { isTourOpen, startTour, endTour } = useTourContext();
   const [updateUserInfo] = useUpdateUserInfoMutation();
   const navigate = useNavigate();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(() => {
     const savedStep = localStorage.getItem(TOUR_STEP_STORAGE_KEY); // Get the saved step from local storage if it exists
     return savedStep ? parseInt(savedStep, 10) : 0;
@@ -39,7 +40,7 @@ export default function TourComponent(): JSX.Element {
       isFirstRender.current = false; // Mark as already checked
       if (userInfo?.hasCompletedTour === false) {
         navigate('/'); // Redirect to the main page
-        setIsOpen(true);
+        startTour(); // Start the tour
       }
     }
   }, [userInfo, navigate]);
@@ -52,7 +53,7 @@ export default function TourComponent(): JSX.Element {
   const handleTourClose = async () => {
     if (!userInfo) return;
 
-    setIsOpen(false);
+    endTour();
 
     try {
       await updateUserInfo({
@@ -68,7 +69,7 @@ export default function TourComponent(): JSX.Element {
 
   return (
     <Tour
-      open={isOpen}
+      open={isTourOpen}
       onClose={handleTourClose}
       current={currentStep}
       onChange={handleTourStepChange}

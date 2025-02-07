@@ -11,12 +11,15 @@ import { useGetBacklogsQuery } from '../api/backlog';
 import { useGetAllProjectsQuery } from '../api/project';
 import { Sprint, useGetSprintsQuery } from '../api/sprint';
 import { Backlog } from '../api/types';
+import TourButton from '../components/tour/TourButton';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 import PageHeader from '../components/pageheader/PageHeader';
 
 export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const { currentProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
   const { data: backlogs, isLoading: isBacklogsLoading } = useGetBacklogsQuery();
   const { data: sprints } = useGetSprintsQuery();
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   const { data: projects } = useGetAllProjectsQuery();
 
@@ -57,6 +60,11 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
         <PageHeader
           title="Home"
           subTitle={`Welcome, ${userInfo.userDisplayName}`}
+          buttons={
+            featureFlags?.some((flag) => flag.feature_name === 'onboarding_tour' && flag.active)
+              ? [<TourButton key="tour" />]
+              : []
+          }
         />
         <Row gutter={[16, 16]} itemType="flex">
           <Col xs={24} xl={12}>
