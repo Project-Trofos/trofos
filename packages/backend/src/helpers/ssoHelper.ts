@@ -113,9 +113,16 @@ const getCachedIdpStaff = async () => {
 };
 
 const SAML_CLAIMS = {
-  EMAIL: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn',
+  UPN: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn',
+  EMAIL_ADDRESS: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
   SURNAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
   GIVEN_NAME: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
 };
 
-export { getCachedSp, getCachedSpStaff, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS, SSORoles };
+const STAFF_SAML_ATTRIBUTES = {
+  UPN: 'UPN',
+  DISPLAY_NAME: 'DisplayName',
+  EMAIL_ADDRESS: 'emailaddress',
+};
+
+export { getCachedSp, getCachedSpStaff, getCachedIdp, getCachedIdpStaff, SAML_CLAIMS, STAFF_SAML_ATTRIBUTES, SSORoles };
