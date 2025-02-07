@@ -10,8 +10,9 @@ import { RoleInformation } from '../../services/types/role.service.types';
 import userService from '../../services/user.service';
 import { userData } from '../mocks/userData';
 import { User } from '@prisma/client';
-import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff } from '../../helpers/ssoHelper';
+import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff, SSORoles } from '../../helpers/ssoHelper';
 import { UpdateUserData } from '../../helpers/types/user.service.types';
+import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../../helpers/constants';
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 const MOCK_CODE = 'mockCode';
@@ -22,6 +23,7 @@ const spies = {
   authenticationServiceValidateUser: jest.spyOn(authenticationService, 'validateUser'),
   authenticationServiceOauth2Handler: jest.spyOn(authenticationService, 'oauth2Handler'),
   authenticationServiceSamlHandler: jest.spyOn(authenticationService, 'samlHandler'),
+  authenticationServiceSamlHandlerStaff: jest.spyOn(authenticationService, 'samlHandlerStaff'),
   sessionServiceCreateUserSession: jest.spyOn(sessionService, 'createUserSession'),
   sessionServiceDeleteUserSession: jest.spyOn(sessionService, 'deleteUserSession'),
   sessionServiceGetUserSession: jest.spyOn(sessionService, 'getUserSession'),
@@ -474,6 +476,147 @@ describe('account.controller tests', () => {
       expect(getCachedIdpStaff).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(mockRes._getJSONData()).toEqual({ error: 'Failed to fetch Staff SP' });
+    });
+  });
+
+  describe('processSAMLResponse', () => {
+    it('should return error if SAML response is not provided', async () => {
+      const mockReq = createRequest();
+      mockReq.body = {
+        RelayState: SSORoles.STUDENT,
+      };
+
+      const mockRes = createResponse();
+      mockRes.redirect = jest.fn();
+      mockRes.cookie = jest.fn();
+
+      await authentication.processSAMLResponse(mockReq, mockRes);
+
+      expect(spies.authenticationServiceSamlHandler).not.toHaveBeenCalled();
+      expect(mockRes.redirect).not.toHaveBeenCalled();
+      expect(mockRes.cookie).not.toHaveBeenCalled();
+
+      expect(mockRes.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Missing SAMLResponse' });
+    });
+
+    it('should return an error if RelayState sso role is invalid', async () => {
+      const mockReq = createRequest();
+      mockReq.body = {
+        SAMLResponse: 'mock-saml-response',
+        RelayState: 'INVALID_ROLE',
+      };
+
+      const mockRes = createResponse();
+      mockRes.redirect = jest.fn();
+      mockRes.cookie = jest.fn();
+
+      await authentication.processSAMLResponse(mockReq, mockRes);
+
+      expect(spies.authenticationServiceSamlHandler).not.toHaveBeenCalled();
+      expect(mockRes.redirect).not.toHaveBeenCalled();
+      expect(mockRes.cookie).not.toHaveBeenCalled();
+
+      expect(mockRes.statusCode).toBe(StatusCodes.BAD_REQUEST);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Invalid SSO role' });
+    });
+
+    it('should successfully authenticate a student and set session cookie', async () => {
+      // Mocking the parsed SAML response and services
+      const mockReq = createRequest();
+      mockReq.body = {
+        SAMLResponse: 'mock-saml-response',
+        RelayState: SSORoles.STUDENT,
+      };
+
+      const mockRes: any = {
+        cookie: jest.fn(),
+        redirect: jest.fn(),
+      };
+
+      const mockExtract = { attributes: { email: 'test@student.com' } };
+      const mockUserInfo: User = {
+        user_id: 1,
+        user_email: 'test@student.com',
+        user_display_name: 'Test Student',
+        user_password_hash: null,
+        has_completed_tour: false,
+      };
+      const mockRoleInfo: RoleInformation = { roleId: STUDENT_ROLE_ID, roleActions: [], isAdmin: false };
+      const mockSessionId = 'mock-session-id';
+
+      // Mock `sp.parseLoginResponse` and related SAML functions
+      mockSp.parseLoginResponse.mockResolvedValue({ extract: mockExtract });
+
+      spies.authenticationServiceSamlHandler.mockResolvedValue(mockUserInfo);
+      spies.roleServiceGetRoleInformation.mockResolvedValue(mockRoleInfo);
+      spies.sessionServiceCreateUserSession.mockResolvedValue(mockSessionId);
+
+      await authentication.processSAMLResponse(mockReq, mockRes);
+
+      // Assertions
+      expect(mockSp.parseLoginResponse).toHaveBeenCalledWith(mockIdp, 'post', mockReq);
+      expect(authenticationService.samlHandler).toHaveBeenCalledWith(mockExtract.attributes);
+      expect(roleService.getUserRoleInformation).toHaveBeenCalledWith(mockUserInfo.user_id);
+      expect(sessionService.createUserSession).toHaveBeenCalledWith(
+        mockUserInfo.user_email,
+        mockRoleInfo,
+        mockUserInfo.user_id,
+      );
+      expect(mockRes.cookie).toHaveBeenCalledWith(TROFOS_SESSIONCOOKIE_NAME, mockSessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+      expect(mockRes.redirect).toHaveBeenCalledWith('/');
+    });
+
+    it('should successfully authenticate a staff and set session cookie', async () => {
+      // Mocking the parsed SAML response and services
+      const mockReq = createRequest();
+      mockReq.body = {
+        SAMLResponse: 'mock-saml-response',
+        RelayState: SSORoles.STAFF,
+      };
+
+      const mockRes: any = {
+        cookie: jest.fn(),
+        redirect: jest.fn(),
+      };
+
+      const mockExtract = { attributes: { email: 'test@staff.com' } };
+      const mockUserInfo: User = {
+        user_id: 1,
+        user_email: 'test@staff.com',
+        user_display_name: 'Test Staff',
+        user_password_hash: null,
+        has_completed_tour: false,
+      };
+      const mockRoleInfo: RoleInformation = { roleId: FACULTY_ROLE_ID, roleActions: [], isAdmin: false };
+      const mockSessionId = 'mock-session-id';
+
+      // Mock `sp.parseLoginResponse` and related SAML functions
+      mockSp.parseLoginResponse.mockResolvedValue({ extract: mockExtract });
+
+      spies.authenticationServiceSamlHandlerStaff.mockResolvedValue(mockUserInfo);
+      spies.roleServiceGetRoleInformation.mockResolvedValue(mockRoleInfo);
+      spies.sessionServiceCreateUserSession.mockResolvedValue(mockSessionId);
+
+      await authentication.processSAMLResponse(mockReq, mockRes);
+
+      // Assertions
+      expect(mockSp.parseLoginResponse).toHaveBeenCalledWith(mockIdp, 'post', mockReq);
+      expect(authenticationService.samlHandlerStaff).toHaveBeenCalledWith(mockExtract.attributes);
+      expect(roleService.getUserRoleInformation).toHaveBeenCalledWith(mockUserInfo.user_id);
+      expect(sessionService.createUserSession).toHaveBeenCalledWith(
+        mockUserInfo.user_email,
+        mockRoleInfo,
+        mockUserInfo.user_id,
+      );
+      expect(mockRes.cookie).toHaveBeenCalledWith(TROFOS_SESSIONCOOKIE_NAME, mockSessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+      expect(mockRes.redirect).toHaveBeenCalledWith('/');
     });
   });
 });
