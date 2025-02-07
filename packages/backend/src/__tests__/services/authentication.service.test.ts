@@ -5,7 +5,7 @@ import authenticationService from '../../services/authentication.service';
 import { UserAuth } from '../../services/types/authentication.service.types';
 import { userData } from '../mocks/userData';
 import engineOauth2 from '../../auth/engine.oauth2';
-import { SAML_CLAIMS } from '../../helpers/ssoHelper';
+import { SAML_CLAIMS, STAFF_SAML_ATTRIBUTES } from '../../helpers/ssoHelper';
 import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../../helpers/constants';
 
 const MOCK_CODE = 'mockCode';
@@ -111,7 +111,7 @@ describe('authentication.service tests', () => {
   });
 
   describe('samlHandler', () => {
-    it('should throw error if extract has no email address attribute', async () => {
+    it('should throw error if extract has no UPN attribute', async () => {
       const mockExtract = {
         [SAML_CLAIMS.GIVEN_NAME]: 'firstName',
         [SAML_CLAIMS.SURNAME]: 'lastName',
@@ -120,7 +120,7 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'user@test.com',
+        [SAML_CLAIMS.UPN]: 'user@test.com',
         [SAML_CLAIMS.GIVEN_NAME]: 'New',
         [SAML_CLAIMS.SURNAME]: 'User',
       };
@@ -151,7 +151,7 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if extract has no surname, given name attribute', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'user@test.com',
+        [SAML_CLAIMS.UPN]: 'user@test.com',
       };
 
       const newUser: User = {
@@ -180,7 +180,7 @@ describe('authentication.service tests', () => {
     });
     it('should return existing user information if the email already exists', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testUser@test.com',
+        [SAML_CLAIMS.UPN]: 'testUser@test.com',
         [SAML_CLAIMS.GIVEN_NAME]: 'Test',
         [SAML_CLAIMS.SURNAME]: 'User',
       };
@@ -194,7 +194,7 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user with lowercase email if the email is in uppercase', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'USER@TEST.COM',
+        [SAML_CLAIMS.UPN]: 'USER@TEST.COM',
         [SAML_CLAIMS.GIVEN_NAME]: 'Upper',
         [SAML_CLAIMS.SURNAME]: 'Case',
       };
@@ -235,9 +235,8 @@ describe('authentication.service tests', () => {
     });
     it('should create a new user if the email does not exist in the database', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'user@test.com',
-        [SAML_CLAIMS.GIVEN_NAME]: 'New',
-        [SAML_CLAIMS.SURNAME]: 'User',
+        [STAFF_SAML_ATTRIBUTES.UPN]: 'user@test.com',
+        [STAFF_SAML_ATTRIBUTES.DISPLAY_NAME]: 'New User',
       };
 
       const newUser: User = {
@@ -264,9 +263,9 @@ describe('authentication.service tests', () => {
         },
       });
     });
-    it('should create a new user if extract has no surname, given name attribute', async () => {
+    it('should create a new user if extract has no display name attribute', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'user@test.com',
+        [STAFF_SAML_ATTRIBUTES.UPN]: 'user@test.com',
       };
 
       const newUser: User = {
@@ -295,9 +294,8 @@ describe('authentication.service tests', () => {
     });
     it('should return existing user information if the email already exists', async () => {
       const mockExtract = {
-        [SAML_CLAIMS.EMAIL]: 'testUser@test.com',
-        [SAML_CLAIMS.GIVEN_NAME]: 'Test',
-        [SAML_CLAIMS.SURNAME]: 'User',
+        [STAFF_SAML_ATTRIBUTES.UPN]: 'testUser@test.com',
+        [STAFF_SAML_ATTRIBUTES.DISPLAY_NAME]: 'Test User',
       };
 
       prismaMock.user.upsert.mockResolvedValueOnce(userData[0]);
@@ -310,9 +308,8 @@ describe('authentication.service tests', () => {
   });
   it('should create a new user with lowercase email if the email is in uppercase', async () => {
     const mockExtract = {
-      [SAML_CLAIMS.EMAIL]: 'USER@TEST.COM',
-      [SAML_CLAIMS.GIVEN_NAME]: 'Upper',
-      [SAML_CLAIMS.SURNAME]: 'Case',
+      [STAFF_SAML_ATTRIBUTES.UPN]: 'USER@TEST.COM',
+      [STAFF_SAML_ATTRIBUTES.DISPLAY_NAME]: 'Upper Case',
     };
 
     const expectedUser: User = {

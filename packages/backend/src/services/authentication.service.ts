@@ -4,7 +4,7 @@ import oauth2Engine from '../auth/engine.oauth2';
 import { FACULTY_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 import { UserAuth } from './types/authentication.service.types';
-import { SAML_CLAIMS } from '../helpers/ssoHelper';
+import { SAML_CLAIMS, STAFF_SAML_ATTRIBUTES } from '../helpers/ssoHelper';
 
 async function validateUser(userEmail: string, userPassword: string): Promise<UserAuth> {
   let userAuth: UserAuth;
@@ -61,7 +61,7 @@ async function oauth2Handler(code: string, state: string, callbackUrl: string): 
 }
 
 async function samlHandler(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL];
+  const userEmail = attributes[SAML_CLAIMS.UPN];
   const surname = attributes[SAML_CLAIMS.SURNAME];
   const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
 
@@ -94,10 +94,10 @@ async function samlHandler(attributes: any): Promise<User> {
 }
 
 async function samlHandlerStaff(attributes: any): Promise<User> {
-  const userEmail = attributes[SAML_CLAIMS.EMAIL];
-  const surname = attributes[SAML_CLAIMS.SURNAME];
-  const givenName = attributes[SAML_CLAIMS.GIVEN_NAME];
+  const userEmail = attributes[STAFF_SAML_ATTRIBUTES.UPN];
+  const displayName = attributes[STAFF_SAML_ATTRIBUTES.DISPLAY_NAME];
 
+  // To remove
   console.log('Staff SAML attributes:', attributes);
 
   if (!userEmail) {
@@ -105,7 +105,6 @@ async function samlHandlerStaff(attributes: any): Promise<User> {
   }
 
   const userEmailLowerCase = userEmail.toLowerCase();
-  const displayName = `${givenName || ''} ${surname || ''}`.trim();
 
   // If the user does not exist, we create an account for them
   // Otherwise, we return their account information
