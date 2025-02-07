@@ -17,6 +17,7 @@ export enum StepTarget {
   START_SPRINT_BUTTON = 'start-sprint-button',
   COMPLETE_SPRINT_BUTTON = 'complete-sprint-button',
   RETROSPECTIVE_TAB = 'retrospective-tab',
+  START_TOUR_BUTTON = 'start-tour-button',
 
   // Faculty
   CREATE_COURSE_BUTTON = 'create-course-button',
@@ -107,16 +108,27 @@ export const getStudentSteps = (navigate: NavigateFunction): TourProps['steps'] 
     title: 'Review retrospective',
     description: 'Navigate to the Retrospective tab to document and review lessons learned from the sprint.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.RETROSPECTIVE_TAB}]`) as HTMLElement,
+    nextButtonProps: { onClick: () => navigate('/') },
   },
   {
     title: "That's it!",
-    description: 'Congratulations! You’re now ready to fully navigate and use Trofos effectively.',
+    description: (
+      <Space direction="vertical" size="large">
+        <Row>Congratulations! You’re now ready to fully navigate and use Trofos effectively.</Row>
+        <Row>
+          If you need help at any time, click the "Start Tour" button to revisit this guide. Enjoy your journey with
+          Trofos!
+        </Row>
+      </Space>
+    ),
+    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.START_TOUR_BUTTON}]`) as HTMLElement,
     nextButtonProps: {
       onClick: () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         navigate('/');
       },
     },
+    prevButtonProps: { onClick: () => navigate('/project/example/sprint') },
   },
 ];
 
@@ -177,20 +189,24 @@ export const getFacultySteps = (navigate: NavigateFunction): TourProps['steps'] 
     description:
       'Alternatively, you can bulk create projects using the "Bulk Create" button. This option is great for randomly assigning students to projects.',
     target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.BULK_CREATE_BUTTON}]`) as HTMLElement,
+    nextButtonProps: { onClick: () => navigate('/') },
   },
   {
     title: "You're ready to go!",
     description: (
       <Space direction="vertical">
         <Row>You're all set! Enjoy using Trofos to manage your courses and projects.</Row>
+        <Row>If you need help at any time, click the "Start Tour" button to revisit this guide.</Row>
       </Space>
     ),
+    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.START_TOUR_BUTTON}]`) as HTMLElement,
     nextButtonProps: {
       onClick: () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         navigate('/');
       },
     },
+    prevButtonProps: { onClick: () => navigate('/course/example/overview') },
   },
 ];
 
@@ -234,6 +250,7 @@ export const getAdminSteps = (navigate: NavigateFunction): TourProps['steps'] =>
     title: 'Generate and manage API Keys',
     description:
       'Here, you can view existing API keys or generate new ones. These keys are essential for integrating Trofos with external systems.',
+    nextButtonProps: { onClick: () => navigate('/') },
     prevButtonProps: { onClick: () => navigate('/admin') },
   },
   {
@@ -244,13 +261,16 @@ export const getAdminSteps = (navigate: NavigateFunction): TourProps['steps'] =>
           That's it! You are now ready to manage courses, users, and settings through the admin dashboard. Enjoy using
           Trofos!
         </Row>
+        <Row>If you need help at any time, click the "Start Tour" button to revisit this guide.</Row>
       </Space>
     ),
+    target: () => document.querySelector(`[${STEP_PROP}=${StepTarget.START_TOUR_BUTTON}]`) as HTMLElement,
     nextButtonProps: {
       onClick: () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         navigate('/');
       },
     },
+    prevButtonProps: { onClick: () => navigate('/manage-api-key') },
   },
 ];

@@ -6,9 +6,11 @@ import Title from 'antd/es/typography/Title';
 import { useLoginUserMutation, UserLoginInfo } from '../api/auth';
 import NusSsoButton from '../components/button/NusSsoButton';
 import { Heading } from '../components/typography';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 
 export default function LoginPage(): JSX.Element {
   const [loginUser] = useLoginUserMutation();
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   const navigate = useNavigate();
 
@@ -71,8 +73,12 @@ export default function LoginPage(): JSX.Element {
               </Row>
             </Form.Item>
           </Form>
-          <Typography>Sign in with</Typography>
-          <NusSsoButton />
+          {featureFlags?.some((flag) => flag.feature_name === 'sso_login' && flag.active) && (
+            <>
+              <Typography>Sign in with</Typography>
+              <NusSsoButton />
+            </>
+          )}
         </div>
       </Space>
     </Layout>

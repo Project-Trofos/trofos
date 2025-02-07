@@ -6,19 +6,15 @@ import { message } from 'antd';
 import { getErrorMessage } from '../../helpers/error';
 import { ADMIN_ROLE_ID, STUDENT_ROLE_ID, FACULTY_ROLE_ID } from '../../api/role';
 import { getStudentSteps, getFacultySteps, getAdminSteps } from './TourSteps';
-
-const TOUR_STEP_STORAGE_KEY = 'currentTourStep';
+import { useTourContext } from './TourProvider';
 
 export default function TourComponent(): JSX.Element {
   const { data: userInfo } = useGetUserInfoQuery();
+  const { isTourOpen, startTour, endTour } = useTourContext();
   const [updateUserInfo] = useUpdateUserInfoMutation();
   const navigate = useNavigate();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState<number>(() => {
-    const savedStep = localStorage.getItem(TOUR_STEP_STORAGE_KEY); // Get the saved step from local storage if it exists
-    return savedStep ? parseInt(savedStep, 10) : 0;
-  });
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const isFirstRender = useRef(true);
 
   const roleSteps = useMemo<TourProps['steps']>(() => {
@@ -39,27 +35,22 @@ export default function TourComponent(): JSX.Element {
       isFirstRender.current = false; // Mark as already checked
       if (userInfo?.hasCompletedTour === false) {
         navigate('/'); // Redirect to the main page
-        setIsOpen(true);
+        startTour(); // Start the tour
       }
     }
   }, [userInfo, navigate]);
 
-  const handleTourStepChange = (step: number) => {
-    setCurrentStep(step);
-    localStorage.setItem(TOUR_STEP_STORAGE_KEY, step.toString());
-  };
-
   const handleTourClose = async () => {
     if (!userInfo) return;
 
-    setIsOpen(false);
+    endTour();
 
     try {
       await updateUserInfo({
         userId: userInfo.userId,
         hasCompletedTour: true,
       }).unwrap();
-      localStorage.removeItem(TOUR_STEP_STORAGE_KEY);
+      setCurrentStep(0);
     } catch (error) {
       console.error(getErrorMessage(error));
       message.error('Failed to update tour completion status.');
@@ -68,10 +59,10 @@ export default function TourComponent(): JSX.Element {
 
   return (
     <Tour
-      open={isOpen}
+      open={isTourOpen}
       onClose={handleTourClose}
       current={currentStep}
-      onChange={handleTourStepChange}
+      onChange={setCurrentStep}
       steps={roleSteps}
       disabledInteraction={true}
       mask={false}

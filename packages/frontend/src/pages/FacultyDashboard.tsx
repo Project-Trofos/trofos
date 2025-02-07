@@ -7,12 +7,15 @@ import { useCurrentAndPastCourses, useCurrentAndPastProjects } from '../api/hook
 import Container from '../components/layouts/Container';
 import CourseTable from '../components/tables/CourseTable';
 import PageHeader from '../components/pageheader/PageHeader';
+import TourButton from '../components/tour/TourButton';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 
 export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const [isPastProject, setIsPastProject] = useState(false);
   const [isPastCourse, setIsPastCourse] = useState(false);
   const { currentProjects, pastProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
   const { currentCourses, pastCourses, isLoading: isCourseLoading } = useCurrentAndPastCourses();
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   const projectControl = useMemo(
     () => (
@@ -40,6 +43,11 @@ export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): 
         <PageHeader
           title="Home"
           subTitle={`Welcome, ${userInfo.userDisplayName}`}
+          buttons={
+            featureFlags?.some((flag) => flag.feature_name === 'onboarding_tour' && flag.active)
+              ? [<TourButton key="tour" />]
+              : []
+          }
         />
         <Card>
           <CourseTable

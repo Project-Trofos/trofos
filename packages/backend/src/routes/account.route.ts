@@ -3,6 +3,8 @@ import multer from 'multer';
 import account from '../controllers/account';
 import { hasAuth } from '../middleware/auth.middleware';
 import userPolicy from '../policies/user.policy';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
+import { Feature } from '@prisma/client';
 
 const router = express.Router();
 const upload = multer();
@@ -21,10 +23,10 @@ router.post('/changePassword', hasAuth(null, userPolicy.POLICY_NAME), account.ch
 
 router.post('/updateUser', hasAuth(null, userPolicy.POLICY_NAME), account.updateUser);
 
-router.post('/generateSAMLReq/student', account.generateSAMLRequest);
+router.post('/generateSAMLReq/student', checkFeatureFlag(Feature.sso_login), account.generateSAMLRequest);
 
-router.post('/generateSAMLReq/staff', account.generateSAMLRequestStaff);
+router.post('/generateSAMLReq/staff', checkFeatureFlag(Feature.sso_login), account.generateSAMLRequestStaff);
 
-router.post('/callback/saml', upload.none(), account.processSAMLResponse);
+router.post('/callback/saml', checkFeatureFlag(Feature.sso_login), upload.none(), account.processSAMLResponse);
 
 export default router;
