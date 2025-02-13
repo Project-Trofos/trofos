@@ -362,4 +362,10 @@ export type UserGuideQueryResponse = {
 export type FeatureFlag = {
   feature_name: string;
   active: boolean;
-}
+};
+
+export type ProjectAssignment = {
+  id: number;
+  targetProjectId: number;
+  sourceProjectId: number;
+};

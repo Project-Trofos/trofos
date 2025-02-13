@@ -10,7 +10,7 @@ const newBacklog = async (req: express.Request, res: express.Response) => {
   try {
     const backlog: Backlog = await backlogService.newBacklog(req.body);
     const { projectId, summary, priority }: BacklogFields = req.body;
-    sendToProject(projectId, `Backlog added: ${summary}, priority: ${priority}`)
+    sendToProject(projectId, `Backlog added: ${summary}, priority: ${priority}`);
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -62,7 +62,7 @@ const updateBacklog = async (req: express.Request, res: express.Response) => {
       throw new BadRequestError('projectId or backlogId cannot be empty');
     }
     const backlog: Backlog = await backlogService.updateBacklog(req.body);
-    sendToProject(projectId, `Backlog ${backlogId} updated, fields updated: ${Object.keys(fieldToUpdate)}`)
+    sendToProject(projectId, `Backlog ${backlogId} updated, fields updated: ${Object.keys(fieldToUpdate)}`);
 
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
@@ -77,7 +77,7 @@ const deleteBacklog = async (req: express.Request, res: express.Response) => {
       throw new BadRequestError('projectId or backlogId cannot be empty');
     }
     const backlog: Backlog = await backlogService.deleteBacklog(Number(projectId), Number(backlogId));
-    sendToProject(Number(projectId), `Backlog ${backlogId} deleted`)
+    sendToProject(Number(projectId), `Backlog ${backlogId} deleted`);
 
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
@@ -91,12 +91,8 @@ const createEpic = async (req: express.Request, res: express.Response) => {
     assertProjectIdIsValid(projectId);
     assertEpicNameIsValid(name);
 
-    const epic: Epic = await backlogService.createEpic(
-      Number(projectId),
-      name,
-      description,
-    );
-    sendToProject(Number(projectId), `Epic created: ${name}`)
+    const epic: Epic = await backlogService.createEpic(Number(projectId), name, description);
+    sendToProject(Number(projectId), `Epic created: ${name}`);
     return res.status(StatusCodes.OK).json(epic);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -152,7 +148,11 @@ const addBacklogToEpic = async (req: express.Request, res: express.Response) => 
     if (!epic || epic.project_id !== Number(projectId)) {
       throw new BadRequestError('Adding backlog to an epic of different project is not allowed');
     }
-    const backlog: Backlog = await backlogService.addBacklogToEpic(Number(projectId), Number(epicId), Number(backlogId));
+    const backlog: Backlog = await backlogService.addBacklogToEpic(
+      Number(projectId),
+      Number(epicId),
+      Number(backlogId),
+    );
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -169,7 +169,11 @@ const removeBacklogFromEpic = async (req: express.Request, res: express.Response
     if (!epic || epic.project_id !== Number(projectId)) {
       throw new BadRequestError('Removing backlog from an epic of different project is not allowed');
     }
-    const backlog: Backlog = await backlogService.removeBacklogFromEpic(Number(projectId), Number(epicId), Number(backlogId));
+    const backlog: Backlog = await backlogService.removeBacklogFromEpic(
+      Number(projectId),
+      Number(epicId),
+      Number(backlogId),
+    );
     return res.status(StatusCodes.OK).json(backlog);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -183,13 +187,35 @@ const deleteEpic = async (req: express.Request, res: express.Response) => {
       throw new BadRequestError('epicId cannot be empty');
     }
     const epic: Epic = await backlogService.deleteEpic(Number(epicId));
-    sendToProject(Number(epic.project_id), `Epic ${epic.name} deleted`)
+    sendToProject(Number(epic.project_id), `Epic ${epic.name} deleted`);
 
     return res.status(StatusCodes.OK).json(epic);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
 };
+
+// const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
+// async function validateIssueSubmission(req: express.Request, res: express.Response, next: express.NextFunction) {
+//   const { projectId, assignedToProjectId } = req.body;
+
+//   if (!projectId || !assignedToProjectId) {
+//     return res.status(StatusCodes.BAD_REQUEST).send('Missing projectId or assignedToProjectId.');
+//   }
+
+//   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
+
+//   if (sessionId === undefined) {
+//     return res.status(StatusCodes.UNAUTHORIZED).send();
+//   }
+
+//   const assignedGroups = issueService.getAssignedGroups(projectId);
+
+//   if (!assignedGroups.includes(assignedToProjectId)) {
+//     return res.status(StatusCodes.FORBIDDEN).send('Unauthorized to report issues to this group.');
+//   }
+//   next();
+// }
 
 export default {
   newBacklog,
