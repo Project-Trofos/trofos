@@ -1,6 +1,6 @@
 import express from 'express';
 import { assertProjectIdIsValid } from '../helpers/error';
-import projectAssignmentservice from '../services/projectAssignmentservice';
+import projectAssignmentservice from '../services/projectAssignment.service';
 import { StatusCodes } from 'http-status-codes';
 import { getDefaultErrorRes } from '../helpers/error';
 import { assertIdIsValidNumber } from '../helpers/error/assertions';

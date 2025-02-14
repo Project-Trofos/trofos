@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCourse, useProject } from '../../api/hooks';
-import { Button, Card, Col, Collapse, CollapseProps, message, Row, Select, Spin, Typography } from 'antd';
+import { Button, Card, Col, Collapse, CollapseProps, Flex, message, Row, Select, Space, Spin, Typography } from 'antd';
 import { ProjectData, Project } from '../../api/types';
 import { useAssignProjectMutation, useRemoveProjectAssignmentMutation } from '../../api/project';
 import { getErrorMessage } from '../../helpers/error';
 import { DeleteOutlined } from '@ant-design/icons';
+import ImportProjectAssignmentModal from '../../components/modals/ImportProjectAssignmentModal';
 
 const { Title } = Typography;
 
@@ -25,7 +26,14 @@ export default function CourseProjectAssignments(): JSX.Element {
     extra: <ProjectsSelector project={project} projects={sortedProjects} />,
   }));
 
-  return <Collapse items={items} collapsible="header" />;
+  return (
+    <Space direction="vertical" style={{ width: '100%' }}>
+      <Flex justify="flex-end">
+        <ImportProjectAssignmentModal />
+      </Flex>
+      <Collapse items={items} />
+    </Space>
+  );
 }
 
 const ProjectAssignmentCardContent = ({ project }: { project: ProjectData }) => {

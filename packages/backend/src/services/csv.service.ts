@@ -1,6 +1,6 @@
 import * as csv from '@fast-csv/parse';
 import { validate } from 'email-validator';
-import { Prisma } from '@prisma/client';
+import { Prisma, Project, ProjectAssignment } from '@prisma/client';
 import {
   getGroupData,
   getUserData,
@@ -13,6 +13,9 @@ import {
   INVALID_ROLE,
   INVALID_TEAM_NAME,
   MESSAGE_SPACE,
+  ImportProjectAssignmentsCsv,
+  INVALID_PROPERTIES,
+  INVALID_PROJECT_NAME,
 } from './types/csv.service.types';
 import { ADMIN_ROLE_ID, ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
 import prisma from '../models/prismaClient';
@@ -49,7 +52,7 @@ function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowVa
     errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
   }
   if (errorMessages) {
-    return callback(null, false, errorMessages.trimRight());
+    return callback(null, false, errorMessages.trimEnd());
   }
   return callback(null, true);
 }
@@ -209,11 +212,126 @@ async function importCourseData(csvFilePath: string, courseId: number): Promise<
       })
       .on('finish', async () => {
         if (errorMessages) {
-          reject(errorMessages.trimRight());
+          reject(errorMessages.trimEnd());
           return;
         }
         try {
           await processImportCourseData(courseId, userDetailsMap, groupDetailsMap, userGroupingMap);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+  });
+}
+
+function validateCorrectProperties(data: ImportProjectAssignmentsCsv, expectedProperties?: string[]): boolean {
+  if (!expectedProperties) return true;
+  return Object.keys(data).length === expectedProperties.length && expectedProperties.every((key) => key in data);
+}
+
+function validateProjectName(projectName: unknown): boolean {
+  if (typeof projectName !== 'string') return false; // Ensure it's a string
+  const trimmedName = projectName.trim();
+  return trimmedName.length > 0;
+}
+
+function validateProjectAssignmentData(
+  data: ImportProjectAssignmentsCsv,
+  projectGroups: Map<string, Project[]>,
+  callback: csv.RowValidateCallback,
+) {
+  let errorMessages = '';
+  if (!validateCorrectProperties(data, ['sourceProjectGroup', 'targetProjectGroup'])) {
+    errorMessages += INVALID_PROPERTIES + MESSAGE_SPACE;
+  }
+  if (!validateProjectName(data.sourceProjectGroup) || !validateProjectName(data.targetProjectGroup)) {
+    errorMessages += INVALID_PROJECT_NAME + MESSAGE_SPACE;
+  }
+  if (!projectGroups.has(data.sourceProjectGroup) || !projectGroups.has(data.targetProjectGroup)) {
+    errorMessages += `Invalid assignment: Source or target project not found${MESSAGE_SPACE}`;
+  }
+  if ((projectGroups.get(data.sourceProjectGroup)?.length ?? 0) > 1) {
+    errorMessages += `Duplicate project name: ${data.sourceProjectGroup}${MESSAGE_SPACE}`;
+  }
+  if ((projectGroups.get(data.targetProjectGroup)?.length ?? 0) > 1) {
+    errorMessages += `Duplicate project name: ${data.targetProjectGroup}${MESSAGE_SPACE}`;
+  }
+  if (errorMessages) {
+    return callback(null, false, errorMessages.trimEnd());
+  }
+  return callback(null, true);
+}
+
+// Do nothing if project assignment already exists
+async function processImportProjectAssignments(
+  assignments: Pick<ProjectAssignment, 'sourceProjectId' | 'targetProjectId'>[],
+) {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    for (const assignment of assignments) {
+      await tx.projectAssignment.upsert({
+        where: {
+          sourceProjectId_targetProjectId: {
+            sourceProjectId: assignment.sourceProjectId,
+            targetProjectId: assignment.targetProjectId,
+          },
+        },
+        update: {},
+        create: assignment,
+      });
+    }
+  });
+}
+
+async function importProjectAssignments(csvFilePath: string, courseId: number): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    let errorMessages = '';
+    const projectGroups = new Map<string, Project[]>();
+    const assignments: Pick<ProjectAssignment, 'sourceProjectId' | 'targetProjectId'>[] = [];
+
+    // Preprocess project data
+    const courseProjects = await prisma.project.findMany({
+      where: {
+        course_id: courseId,
+      },
+    });
+    for (const project of courseProjects) {
+      if (!projectGroups.has(project.pname)) {
+        projectGroups.set(project.pname, []);
+      }
+      projectGroups.get(project.pname)?.push(project);
+    }
+
+    const csvParseStream = csv.parseFile<ImportProjectAssignmentsCsv, ImportProjectAssignmentsCsv>(
+      csvFilePath,
+      IMPORT_COURSE_DATA_CONFIG,
+    );
+    csvParseStream
+      .validate((data: ImportProjectAssignmentsCsv, callback: csv.RowValidateCallback): void => {
+        validateProjectAssignmentData(data, projectGroups, callback);
+      })
+      .on('error', (error) => {
+        errorMessages += `Error: ${error.message}${MESSAGE_SPACE}`;
+      })
+      .on('data-invalid', (row, rowNumber, reason) => {
+        errorMessages += `Invalid: [rowNumber=${rowNumber}] [row=${row}] [reason=${reason}] ${MESSAGE_SPACE}`;
+      })
+      .on('data', (row: ImportProjectAssignmentsCsv) => {
+        const sourceProject = projectGroups.get(row.sourceProjectGroup)?.at(0)!;
+        const targetProject = projectGroups.get(row.targetProjectGroup)?.at(0)!;
+
+        assignments.push({
+          sourceProjectId: sourceProject.id,
+          targetProjectId: targetProject.id,
+        });
+      })
+      .on('finish', async () => {
+        if (errorMessages) {
+          reject(errorMessages.trim());
+          return;
+        }
+        try {
+          await processImportProjectAssignments(assignments);
           resolve();
         } catch (error) {
           reject(error);
@@ -227,4 +345,5 @@ export default {
   validateImportCourseData,
   transformImportCourseData,
   processImportCourseData,
+  importProjectAssignments,
 };

@@ -320,6 +320,11 @@ export type CourseImportCsvPayload = {
   payload: FormData;
 };
 
+export type ProjectAssignmentImportPayload = {
+  courseId: number;
+  payload: FormData;
+};
+
 export type Feedback = {
   id: number;
   user_id?: number;
