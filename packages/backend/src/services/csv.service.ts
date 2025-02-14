@@ -346,4 +346,6 @@ export default {
   transformImportCourseData,
   processImportCourseData,
   importProjectAssignments,
+  processImportProjectAssignments,
+  validateProjectAssignmentData,
 };

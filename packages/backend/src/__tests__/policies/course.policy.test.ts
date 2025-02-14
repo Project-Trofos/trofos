@@ -28,7 +28,7 @@ describe('course.policy tests', () => {
       spies.canManageCourse.mockResolvedValueOnce(true);
       const mockReq = createRequest();
       mockReq.params = {
-        courseId: 'TEST_ID',
+        courseId: '1',
         courseYear: '2022',
         courseSem: '1',
       };
@@ -40,7 +40,7 @@ describe('course.policy tests', () => {
       expect(policyOutcome.policyConstraint).not.toBeNull();
     });
   });
-  
+
   describe('applyCoursePolicyExternalApiCall', () => {
     it('should return a valid outcome if the user request has no parameters', async () => {
       const mockReq = createRequest();
@@ -56,7 +56,7 @@ describe('course.policy tests', () => {
       spies.canManageCourse.mockResolvedValueOnce(true);
       const mockReq = createRequest();
       mockReq.params = {
-        courseId: 'TEST_ID',
+        courseId: '1',
         courseYear: '2022',
         courseSem: '1',
       };

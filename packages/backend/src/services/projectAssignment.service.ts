@@ -7,11 +7,9 @@ async function create(sourceProjectId: number, targetProjectId: number): Promise
   const [sourceProject, targetProject] = await prisma.$transaction([
     prisma.project.findUnique({
       where: { id: sourceProjectId },
-      select: { course_id: true },
     }),
     prisma.project.findUnique({
       where: { id: targetProjectId },
-      select: { course_id: true },
     }),
   ]);
 

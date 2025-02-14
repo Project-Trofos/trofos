@@ -1,5 +1,5 @@
 import express from 'express';
-import { assertProjectIdIsValid } from '../helpers/error';
+import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import projectAssignmentservice from '../services/projectAssignment.service';
 import { StatusCodes } from 'http-status-codes';
 import { getDefaultErrorRes } from '../helpers/error';
@@ -13,7 +13,7 @@ async function create(req: express.Request, res: express.Response) {
     assertProjectIdIsValid(targetProjectId);
 
     if (sourceProjectId === targetProjectId) {
-      throw new Error('Projects cannot be the same.');
+      throw new BadRequestError('Projects cannot be the same.');
     }
 
     const projectAssignment = await projectAssignmentservice.create(Number(sourceProjectId), Number(targetProjectId));
