@@ -195,28 +195,6 @@ const deleteEpic = async (req: express.Request, res: express.Response) => {
   }
 };
 
-// const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
-// async function validateIssueSubmission(req: express.Request, res: express.Response, next: express.NextFunction) {
-//   const { projectId, assignedToProjectId } = req.body;
-
-//   if (!projectId || !assignedToProjectId) {
-//     return res.status(StatusCodes.BAD_REQUEST).send('Missing projectId or assignedToProjectId.');
-//   }
-
-//   const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
-
-//   if (sessionId === undefined) {
-//     return res.status(StatusCodes.UNAUTHORIZED).send();
-//   }
-
-//   const assignedGroups = issueService.getAssignedGroups(projectId);
-
-//   if (!assignedGroups.includes(assignedToProjectId)) {
-//     return res.status(StatusCodes.FORBIDDEN).send('Unauthorized to report issues to this group.');
-//   }
-//   next();
-// }
-
 export default {
   newBacklog,
   listBacklogsByProjectId,
