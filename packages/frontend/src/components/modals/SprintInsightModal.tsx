@@ -1,8 +1,10 @@
-import { Button, Modal } from "antd";
-import { useState } from "react";
+import { Button, Card, Modal } from "antd";
+import { useRef, useState } from "react";
 import { useGetSprintInsightsQuery } from "../../api/sprint";
 import * as motion from "motion/react-client";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, MotionValue, useScroll, useSpring, useTransform } from "motion/react";
+import { SprintInsight } from "../../api/types";
+import MarkdownViewer from "../editor/MarkdownViewer";
 
 const HoverTextButton = ({
   onClick,
@@ -52,6 +54,14 @@ const HoverTextButton = ({
   );
 };
 
+function Insight({ insight }: { insight: SprintInsight }) {
+  return (
+    <Card className="insight-card">
+      <MarkdownViewer markdown={insight.content} />
+    </Card>
+  );
+}
+
 function SprintInsightModal({
   sprintId,
 }: {
@@ -63,18 +73,26 @@ function SprintInsightModal({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: sprintInsights } = useGetSprintInsightsQuery(sprintId);
+
   return (
     <>
       <HoverTextButton onClick={() => setIsModalOpen(true)}/>
       <Modal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
+        style={{
+          height: '80vh',
+          overflowY: 'auto',
+          borderRadius: '10px',
+        }}
+        footer={[
+          <Button key="close" onClick={() => setIsModalOpen(false)}>
+            Close
+          </Button>
+        ]}
       >
         {sprintInsights?.map((insight) => (
-          <>
-            {insight?.category}
-            {insight?.content}
-          </>
+          <Insight key={insight.id} insight={insight} />
         ))}
       </Modal>
     </>
