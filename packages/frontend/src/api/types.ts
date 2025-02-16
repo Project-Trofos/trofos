@@ -362,4 +362,11 @@ export type UserGuideQueryResponse = {
 export type FeatureFlag = {
   feature_name: string;
   active: boolean;
-}
+};
+
+export type SprintInsight = {
+  id: number;
+  sprint_id: number;
+  category: string;
+  content: string;
+};
