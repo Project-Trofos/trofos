@@ -73,11 +73,12 @@ const listActiveSprint = async (req: express.Request, res: express.Response) => 
 const updateSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { sprintId, dates, duration, status } = req.body;
+    const user = res.locals.userSession as UserSession | undefined;
     assertSprintIdIsValid(sprintId);
     assertSprintDurationIsValid(duration);
     assertSprintDatesAreValid(dates);
     const sprint: Sprint = await (status
-      ? sprintService.updateSprintStatus(req.body)
+      ? sprintService.updateSprintStatus(req.body, user?.user_email || '')
       : sprintService.updateSprint(req.body));
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {

@@ -13,6 +13,7 @@ import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
+import { publishTask } from '../helpers/aiInsightHelper';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));
@@ -194,6 +195,7 @@ async function updateSprint(
 
 async function updateSprintStatus(
   sprintToUpdate: Pick<SprintFields, 'projectId' | 'status'> & { sprintId: number },
+  user: string,
 ): Promise<Sprint> {
   const { sprintId, projectId, status } = sprintToUpdate;
 
@@ -236,6 +238,11 @@ async function updateSprintStatus(
 
       return updatedCurrentSprint;
     });
+  }
+
+  // publish event to generate retrospective insights
+  if (status === 'completed') {
+    publishTask(projectId, sprintId, user);
   }
 
   const updatedSprint = await prisma.sprint.update({
