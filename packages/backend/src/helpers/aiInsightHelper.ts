@@ -26,5 +26,3 @@ const publishTask = async (projectId: number, sprintId: number, user: string) =>
 export {
   publishTask,
 };
-
-publishTask(1, 1, 'user1');

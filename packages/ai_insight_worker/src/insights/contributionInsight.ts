@@ -11,7 +11,7 @@ type BacklogWithAssignee = (Backlog & {
   }) | null;
 });
 
-async function generateContributionInsights(projectId: number, sprintId: number, user: string): Promise<String> {
+async function generateContributionInsights(projectId: number, sprintId: number, user: string): Promise<string> {
   const backlogsThisSprint: BacklogWithAssignee[] = await prisma.backlog.findMany({
     where: {
       sprint_id: sprintId,
@@ -81,6 +81,9 @@ Format your response with headings and short paragraphs. Speak plainly and give 
 Incomplete backlogs:\n${incompleteBacklogsStr}
 User story point contributions:\n${userStoryPointContributionsStr}
 `;
+
+  console.log(`Contributions Prompt: ${prompt}`)
+
   const res = await openAi.chat.completions.create({
     messages: [
       {
@@ -105,8 +108,6 @@ User story point contributions:\n${userStoryPointContributionsStr}
     model: "gpt-4o-mini",
     user: user
   });
-  
-  console.log(res.choices[0].message.content ?? "No response from AI model");
 
   return res.choices[0].message.content ?? "No response from AI model";
 }
@@ -114,5 +115,3 @@ User story point contributions:\n${userStoryPointContributionsStr}
 export {
   generateContributionInsights,
 }
-
-generateContributionInsights(56, 406, "bo.tang");

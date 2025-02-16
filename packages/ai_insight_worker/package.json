@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate"
+    "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate",
+    "start-dev": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",

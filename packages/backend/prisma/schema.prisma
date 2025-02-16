@@ -231,6 +231,7 @@ model Sprint {
   retrospective   Retrospective[]
   feedback        Feedback[]
   collab_notes    Bytes?
+  sprintInsights  SprintInsight[]
 }
 
 model Feedback {
@@ -343,6 +344,16 @@ model FeatureFlag {
   id Int @id @default(autoincrement())
   feature_name Feature @unique
   active Boolean @default(true)
+}
+
+model SprintInsight {
+  id Int @id @default(autoincrement())
+  sprint_id Int
+  sprint Sprint @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  category String
+  content String
+  created_at DateTime @default(now())
+  @@unique([sprint_id, category])
 }
 
 enum Feature {
