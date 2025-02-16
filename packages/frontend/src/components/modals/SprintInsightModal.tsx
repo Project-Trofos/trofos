@@ -85,6 +85,7 @@ function SprintInsightModal({
           overflowY: 'auto',
           borderRadius: '10px',
         }}
+        width={'80vw'}
         footer={[
           <Button key="close" onClick={() => setIsModalOpen(false)}>
             Close

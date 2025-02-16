@@ -28,7 +28,9 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
   }
 
   return (
-    <GenericBoxWithBackground>
+    <GenericBoxWithBackground
+      style={{ overflowX: 'auto' }}
+    >
       <SprintInsightModal sprintId={retrospectiveSprintId}/>
       <Divider />
       <div className="retrospective-container">
