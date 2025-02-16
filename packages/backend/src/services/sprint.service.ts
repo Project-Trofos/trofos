@@ -6,6 +6,7 @@ import {
   Retrospective,
   RetrospectiveVote,
   RetrospectiveVoteType,
+  SprintInsight,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
@@ -411,6 +412,14 @@ async function deleteRetrospectiveVote(retroId: number, userId: number): Promise
   });
 }
 
+async function getSprintInsight(sprintId: number): Promise<SprintInsight[]> {
+  return await prisma.sprintInsight.findMany({
+    where: {
+      sprint_id: sprintId,
+    },
+  });
+}
+
 export default {
   newSprint,
   listSprints,
@@ -426,4 +435,5 @@ export default {
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
   getSprintNotes,
+  getSprintInsight,
 };

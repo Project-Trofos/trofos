@@ -1,4 +1,4 @@
-import { Backlog, Sprint, Retrospective, RetrospectiveVote, UserSession } from '@prisma/client';
+import { Backlog, Sprint, Retrospective, RetrospectiveVote, UserSession, SprintInsight } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import sprintService from '../services/sprint.service';
@@ -203,6 +203,16 @@ const authLiveNotes = async (req: express.Request, res: express.Response) => {
   return res.status(StatusCodes.OK).json({});
 };
 
+const getSprintInsight = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    const insights: SprintInsight[] = await sprintService.getSprintInsight(Number(sprintId));
+    return res.status(StatusCodes.OK).json(insights);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 export default {
   newSprint,
   listSprints,
@@ -218,4 +228,5 @@ export default {
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
   authLiveNotes,
+  getSprintInsight,
 };

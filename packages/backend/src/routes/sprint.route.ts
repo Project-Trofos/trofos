@@ -30,4 +30,6 @@ router.get('/notes/:sprintId', hasAuth(Action.read_project, null), sprint.getSpr
 
 router.get('/:sprintId/live-notes/auth', hasAuth(Action.read_project, null), sprint.authLiveNotes);
 
+router.get('/:sprintId/insight', hasAuth(Action.read_project, null), sprint.getSprintInsight);
+
 export default router;
