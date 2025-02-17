@@ -1,15 +1,19 @@
 import { createClient } from 'redis';
-import { getIo } from '../services/socket.service';
+import { getIo } from './socket.service';
 
-const redis = createClient();
+export const redis = createClient();
+redis.connect();
+
+const subscriber = createClient();
+subscriber.connect();
+
 const TASK_QUEUE_KEY = 'task_aiInsight_queue';
 const TASK_NOTIFICATIONS_CHANNEL = 'task_aiInsight_notifications';
 const TASK_COMPLETED_CHANNEL = 'task_aiInsight_completed';
+export const SPRINT_PROCESSING_SET = 'sprint_processing_set';
 const AI_INSIGHT_WEBSOCKET = 'sprint-insight';
 
 const publishTask = async (projectId: number, sprintId: number, user: string) => {
-  await redis.connect();
-
   // Push the task into the list (atomic queue)
   await redis.lPush(TASK_QUEUE_KEY, JSON.stringify({
     projectId,
@@ -22,13 +26,9 @@ const publishTask = async (projectId: number, sprintId: number, user: string) =>
   // Publish a notification about the new task
   await redis.publish(TASK_NOTIFICATIONS_CHANNEL, 'new_task');
   console.log(`[AI Insight] Notification published for task ${taskId}`);
-
-  await redis.quit();
 };
 
 const initCompleteInsightSub = async () => {
-  const subscriber = createClient();
-  await subscriber.connect();
 
   subscriber.subscribe(TASK_COMPLETED_CHANNEL, async (message) => {
     try {

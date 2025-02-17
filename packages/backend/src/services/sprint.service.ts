@@ -14,7 +14,7 @@ import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
-import { publishTask } from '../helpers/aiInsightHelper';
+import { SPRINT_PROCESSING_SET, publishTask, redis } from './aiInsight.service';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));
@@ -420,6 +420,12 @@ async function getSprintInsight(sprintId: number): Promise<SprintInsight[]> {
   });
 }
 
+async function getSprintInsightGenerating(projectId: number, sprintId: number): Promise<boolean> {
+  const taskKey = `${projectId}:${sprintId}`;
+  const isProcessing = await redis.sIsMember(SPRINT_PROCESSING_SET, taskKey);
+  return isProcessing;
+}
+
 export default {
   newSprint,
   listSprints,
@@ -436,4 +442,5 @@ export default {
   deleteRetrospectiveVote,
   getSprintNotes,
   getSprintInsight,
+  getSprintInsightGenerating,
 };

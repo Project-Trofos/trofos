@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import app, { corsOptions, port } from './server';
 import { init } from './services/socket.service';
 import { init as initBot} from './notifications/NotificationHandler'
-import { initCompleteInsightSub } from './helpers/aiInsightHelper';
+import { initCompleteInsightSub } from './services/aiInsight.service';
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console

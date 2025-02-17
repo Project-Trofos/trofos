@@ -213,6 +213,17 @@ const getSprintInsight = async (req: express.Request, res: express.Response) => 
   }
 };
 
+const getSprintInsightStatus = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    const { projectId } = req.query;
+    const isGenerating = await sprintService.getSprintInsightGenerating(Number(projectId), Number(sprintId));
+    return res.status(StatusCodes.OK).json({ isGenerating });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 export default {
   newSprint,
   listSprints,
@@ -229,4 +240,5 @@ export default {
   deleteRetrospectiveVote,
   authLiveNotes,
   getSprintInsight,
+  getSprintInsightStatus,
 };
