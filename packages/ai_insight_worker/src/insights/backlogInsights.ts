@@ -179,4 +179,6 @@ Please analyze this sprint and provide insights on what went well, what could be
   return res.choices[0].message.content ?? "No response from AI model"; 
 }
 
-generateBacklogInsights(56, 406, "test");
+export {
+  generateBacklogInsights,
+}
