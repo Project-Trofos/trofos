@@ -1,4 +1,4 @@
-import { Button, Card, Modal, Tabs } from "antd";
+import { Button, Card, Empty, Modal, Spin, Tabs } from "antd";
 import { useRef, useState } from "react";
 import { useGetSprintInsightsQuery } from "../../api/sprint";
 import * as motion from "motion/react-client";
@@ -64,8 +64,10 @@ function Insight({ insight }: { insight: SprintInsight }) {
 
 function SprintInsightModal({
   sprintId,
+  isGenerating,
 }: {
   sprintId: number | undefined;
+  isGenerating: boolean;
 }) {
   if (!sprintId) {
     return null;
@@ -92,13 +94,21 @@ function SprintInsightModal({
           </Button>
         ]}
       >
-        <Tabs
-          items={sprintInsights?.map((insight) => ({
-            key: `${insight.id}`,
-            label: insight.category,
-            children: <Insight key={insight.id} insight={insight} />,
-          })) ?? []}
-        />
+        {isGenerating ? (
+          <Spin />
+        ) : (
+          sprintInsights && sprintInsights.length > 0 ? (
+            <Tabs
+              items={sprintInsights?.map((insight) => ({
+                key: `${insight.id}`,
+                label: insight.category,
+                children: <Insight key={insight.id} insight={insight} />,
+              })) ?? []}
+            />
+          ) : (
+            <Empty />
+          )
+        )}
       </Modal>
     </>
   );

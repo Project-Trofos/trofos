@@ -149,6 +149,16 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['SprintInsight'],
     }),
+    getSprintInsightGeneratingStatus: builder.query<{isGenerating: boolean}, {sprintId: number, projectId: number}>({
+      query: ({
+        sprintId,
+        projectId,
+      }) => ({
+        url: `sprint/${sprintId}/insight/status?projectId=${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['SprintInsightStatus'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -168,4 +178,5 @@ export const {
   useUpdateRetrospectiveVoteMutation,
   useDeleteRetrospectiveVoteMutation,
   useGetSprintInsightsQuery,
+  useGetSprintInsightGeneratingStatusQuery,
 } = extendedApi;

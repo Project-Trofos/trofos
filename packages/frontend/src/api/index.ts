@@ -32,6 +32,7 @@ const trofosApiSlice = createApi({
     'UserApiKey',
     'FeatureFlag',
     'SprintInsight',
+    'SprintInsightStatus',
   ],
   endpoints: () => ({}),
 });

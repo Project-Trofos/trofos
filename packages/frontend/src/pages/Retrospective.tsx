@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Alert, Button, Divider } from 'antd';
 import trofosApiSlice from '../api';
 import { UpdateType } from '../api/socket/socket';
@@ -7,12 +7,18 @@ import { RetrospectiveType } from '../api/types';
 import store from '../app/store';
 import RetrospectiveContainerCard from '../components/cards/RetrospectiveContainerCard';
 import './Retrospective.css';
-import { useSprintIdParam } from '../api/hooks';
+import { useProjectIdParam, useSprintIdParam } from '../api/hooks';
 import GenericBoxWithBackground from '../components/layouts/GenericBoxWithBackground';
 import SprintInsightModal from '../components/modals/SprintInsightModal';
+import { useGetSprintInsightGeneratingStatusQuery } from '../api/sprint';
 
 export default function Retrospective({ sprintId, readOnly }: { sprintId?: number; readOnly?: boolean }): JSX.Element {
   const retrospectiveSprintId = sprintId ?? useSprintIdParam();
+  const projectId = useProjectIdParam();
+  const { data: insightIsLoading, refetch } = useGetSprintInsightGeneratingStatusQuery({
+    sprintId: retrospectiveSprintId,
+    projectId,
+  });
 
   // Refetch retrospectives of 'type'
   const handleReset = useCallback((type?: string) => {
@@ -22,7 +28,7 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
   }, []);
 
   const handleInvalidateSprintInsight = useCallback(() => {
-    store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'SprintInsight' }]));
+    store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'SprintInsight' }, { type: 'SprintInsightStatus' }]));
   }, [retrospectiveSprintId]);
 
   useSocket(UpdateType.RETRO, retrospectiveSprintId.toString(), handleReset);
@@ -33,11 +39,18 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
     return <Alert message="Sprint does not exist" type="warning" />;
   }
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   return (
     <GenericBoxWithBackground
       style={{ overflowX: 'auto' }}
     >
-      <SprintInsightModal sprintId={retrospectiveSprintId}/>
+      <SprintInsightModal
+        sprintId={retrospectiveSprintId}
+        isGenerating={insightIsLoading?.isGenerating === undefined ? false : insightIsLoading.isGenerating}
+      />
       <Divider />
       <div className="retrospective-container">
         <RetrospectiveContainerCard
