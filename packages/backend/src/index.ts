@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import app, { corsOptions, port } from './server';
 import { init } from './services/socket.service';
 import { init as initBot} from './notifications/NotificationHandler'
+import { initCompleteInsightSub } from './helpers/aiInsightHelper';
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
@@ -26,6 +27,8 @@ initBot()
 
 // Initialize socket io
 init(io);
+
+initCompleteInsightSub();
 
 // For unit testing
 export default server;

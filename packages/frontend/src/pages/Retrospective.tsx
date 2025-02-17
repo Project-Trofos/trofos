@@ -21,7 +21,13 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
     );
   }, []);
 
+  const handleInvalidateSprintInsight = useCallback(() => {
+    store.dispatch(trofosApiSlice.util.invalidateTags([{ type: 'SprintInsight' }]));
+  }, [retrospectiveSprintId]);
+
   useSocket(UpdateType.RETRO, retrospectiveSprintId.toString(), handleReset);
+
+  useSocket(UpdateType.SPRINT_INSIGHT, retrospectiveSprintId.toString(), handleInvalidateSprintInsight);
 
   if (!retrospectiveSprintId) {
     return <Alert message="Sprint does not exist" type="warning" />;
