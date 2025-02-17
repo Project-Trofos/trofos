@@ -1,6 +1,6 @@
 import { Backlog, User, UsersOnProjects } from '@prisma/client';
 import prisma from '../models/prismaClient';
-import openAi from '../models/openAiClient';
+import openAiClient from '../models/openAiClient';
 
 type BacklogWithAssignee = (Backlog & {
   assignee: (UsersOnProjects & {
@@ -84,7 +84,7 @@ User story point contributions:\n${userStoryPointContributionsStr}
 
   console.log(`Contributions Prompt: ${prompt}`)
 
-  const res = await openAi.chat.completions.create({
+  const res = await openAiClient.chat.completions.create({
     messages: [
       {
         "role": "developer",
