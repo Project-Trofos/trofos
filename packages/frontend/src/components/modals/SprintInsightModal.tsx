@@ -1,4 +1,4 @@
-import { Button, Card, Modal } from "antd";
+import { Button, Card, Modal, Tabs } from "antd";
 import { useRef, useState } from "react";
 import { useGetSprintInsightsQuery } from "../../api/sprint";
 import * as motion from "motion/react-client";
@@ -92,9 +92,13 @@ function SprintInsightModal({
           </Button>
         ]}
       >
-        {sprintInsights?.map((insight) => (
-          <Insight key={insight.id} insight={insight} />
-        ))}
+        <Tabs
+          items={sprintInsights?.map((insight) => ({
+            key: `${insight.id}`,
+            label: insight.category,
+            children: <Insight key={insight.id} insight={insight} />,
+          })) ?? []}
+        />
       </Modal>
     </>
   );
