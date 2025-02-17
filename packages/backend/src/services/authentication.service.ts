@@ -97,9 +97,6 @@ async function samlHandlerStaff(attributes: any): Promise<User> {
   const userEmail = attributes[STAFF_SAML_ATTRIBUTES.UPN];
   const displayName = attributes[STAFF_SAML_ATTRIBUTES.DISPLAY_NAME];
 
-  // To remove
-  console.log('Staff SAML attributes:', attributes);
-
   if (!userEmail) {
     throw new Error('Invalid SAML response: Missing required attributes.');
   }

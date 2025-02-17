@@ -2,6 +2,8 @@ import StatusCodes from 'http-status-codes';
 import { User, UsersOnRolesOnCourses } from '@prisma/client';
 import { createRequest, createResponse } from 'node-mocks-http';
 import course from '../../services/course.service';
+import csvService from '../../services/csv.service';
+import fs, { unlinkSync } from 'fs';
 import settings from '../../services/settings.service';
 import courseController from '../../controllers/course';
 import coursesData from '../mocks/courseData';
@@ -29,7 +31,9 @@ const spies = {
   addProjectAndCourse: jest.spyOn(course, 'addProjectAndCourse'),
   archiveCourse: jest.spyOn(course, 'archiveCourse'),
   unarchiveCourse: jest.spyOn(course, 'unarchiveCourse'),
+  importProjectAssignments: jest.spyOn(csvService, 'importProjectAssignments'),
   getSettings: jest.spyOn(settings, 'get'),
+  unlinkSync: jest.spyOn(fs, 'unlinkSync'),
 };
 
 describe('course controller tests', () => {
@@ -687,6 +691,118 @@ describe('course controller tests', () => {
 
       expect(spies.unarchiveCourse).not.toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('importProjectAssignments', () => {
+    const mockCsvFile = {
+      fieldname: 'file',
+      originalname: 'test.csv',
+      encoding: '7bit',
+      mimetype: 'text/csv',
+      path: '/tmp/test.csv',
+      size: 1024,
+    };
+
+    it('should return 200 and call csvService when valid CSV file and courseId are provided', async () => {
+      const courseId = '1';
+
+      spies.importProjectAssignments.mockResolvedValueOnce(undefined);
+      spies.unlinkSync.mockImplementationOnce(() => {});
+
+      const mockReq = createRequest({
+        params: {
+          courseId,
+        },
+        file: mockCsvFile,
+      });
+      const mockRes = createResponse();
+
+      await courseController.importProjectAssignments(mockReq, mockRes);
+
+      expect(spies.importProjectAssignments).toHaveBeenCalledWith(mockCsvFile.path, Number(courseId));
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+      expect(spies.unlinkSync).toHaveBeenCalledWith(mockCsvFile.path);
+    });
+
+    it('should return 400 when no file is provided', async () => {
+      const courseId = '1';
+
+      const mockReq = createRequest({
+        params: {
+          courseId,
+        },
+        file: null,
+      });
+      const mockRes = createResponse();
+
+      await courseController.importProjectAssignments(mockReq, mockRes);
+
+      expect(spies.importProjectAssignments).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(spies.unlinkSync).not.toHaveBeenCalled();
+    });
+
+    it('should return 400 when file type is incorrect', async () => {
+      const courseId = '1';
+      spies.unlinkSync.mockImplementationOnce(() => {});
+
+      const mockReq = createRequest({
+        params: {
+          courseId,
+        },
+        file: {
+          ...mockCsvFile,
+          mimetype: 'text/plain',
+        },
+      });
+      const mockRes = createResponse();
+
+      await courseController.importProjectAssignments(mockReq, mockRes);
+
+      expect(spies.importProjectAssignments).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(spies.unlinkSync).toHaveBeenCalledWith(mockCsvFile.path);
+    });
+
+    it('should return 400 when courseId is invalid', async () => {
+      const courseId = 'invalid';
+      spies.unlinkSync.mockImplementationOnce(() => {});
+
+      const mockReq = createRequest({
+        params: {
+          courseId,
+        },
+        file: mockCsvFile,
+      });
+      const mockRes = createResponse();
+
+      await courseController.importProjectAssignments(mockReq, mockRes);
+
+      expect(spies.importProjectAssignments).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(spies.unlinkSync).toHaveBeenCalledWith(mockCsvFile.path);
+    });
+
+    it('should return 500 when csvService fails', async () => {
+      const courseId = '1';
+      spies.unlinkSync.mockImplementationOnce(() => {});
+
+      const mockReq = createRequest({
+        params: {
+          courseId,
+        },
+        file: mockCsvFile,
+      });
+      const mockRes = createResponse();
+
+      spies.importProjectAssignments.mockRejectedValueOnce(new Error('Failed to import project assignments'));
+
+      await courseController.importProjectAssignments(mockReq, mockRes);
+
+      expect(spies.importProjectAssignments).toHaveBeenCalledWith(mockCsvFile.path, Number(courseId));
+      expect(mockRes.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(spies.unlinkSync).toHaveBeenCalledWith(mockCsvFile.path);
     });
   });
 });
