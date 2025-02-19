@@ -48,6 +48,14 @@ services:
     restart: always
     links:
       - backend
+  ai_insight_worker:
+    build:
+      context: ./packages/ai_insight_worker
+      dockerfile: Dockerfile.production
+      target: test
+      network: host
+    image: trofos_ai_insight_worker
+    restart: always
   postgres:
     image: pgvector/pgvector:pg14
     restart: always

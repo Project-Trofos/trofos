@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate",
-    "start-dev": "ts-node src/index.ts"
+    "start-dev": "ts-node src/index.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "start-prod": "dotenv -e .env.production.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js"
   },
   "keywords": [],
   "author": "",
