@@ -14,7 +14,8 @@ import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
-import { SPRINT_PROCESSING_SET, publishTask, redis } from './aiInsight.service';
+import { publishTask, redis } from './aiInsight.service';
+import { SPRINT_PROCESSING_SET } from 'common';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));

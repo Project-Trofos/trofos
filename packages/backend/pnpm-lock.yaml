@@ -41,6 +41,9 @@ importers:
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
+      common:
+        specifier: link:../common
+        version: link:../common
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.6

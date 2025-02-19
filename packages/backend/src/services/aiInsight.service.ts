@@ -1,5 +1,11 @@
 import { createClient } from 'redis';
 import { getIo } from './socket.service';
+import {
+  TASK_QUEUE_KEY,
+  TASK_NOTIFICATIONS_CHANNEL,
+  TASK_COMPLETED_CHANNEL,
+  Task,
+} from "common";
 
 export const redis = createClient();
 redis.connect();
@@ -7,10 +13,6 @@ redis.connect();
 const subscriber = createClient();
 subscriber.connect();
 
-const TASK_QUEUE_KEY = 'task_aiInsight_queue';
-const TASK_NOTIFICATIONS_CHANNEL = 'task_aiInsight_notifications';
-const TASK_COMPLETED_CHANNEL = 'task_aiInsight_completed';
-export const SPRINT_PROCESSING_SET = 'sprint_processing_set';
 const AI_INSIGHT_WEBSOCKET = 'sprint-insight';
 
 const publishTask = async (projectId: number, sprintId: number, user: string) => {
@@ -33,11 +35,7 @@ const initCompleteInsightSub = async () => {
   subscriber.subscribe(TASK_COMPLETED_CHANNEL, async (message) => {
     try {
       console.log(`[AI Insight] Received message: ${message}`);
-      const task: {
-        projectId: number,
-        sprintId: number,
-        user: string,
-      } = JSON.parse(message);
+      const task: Task = JSON.parse(message);
       console.log(`[AI Insight] Task completed: ${task.projectId} ${task.sprintId} ${task.user}`);
       if (!task || !task.sprintId) {
         console.error('[AI Insight] Task not found');

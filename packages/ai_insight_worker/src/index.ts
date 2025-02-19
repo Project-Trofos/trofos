@@ -1,11 +1,12 @@
 import { createClient } from 'redis';
-import { Task } from './types';
+import {
+  TASK_QUEUE_KEY,
+  TASK_NOTIFICATIONS_CHANNEL,
+  SPRINT_PROCESSING_SET,
+  TASK_COMPLETED_CHANNEL,
+  Task,
+} from "common";
 import { handleAllInsights } from './service';
-
-const TASK_QUEUE_KEY = 'task_aiInsight_queue';
-const TASK_NOTIFICATIONS_CHANNEL = 'task_aiInsight_notifications';
-const SPRINT_PROCESSING_SET = 'sprint_processing_set';
-const TASK_COMPLETED_CHANNEL = 'task_aiInsight_completed';
 
 // Create a Redis client for publishing
 const redisClient = createClient();
