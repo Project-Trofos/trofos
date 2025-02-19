@@ -73,6 +73,17 @@ services:
       - BACKEND_URL=${BACKEND_URL}
     networks:
       - application
+  ai_insight_worker:
+    build:
+      context: ./packages/ai_insight_worker
+      dockerfile: Dockerfile.production
+      targert: prod
+    container_name: trofos-ai-insight-worker-production
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - application
   postgres:
     image: pgvector/pgvector:pg14
     restart: always
@@ -84,6 +95,14 @@ services:
       - '5432:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - application
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
     networks:
       - application
 volumes:
