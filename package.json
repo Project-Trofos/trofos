@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "generate": "lerna run prisma-generate-dev --scope=backend",
+    "generate": "lerna run prisma-generate-dev",
     "migrate:reset": "lerna run prisma-migrate-reset --scope=backend",
     "seed": "lerna run prisma-seed-dev --scope=backend",
     "start-prod": "docker compose -f docker-compose-production.yml --env-file .env  up -d",
