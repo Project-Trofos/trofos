@@ -11,9 +11,9 @@ importers:
       '@prisma/client':
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
-      common:
-        specifier: link:../common
-        version: link:../common
+      '@trofos-nus/common':
+        specifier: ^1.0.0
+        version: 1.0.0
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -99,6 +99,9 @@ packages:
     resolution: {integrity: sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==}
     peerDependencies:
       '@redis/client': ^1.0.0
+
+  '@trofos-nus/common@1.0.0':
+    resolution: {integrity: sha512-w7OPduzGwT1HZdzwI5OnsJ99hBF+nLPWZWQpsMkxeFMuGUsQW9+ci+QyQs7bPuc98vc8xZ6dnpIDmTvkGG77SA==}
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -428,6 +431,8 @@ snapshots:
   '@redis/time-series@1.1.0(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+
+  '@trofos-nus/common@1.0.0': {}
 
   '@tsconfig/node10@1.0.11': {}
 

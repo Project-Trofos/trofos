@@ -8,7 +8,6 @@ RUN mkdir -p /usr/src/app/ai_insight_worker
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/ai_insight_worker
 
-COPY ../common /usr/src/app/common
 COPY package.json .
 COPY pnpm-lock.yaml .
 RUN pnpm i

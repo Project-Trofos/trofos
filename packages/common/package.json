@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "@trofos-nus/common",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",

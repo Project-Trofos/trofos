@@ -29,6 +29,9 @@ importers:
       '@sendgrid/mail':
         specifier: ^8.1.4
         version: 8.1.4
+      '@trofos-nus/common':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/bcryptjs':
         specifier: ^2.4.4
         version: 2.4.4
@@ -41,9 +44,6 @@ importers:
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
-      common:
-        specifier: link:../common
-        version: link:../common
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.6
@@ -806,6 +806,9 @@ packages:
 
   '@socket.io/component-emitter@3.1.0':
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
+
+  '@trofos-nus/common@1.0.0':
+    resolution: {integrity: sha512-w7OPduzGwT1HZdzwI5OnsJ99hBF+nLPWZWQpsMkxeFMuGUsQW9+ci+QyQs7bPuc98vc8xZ6dnpIDmTvkGG77SA==}
 
   '@tsconfig/node10@1.0.9':
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -3797,6 +3800,8 @@ snapshots:
       tslib: 2.8.1
 
   '@socket.io/component-emitter@3.1.0': {}
+
+  '@trofos-nus/common@1.0.0': {}
 
   '@tsconfig/node10@1.0.9': {}
 

@@ -5,15 +5,19 @@ import {
   SPRINT_PROCESSING_SET,
   TASK_COMPLETED_CHANNEL,
   Task,
-} from "common";
+} from "@trofos-nus/common";
 import { handleAllInsights } from './service';
 
 // Create a Redis client for publishing
-const redisClient = createClient();
+const redisClient = createClient({
+  url: process.env.REDIS_URL,
+});
 redisClient.connect();
 
 // Create a Redis client for subscribing
-const subscriber = createClient();
+const subscriber = createClient({
+  url: process.env.REDIS_URL,
+});
 subscriber.connect();
 
 console.log('AI Insight Worker is running');

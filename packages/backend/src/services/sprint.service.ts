@@ -15,7 +15,7 @@ import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
 import { publishTask, redis } from './aiInsight.service';
-import { SPRINT_PROCESSING_SET } from 'common';
+import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));

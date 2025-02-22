@@ -5,12 +5,16 @@ import {
   TASK_NOTIFICATIONS_CHANNEL,
   TASK_COMPLETED_CHANNEL,
   Task,
-} from "common";
+} from "@trofos-nus/common";
 
-export const redis = createClient();
+export const redis = createClient({
+  url: process.env.REDIS_URL,
+});
 redis.connect();
 
-const subscriber = createClient();
+const subscriber = createClient({
+  url: process.env.REDIS_URL,
+});
 subscriber.connect();
 
 const AI_INSIGHT_WEBSOCKET = 'sprint-insight';
