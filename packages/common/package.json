@@ -1,15 +1,24 @@
 {
   "name": "@trofos-nus/common",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prisma-generate": "dotenv -e ../../../.env.production.local -- pnpm exec prisma generate",
+    "postinstall": "pnpm run prisma-generate"
   },
   "packageManager": "pnpm@10.4.1",
   "devDependencies": {
+    "@prisma/client": "4.8.1",
     "@types/node": "^22.13.4",
-    "typescript": "^4.7.4"
+    "prisma": "4.8.1",
+    "typescript": "^4.7.4",
+    "dotenv-cli": "^6.0.0"
+  },
+  "peerDependencies": {
+    "@prisma/client": ">=4.8.1",
+    "dotenv-cli": "^6.0.0"
   }
 }
