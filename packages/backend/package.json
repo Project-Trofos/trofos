@@ -16,7 +16,7 @@
     "start-dev": "dotenv -e .env.development.local -- pnpm run build && dotenv -e .env.development.local -- nodemon",
     "start": "pnpm run build && node dist/index.js",
     "start:nodemon": "nodemon",
-    "test": "jest --colors --detectOpenHandles --coverage --testPathIgnorePatterns=src/__tests__/e2e/*",
+    "test": "jest --colors --forceExit --detectOpenHandles --coverage --testPathIgnorePatterns=src/__tests__/e2e/*",
     "test-e2e": "jest --colors --runInBand ./src/__tests__/e2e/tests "
   },
   "prisma": {

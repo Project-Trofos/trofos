@@ -138,7 +138,7 @@ describe('sprint.service tests', () => {
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
       prismaMock.sprint.updateMany.mockResolvedValue({ count: 0 });
       prismaMock.$transaction.mockResolvedValue(mockReturnedSprint);
-      await expect(sprintService.updateSprintStatus(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate, "user")).resolves.toEqual(mockReturnedSprint);
     });
 
     it('should only update current sprint and return sprint if status is not current', async () => {
@@ -157,7 +157,7 @@ describe('sprint.service tests', () => {
         projectId: 123,
       };
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
-      await expect(sprintService.updateSprintStatus(sprintToUpdate)).resolves.toEqual(mockReturnedSprint);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate, "user")).resolves.toEqual(mockReturnedSprint);
     });
 
     it('should throw a BadRequestError if there is already an active sprint', async () => {
@@ -171,7 +171,7 @@ describe('sprint.service tests', () => {
         projectId: 123,
       };
       prismaMock.$transaction.mockRejectedValueOnce(new BadRequestError(SPRINT_EXIST_ERR_MSG));
-      await expect(sprintService.updateSprintStatus(sprintToUpdate)).rejects.toThrow(SPRINT_EXIST_ERR_MSG);
+      await expect(sprintService.updateSprintStatus(sprintToUpdate, "user")).rejects.toThrow(SPRINT_EXIST_ERR_MSG);
     });
   });
 
