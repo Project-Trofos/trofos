@@ -42,7 +42,7 @@ jobs:
       - name: Wait for backend to start
         run: npx wait-on --timeout 60000 http://127.0.0.1:3003
       - name: Seed db
-        run: docker exec trofos-backend-production pnpm run prisma-migrate-reste --force
+        run: docker exec trofos-backend-production pnpm run prisma-migrate-reset --force
       - name: Run E2E tests
         run: pnpm exec playwright test --reporter=dot
         working-directory: packages/frontend
