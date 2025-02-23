@@ -11,9 +11,15 @@ importers:
       '@prisma/client':
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
+      '@types/bcryptjs':
+        specifier: ^2.4.4
+        version: 2.4.6
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.4
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -41,8 +47,14 @@ packages:
   '@prisma/engines@4.8.1':
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
 
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
+
   '@types/node@22.13.4':
     resolution: {integrity: sha512-ywP2X0DYtX3y08eFVx5fNIw7/uIv8hYUKgXoK8oayJlLnKcRfEYCxWMVE1XagUdVtCJlZT1AU4LXEABW+L1Peg==}
+
+  bcryptjs@2.4.3:
+    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -108,9 +120,13 @@ snapshots:
 
   '@prisma/engines@4.8.1': {}
 
+  '@types/bcryptjs@2.4.6': {}
+
   '@types/node@22.13.4':
     dependencies:
       undici-types: 6.20.0
+
+  bcryptjs@2.4.3: {}
 
   cross-spawn@7.0.6:
     dependencies:

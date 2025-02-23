@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "prisma-generate": "dotenv -e ../../../.env.production.local -- pnpm exec prisma generate",
+    "prisma-generate": "dotenv -e ../../../.env.production.local -- pnpm exec prisma generate && dotenv -e ../../../.env.production.local -- pnpm exec prisma generate --schema prisma_pgvector/schema_ai.prisma",
     "postinstall": "pnpm run prisma-generate"
   },
   "packageManager": "pnpm@10.4.1",
@@ -15,10 +15,14 @@
     "@types/node": "^22.13.4",
     "prisma": "4.8.1",
     "typescript": "^4.7.4",
-    "dotenv-cli": "^6.0.0"
+    "dotenv-cli": "^6.0.0",
+    "@types/bcryptjs": "^2.4.4",
+    "bcryptjs": "^2.4.3"
   },
   "peerDependencies": {
     "@prisma/client": ">=4.8.1",
-    "dotenv-cli": "^6.0.0"
+    "dotenv-cli": "^6.0.0",
+    "@types/bcryptjs": "^2.4.4",
+    "bcryptjs": "^2.4.3"
   }
 }
