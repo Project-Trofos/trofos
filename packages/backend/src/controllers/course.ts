@@ -321,6 +321,25 @@ async function unarchiveCourse(req: express.Request, res: express.Response) {
   }
 }
 
+async function importProjectAssignments(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+
+    assertInputIsNotEmpty(req.file, 'Csv file');
+    assertFileIsCorrectType(req.file.mimetype, 'csv');
+    assertCourseIdIsValid(courseId);
+
+    const result = await csvService.importProjectAssignments(req.file.path, Number(courseId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  } finally {
+    if (req.file?.path) {
+      fs.unlinkSync(req.file.path);
+    }
+  }
+}
+
 export default {
   getAll,
   get,
@@ -338,4 +357,5 @@ export default {
   importCsv,
   archiveCourse,
   unarchiveCourse,
+  importProjectAssignments,
 };

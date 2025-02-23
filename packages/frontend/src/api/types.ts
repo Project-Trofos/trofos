@@ -320,6 +320,11 @@ export type CourseImportCsvPayload = {
   payload: FormData;
 };
 
+export type ProjectAssignmentImportPayload = {
+  courseId: number;
+  payload: FormData;
+};
+
 export type Feedback = {
   id: number;
   user_id?: number;
@@ -369,4 +374,10 @@ export type SprintInsight = {
   sprint_id: number;
   category: string;
   content: string;
+};
+
+export type ProjectAssignment = {
+  id: number;
+  targetProjectId: number;
+  sourceProjectId: number;
 };

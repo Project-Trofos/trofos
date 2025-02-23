@@ -87,7 +87,36 @@ model Project {
   telegramChannelLink String?
   is_archive      Boolean?
   epics           Epic[]
+
+  /// All projects that this project is assigned to act upon.
+  assignedProjects ProjectAssignment[] @relation("SourceProject")
+
+  /// All projects that are assigned to act upon this project.
+  targetProjects ProjectAssignment[] @relation("TargetProject")
 }
+
+/// Represents an assignment relationship between two projects, 
+/// where one project is designated to act upon another.
+model ProjectAssignment {
+  /// The unique identifier for this ProjectAssignment instance.
+  id                Int     @id @default(autoincrement())
+
+  /// The ID of the project that is assigned to act upon another project.
+  sourceProjectId   Int
+
+  /// The ID of the project that is the target of the assignment.
+  targetProjectId   Int
+
+  /// Relation to the project that is assigned to act upon another project.
+  sourceProject     Project @relation("SourceProject", fields: [sourceProjectId], references: [id], onDelete: Cascade)
+
+  /// Relation to the project that is the target of the assignment.
+  targetProject     Project @relation("TargetProject", fields: [targetProjectId], references: [id], onDelete: Cascade)
+
+  /// Ensures that the combination of sourceProjectId and targetProjectId is unique.
+  @@unique([sourceProjectId, targetProjectId])
+}
+
 
 model Announcement {
   id             Int              @id @default(autoincrement())

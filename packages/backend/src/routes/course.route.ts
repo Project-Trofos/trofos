@@ -114,4 +114,12 @@ router.put(
   course.unarchiveCourse,
 );
 
+// Import project assignments via a csv file
+router.post(
+  '/:courseId/import/projectAssignments',
+  hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME),
+  upload.single('file'),
+  course.importProjectAssignments,
+);
+
 export default router;

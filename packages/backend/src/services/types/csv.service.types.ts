@@ -9,6 +9,8 @@ export const INVALID_EMAIL = 'Email provided has an invalid format';
 export const INVALID_PASSWORD = 'Default password cannot be empty';
 export const INVALID_ROLE = 'Role provided is invalid';
 export const INVALID_TEAM_NAME = 'Team name cannot be empty';
+export const INVALID_PROJECT_NAME = 'Project Name is invalid';
+export const INVALID_PROPERTIES = 'Invalid properties provided';
 export const MESSAGE_SPACE = ' ';
 
 export type ImportCourseDataCsv = {
@@ -33,6 +35,11 @@ export type ImportCourseDataGroup = {
   courseId: number;
   teamName: string;
   projectName: string;
+};
+
+export type ImportProjectAssignmentsCsv = {
+  sourceProjectGroup: string;
+  targetProjectGroup: string;
 };
 
 export function getUserData(data: ImportCourseDataCsv): ImportCourseDataUser {

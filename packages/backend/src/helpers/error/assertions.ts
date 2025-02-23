@@ -35,10 +35,10 @@ export function assertCourseIdIsValid(courseId: string | undefined): asserts cou
   if (!courseId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('courseId'));
   }
-  try {
-    Number(courseId);
-  } catch (e) {
-    throw new BadRequestError('courseId should be a number!');
+  const courseIdNumber = Number(courseId);
+
+  if (!Number.isInteger(courseIdNumber) || courseIdNumber < 0) {
+    throw new BadRequestError('courseId should be a non-negative integer!');
   }
 }
 

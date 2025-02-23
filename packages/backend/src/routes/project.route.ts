@@ -1,12 +1,12 @@
 import express from 'express';
 import { Action } from '@prisma/client';
 import project from '../controllers/project';
-import invite from '../controllers/invite';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
 import feedbackPolicy from '../policies/feedback.policy';
 import feedback from '../controllers/feedback';
 import standupRouter from './standup.route';
+import projectAssignment from '../controllers/projectAssignment';
 
 const router = express.Router();
 
@@ -156,6 +156,25 @@ router.put(
   `/:projectId/telegramId`,
   hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
   project.setTelegramId,
+);
+
+// Assigned project routes
+router.post(
+  '/:projectId/assignedProject',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  projectAssignment.create,
+);
+
+router.delete(
+  '/:projectId/assignedProject/:projectAssignmentId',
+  hasAuthForProject(Action.update_project, projectPolicy.POLICY_NAME),
+  projectAssignment.remove,
+);
+
+router.get(
+  '/:projectId/assignedProject',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  projectAssignment.getAssignedProjects,
 );
 
 export default router;

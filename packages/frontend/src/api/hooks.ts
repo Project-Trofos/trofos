@@ -20,6 +20,7 @@ import { isCurrent, isFuture, isPast } from './currentTime';
 import {
   useAddProjectUserMutation,
   useGetAllProjectsQuery,
+  useGetAssignedProjectsQuery,
   useGetProjectQuery,
   useRemoveProjectUserMutation,
 } from './project';
@@ -270,6 +271,7 @@ export const useCurrentAndPastCourses = ({
 export function useProject(projectId: number) {
   const { data: project, isLoading: isProjectsLoading } = useGetProjectQuery({ id: projectId });
   const { data: userRoles } = useGetProjectUserRolesQuery(projectId);
+  const { data: assignedProjects } = useGetAssignedProjectsQuery({ projectId });
 
   const [addUser] = useAddProjectUserMutation();
   const [removeUser] = useRemoveProjectUserMutation();
@@ -344,6 +346,7 @@ export function useProject(projectId: number) {
 
   return {
     project,
+    assignedProjects,
     projectUserRoles,
     course: projectCourseData,
     handleAddUser,

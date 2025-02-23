@@ -6,6 +6,7 @@ import {
   ProjectGitLink,
   ProjectGitLinkData,
   ProjectUserSettings,
+  ProjectAssignment,
 } from './types';
 
 // Project management APIs
@@ -269,6 +270,36 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'ProjectUserSettings', id: arg.projectId }],
     }),
+
+    // Assigned projects API
+    getAssignedProjects: builder.query<{ id: number; targetProject: Project }[], { projectId: number }>({
+      query: ({ projectId }) => ({
+        url: `project/${projectId}/assignedProject`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    assignProject: builder.mutation<ProjectAssignment, { projectId: number; targetProjectId: number }>({
+      query: ({ projectId, targetProjectId }) => ({
+        url: `project/${projectId}/assignedProject`,
+        method: 'POST',
+        body: {
+          targetProjectId,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
+
+    removeProjectAssignment: builder.mutation<ProjectAssignment, { projectId: number; projectAssignmentId: number }>({
+      query: ({ projectId, projectAssignmentId }) => ({
+        url: `project/${projectId}/assignedProject/${projectAssignmentId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -295,4 +326,7 @@ export const {
   useGetUserSettingsQuery,
   useUpdateUserSettingsMutation,
   useUpdateTelegramIdMutation,
+  useGetAssignedProjectsQuery,
+  useAssignProjectMutation,
+  useRemoveProjectAssignmentMutation,
 } = extendedApi;
