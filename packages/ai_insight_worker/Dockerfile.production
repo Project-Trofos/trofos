@@ -15,6 +15,7 @@ COPY . .
 
 # Test stage to check build
 FROM base as test
+RUN pnpm run prisma-generate
 RUN pnpm run build
 
 # Production stage
