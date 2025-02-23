@@ -17,6 +17,7 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
       AI_DATABASE_URL: ${{ secrets.AI_DATABASE_URL_CI }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3

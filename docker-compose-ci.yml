@@ -39,6 +39,7 @@ services:
       args:
         DATABASE_URL: ${DATABASE_URL}
         AI_DATABASE_URL: ${AI_DATABASE_URL}
+        REDIS_URL: ${REDIS_URL}
         CI: ${CI}
       network: host
     image: trofos_hocus_pocus_server
