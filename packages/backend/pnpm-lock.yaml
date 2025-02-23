@@ -30,8 +30,8 @@ importers:
         specifier: ^8.1.4
         version: 8.1.4
       '@trofos-nus/common':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: latest
+        version: 1.0.5(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.4)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       '@types/bcryptjs':
         specifier: ^2.4.4
         version: 2.4.4
@@ -807,8 +807,13 @@ packages:
   '@socket.io/component-emitter@3.1.0':
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
 
-  '@trofos-nus/common@1.0.0':
-    resolution: {integrity: sha512-w7OPduzGwT1HZdzwI5OnsJ99hBF+nLPWZWQpsMkxeFMuGUsQW9+ci+QyQs7bPuc98vc8xZ6dnpIDmTvkGG77SA==}
+  '@trofos-nus/common@1.0.5':
+    resolution: {integrity: sha512-Z2VS1Ow9vxJoSJVDNnLJmUM8XUFk/mM3X8TSRDKWylKVvYvsvRwGpM9WuYcHHRKDdp5CS/UWL+mQRz9tKJ0r8A==}
+    peerDependencies:
+      '@prisma/client': '>=4.8.1'
+      '@types/bcryptjs': ^2.4.4
+      bcryptjs: ^2.4.3
+      dotenv-cli: ^6.0.0
 
   '@tsconfig/node10@1.0.9':
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -3801,7 +3806,12 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.0': {}
 
-  '@trofos-nus/common@1.0.0': {}
+  '@trofos-nus/common@1.0.5(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.4)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+    dependencies:
+      '@prisma/client': 4.8.1(prisma@4.8.1)
+      '@types/bcryptjs': 2.4.4
+      bcryptjs: 2.4.3
+      dotenv-cli: 6.0.0
 
   '@tsconfig/node10@1.0.9': {}
 

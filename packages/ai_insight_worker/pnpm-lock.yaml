@@ -12,8 +12,8 @@ importers:
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
       '@trofos-nus/common':
-        specifier: ^1.0.2
-        version: 1.0.2(@prisma/client@4.8.1(prisma@4.8.1))(dotenv-cli@6.0.0)
+        specifier: latest
+        version: 1.0.5(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -100,10 +100,12 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@trofos-nus/common@1.0.2':
-    resolution: {integrity: sha512-EWFKNsgP9afirV1/nic6/9R+yLtCPqWuhjWPhF/al2xpoYT2aDthWZeHl440RHfigu8p1XXbOmYnK6yDOaeBPw==}
+  '@trofos-nus/common@1.0.5':
+    resolution: {integrity: sha512-Z2VS1Ow9vxJoSJVDNnLJmUM8XUFk/mM3X8TSRDKWylKVvYvsvRwGpM9WuYcHHRKDdp5CS/UWL+mQRz9tKJ0r8A==}
     peerDependencies:
       '@prisma/client': '>=4.8.1'
+      '@types/bcryptjs': ^2.4.4
+      bcryptjs: ^2.4.3
       dotenv-cli: ^6.0.0
 
   '@tsconfig/node10@1.0.11':
@@ -117,6 +119,9 @@ packages:
 
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
 
   '@types/node-fetch@2.6.12':
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
@@ -153,6 +158,9 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  bcryptjs@2.4.3:
+    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -435,9 +443,11 @@ snapshots:
     dependencies:
       '@redis/client': 1.6.0
 
-  '@trofos-nus/common@1.0.2(@prisma/client@4.8.1(prisma@4.8.1))(dotenv-cli@6.0.0)':
+  '@trofos-nus/common@1.0.5(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
     dependencies:
       '@prisma/client': 4.8.1(prisma@4.8.1)
+      '@types/bcryptjs': 2.4.6
+      bcryptjs: 2.4.3
       dotenv-cli: 6.0.0
 
   '@tsconfig/node10@1.0.11': {}
@@ -447,6 +457,8 @@ snapshots:
   '@tsconfig/node14@1.0.3': {}
 
   '@tsconfig/node16@1.0.4': {}
+
+  '@types/bcryptjs@2.4.6': {}
 
   '@types/node-fetch@2.6.12':
     dependencies:
@@ -482,6 +494,8 @@ snapshots:
   arg@4.1.3: {}
 
   asynckit@0.4.0: {}
+
+  bcryptjs@2.4.3: {}
 
   call-bind-apply-helpers@1.0.2:
     dependencies:

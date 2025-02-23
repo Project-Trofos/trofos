@@ -23,7 +23,8 @@
     "express-ws": "^5.0.2",
     "prisma": "4.8.1",
     "y-protocols": "^1.0.6",
-    "yjs": "^13.6.20"
+    "yjs": "^13.6.20",
+    "@trofos-nus/common": "latest"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

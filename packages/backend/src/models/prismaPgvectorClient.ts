@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../prisma_pgvector/generated/pgvector_client';
+import { PrismaClient } from '@trofos-nus/common/src/generated/pgvector_client';
 
 const prismaPgvector = new PrismaClient();
 

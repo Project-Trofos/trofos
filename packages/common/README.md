@@ -8,4 +8,8 @@ Modifying this:
 
 The main application backend's prisma client is automatically generated when this package is installed in another package. It can then be accessed from the installing package's node modules as per normal
 
-Since there is another prisma schema for the vector db, the prisma client for pgvector is has to be exported from src here, and imported accordingly.
+Since there is another prisma schema for the vector db, the prisma client for pgvector it is generated into a different directory and can be import with:
+
+```javascript
+import { PrismaClient } from '@trofos-nus/common/src/generated/pgvector_client';
+```
