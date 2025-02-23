@@ -47,6 +47,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
       - AI_DATABASE_URL=${E2E_AI_DATABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REDIS_URL=${REDIS_URL}
     links:
       - postgres
     networks:
@@ -69,11 +71,13 @@ services:
     build:
       context: ./packages/ai_insight_worker
       dockerfile: Dockerfile.production
-      targert: prod
+      target: prod
     container_name: trofos-ai-insight-worker-production
     restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REDIS_URL=${REDIS_URL}
     networks:
       - application
   postgres:
