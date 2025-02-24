@@ -14,6 +14,6 @@ Since there is another prisma schema for the vector db, the prisma client for pg
 import { PrismaClient } from '@trofos-nus/common/src/generated/pgvector_client';
 ```
 
-To add a migration- follow normal prisma procedures. Once done, publish to npm, and locally do `pnpm -r update @trofos-nus/common@latest` at root. `backend`, `hocus-pocus-server` and `ai-insight-worker` should update to newest common, and after updating `prisma generate` should run automatically, generating newest models.
+To add a migration- follow normal prisma procedures (eg create `.env` with `DATABASE_URL` then run `pnpm exec dotenv -e .env -- pnpm exec prisma migrate dev --create-only`). Once done, publish to npm, and locally do `pnpm -r update @trofos-nus/common@latest` at root. `backend`, `hocus-pocus-server` and `ai-insight-worker` should update to newest common, and after updating `prisma generate` should run automatically, generating newest models.
 
-For executing the migrations, it is dont in backend package, using the various scripts in `package.json`
+For executing the migrations, it is done in backend package, using the various scripts in `package.json`
