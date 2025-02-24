@@ -7,6 +7,7 @@ import {
   RetrospectiveVote,
   RetrospectiveVoteType,
   SprintInsight,
+  Feature,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
@@ -16,6 +17,7 @@ import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
 import { publishTask, redis } from './aiInsight.service';
 import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
+import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));
@@ -243,7 +245,7 @@ async function updateSprintStatus(
   }
 
   // publish event to generate retrospective insights
-  if (status === 'completed') {
+  if (status === 'completed' && await checkFeatureFlagInCode(Feature.ai_insights)) {
     publishTask(projectId, sprintId, user);
   }
 

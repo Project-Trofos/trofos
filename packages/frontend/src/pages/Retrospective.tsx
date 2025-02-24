@@ -11,6 +11,7 @@ import { useProjectIdParam, useSprintIdParam } from '../api/hooks';
 import GenericBoxWithBackground from '../components/layouts/GenericBoxWithBackground';
 import SprintInsightModal from '../components/modals/SprintInsightModal';
 import { useGetSprintInsightGeneratingStatusQuery } from '../api/sprint';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 
 export default function Retrospective({ sprintId, readOnly }: { sprintId?: number; readOnly?: boolean }): JSX.Element {
   const retrospectiveSprintId = sprintId ?? useSprintIdParam();
@@ -19,6 +20,7 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
     sprintId: retrospectiveSprintId,
     projectId,
   });
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   // Refetch retrospectives of 'type'
   const handleReset = useCallback((type?: string) => {
@@ -47,10 +49,10 @@ export default function Retrospective({ sprintId, readOnly }: { sprintId?: numbe
     <GenericBoxWithBackground
       style={{ overflowX: 'auto' }}
     >
-      <SprintInsightModal
+      {featureFlags?.some((flag) => flag.feature_name === 'ai_insights' && flag.active) && <SprintInsightModal
         sprintId={retrospectiveSprintId}
         isGenerating={insightIsLoading?.isGenerating === undefined ? false : insightIsLoading.isGenerating}
-      />
+      />}
       <Divider />
       <div className="retrospective-container">
         <RetrospectiveContainerCard
