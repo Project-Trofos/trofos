@@ -70,6 +70,8 @@ Tips:
 - Focus on process, not blame.
 - Collaborate for team alignment.
 
+\* Sprint insights are also generated using AI. Access them in the sprint retrospective page to see insights generated from your sprint data. These insights are automatically generated upon the completion of a sprint
+
 ## Reopening a sprint
 
 The most recently closed sprint can be re-opened if you have yet to start (make active) another sprint. Under the completed sprints section in the 'Sprint' tab of a project, click on the 'Reopen sprint' button.
@@ -94,7 +96,7 @@ A **backlog** represents a single task, issue, or piece of work that needs to be
 
 - **Epic**: Connects the ticket to a larger goal or feature.
 
-- **Story Points**: Estimates the effort required. For example, you can define 1 story point to be 4 hours of effort.
+- **Story Points**: Estimates the effort required. For example, you can set 1 story point to be 4 hours of effort (Dr Ganesh defines story points as such!).
 
 - **Reporter**: The person who created the ticket.
 
