@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
-import { CURRENT_YEAR, CURRENT_SEM } from '../src/helpers/currentTime';
+import { CURRENT_YEAR, CURRENT_SEM } from './currentTime';
 
 async function createSettingsTableSeed(prisma: PrismaClient) {
   const settings = await prisma.settings.create({

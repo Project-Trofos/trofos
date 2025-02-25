@@ -12,6 +12,11 @@ const checkFeatureFlag = (feature: Feature) =>
     return next();
   };
 
+const checkFeatureFlagInCode = (feature: Feature) => {
+  return featureFlagService.checkFeatureFlagActive(feature);
+};
+
 export {
-  checkFeatureFlag
+  checkFeatureFlag,
+  checkFeatureFlagInCode,
 };

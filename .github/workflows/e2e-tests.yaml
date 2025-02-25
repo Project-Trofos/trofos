@@ -18,6 +18,7 @@ jobs:
       E2E_DATABASE_URL: ${{ secrets.E2E_DATABASE_URL_CI }}
       E2E_AI_DATABASE_URL: ${{ secrets.E2E_AI_DATABASE_URL_CI }}
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+      REDIS_URL: ${{ secrets.E2E_REDIS_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -41,7 +42,7 @@ jobs:
       - name: Wait for backend to start
         run: npx wait-on --timeout 60000 http://127.0.0.1:3003
       - name: Seed db
-        run: docker exec trofos-backend-production pnpm exec prisma migrate reset --force
+        run: docker exec trofos-backend-production pnpm run prisma-migrate-reset --force
       - name: Run E2E tests
         run: pnpm exec playwright test --reporter=dot
         working-directory: packages/frontend

@@ -28,6 +28,7 @@
     "dayjs": "^1.11.13",
     "lexical": "^0.12.5",
     "lodash": "^4.17.21",
+    "motion": "^12.4.3",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",

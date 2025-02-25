@@ -14,7 +14,8 @@ Looking to report a bug or request for a feature? Checkout our Wiki's [contribut
 
 ### Setup project locally
 
-1. `pnpm install`
+0. `cd ./packages/common`, `pnpm i`, `pnpm run build` (backend and ai insight worker has this as a dependency, so this needs to be built first)
+1. Back in root directory, `pnpm install`
 2. `pnpm run generate`
 
 ### Start Development Local Instance (Hot-reload)

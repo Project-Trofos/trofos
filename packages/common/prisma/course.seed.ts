@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
-import { CURRENT_YEAR, CURRENT_SEM } from '../src/helpers/currentTime';
+import { CURRENT_YEAR, CURRENT_SEM } from './currentTime';
 import { SHADOW_COURSE_DATA } from './constants';
 
 async function createCourseTableSeed(prisma: PrismaClient) {

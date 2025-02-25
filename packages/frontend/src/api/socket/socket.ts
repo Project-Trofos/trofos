@@ -6,6 +6,7 @@ export enum UpdateType {
   STAND_UP_NOTES = 'stand-up-notes',
   STAND_UP = 'stand-up',
   EPIC = 'epic',
+  SPRINT_INSIGHT = 'sprint-insight',
 }
 
 type ServerToClientEvents = {

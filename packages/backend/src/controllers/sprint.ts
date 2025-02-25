@@ -1,4 +1,4 @@
-import { Backlog, Sprint, Retrospective, RetrospectiveVote, UserSession } from '@prisma/client';
+import { Backlog, Sprint, Retrospective, RetrospectiveVote, UserSession, SprintInsight } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import sprintService from '../services/sprint.service';
@@ -73,11 +73,12 @@ const listActiveSprint = async (req: express.Request, res: express.Response) => 
 const updateSprint = async (req: express.Request, res: express.Response) => {
   try {
     const { sprintId, dates, duration, status } = req.body;
+    const user = res.locals.userSession as UserSession | undefined;
     assertSprintIdIsValid(sprintId);
     assertSprintDurationIsValid(duration);
     assertSprintDatesAreValid(dates);
     const sprint: Sprint = await (status
-      ? sprintService.updateSprintStatus(req.body)
+      ? sprintService.updateSprintStatus(req.body, user?.user_email || '')
       : sprintService.updateSprint(req.body));
     return res.status(StatusCodes.OK).json(sprint);
   } catch (error) {
@@ -202,6 +203,27 @@ const authLiveNotes = async (req: express.Request, res: express.Response) => {
   return res.status(StatusCodes.OK).json({});
 };
 
+const getSprintInsight = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    const insights: SprintInsight[] = await sprintService.getSprintInsight(Number(sprintId));
+    return res.status(StatusCodes.OK).json(insights);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const getSprintInsightStatus = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    const { projectId } = req.query;
+    const isGenerating = await sprintService.getSprintInsightGenerating(Number(projectId), Number(sprintId));
+    return res.status(StatusCodes.OK).json({ isGenerating });
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 export default {
   newSprint,
   listSprints,
@@ -217,4 +239,6 @@ export default {
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
   authLiveNotes,
+  getSprintInsight,
+  getSprintInsightStatus,
 };

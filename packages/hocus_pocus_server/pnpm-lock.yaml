@@ -20,6 +20,9 @@ importers:
       '@prisma/client':
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
+      '@trofos-nus/common':
+        specifier: ^1.0.10
+        version: 1.0.10(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -89,6 +92,17 @@ packages:
   '@prisma/engines@4.8.1':
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
 
+  '@trofos-nus/common@1.0.10':
+    resolution: {integrity: sha512-MNjWXVliCejNn72R5oGI7ClaUxu5gWDiThg4f/Zah7BzIGXWU/eUtuTGSDSFDbRJ1ss02/3drJGckt45pQXXqQ==}
+    peerDependencies:
+      '@prisma/client': '>=4.8.1'
+      '@types/bcryptjs': ^2.4.4
+      bcryptjs: ^2.4.3
+      dotenv-cli: ^6.0.0
+
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
+
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
@@ -147,6 +161,9 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  bcryptjs@2.4.3:
+    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -659,6 +676,15 @@ snapshots:
 
   '@prisma/engines@4.8.1': {}
 
+  '@trofos-nus/common@1.0.10(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+    dependencies:
+      '@prisma/client': 4.8.1(prisma@4.8.1)
+      '@types/bcryptjs': 2.4.6
+      bcryptjs: 2.4.3
+      dotenv-cli: 6.0.0
+
+  '@types/bcryptjs@2.4.6': {}
+
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
@@ -737,6 +763,8 @@ snapshots:
   async-lock@1.4.1: {}
 
   balanced-match@1.0.2: {}
+
+  bcryptjs@2.4.3: {}
 
   binary-extensions@2.3.0: {}
 

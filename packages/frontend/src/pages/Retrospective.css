@@ -1,4 +1,5 @@
 .retrospective-container {
   display: flex;
   padding: 0 5px;
+  min-width: 700px;
 }

@@ -14,6 +14,7 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD_CI }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
       AI_DATABASE_URL: ${{ secrets.AI_DATABASE_URL_CI }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,6 +36,8 @@ jobs:
         run: docker compose -f docker-compose-ci.yml build frontend
       - name: Build hocus pocus server
         run: docker compose -f docker-compose-ci.yml build hocus_pocus_server
+      - name: Build ai insight worker
+        run: docker compose -f docker-compose-ci.yml build ai_insight_worker
       # e2e test currently removed from CI as it is unstable
       # - name: Start backend and frontend
       #   run: npm start &
