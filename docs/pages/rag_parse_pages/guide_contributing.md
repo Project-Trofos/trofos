@@ -47,6 +47,7 @@ This guide will explain how to setup playwright locally for you to contribute to
 
     ```
     DATABASE_URL=postgresql://postgres:postgres@localhost:5432/trofos?schema=public
+    AI_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pgvector?schema=public
     ```
 
     and do `pnpm i` then `pnpm run migrate:reset`
