@@ -33,7 +33,7 @@ This guide will explain how to setup playwright locally for you to contribute to
     E2E_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/trofos?schema=public
     E2E_AI_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pgvector?schema=public
     TELEGRAM_TOKEN=<tele token>
-    REDIS_URL="redis://redis:6379"
+    E2E_REDIS_URL="redis://redis:6379"
     ```
 
     Here's a token we have created: 7216253061:AAF8fSgE9NzS2QgkkW_9SbClwY7zfbE3nTM
