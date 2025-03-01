@@ -29,7 +29,4 @@ export const themeSlice = createSlice({
 
 export const { toggleTheme, markSprintAsSeen } = themeSlice.actions;
 
-export const selectSeenRetrospectiveInsights = (state: { localSettings: { seenRetrospectiveInsights: Record<string, boolean> } }) => 
-  state.localSettings.seenRetrospectiveInsights;
-
 export default themeSlice.reducer;
