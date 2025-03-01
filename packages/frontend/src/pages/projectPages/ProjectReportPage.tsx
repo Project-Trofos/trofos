@@ -12,7 +12,7 @@ const { Title } = Typography;
 
 export const ProjectReportPage = () => {
   const printRef = useRef<HTMLDivElement>(null);
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   return (
     <Container fullWidth>
       <Space style={{ display: 'flex', justifyContent: 'space-between' }}>

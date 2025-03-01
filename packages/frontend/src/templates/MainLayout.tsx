@@ -24,7 +24,7 @@ import MenuSwitch from '../components/menu/MenuSwitch';
 
 import './MainLayout.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { toggleTheme } from '../app/themeSlice';
+import { toggleTheme } from '../app/localSettingsSlice';
 import ThemeSwitch from '../components/theming/ThemeSwitch';
 import AiChatBase from '../components/aichat/AiChatBase';
 import TourComponent from '../components/tour/Tour';
@@ -127,7 +127,7 @@ export default function MainLayout() {
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
 
   const location = useLocation();
   const navigate = useNavigate();

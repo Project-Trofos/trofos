@@ -7,7 +7,7 @@ import { useAppSelector } from '../../app/hooks';
 
 export default function TeamIssuesComparisonBarGraph(props: { activeSprints: Sprint[]; projects: ProjectData[] }) {
   const { activeSprints, projects } = props;
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   const data = useMemo(() => {
     const toDosPerProject = projects.map((p) => {
       const backlogs = activeSprints.find((s) => s.project_id === p.id)?.backlogs;

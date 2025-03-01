@@ -16,7 +16,7 @@ export default function DailyCompletedPointsBarGraph(props: {
   const navigate = useNavigate();
 
   const data = useDailyCompletedPoints(backlogHistory);
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   const config: ColumnConfig = {
     data,
     theme: isDarkTheme ? 'dark' : 'default',

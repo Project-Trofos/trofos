@@ -1,10 +1,12 @@
-import { Button, Card, Empty, Modal, Spin, Tabs } from "antd";
+import { Badge, Button, Card, Empty, Modal, Spin, Tabs, Tooltip } from "antd";
 import { useRef, useState } from "react";
 import { useGetSprintInsightsQuery } from "../../api/sprint";
 import * as motion from "motion/react-client";
 import { AnimatePresence, MotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { SprintInsight } from "../../api/types";
 import MarkdownViewer from "../editor/MarkdownViewer";
+import { markSprintAsSeen } from "../../app/localSettingsSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const HoverTextButton = ({
   onClick,
@@ -75,10 +77,24 @@ function SprintInsightModal({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: sprintInsights } = useGetSprintInsightsQuery(sprintId);
+  const dispatch = useAppDispatch();
+  const hasSeenThisSprintInsight = useAppSelector((state) => state.localSettingsSlice.seenRetrospectiveInsights[sprintId.toString()] ?? false);
+
+  // update browser local storage key-value to set seen flag for this sprint
+  if (!isGenerating && sprintInsights && sprintInsights.length > 0 && isModalOpen) {
+    dispatch(markSprintAsSeen(sprintId.toString()));
+  }
 
   return (
     <>
-      <HoverTextButton onClick={() => setIsModalOpen(true)}/>
+      {hasSeenThisSprintInsight ?
+        (<HoverTextButton onClick={() => setIsModalOpen(true)}/>) :
+        (<Tooltip title="View sprint insights">
+          <Badge count={sprintInsights?.length}>
+            <HoverTextButton onClick={() => setIsModalOpen(true)} />
+          </Badge>
+        </Tooltip>)
+      }
       <Modal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}

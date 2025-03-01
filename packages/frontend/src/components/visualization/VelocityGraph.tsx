@@ -5,7 +5,7 @@ import { Sprint } from '../../api/sprint';
 import { useAppSelector } from '../../app/hooks';
 
 export default function VelocityGraph(props: { sprints: Sprint[] }) {
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   const { sprints } = props;
   const sortedSprints = useMemo(() => [...sprints].sort((a: Sprint, b: Sprint) => b.id - a.id), [sprints]);
   const data = useMemo(() => {

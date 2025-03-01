@@ -16,7 +16,7 @@ export default function UserBacklogPieChart(props: {
 }) {
   const { sprints, users, toggleableIncomplete: includeIncompleteIssues, includeTitle } = props;
   const [includeIncomplete, setIncludeIncomplete] = useState<boolean>(false);
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
 
   // Only look at completed backlogs
   const data = useGroupUserBacklog(
