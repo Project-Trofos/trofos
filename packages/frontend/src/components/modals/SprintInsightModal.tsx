@@ -1,6 +1,6 @@
 import { Badge, Button, Card, Empty, Modal, Spin, Tabs, Tooltip } from "antd";
 import { useRef, useState } from "react";
-import { useGetSprintInsightsQuery } from "../../api/sprint";
+import { useGetSprintInsightsQuery, useSendRegenerateSprintInsightsRequestMutation } from "../../api/sprint";
 import * as motion from "motion/react-client";
 import { AnimatePresence, MotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { SprintInsight } from "../../api/types";
@@ -79,6 +79,7 @@ function SprintInsightModal({
   const { data: sprintInsights } = useGetSprintInsightsQuery(sprintId);
   const dispatch = useAppDispatch();
   const hasSeenThisSprintInsight = useAppSelector((state) => state.localSettingsSlice.seenRetrospectiveInsights[sprintId.toString()] ?? false);
+  const [sendRegenerateSprintInsightsRequest] = useSendRegenerateSprintInsightsRequestMutation();
 
   // update browser local storage key-value to set seen flag for this sprint
   if (!isGenerating && sprintInsights && sprintInsights.length > 0 && isModalOpen) {
@@ -122,7 +123,11 @@ function SprintInsightModal({
               })) ?? []}
             />
           ) : (
-            <Empty />
+            <Empty description="No insights found - something may have went wrong">
+              <Button onClick={() => sendRegenerateSprintInsightsRequest({sprintId})}>
+                Regenerate insights
+              </Button>
+            </Empty>
           )
         )}
       </Modal>

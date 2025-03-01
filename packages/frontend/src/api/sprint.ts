@@ -159,6 +159,17 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       providesTags: ['SprintInsightStatus'],
     }),
+    sendRegenerateSprintInsightsRequest: builder.mutation<
+      void,
+      { sprintId: number }
+    >({
+      query: ({ sprintId }) => ({
+        url: `sprint/${sprintId}/insight/regenerate`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['SprintInsight', 'SprintInsightStatus'], // websocket subscription in retrospective page will also invalidate these for other clients, including request sender
+    }),
   }),
   overrideExisting: false,
 });
@@ -179,4 +190,5 @@ export const {
   useDeleteRetrospectiveVoteMutation,
   useGetSprintInsightsQuery,
   useGetSprintInsightGeneratingStatusQuery,
+  useSendRegenerateSprintInsightsRequestMutation,
 } = extendedApi;
