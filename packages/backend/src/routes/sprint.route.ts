@@ -35,4 +35,6 @@ router.get('/:sprintId/insight', checkFeatureFlag(Feature.ai_insights), hasAuth(
 
 router.get('/:sprintId/insight/status', checkFeatureFlag(Feature.ai_insights), hasAuth(Action.read_project, null), sprint.getSprintInsightStatus);
 
+router.post('/:sprintId/insight/regenerate', checkFeatureFlag(Feature.ai_insights), hasAuth(Action.update_project, null), sprint.regenerateSprintInsight);
+
 export default router;

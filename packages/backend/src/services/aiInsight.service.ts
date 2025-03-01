@@ -45,15 +45,20 @@ const initCompleteInsightSub = async () => {
         console.error('[AI Insight] Task not found');
         return;
       }
-      const io = getIo();
-      io.emit('updated', `${AI_INSIGHT_WEBSOCKET}/${task.sprintId.toString()}`, AI_INSIGHT_WEBSOCKET);
+      emitToFrontendInsightChanged(task.sprintId);
     } catch (error) {
       console.error(error);
     }
   });
 };
 
+const emitToFrontendInsightChanged = (sprintId: number) => {
+  const io = getIo();
+  io.emit('updated', `${AI_INSIGHT_WEBSOCKET}/${sprintId.toString()}`, AI_INSIGHT_WEBSOCKET);
+}
+
 export {
   publishTask,
   initCompleteInsightSub,
+  emitToFrontendInsightChanged,
 };
