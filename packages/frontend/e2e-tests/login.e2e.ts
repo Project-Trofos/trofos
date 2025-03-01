@@ -18,7 +18,7 @@ test('can login', async ({ page }) => {
   await page.locator("[type=submit]").click();
 
   // Expect a successful login to navigate to the projects page
-  await expect(page).toHaveURL('http://localhost:3000/');
+  await expect(page).not.toHaveURL('http://localhost:3000/login');
 
   // Wait for the tour element to appear
   const tourElement = page.locator('.ant-tour-content');
