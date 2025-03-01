@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Empty, Modal, Spin, Tabs, Tooltip } from "antd";
+import { Badge, Button, Card, Empty, Modal, Tabs, Tooltip } from "antd";
 import { useRef, useState } from "react";
 import { useGetSprintInsightsQuery, useSendRegenerateSprintInsightsRequestMutation } from "../../api/sprint";
 import * as motion from "motion/react-client";
@@ -7,6 +7,7 @@ import { SprintInsight } from "../../api/types";
 import MarkdownViewer from "../editor/MarkdownViewer";
 import { markSprintAsSeen } from "../../app/localSettingsSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import LoadingComponent from "../common/LoadingComponent";
 
 const HoverTextButton = ({
   onClick,
@@ -112,7 +113,16 @@ function SprintInsightModal({
         ]}
       >
         {isGenerating ? (
-          <Spin />
+          <LoadingComponent
+            loadingTextArr={[
+              "Consulting the Agile Oracle... 🔮",
+              "Letting the AI take a deep dive... 🤖",
+              "Replaying the sprint timeline... ⏳",
+              "Scrutinizing user stories... 📜",
+              "Extracting actionable insights... ✅",
+              "Identifying blockers and improvements... 🚧",
+            ]}
+          />
         ) : (
           sprintInsights && sprintInsights.length > 0 ? (
             <Tabs

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Spin, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import { Sprint, useGetActiveSprintQuery, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import ScrumBoard from '../../components/board/ScrumBoard';
@@ -18,6 +18,7 @@ import { useProjectIdParam } from '../../api/hooks';
 import StandUpCreationModal from '../../components/modals/StandUpCreationModal';
 import LiveEditor from '../../components/editor/LiveEditor';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 const getSprintHeading = (sprint: Sprint | undefined, activeSprint: Sprint | undefined): string | undefined => {
   if (!sprint) {
@@ -80,7 +81,7 @@ export default function ActiveScrumBoardPage(): JSX.Element {
   }, [standUps]);
 
   if (isLoadingActiveSprint || isLoadingStandUpHeaders || isLoadingStandUp) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   return (

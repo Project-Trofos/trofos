@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Space, Spin, Row, Col, Image, Carousel, Form, Input, Card } from 'antd';
+import { Button, Space, Row, Col, Image, Carousel, Form, Input, Card } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetUserInfoQuery } from '../api/auth';
@@ -11,6 +11,7 @@ import Container from '../components/layouts/Container';
 import TypeWriter from 'typewriter-effect';
 
 import './Home.css';
+import LoadingComponent from '../components/common/LoadingComponent';
 
 type FeatureInfo = {
   imgSrc: string;
@@ -21,7 +22,7 @@ export default function HomePage(): JSX.Element {
   const { data: userInfo, isLoading } = useGetUserInfoQuery();
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   const features: FeatureInfo[] = [

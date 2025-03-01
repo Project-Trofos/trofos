@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useCurrentAndPastCourses } from '../../api/hooks';
 import getPane from '../../helpers/getPane';
-import { Input, Spin, Space } from 'antd';
+import { Input, Space } from 'antd';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 import ToggleButtonGroup from '../../components/button/ToggleButtons';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 export const sortOptions = {
   SORT_BY_COURSE: 'Sort by Course',
@@ -64,7 +65,7 @@ export default function CoursesBody({
           />
         </Space>
       </div>
-      {isLoading ? <Spin /> : getPane(coursesData, `There are no ${noCoursesText} courses.`)}
+      {isLoading ? <LoadingComponent /> : getPane(coursesData, `There are no ${noCoursesText} courses.`)}
     </GenericBoxWithBackground>
   );
 }

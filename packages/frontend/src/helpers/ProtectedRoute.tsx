@@ -1,11 +1,12 @@
 import React from 'react';
-import { Spin, Empty } from 'antd';
+import { Empty } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useCourseActions } from '../api/hooks/roleHooks';
 import Container from '../components/layouts/Container';
 import { canDisplay } from './conditionalRender';
 import { COURSE_MANAGER_ACTIONS, UserPermissionActions, MANAGE_API_KEY_ACTIONS } from './constants';
 import { useGetUserInfoQuery } from '../api/auth';
+import LoadingComponent from '../components/common/LoadingComponent';
 
 /**
  * A react component that protects a route against users who are not course manager.
@@ -19,7 +20,7 @@ export function CourseManagerProtected({ children }: { children: JSX.Element }):
   const isCourseManager = canDisplay(actions || [], COURSE_MANAGER_ACTIONS);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   if (!isCourseManager) {
@@ -42,7 +43,7 @@ export function AdminProtected({ children }: { children: JSX.Element }): JSX.Ele
   const isAdmin = canDisplay(userInfo?.userRoleActions || [], [UserPermissionActions.ADMIN]);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   if (!isAdmin) {
@@ -65,7 +66,7 @@ export function ApiKeyManagerProtected({ children }: { children: JSX.Element }):
   const canManageApiKey = canDisplay(userInfo?.userRoleActions || [], MANAGE_API_KEY_ACTIONS);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   if (!canManageApiKey) {
