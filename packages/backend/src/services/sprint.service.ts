@@ -15,7 +15,7 @@ import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
-import { publishTask, redis } from './aiInsight.service';
+import { emitToFrontendInsightChanged, publishTask, redis } from './aiInsight.service';
 import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
 import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
 
@@ -429,6 +429,23 @@ async function getSprintInsightGenerating(projectId: number, sprintId: number): 
   return isProcessing;
 }
 
+async function regenerateSprintInsight(sprintId: number, user: string): Promise<void> {
+  const sprint = await prisma.sprint.findFirstOrThrow({
+    where: {
+      id: sprintId,
+    },
+    select: {
+      id: true,
+      project_id: true,
+    }
+  });
+
+  // publish event to generate retrospective insights
+  publishTask(sprint.project_id, sprint.id, user);
+
+  emitToFrontendInsightChanged(sprintId);
+}
+
 export default {
   newSprint,
   listSprints,
@@ -446,4 +463,5 @@ export default {
   getSprintNotes,
   getSprintInsight,
   getSprintInsightGenerating,
+  regenerateSprintInsight,
 };

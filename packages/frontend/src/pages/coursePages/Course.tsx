@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Spin, Tabs, Tag, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, Space, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveCourseMutation } from '../../api/course';
 import { confirmDeleteCourse } from '../../components/modals/confirm';
@@ -10,6 +10,7 @@ import ImportDataModal from '../../components/modals/ImportDataModal';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
 import Container from '../../components/layouts/Container';
 import PageHeader from '../../components/pageheader/PageHeader';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 const { Text } = Typography;
 
@@ -50,7 +51,7 @@ export default function CoursePage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   if (!params.courseId || !course) {

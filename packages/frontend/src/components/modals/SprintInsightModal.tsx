@@ -1,10 +1,13 @@
-import { Button, Card, Empty, Modal, Spin, Tabs } from "antd";
+import { Badge, Button, Card, Empty, Modal, Tabs, Tooltip } from "antd";
 import { useRef, useState } from "react";
-import { useGetSprintInsightsQuery } from "../../api/sprint";
+import { useGetSprintInsightsQuery, useSendRegenerateSprintInsightsRequestMutation } from "../../api/sprint";
 import * as motion from "motion/react-client";
 import { AnimatePresence, MotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { SprintInsight } from "../../api/types";
 import MarkdownViewer from "../editor/MarkdownViewer";
+import { markSprintAsSeen } from "../../app/localSettingsSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import LoadingComponent from "../common/LoadingComponent";
 
 const HoverTextButton = ({
   onClick,
@@ -75,10 +78,25 @@ function SprintInsightModal({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: sprintInsights } = useGetSprintInsightsQuery(sprintId);
+  const dispatch = useAppDispatch();
+  const hasSeenThisSprintInsight = useAppSelector((state) => state.localSettingsSlice.seenRetrospectiveInsights[sprintId.toString()] ?? false);
+  const [sendRegenerateSprintInsightsRequest] = useSendRegenerateSprintInsightsRequestMutation();
+
+  // update browser local storage key-value to set seen flag for this sprint
+  if (!isGenerating && sprintInsights && sprintInsights.length > 0 && isModalOpen) {
+    dispatch(markSprintAsSeen(sprintId.toString()));
+  }
 
   return (
     <>
-      <HoverTextButton onClick={() => setIsModalOpen(true)}/>
+      {hasSeenThisSprintInsight ?
+        (<HoverTextButton onClick={() => setIsModalOpen(true)}/>) :
+        (<Tooltip title="View sprint insights">
+          <Badge count={sprintInsights?.length}>
+            <HoverTextButton onClick={() => setIsModalOpen(true)} />
+          </Badge>
+        </Tooltip>)
+      }
       <Modal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -95,7 +113,16 @@ function SprintInsightModal({
         ]}
       >
         {isGenerating ? (
-          <Spin />
+          <LoadingComponent
+            loadingTextArr={[
+              "Consulting the Agile Oracle... 🔮",
+              "Letting the AI take a deep dive... 🤖",
+              "Replaying the sprint timeline... ⏳",
+              "Scrutinizing user stories... 📜",
+              "Extracting actionable insights... ✅",
+              "Identifying blockers and improvements... 🚧",
+            ]}
+          />
         ) : (
           sprintInsights && sprintInsights.length > 0 ? (
             <Tabs
@@ -106,7 +133,11 @@ function SprintInsightModal({
               })) ?? []}
             />
           ) : (
-            <Empty />
+            <Empty description="No insights found - something may have went wrong">
+              <Button onClick={() => sendRegenerateSprintInsightsRequest({sprintId})}>
+                Regenerate insights
+              </Button>
+            </Empty>
           )
         )}
       </Modal>

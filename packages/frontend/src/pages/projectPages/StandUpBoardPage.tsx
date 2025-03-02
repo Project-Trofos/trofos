@@ -6,8 +6,8 @@ import store from '../../app/store';
 import trofosApiSlice from '../../api';
 import useSocket from '../../api/socket/useSocket';
 import { UpdateType } from '../../api/socket/socket';
-import { Spin } from 'antd';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 export default function StandUpBoardPage(): JSX.Element {
   const params = useParams();
@@ -25,7 +25,7 @@ export default function StandUpBoardPage(): JSX.Element {
   useSocket(UpdateType.STAND_UP_NOTES, standUpId.toString(), handleReset);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
   if (!standUp) {
     return <div>Stand Up not found</div>;

@@ -224,6 +224,17 @@ const getSprintInsightStatus = async (req: express.Request, res: express.Respons
   }
 };
 
+const regenerateSprintInsight = async (req: express.Request, res: express.Response) => {
+  try {
+    const { sprintId } = req.params;
+    const user = res.locals.userSession as UserSession | undefined;
+    await sprintService.regenerateSprintInsight(Number(sprintId), user?.user_email || '');
+    return res.status(StatusCodes.OK).json({});
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   newSprint,
   listSprints,
@@ -241,4 +252,5 @@ export default {
   authLiveNotes,
   getSprintInsight,
   getSprintInsightStatus,
+  regenerateSprintInsight,
 };
