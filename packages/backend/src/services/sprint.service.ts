@@ -6,6 +6,8 @@ import {
   Retrospective,
   RetrospectiveVote,
   RetrospectiveVoteType,
+  SprintInsight,
+  Feature,
 } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
@@ -13,6 +15,9 @@ import { SprintFields } from '../helpers/types/sprint.service.types';
 import { assertProjectIdIsValid, BadRequestError } from '../helpers/error';
 import { AppAbility } from '../policies/policyTypes';
 import { exclude } from '../helpers/common';
+import { emitToFrontendInsightChanged, publishTask, redis } from './aiInsight.service';
+import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
+import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));
@@ -194,6 +199,7 @@ async function updateSprint(
 
 async function updateSprintStatus(
   sprintToUpdate: Pick<SprintFields, 'projectId' | 'status'> & { sprintId: number },
+  user: string,
 ): Promise<Sprint> {
   const { sprintId, projectId, status } = sprintToUpdate;
 
@@ -236,6 +242,11 @@ async function updateSprintStatus(
 
       return updatedCurrentSprint;
     });
+  }
+
+  // publish event to generate retrospective insights
+  if (status === 'completed' && await checkFeatureFlagInCode(Feature.ai_insights)) {
+    publishTask(projectId, sprintId, user);
   }
 
   const updatedSprint = await prisma.sprint.update({
@@ -404,6 +415,37 @@ async function deleteRetrospectiveVote(retroId: number, userId: number): Promise
   });
 }
 
+async function getSprintInsight(sprintId: number): Promise<SprintInsight[]> {
+  return await prisma.sprintInsight.findMany({
+    where: {
+      sprint_id: sprintId,
+    },
+  });
+}
+
+async function getSprintInsightGenerating(projectId: number, sprintId: number): Promise<boolean> {
+  const taskKey = `${projectId}:${sprintId}`;
+  const isProcessing = await redis.sIsMember(SPRINT_PROCESSING_SET, taskKey);
+  return isProcessing;
+}
+
+async function regenerateSprintInsight(sprintId: number, user: string): Promise<void> {
+  const sprint = await prisma.sprint.findFirstOrThrow({
+    where: {
+      id: sprintId,
+    },
+    select: {
+      id: true,
+      project_id: true,
+    }
+  });
+
+  // publish event to generate retrospective insights
+  publishTask(sprint.project_id, sprint.id, user);
+
+  emitToFrontendInsightChanged(sprintId);
+}
+
 export default {
   newSprint,
   listSprints,
@@ -419,4 +461,7 @@ export default {
   updateRetrospectiveVote,
   deleteRetrospectiveVote,
   getSprintNotes,
+  getSprintInsight,
+  getSprintInsightGenerating,
+  regenerateSprintInsight,
 };

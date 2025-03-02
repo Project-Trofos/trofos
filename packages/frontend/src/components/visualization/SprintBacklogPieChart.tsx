@@ -15,7 +15,7 @@ export default function SprintBacklogPieChart(props: {
   const { sprints, unassignedBacklog, showButton } = props;
   const data = useGroupSprintBacklog(sprints, unassignedBacklog);
   const navigate = useNavigate();
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
 
   const config = {
     data,

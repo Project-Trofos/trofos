@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { UserGuideEmbedding } from '../../prisma_pgvector/generated/pgvector_client';
+import { UserGuideEmbedding } from '@trofos-nus/common/src/generated/pgvector_client';
 import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';

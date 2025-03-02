@@ -18,5 +18,12 @@ test('can login', async ({ page }) => {
   await page.locator("[type=submit]").click();
 
   // Expect a successful login to navigate to the projects page
-  await expect(page).toHaveURL('http://localhost:3000/projects/current');
+  await expect(page).not.toHaveURL('http://localhost:3000/login');
+
+  // Wait for the tour element to appear
+  const tourElement = page.locator('.ant-tour-content');
+  await tourElement.waitFor({ state: 'visible' });
+
+  // Assert that the tour has the expected text
+  await expect(tourElement).toContainText('Welcome to Trofos!');
 });

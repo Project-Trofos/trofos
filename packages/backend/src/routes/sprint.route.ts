@@ -1,8 +1,9 @@
-import { Action } from '@prisma/client';
+import { Action, Feature } from '@prisma/client';
 import express from 'express';
 import sprint from '../controllers/sprint';
 import { hasAuth } from '../middleware/auth.middleware';
 import projectPolicy from '../policies/project.policy';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 
 const router = express.Router();
 
@@ -29,5 +30,11 @@ router.delete(
 router.get('/notes/:sprintId', hasAuth(Action.read_project, null), sprint.getSprintNotes);
 
 router.get('/:sprintId/live-notes/auth', hasAuth(Action.read_project, null), sprint.authLiveNotes);
+
+router.get('/:sprintId/insight', checkFeatureFlag(Feature.ai_insights), hasAuth(Action.read_project, null), sprint.getSprintInsight);
+
+router.get('/:sprintId/insight/status', checkFeatureFlag(Feature.ai_insights), hasAuth(Action.read_project, null), sprint.getSprintInsightStatus);
+
+router.post('/:sprintId/insight/regenerate', checkFeatureFlag(Feature.ai_insights), hasAuth(Action.update_project, null), sprint.regenerateSprintInsight);
 
 export default router;

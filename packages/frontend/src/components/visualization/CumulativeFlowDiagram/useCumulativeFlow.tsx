@@ -103,7 +103,7 @@ export function useCummulativeFlowData(backlogHistory: BacklogHistory[]): Cumula
 }
 
 export function useCummulativeFlowConfig(data: CumulativeFlowData[]) {
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   const [dateRange, setDateRange] = useState<RangeValue<Dayjs>>(null);
   const config = useMemo(() => {
     return {

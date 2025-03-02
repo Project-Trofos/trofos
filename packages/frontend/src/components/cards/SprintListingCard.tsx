@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Collapse, message, Tour } from 'antd';
+import { Badge, Button, Collapse, message, Tooltip, Tour } from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import SprintNotesModal from '../modals/SprintNotesModal';
 import './SprintListingCard.css';
 import type { TourProps } from 'antd';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
+import { useAppSelector } from '../../app/hooks';
 
 function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   const { sprint, setSprint, setIsModalVisible, disableClickEvent } = props;
@@ -135,6 +136,9 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
   ];
   // TODO: delete above when remove tour
 
+  const hasSeenThisSprintInsight = useAppSelector((state) => state.localSettingsSlice.seenRetrospectiveInsights[sprint.id.toString()] ?? false);
+  const hasRetroInsightUnread = !hasSeenThisSprintInsight && sprint.status === 'completed';
+
   return (
     <>
       <StrictModeDroppable droppableId={sprint.id.toString()}>
@@ -153,14 +157,26 @@ function SprintListingCard(props: SprintListingCardProps): JSX.Element {
                       </div>
                     )}
                     {(sprint.status === 'completed' || sprint.status === 'closed') && (
-                      <div className="sprint-card-button">
+                      !hasRetroInsightUnread ? (<div className="sprint-card-button">
                         <Button
                           {...{ [STEP_PROP]: StepTarget.RETROSPECTIVE_TAB }}
                           onClick={() => navigateToRetrospective(sprint.id)}
                         >
                           Retrospective
                         </Button>
-                      </div>
+                      </div>) :
+                      (<Tooltip title="New insights available" placement="topRight">
+                        <Badge dot offset={[-10, 0]}>
+                          <div className="sprint-card-button">
+                            <Button
+                              {...{ [STEP_PROP]: StepTarget.RETROSPECTIVE_TAB }}
+                              onClick={() => navigateToRetrospective(sprint.id)}
+                            >
+                              Retrospective
+                            </Button>
+                          </div>
+                        </Badge>
+                      </Tooltip>)
                     )}
                     {sprint.start_date && sprint.end_date && (
                       <div>{`${dayjs(sprint.start_date).format('DD/MM/YYYY')} - ${dayjs(sprint.end_date).format(

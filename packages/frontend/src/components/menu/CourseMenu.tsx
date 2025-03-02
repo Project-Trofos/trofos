@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Menu, Spin, ConfigProvider } from 'antd';
+import { Menu, ConfigProvider } from 'antd';
 import { useCourse } from '../../api/hooks';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import LoadingComponent from '../common/LoadingComponent';
 
 export default function CourseMenu(): JSX.Element {
   const params = useParams();
@@ -19,7 +20,7 @@ export default function CourseMenu(): JSX.Element {
   const { isCourseManager } = useIsCourseManager();
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
   const courseId = Number(course?.id) || -1;
 

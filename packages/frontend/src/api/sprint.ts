@@ -1,6 +1,6 @@
 import trofosApiSlice from '.';
 import type { SprintFormFields, SprintUpdatePayload } from '../helpers/SprintModal.types';
-import type { Backlog, Retrospective, RetrospectiveType, RetrospectiveVote, RetrospectiveVoteType } from './types';
+import type { Backlog, Retrospective, RetrospectiveType, RetrospectiveVote, RetrospectiveVoteType, SprintInsight } from './types';
 
 export type Sprint = {
   id: number;
@@ -142,6 +142,34 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Retrospective', id: `${arg.sprintId}-${arg.retroType}` }],
     }),
+    getSprintInsights: builder.query<SprintInsight[], number>({
+      query: (sprintId) => ({
+        url: `sprint/${sprintId}/insight`,
+        credentials: 'include',
+      }),
+      providesTags: ['SprintInsight'],
+    }),
+    getSprintInsightGeneratingStatus: builder.query<{isGenerating: boolean}, {sprintId: number, projectId: number}>({
+      query: ({
+        sprintId,
+        projectId,
+      }) => ({
+        url: `sprint/${sprintId}/insight/status?projectId=${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['SprintInsightStatus'],
+    }),
+    sendRegenerateSprintInsightsRequest: builder.mutation<
+      void,
+      { sprintId: number }
+    >({
+      query: ({ sprintId }) => ({
+        url: `sprint/${sprintId}/insight/regenerate`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['SprintInsight', 'SprintInsightStatus'], // websocket subscription in retrospective page will also invalidate these for other clients, including request sender
+    }),
   }),
   overrideExisting: false,
 });
@@ -160,4 +188,7 @@ export const {
   useAddRetrospectiveVoteMutation,
   useUpdateRetrospectiveVoteMutation,
   useDeleteRetrospectiveVoteMutation,
+  useGetSprintInsightsQuery,
+  useGetSprintInsightGeneratingStatusQuery,
+  useSendRegenerateSprintInsightsRequestMutation,
 } = extendedApi;

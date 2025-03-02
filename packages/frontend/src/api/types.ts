@@ -369,6 +369,13 @@ export type FeatureFlag = {
   active: boolean;
 };
 
+export type SprintInsight = {
+  id: number;
+  sprint_id: number;
+  category: string;
+  content: string;
+};
+
 export type ProjectAssignment = {
   id: number;
   targetProjectId: number;

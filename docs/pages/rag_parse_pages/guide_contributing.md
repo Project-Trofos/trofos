@@ -33,6 +33,7 @@ This guide will explain how to setup playwright locally for you to contribute to
     E2E_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/trofos?schema=public
     E2E_AI_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/pgvector?schema=public
     TELEGRAM_TOKEN=<tele token>
+    E2E_REDIS_URL="redis://redis:6379"
     ```
 
     Here's a token we have created: 7216253061:AAF8fSgE9NzS2QgkkW_9SbClwY7zfbE3nTM
@@ -46,9 +47,10 @@ This guide will explain how to setup playwright locally for you to contribute to
 
     ```
     DATABASE_URL=postgresql://postgres:postgres@localhost:5432/trofos?schema=public
+    AI_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pgvector?schema=public
     ```
 
-    and do `pnpm run migrate:reset`
+    and do `pnpm i` then `pnpm run migrate:reset`
 1. `cd` to `./packages/frontend`, do `pnpm exec playwright install --with-deps`
 1. In `./packages/frontend`, do `pnpm exec playwright test`
     After this, you can add on new test files using playwright.

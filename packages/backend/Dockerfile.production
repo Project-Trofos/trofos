@@ -40,6 +40,8 @@ ARG AI_DATABASE_URL
 ENV AI_DATABASE_URL=$AI_DATABASE_URL
 ARG CI
 ENV CI=$CI
+ARG REDIS_URL
+ENV REDIS_URL=$REDIS_URL
 # Run unit test
 RUN pnpm run prisma-migrate-ci
 RUN pnpm run test

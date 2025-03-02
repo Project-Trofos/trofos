@@ -4,7 +4,7 @@ import { theme as antdTheme } from 'antd';
 import { PropsWithChildren } from 'react';
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   const colorPrimary = '#32A2AC';
   return (
     <ConfigProvider

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb, Button, Dropdown, DropdownProps, message, Spin, Tooltip, Typography } from 'antd';
+import { Breadcrumb, Button, Dropdown, DropdownProps, message, Tooltip, Typography } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRemoveProjectMutation } from '../../api/project';
 import { useRemoveProjectFromCourseMutation } from '../../api/course';
@@ -17,6 +17,7 @@ import { useGetUserInfoQuery } from '../../api/auth';
 import { UserPermissionActions } from '../../helpers/constants';
 import Container from '../../components/layouts/Container';
 import PageHeader from '../../components/pageheader/PageHeader';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 const { Text } = Typography;
 
@@ -82,7 +83,7 @@ export default function ProjectPage(): JSX.Element {
   );
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   if (!params.projectId || !project) {

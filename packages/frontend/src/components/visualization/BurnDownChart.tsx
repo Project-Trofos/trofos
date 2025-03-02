@@ -15,7 +15,7 @@ type BurnDownChartProps = {
 export function BurnDownChart(props: BurnDownChartProps): JSX.Element {
   const { backlogHistory, sprint, includeTitle } = props;
   const { storyPointData } = useBurndownChart(backlogHistory, sprint);
-  const isDarkTheme = useAppSelector((state) => state.themeSlice.isDarkTheme);
+  const isDarkTheme = useAppSelector((state) => state.localSettingsSlice.isDarkTheme);
   
   const config: React.ComponentProps<typeof Line> = {
     data: storyPointData,

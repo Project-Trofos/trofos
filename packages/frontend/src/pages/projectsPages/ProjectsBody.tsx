@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useCurrentAndPastProjects } from '../../api/hooks';
 import getPane from '../../helpers/getPane';
-import { Input, Spin, Space, Tooltip } from 'antd';
+import { Input, Space, Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';
 import ToggleButtonGroup from '../../components/button/ToggleButtons';
+import LoadingComponent from '../../components/common/LoadingComponent';
 
 export const sortOptions = {
   SORT_BY_COURSE: 'Sort by Course',
@@ -69,7 +70,7 @@ export default function ProjectsBody({
           />
         </Space>
       </div>
-      {isLoading ? <Spin /> : getPane(projectsData, `There are no ${noProjectsText} projects.`)}
+      {isLoading ? <LoadingComponent /> : getPane(projectsData, `There are no ${noProjectsText} projects.`)}
     </GenericBoxWithBackground>
   );
 }
