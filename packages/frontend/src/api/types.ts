@@ -1,3 +1,5 @@
+import { Sprint } from "./sprint";
+
 export type Project = {
   id: number;
   pname: string;
@@ -380,4 +382,20 @@ export type ProjectAssignment = {
   id: number;
   targetProjectId: number;
   sourceProjectId: number;
+};
+
+export type CourseProjectsLatestInsights = {
+  pname: string;
+  sprints: {
+    id: number;
+    status: Sprint['status'];
+    name: string;
+    sprintInsights: {
+      created_at: Date;
+      id: number;
+      category: string;
+      content: string;
+    }[];
+  }[];
+  id: number;
 };

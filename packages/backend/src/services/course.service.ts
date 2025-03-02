@@ -658,17 +658,12 @@ async function getLatestSprintInsightsForCourseProjects(courseId: number): Promi
   }[];
   id: number;
 }[]> {
+  // for each project of a course:
+  //  find the latest sprint that is either completed (higher priority) or closed (no completed, most recent end_date), and join the ai insights
+  //  else return empty array
   return prisma.project.findMany({
     where: {
       course_id: courseId,
-      sprints: {
-        some: {
-          OR: [
-            { status: "completed" },
-            { status: "closed" }
-          ]
-        }
-      }
     },
     select: {
       id: true,
