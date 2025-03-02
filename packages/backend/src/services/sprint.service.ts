@@ -246,6 +246,16 @@ async function updateSprintStatus(
 
   // publish event to generate retrospective insights
   if (status === 'completed' && await checkFeatureFlagInCode(Feature.ai_insights)) {
+    // there shouldn't be completed sprints yet - since only 1 active sprint at a time and all others are closed
+    const isCompletedPresent = await prisma.sprint.findFirst({
+      where: {
+        project_id: projectId,
+        status: 'completed',
+      },
+    });
+    if (isCompletedPresent) {
+      throw new BadRequestError('A completed sprint already exists');
+    }
     publishTask(projectId, sprintId, user);
   }
 
