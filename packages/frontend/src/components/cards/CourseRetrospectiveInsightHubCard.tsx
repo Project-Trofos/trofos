@@ -151,6 +151,7 @@ export default function CourseRetrospectiveInsightHubCard({
           bordered
           title={() => <Typography.Title level={4}>Latest Insights🚀</Typography.Title>}
           tableLayout='auto'
+          style={{ borderWidth: '2px' }}
         />
       </Space>
       <Modal
