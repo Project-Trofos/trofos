@@ -376,6 +376,7 @@ export type SprintInsight = {
   sprint_id: number;
   category: string;
   content: string;
+  created_at: Date;
 };
 
 export type ProjectAssignment = {
@@ -390,12 +391,9 @@ export type CourseProjectsLatestInsights = {
     id: number;
     status: Sprint['status'];
     name: string;
-    sprintInsights: {
-      created_at: Date;
-      id: number;
-      category: string;
-      content: string;
-    }[];
+    start_date: Date | null;
+    end_date: Date | null;
+    sprintInsights: SprintInsight[];
   }[];
   id: number;
 };

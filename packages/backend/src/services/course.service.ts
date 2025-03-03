@@ -649,6 +649,8 @@ async function getLatestSprintInsightsForCourseProjects(courseId: number): Promi
     id: number;
     status: SprintStatus;
     name: string;
+    start_date: Date | null;
+    end_date: Date | null;
     sprintInsights: {
       created_at: Date;
       id: number;
@@ -684,6 +686,8 @@ async function getLatestSprintInsightsForCourseProjects(courseId: number): Promi
           id: true,
           name: true,
           status: true,
+          start_date: true,
+          end_date: true,
           sprintInsights: {
             select: {
               id: true,
