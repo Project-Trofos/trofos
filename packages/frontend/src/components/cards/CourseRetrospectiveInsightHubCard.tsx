@@ -1,8 +1,20 @@
-import { Button, Card, Empty, Modal, Space, Table, Tabs, Typography } from "antd";
+import { Badge, Button, Card, Empty, Flex, Modal, Space, Table, Tabs, Tag, Typography } from "antd";
 import { CourseProjectsLatestInsights, SprintInsight } from "../../api/types";
 import { formatDbDate } from "../../helpers/dateFormatter";
 import { useState } from "react";
 import { Insight } from "../modals/SprintInsightModal";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+
+const renderSprintStatusTag = (status: string) => {
+  switch (status) {
+    case 'completed':
+      return <Tag bordered={false} color="geekblue">Completed</Tag>;
+    case 'closed':
+      return <Tag bordered={false} color="gold">Closed</Tag>;
+    default:
+      return <Tag bordered={false} color="red">{status}</Tag>;
+  }
+};
 
 export default function CourseRetrospectiveInsightHubCard({
   projectsLatestInsights,
@@ -16,7 +28,10 @@ export default function CourseRetrospectiveInsightHubCard({
 
   const onCellExpandIfNoSprints = (record: CourseProjectsLatestInsights, index: number) => {
     if (!record.sprints || record.sprints.length === 0) {
-      return { colSpan: 5 };
+      return {
+        colSpan: 6,
+        align: 'center',
+      };
     }
     return {};
   }
@@ -35,11 +50,13 @@ export default function CourseRetrospectiveInsightHubCard({
           title: 'ID',
           dataIndex: 'id',
           key: 'id',
+          fixed: 'left',
         },
         {
           title: 'Name',
           dataIndex: 'pname',
           key: 'pname',
+          fixed: 'left',
         },
       ]
     },
@@ -50,7 +67,14 @@ export default function CourseRetrospectiveInsightHubCard({
           title: 'ID',
           dataIndex: 'sprints',
           render: (value: CourseProjectsLatestInsights['sprints'], record: CourseProjectsLatestInsights) => {
-            return value && value.length > 0 ? value[0].id : 'No sprints';
+            return value && value.length > 0 ? value[0].id : (
+              <Tag
+                color="red"
+                icon={<ExclamationCircleOutlined />}
+              >
+                No Sprints
+              </Tag>
+            );
           },
           onCell: onCellExpandIfNoSprints,
         },
@@ -66,7 +90,7 @@ export default function CourseRetrospectiveInsightHubCard({
           title: 'Status',
           dataIndex: 'sprints',
           render: (value: CourseProjectsLatestInsights['sprints'], record: CourseProjectsLatestInsights) => {
-            return value && value.length > 0 ? value[0].status : '';
+            return value && value.length > 0 ? renderSprintStatusTag(value[0].status) : '';
           },
           onCell: onCellCollapseIfNoSprints,
         },
@@ -91,14 +115,27 @@ export default function CourseRetrospectiveInsightHubCard({
           key: 'action',
           dataIndex: 'sprints',
           render: (value: CourseProjectsLatestInsights['sprints'], record: CourseProjectsLatestInsights) => (
-            <Button
-              onClick={() => {
-                setSelectedProject(record);
-                setIsInsightModalOpen(true);
-              }}
-            >
-              View Insights
-            </Button>
+            projectIdsWithUnseenLatestSprintInsights.includes(record.id) ? (
+              <Badge dot>
+                <Button
+                  onClick={() => {
+                    setSelectedProject(record);
+                    setIsInsightModalOpen(true);
+                  }}
+                >
+                  View Insights
+                </Button>
+              </Badge>
+            ) : (
+              <Button
+                onClick={() => {
+                  setSelectedProject(record);
+                  setIsInsightModalOpen(true);
+                }}
+              >
+                View Insights
+              </Button>
+            )
           ),
           onCell: onCellCollapseIfNoSprints,
         },
@@ -113,6 +150,7 @@ export default function CourseRetrospectiveInsightHubCard({
           columns={columns}
           bordered
           title={() => <Typography.Title level={4}>Latest Insights🚀</Typography.Title>}
+          tableLayout='auto'
         />
       </Space>
       <Modal
