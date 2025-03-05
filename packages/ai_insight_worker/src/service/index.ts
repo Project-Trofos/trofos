@@ -2,6 +2,7 @@ import { Sprint } from "@prisma/client";
 import prisma from "../models/prismaClient";
 import { handleGenerateBacklogInsights } from "./backlog";
 import { handleGenerateContributionInsight } from "./contribution";
+import { handleGenerateScrumCeremoniesInsights } from "./scrumCeremonies";
 
 async function handleAllInsights(projectId: number, sprintId: number, user: string): Promise<boolean> {
   // Generate and upsert all insights
@@ -16,7 +17,8 @@ async function handleAllInsights(projectId: number, sprintId: number, user: stri
 
   const contributionInsightSuccess = await handleGenerateContributionInsight(sprint, user);
   const backlogInsightSuccess = await handleGenerateBacklogInsights(sprint, user);
-  return contributionInsightSuccess && backlogInsightSuccess;
+  const scrumCeremoniesSuccess = await handleGenerateScrumCeremoniesInsights(sprint, user);
+  return contributionInsightSuccess && backlogInsightSuccess && scrumCeremoniesSuccess;
 }
 
 export { handleAllInsights };
