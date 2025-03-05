@@ -16,14 +16,7 @@ const mapStandUpColIdToColName = (id: number): string => {
   }
 }
 
-async function generateScrumCeremoniesInsights(sprint1: Sprint, user: string): Promise<string> {
-  const sprint: Sprint = await prisma.sprint.findUniqueOrThrow({
-    where: {
-      id: sprint1.id,
-    },
-  });
-  // todo del
-  
+async function generateScrumCeremoniesInsights(sprint: Sprint, user: string): Promise<string> {
   const projectId = sprint.project_id;
   const sprintId = sprint.id;
 
