@@ -4,6 +4,8 @@ import { formatDbDate } from "../../helpers/dateFormatter";
 import { useState } from "react";
 import { Insight } from "../modals/SprintInsightModal";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../app/hooks";
+import { markSprintAsSeen } from "../../app/localSettingsSlice";
 
 const renderSprintStatusTag = (status: string) => {
   switch (status) {
@@ -25,6 +27,7 @@ export default function CourseRetrospectiveInsightHubCard({
 }): JSX.Element {
   const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<CourseProjectsLatestInsights | null>(null);
+  const dispatch = useAppDispatch();
 
   const onCellExpandIfNoSprints = (record: CourseProjectsLatestInsights, index: number) => {
     if (!record.sprints || record.sprints.length === 0) {
@@ -57,6 +60,11 @@ export default function CourseRetrospectiveInsightHubCard({
           dataIndex: 'pname',
           key: 'pname',
           fixed: 'left',
+          render: (value: string, record: CourseProjectsLatestInsights) => (
+            <Typography.Link href={`/project/${record.id}`} target="_blank">
+              {value}
+            </Typography.Link>
+          )
         },
       ]
     },
@@ -72,7 +80,7 @@ export default function CourseRetrospectiveInsightHubCard({
                 color="red"
                 icon={<ExclamationCircleOutlined />}
               >
-                No Sprints
+                No Completed Sprints
               </Tag>
             );
           },
@@ -82,7 +90,11 @@ export default function CourseRetrospectiveInsightHubCard({
           title: 'Name',
           dataIndex: 'sprints',
           render: (value: CourseProjectsLatestInsights['sprints'], record: CourseProjectsLatestInsights) => {
-            return value && value.length > 0 ? value[0].name : '';
+            return value && value.length > 0 ? (
+              <Typography.Link href={`/project/${record.id}/board/${value[0].id}`} target="_blank">
+                {value[0].name}
+              </Typography.Link>
+            ) : '';
           },
           onCell: onCellCollapseIfNoSprints,
         },
@@ -121,6 +133,7 @@ export default function CourseRetrospectiveInsightHubCard({
                   onClick={() => {
                     setSelectedProject(record);
                     setIsInsightModalOpen(true);
+                    dispatch(markSprintAsSeen(record.sprints[0].id.toString()));
                   }}
                 >
                   View Insights
