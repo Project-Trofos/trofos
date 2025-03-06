@@ -37,6 +37,7 @@ export default function ProjectMenu(): JSX.Element {
           { key: 'sprint', label: <span {...{ [STEP_PROP]: StepTarget.PROJECT_SPRINT_TAB }}>Sprint</span> },
           { key: 'board', label: 'Board' },
           { key: 'standup', label: 'Stand Up' },
+          { key: 'issues', label: 'Issues' },
           { key: 'statistics', label: 'Statistics' },
           { key: 'report', label: 'Report' },
           { key: 'feedback', label: 'Feedback' },

@@ -7,6 +7,7 @@ import {
   ProjectGitLinkData,
   ProjectUserSettings,
   ProjectAssignment,
+  Issue,
 } from './types';
 
 // Project management APIs
@@ -300,6 +301,34 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: 'Project', id: arg.projectId }],
     }),
+
+    // Project Issues
+
+    // Fetch issues assigned TO a project (issues reported by others to this project)
+    getAssignedIssuesByProjectId: builder.query<Issue[], number>({
+      query: (projectId) => ({
+        url: `project/${projectId}/assignedIssues`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: 'Issue' as const, id })), { type: 'Issue' as const }]
+          : [{ type: 'Issue' as const }],
+    }),
+
+    // Fetch issues assigned BY a project (issues this project has assigned to others)
+    getReportedIssuesByProjectId: builder.query<Issue[], number>({
+      query: (projectId) => ({
+        url: `project/${projectId}/reportedIssues`,
+        method: 'GET',
+        credentials: 'include',
+      }),
+      providesTags: (result) =>
+        result
+          ? [...result.map(({ id }) => ({ type: 'Issue' as const, id })), { type: 'Issue' as const }]
+          : [{ type: 'Issue' as const }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -329,4 +358,6 @@ export const {
   useGetAssignedProjectsQuery,
   useAssignProjectMutation,
   useRemoveProjectAssignmentMutation,
+  useGetAssignedIssuesByProjectIdQuery,
+  useGetReportedIssuesByProjectIdQuery,
 } = extendedApi;

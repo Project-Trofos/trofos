@@ -17,6 +17,7 @@ import apiKeyRouter from './routes/apiKey.route';
 import routerExternalV1 from './routes/external/v1/route.external.v1';
 import aiRouter from './routes/ai.route';
 import featureFlagRouter from './routes/featureFlag.route';
+import issueRouter from './routes/issue.route';
 import setUpSwagger from './swagger/swagger';
 import promClient from 'prom-client';
 
@@ -128,6 +129,9 @@ router.use('/ai', aiRouter);
 
 // Routes for feature flags
 router.use('/feature-flags', featureFlagRouter);
+
+// Routes for issues
+router.use('/issue', issueRouter);
 
 app.use('/api', router);
 

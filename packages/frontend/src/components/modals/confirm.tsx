@@ -126,3 +126,10 @@ export function confirmInviteUserToProject(onOk: () => Promise<void>) {
 export function confirmInviteNonExistingUserToProject(onOk: () => Promise<void>) {
   return confirm('User does not exist. Are you sure you want to invite this user?', onOk);
 }
+
+/**
+ * Shows a modal with prompt for deleting an issue.
+ */
+export function confirmDeleteIssue(onOk: () => Promise<void>) {
+  return confirm('Are you sure you want to delete this issue?', onOk);
+}

@@ -1,10 +1,10 @@
 import StatusCodes from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { Comment } from '@prisma/client';
+import { BacklogComment, BaseComment } from '@prisma/client';
 import commentController from '../../controllers/comment';
 import commentService from '../../services/comment.service';
-import { mockCommentData, mockCommentFields } from '../mocks/commentData';
-import { CommentFields } from '../../helpers/types/comment.service.types';
+import { mockBaseCommentData, mockCommentData, mockCommentFields } from '../mocks/commentData';
+import { BacklogCommentWithBase, CommentFields } from '../../helpers/types/comment.service.types';
 
 const commentServiceSpies = {
   create: jest.spyOn(commentService, 'create'),
@@ -21,7 +21,7 @@ describe('commentController tests', () => {
   describe('create comment', () => {
     const mockComment: CommentFields = mockCommentFields;
 
-    const expectedComment: Comment = mockCommentData;
+    const expectedComment: BacklogCommentWithBase = mockCommentData;
 
     const mockRequest = createRequest({
       body: mockComment,
@@ -72,7 +72,16 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return array of comments and status 200 when called with valid projectId and backlogId', async () => {
-      const expectedComments: Comment[] = [mockCommentData];
+      const expectedComments = [
+        {
+          ...mockCommentData,
+          commenter: {
+            user_id: mockCommentData.commenter.user_id,
+            user_email: mockCommentData.commenter.user_email,
+            user_display_name: mockCommentData.commenter.user_display_name,
+          },
+        },
+      ];
       commentServiceSpies.list.mockResolvedValueOnce(expectedComments);
 
       await commentController.list(mockRequest, mockResponse);
@@ -109,8 +118,8 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return updated comment and status 200 when called with valid fields', async () => {
-      const expectedComment: Comment = {
-        ...mockCommentData,
+      const expectedComment: BaseComment = {
+        ...mockBaseCommentData,
         content: 'An updated comment',
         updated_at: new Date(Date.now()),
       };
@@ -150,7 +159,7 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return comment and status 200 when called with valid fields', async () => {
-      const expectedComment: Comment = mockCommentData;
+      const expectedComment: BaseComment = mockBaseCommentData;
       commentServiceSpies.remove.mockResolvedValueOnce(expectedComment);
 
       await commentController.remove(mockRequest, mockResponse);

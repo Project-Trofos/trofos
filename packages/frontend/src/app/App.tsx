@@ -45,6 +45,7 @@ import ProjectSprintsExample from '../pages/examplePages/ProjectSprintsExample';
 import CourseExample from '../pages/examplePages/CourseExample';
 import CourseOverviewExample from '../pages/examplePages/CourseOverviewExample';
 import { TourProvider } from '../components/tour/TourProvider';
+import ProjectIssues from '../pages/projectPages/ProjectIssues';
 
 function App() {
   const [_, contextHolder] = useMessage();
@@ -79,6 +80,7 @@ function App() {
                 <Route path="standup/:standUpId" element={<StandUpBoardPage />} />
                 <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
                 <Route path="feedback" element={<ProjectFeedbacks />} />
+                <Route path="issues" element={<ProjectIssues />} />
                 <Route path="statistics" element={<ProjectStatistics />} />
                 <Route path="report" element={<ProjectReportPage />} />
                 <Route path="settings" element={<ProjectSettings />} />

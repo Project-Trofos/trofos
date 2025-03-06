@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Dropdown, Form, Input, List, Menu, message, Modal, Space } from 'antd';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import type { Comment as CommentType } from '../../api/types';
+import type { CommonComment as CommentType } from '../../api/types';
 import { useDeleteCommentMutation, useUpdateCommentMutation } from '../../api/comment';
 import './CommentItem.css';
 
@@ -83,13 +83,13 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
         avatar={<Avatar icon={<UserOutlined />} />}
         title={
           <>
-            {comment.commenter.user.user_display_name} &#x2022;{' '}
+            {comment.commenter.user_display_name} &#x2022;{' '}
             <span className="comment-timestamp">{renderCommentTimestamp(comment)}</span>
           </>
         }
       />
       <Form onFinish={(formData) => handleUpdateComment(formData, comment.comment_id)}>
-        <Form.Item name="updatedComment" initialValue={comment.content}>
+        <Form.Item name="updatedComment" initialValue={comment.base_comment.content}>
           <TextArea autoSize={{ minRows: 1 }} placeholder="Update comment..." />
         </Form.Item>
         <Button onClick={() => stopEditingComment()}>Cancel</Button>
@@ -101,11 +101,11 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
   );
 
   const renderCommentTimestamp = (comment: CommentType) => {
-    if (comment.updated_at) {
-      return `${dayjs(comment.updated_at).format('D MMM YYYY, h:mm A')} (edited)`;
+    if (comment.base_comment.updated_at) {
+      return `${dayjs(comment.base_comment.updated_at).format('D MMM YYYY, h:mm A')} (edited)`;
     }
 
-    return dayjs(comment.created_at).format('D MMM YYYY, h:mm A');
+    return dayjs(comment.base_comment.created_at).format('D MMM YYYY, h:mm A');
   };
 
   const renderCommentList = (comment: CommentType) => {
@@ -132,11 +132,11 @@ function CommentItem(props: { commentData: CommentType }): JSX.Element {
           avatar={<Avatar icon={<UserOutlined />} />}
           title={
             <>
-              {comment.commenter.user.user_display_name} &#x2022;{' '}
+              {comment.commenter.user_display_name} &#x2022;{' '}
               <span className="comment-timestamp">{renderCommentTimestamp(comment)}</span>
             </>
           }
-          description={comment.content}
+          description={comment.base_comment.content}
         />
         <div className="comment-menu-button">
           <Dropdown className="backlog-menu-dropdown" overlay={menuItems} trigger={['click']} placement="bottomRight">

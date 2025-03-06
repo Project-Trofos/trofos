@@ -1,16 +1,23 @@
 import trofosApiSlice from '.';
-import { Comment, CommentFieldsType } from './types';
+import { BacklogComment, BaseComment, CommentFieldsType, IssueComment, IssueCommentFieldsType } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getComments: builder.query<Comment[], { projectId: number; backlogId: number }>({
+    getComments: builder.query<BacklogComment[], { projectId: number; backlogId: number }>({
       query: ({ projectId, backlogId }) => ({
         url: `backlog/listComments/${projectId}/${backlogId}`,
         credentials: 'include',
       }),
-      providesTags: ['Backlog'],
+      providesTags: (result, error, { projectId, backlogId }) => [{ type: 'Backlog', id: `${projectId}-${backlogId}` }],
     }),
-    createComment: builder.mutation<Comment, CommentFieldsType>({
+    getIssueComments: builder.query<IssueComment[], { issueId: number }>({
+      query: ({ issueId }) => ({
+        url: `issue/listComments/${issueId}`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, { issueId }) => [{ type: 'Issue', id: issueId }],
+    }),
+    createComment: builder.mutation<BacklogComment, CommentFieldsType>({
       query: ({ projectId, backlogId, commenterId, content }) => ({
         url: 'backlog/createComment/',
         method: 'POST',
@@ -22,9 +29,24 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: (result, error, { projectId, backlogId }) => [
+        { type: 'Backlog', id: `${projectId}-${backlogId}` },
+      ],
     }),
-    updateComment: builder.mutation<Comment, { commentId: number; updatedComment: string }>({
+    createIssueComment: builder.mutation<IssueComment, IssueCommentFieldsType>({
+      query: ({ issueId, commenterId, content }) => ({
+        url: 'issue/createComment/',
+        method: 'POST',
+        body: {
+          issueId,
+          commenterId,
+          content,
+        },
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, { issueId }) => [{ type: 'Issue', id: issueId }],
+    }),
+    updateComment: builder.mutation<BaseComment, { commentId: number; updatedComment: string }>({
       query: ({ commentId, updatedComment }) => ({
         url: 'backlog/updateComment/',
         method: 'PUT',
@@ -34,19 +56,25 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         },
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: ['Backlog', 'Issue'],
     }),
-    deleteComment: builder.mutation<Comment, { commentId: number }>({
+    deleteComment: builder.mutation<BaseComment, { commentId: number }>({
       query: ({ commentId }) => ({
         url: `backlog/deleteComment/${commentId}`,
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog'],
+      invalidatesTags: ['Backlog', 'Issue'],
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetCommentsQuery, useCreateCommentMutation, useUpdateCommentMutation, useDeleteCommentMutation } =
-  extendedApi;
+export const {
+  useGetCommentsQuery,
+  useGetIssueCommentsQuery,
+  useCreateCommentMutation,
+  useCreateIssueCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
+} = extendedApi;

@@ -1,14 +1,25 @@
-import { Comment } from '@prisma/client';
+import { BaseComment, CommentType } from '@prisma/client';
 import { CommentFields } from '../../helpers/types/comment.service.types';
 
-export const mockCommentData: Comment = {
+export const mockBaseCommentData: BaseComment = {
+  comment_id: 1,
+  content: 'Test comment content',
+  type: CommentType.backlog,
+  created_at: new Date(Date.now()),
+  updated_at: null,
+};
+
+export const mockCommentData = {
   comment_id: 1,
   backlog_id: 1,
   commenter_id: 1,
+  commenter: {
+    user_id: 1,
+    user_email: 'c4WtW@example.com',
+    user_display_name: 'John Doe',
+  },
   project_id: 123,
-  content: 'Test comment content',
-  created_at: new Date(Date.now()),
-  updated_at: null,
+  base_comment: mockBaseCommentData,
 };
 
 export const mockCommentFields: CommentFields = {
