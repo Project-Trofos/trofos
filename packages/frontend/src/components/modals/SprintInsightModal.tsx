@@ -57,7 +57,7 @@ const HoverTextButton = ({
   );
 };
 
-function Insight({ insight }: { insight: SprintInsight }) {
+export function Insight({ insight }: { insight: SprintInsight }) {
   return (
     <Card className="insight-card">
       <MarkdownViewer markdown={insight.content} />

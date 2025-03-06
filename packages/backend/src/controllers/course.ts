@@ -340,6 +340,19 @@ async function importProjectAssignments(req: express.Request, res: express.Respo
   }
 }
 
+async function getLatestSprintInsightsForCourseProjects(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+
+    assertCourseIdIsValid(courseId);
+
+    const result = await course.getLatestSprintInsightsForCourseProjects(Number(courseId));
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -358,4 +371,5 @@ export default {
   archiveCourse,
   unarchiveCourse,
   importProjectAssignments,
+  getLatestSprintInsightsForCourseProjects,
 };

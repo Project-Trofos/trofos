@@ -122,4 +122,7 @@ router.post(
   course.importProjectAssignments,
 );
 
+// Get lastest sprint insights for a course
+router.get('/:courseId/sprintInsights/latest', hasAuthForCourse(Action.update_course, coursePolicy.POLICY_NAME), course.getLatestSprintInsightsForCourseProjects);
+
 export default router;
