@@ -7,6 +7,7 @@ import feedbackPolicy from '../policies/feedback.policy';
 import feedback from '../controllers/feedback';
 import standupRouter from './standup.route';
 import projectAssignment from '../controllers/projectAssignment';
+import issue from '../controllers/issue';
 
 const router = express.Router();
 
@@ -175,6 +176,19 @@ router.get(
   '/:projectId/assignedProject',
   hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
   projectAssignment.getAssignedProjects,
+);
+
+// Issues
+router.get(
+  '/:projectId/assignedIssues',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  issue.getAssignedIssuesByProjectId,
+);
+
+router.get(
+  '/:projectId/reportedIssues',
+  hasAuthForProject(Action.read_project, projectPolicy.POLICY_NAME),
+  issue.getReportedIssuesByProjectId,
 );
 
 export default router;

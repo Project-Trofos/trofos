@@ -381,3 +381,43 @@ export type ProjectAssignment = {
   targetProjectId: number;
   sourceProjectId: number;
 };
+
+export type Issue = {
+  id: number;
+  title: string;
+  description: string | null;
+
+  status: IssueStatus;
+  status_explanation: string | null;
+
+  priority: BacklogPriority;
+
+  reporter: {
+    user: Pick<User, 'user_display_name' | 'user_email'>;
+  };
+  reporter_id: number;
+
+  assigner: Pick<Project, 'id' | 'pname'>;
+  assigner_project_id: number;
+
+  assignee: Pick<Project, 'id' | 'pname'>;
+  assignee_project_id: number;
+
+  backlog: Pick<Backlog, 'backlog_id'>;
+};
+
+export enum IssueStatus {
+  OPEN = 'open',
+  VALID = 'valid',
+  INVALID = 'invalid',
+  UNABLE_TO_REPLICATE = 'unable_to_replicate',
+}
+
+export type BacklogFromIssuePayload = {
+  issueId: number;
+  summary: string;
+  priority: BacklogPriority;
+  reporterId: number;
+  description: string | null;
+  projectId: number;
+};
