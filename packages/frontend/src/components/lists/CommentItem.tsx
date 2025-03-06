@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Dropdown, Form, Input, List, Menu, message, Modal, Space } from 'antd';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import type { BacklogComment, IssueComment } from '../../api/types';
+import type { CommonComment as CommentType } from '../../api/types';
 import { useDeleteCommentMutation, useUpdateCommentMutation } from '../../api/comment';
 import './CommentItem.css';
-
-type CommentType = BacklogComment | IssueComment;
 
 function CommentItem(props: { commentData: CommentType }): JSX.Element {
   const { commentData } = props;

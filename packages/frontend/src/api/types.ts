@@ -162,6 +162,18 @@ export type BaseComment = {
   type: CommentType;
 };
 
+// Common interface for listing comments
+export type CommonComment = {
+  comment_id: number;
+  commenter_id: number;
+  commenter: {
+    user_id: number;
+    user_email: string;
+    user_display_name: string;
+  };
+  base_comment: BaseComment;
+};
+
 export type BacklogComment = {
   comment_id: number;
   backlog_id: number;

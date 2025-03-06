@@ -124,18 +124,14 @@ async function listIssueComments(issueId: number) {
 }
 
 async function update(commentId: number, updatedComment: string) {
-  return prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
-    const comment = await prisma.baseComment.update({
-      where: {
-        comment_id: commentId,
-      },
-      data: {
-        content: updatedComment,
-        updated_at: new Date(Date.now()),
-      },
-    });
-
-    return comment;
+  return await prisma.baseComment.update({
+    where: {
+      comment_id: commentId,
+    },
+    data: {
+      content: updatedComment,
+      updated_at: new Date(Date.now()),
+    },
   });
 }
 
@@ -143,10 +139,6 @@ async function remove(commentId: number) {
   return await prisma.baseComment.delete({
     where: {
       comment_id: commentId,
-    },
-    include: {
-      BacklogComment: true,
-      IssueComment: true,
     },
   });
 }
