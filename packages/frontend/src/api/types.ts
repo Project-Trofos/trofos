@@ -162,15 +162,17 @@ export type BaseComment = {
   type: CommentType;
 };
 
+export type Commenter = {
+  user_id: number;
+  user_email: string;
+  user_display_name: string;
+};
+
 // Common interface for listing comments
 export type CommonComment = {
   comment_id: number;
   commenter_id: number;
-  commenter: {
-    user_id: number;
-    user_email: string;
-    user_display_name: string;
-  };
+  commenter: Commenter;
   base_comment: BaseComment;
 };
 
@@ -179,11 +181,7 @@ export type BacklogComment = {
   backlog_id: number;
   commenter_id: number;
   project_id: number;
-  commenter: {
-    user_id: number;
-    user_email: string;
-    user_display_name: string;
-  };
+  commenter: Commenter;
   base_comment: BaseComment;
 };
 
@@ -191,11 +189,7 @@ export type IssueComment = {
   comment_id: number;
   issue_id: number;
   commenter_id: number;
-  commenter: {
-    user_id: number;
-    user_email: string;
-    user_display_name: string;
-  };
+  commenter: Commenter;
   base_comment: BaseComment;
 };
 

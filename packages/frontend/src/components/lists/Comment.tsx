@@ -9,7 +9,16 @@ interface CommentProps {
   comments: BacklogComment[] | IssueComment[] | undefined;
 }
 
+const parseToCommonComment = (comment: BacklogComment | IssueComment): CommonComment => ({
+  comment_id: comment.comment_id,
+  commenter_id: comment.commenter_id,
+  base_comment: comment.base_comment,
+  commenter: comment.commenter,
+});
+
 function Comment({ comments }: CommentProps): JSX.Element {
+  const parsedComments: CommonComment[] = comments?.map(parseToCommonComment) || [];
+
   return (
     <List
       locale={{
@@ -22,7 +31,7 @@ function Comment({ comments }: CommentProps): JSX.Element {
       }}
       className="comment-list"
       itemLayout="horizontal"
-      dataSource={comments}
+      dataSource={parsedComments}
       renderItem={(comment: CommonComment) => <CommentItem key={comment.comment_id} commentData={comment} />}
     />
   );
