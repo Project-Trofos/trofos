@@ -154,28 +154,50 @@ export type BacklogStatusData = {
   order: number;
 };
 
-export type Comment = {
+export type BaseComment = {
   comment_id: number;
-  backlog_id: number;
-  project_id: number;
-  commenter_id: number;
   content: string;
   created_at: string;
   updated_at: string | null;
-  commenter: {
-    created_at: string;
-    project_id: string;
-    user: {
-      user_id: number;
-      user_email: string;
-      user_display_name: string;
-    };
-  };
+  type: CommentType;
 };
+
+export type BacklogComment = {
+  comment_id: number;
+  backlog_id: number;
+  commenter_id: number;
+  project_id: number;
+  commenter: {
+    user_id: number;
+    user_email: string;
+    user_display_name: string;
+  };
+  base_comment: BaseComment;
+};
+
+export type IssueComment = {
+  comment_id: number;
+  issue_id: number;
+  commenter_id: number;
+  commenter: {
+    user_id: number;
+    user_email: string;
+    user_display_name: string;
+  };
+  base_comment: BaseComment;
+};
+
+export type CommentType = 'backlog' | 'issue';
 
 export type CommentFieldsType = {
   projectId: number;
   backlogId: number;
+  commenterId: number;
+  content: string;
+};
+
+export type IssueCommentFieldsType = {
+  issueId: number;
   commenterId: number;
   content: string;
 };

@@ -1,6 +1,6 @@
-import { BaseComment, BacklogComment, CommentType, Prisma } from '@prisma/client';
+import { BaseComment, CommentType, Prisma } from '@prisma/client';
 import prisma from '../models/prismaClient';
-import { BacklogCommentWithBase } from '../helpers/types/comment.service.types';
+import { BacklogCommentWithBase, IssueCommentWithBase } from '../helpers/types/comment.service.types';
 
 async function create(
   projectId: number,
@@ -34,8 +34,38 @@ async function create(
   });
 }
 
+async function createIssueComment(
+  issueId: number,
+  commenterId: number,
+  content: string,
+): Promise<IssueCommentWithBase> {
+  return prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
+    const comment = await prisma.baseComment.create({
+      data: {
+        content,
+        type: CommentType.issue,
+        IssueComment: {
+          create: {
+            issue_id: issueId,
+            commenter_id: commenterId,
+          },
+        },
+      },
+      include: {
+        IssueComment: {
+          include: {
+            base_comment: true,
+          },
+        },
+      },
+    });
+
+    return comment.IssueComment!;
+  });
+}
+
 async function list(projectId: number, backlogId: number) {
-  const comments: BacklogCommentWithBase[] = await prisma.backlogComment.findMany({
+  const comments = await prisma.backlogComment.findMany({
     where: {
       project_id: projectId,
       backlog_id: backlogId,
@@ -59,54 +89,73 @@ async function list(projectId: number, backlogId: number) {
     },
   });
 
-  return comments;
+  // Flatten the commenter structure
+  return comments.map((comment) => ({
+    ...comment,
+    commenter: {
+      user_id: comment.commenter.user.user_id,
+      user_email: comment.commenter.user.user_email,
+      user_display_name: comment.commenter.user.user_display_name,
+    },
+  }));
 }
 
-async function update(commentId: number, updatedComment: string) {
-  const comment: BacklogCommentWithBase = await prisma.backlogComment.update({
+async function listIssueComments(issueId: number) {
+  const comments: IssueCommentWithBase[] = await prisma.issueComment.findMany({
     where: {
-      comment_id: commentId,
+      issue_id: issueId,
     },
-    data: {
-      base_comment: {
-        update: {
-          content: updatedComment,
-          updated_at: new Date(Date.now()),
-        },
-      },
+    orderBy: {
+      base_comment: { created_at: 'desc' },
     },
     include: {
+      commenter: {
+        select: {
+          user_display_name: true,
+          user_email: true,
+          user_id: true,
+        },
+      },
       base_comment: true,
     },
   });
 
-  return comment;
+  return comments;
+}
+
+async function update(commentId: number, updatedComment: string) {
+  return prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
+    const comment = await prisma.baseComment.update({
+      where: {
+        comment_id: commentId,
+      },
+      data: {
+        content: updatedComment,
+        updated_at: new Date(Date.now()),
+      },
+    });
+
+    return comment;
+  });
 }
 
 async function remove(commentId: number) {
-  return prisma.$transaction(async (prisma: Prisma.TransactionClient) => {
-    const backlogComment = await prisma.backlogComment.delete({
-      where: {
-        comment_id: commentId,
-      },
-      include: {
-        base_comment: true,
-      },
-    });
-
-    await prisma.baseComment.delete({
-      where: {
-        comment_id: commentId,
-      },
-    });
-
-    return backlogComment;
+  return await prisma.baseComment.delete({
+    where: {
+      comment_id: commentId,
+    },
+    include: {
+      BacklogComment: true,
+      IssueComment: true,
+    },
   });
 }
 
 export default {
   create,
+  createIssueComment,
   list,
+  listIssueComments,
   update,
   remove,
 };

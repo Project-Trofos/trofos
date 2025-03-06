@@ -15,7 +15,8 @@ import backlogService from '../services/backlog.service';
 import userService from '../services/user.service';
 import ses from '../aws/ses';
 import { commentSubject, commentBody } from '../templates/email';
-import { BacklogCommentWithBase } from '../helpers/types/comment.service.types';
+import { BacklogCommentWithBase, IssueCommentWithBase } from '../helpers/types/comment.service.types';
+import { assertIdIsValidNumber } from '../helpers/error/assertions';
 
 const getDataForEmail = async (comment: BacklogComment) => {
   const backlogData: Backlog = (await backlogService.getBacklog(comment.project_id, comment.backlog_id)) as Backlog;
@@ -93,6 +94,25 @@ const create = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const createIssueComment = async (req: express.Request, res: express.Response) => {
+  try {
+    const { issueId, commenterId, content } = req.body;
+    assertIdIsValidNumber(issueId, 'issueId');
+    assertUserIdIsValid(commenterId);
+    assertCommentIsValid(content);
+
+    const comment: IssueCommentWithBase = await commentService.createIssueComment(
+      Number(issueId),
+      Number(commenterId),
+      content,
+    );
+
+    return res.status(StatusCodes.OK).json(comment);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const list = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId, backlogId } = req.params;
@@ -106,13 +126,25 @@ const list = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const listIssueComments = async (req: express.Request, res: express.Response) => {
+  try {
+    const { issueId } = req.params;
+    assertIdIsValidNumber(issueId, 'issueId');
+
+    const comments: IssueCommentWithBase[] = await commentService.listIssueComments(Number(issueId));
+    return res.status(StatusCodes.OK).json(comments);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const update = async (req: express.Request, res: express.Response) => {
   try {
     const { commentId, updatedComment } = req.body;
     assertCommentIdIsValid(commentId);
     assertCommentIsValid(updatedComment);
 
-    const comment: BacklogCommentWithBase = await commentService.update(Number(commentId), updatedComment);
+    const comment: BaseComment = await commentService.update(Number(commentId), updatedComment);
     return res.status(StatusCodes.OK).json(comment);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -124,7 +156,7 @@ const remove = async (req: express.Request, res: express.Response) => {
     const { commentId } = req.params;
     assertCommentIdIsValid(commentId);
 
-    const comment: BacklogCommentWithBase = await commentService.remove(Number(commentId));
+    const comment: BaseComment = await commentService.remove(Number(commentId));
     return res.status(StatusCodes.OK).json(comment);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -133,7 +165,9 @@ const remove = async (req: express.Request, res: express.Response) => {
 
 export default {
   create,
+  createIssueComment,
   list,
+  listIssueComments,
   update,
   remove,
 };

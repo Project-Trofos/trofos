@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Button, Form, Input, Modal, Select, message, Typography, Space } from 'antd';
+import { Button, Form, Input, Modal, Select, message, Typography, Space, Row, Col } from 'antd';
 import { useCreateBacklogMutation, useCreateIssueMutation, useUpdateIssueMutation } from '../../api/issue';
 import { getErrorMessage } from '../../helpers/error';
 import { BacklogFromIssuePayload, BacklogPriority, Issue, IssueStatus } from '../../api/types';
@@ -11,8 +11,11 @@ import { LexicalEditor, $getRoot } from 'lexical';
 import { BACKLOG_PRIORITY_OPTIONS } from '../../helpers/constants';
 import { useGetUserInfoQuery } from '../../api/auth';
 import { transformToLabel } from '../tables/IssuesTable';
+import IssueComment from '../fields/IssueComment';
+import { useGetIssueCommentsQuery } from '../../api/comment';
+import Comment from '../lists/Comment';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { TextArea } = Input;
 
 interface IssueModalProps {
@@ -34,6 +37,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
   const [createIssue] = useCreateIssueMutation();
   const [updateIssue] = useUpdateIssueMutation();
   const [createBacklog] = useCreateBacklogMutation();
+  const { data: comments } = useGetIssueCommentsQuery({ issueId: defaultIssue?.id || -1 });
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -104,7 +108,6 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
     try {
       await createBacklog(backlogPayload).unwrap();
       message.success('Backlog created');
-      setIsModalVisible(false);
     } catch (error) {
       message.error(getErrorMessage(error));
     }
@@ -122,10 +125,11 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
       <Modal
         title={defaultIssue ? 'View Issue' : 'Create New Issue'}
         open={isModalVisible}
-        onOk={!defaultIssue ? handleCreate : handleUpdate}
+        onOk={!defaultIssue ? handleCreate : undefined}
         onCancel={handleCancel}
-        okText={!defaultIssue ? 'Create' : 'Update'}
-        width={800}
+        okText={!defaultIssue ? 'Create' : ''}
+        footer={!defaultIssue ? undefined : null} //Disable footer in view mode
+        width={900}
       >
         <Form form={form} layout="vertical" name="issueForm">
           <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please input the issue title!' }]}>
@@ -233,23 +237,47 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
             />
           </Form.Item>
 
-          {defaultIssue && readOnly && (
-            <Space size="small" direction="vertical">
-              <Button
-                type="primary"
-                onClick={handleCreateBacklog(defaultIssue)}
-                disabled={defaultIssue.backlog?.backlog_id !== undefined}
-              >
-                Create backlog
-              </Button>
-              {defaultIssue.backlog?.backlog_id !== undefined && (
-                <Link to={`/project/${defaultIssue.assignee_project_id}/backlog/${defaultIssue.backlog.backlog_id}`}>
-                  Goto backlog
-                </Link>
-              )}
-            </Space>
+          {defaultIssue && (
+            <Row justify={'space-between'}>
+              <Col>
+                {readOnly && (
+                  <Space size="small" direction="vertical">
+                    <Button
+                      type="primary"
+                      onClick={handleCreateBacklog(defaultIssue)}
+                      disabled={defaultIssue.backlog?.backlog_id !== undefined}
+                    >
+                      Create backlog
+                    </Button>
+                    {defaultIssue.backlog?.backlog_id !== undefined && (
+                      <Link
+                        to={`/project/${defaultIssue.assignee_project_id}/backlog/${defaultIssue.backlog.backlog_id}`}
+                      >
+                        Goto backlog
+                      </Link>
+                    )}
+                  </Space>
+                )}
+              </Col>
+              <Col>
+                <Space size="small">
+                  <Button onClick={handleCancel}>Cancel</Button>
+                  <Button type="primary" onClick={handleUpdate}>
+                    Update
+                  </Button>
+                </Space>
+              </Col>
+            </Row>
           )}
         </Form>
+
+        {defaultIssue && (
+          <div style={{ margin: '40px 20px' }}>
+            <Title level={4}>Comments</Title>
+            <IssueComment issueId={defaultIssue.id} />
+            <Comment comments={comments} />
+          </div>
+        )}
       </Modal>
     </>
   );

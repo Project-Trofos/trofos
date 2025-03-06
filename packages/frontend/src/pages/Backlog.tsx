@@ -21,6 +21,7 @@ import StrictModeDroppable from '../components/dnd/StrictModeDroppable';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { BACKLOG_TYPE_OPTIONS } from '../helpers/constants';
 import GenericBoxWithBackground from '../components/layouts/GenericBoxWithBackground';
+import { useGetCommentsQuery } from '../api/comment';
 
 function Backlog(): JSX.Element {
   const { Title } = Typography;
@@ -28,14 +29,11 @@ function Backlog(): JSX.Element {
   const [form] = Form.useForm();
   const [updateBacklog] = useUpdateBacklogMutation();
 
-  const TYPES: BacklogSelectTypes[] = BACKLOG_TYPE_OPTIONS.map((type) => (
-    {
-      id: type.value,
-      name: type.value,
-      labelComponent: type.label,
-    }
-  ))
-
+  const TYPES: BacklogSelectTypes[] = BACKLOG_TYPE_OPTIONS.map((type) => ({
+    id: type.value,
+    name: type.value,
+    labelComponent: type.label,
+  }));
 
   const PRIORITIES: BacklogSelectTypes[] = [
     { id: 'very_high', name: 'Very High' },
@@ -50,7 +48,11 @@ function Backlog(): JSX.Element {
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const { data: backlog } = useGetBacklogQuery({ projectId, backlogId });
   const { data: epicData } = useGetEpicsByProjectIdQuery({ projectId: projectId });
-  const relatedBacklogs = useGetBacklogsByEpicIdQuery({ epicId: backlog?.epic_id ?? -1 }).data?.filter((b)=>(b.backlog_id !== backlog?.backlog_id)) ?? [];
+  const relatedBacklogs =
+    useGetBacklogsByEpicIdQuery({ epicId: backlog?.epic_id ?? -1 }).data?.filter(
+      (b) => b.backlog_id !== backlog?.backlog_id,
+    ) ?? [];
+  const { data: comments } = useGetCommentsQuery({ projectId, backlogId });
 
   useEffect(() => {
     form.setFieldsValue(backlog);
@@ -217,24 +219,27 @@ function Backlog(): JSX.Element {
           </div>
         </Form>
       </div>
-      {relatedBacklogs.length > 0 ?
-      <div className="related-container">
-        <Title level={2}>Related Backlogs In The Same Epic</Title>
-        <DragDropContext onDragEnd={async (result: DropResult) => {}}>
-          <StrictModeDroppable droppableId="null">
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                <BacklogList backlogs={relatedBacklogs} />
-                {provided.placeholder}
-              </div>
-            )}
-          </StrictModeDroppable>
-        </DragDropContext>
-      </div> : <></>}
+      {relatedBacklogs.length > 0 ? (
+        <div className="related-container">
+          <Title level={2}>Related Backlogs In The Same Epic</Title>
+          <DragDropContext onDragEnd={async (result: DropResult) => {}}>
+            <StrictModeDroppable droppableId="null">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <BacklogList backlogs={relatedBacklogs} />
+                  {provided.placeholder}
+                </div>
+              )}
+            </StrictModeDroppable>
+          </DragDropContext>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="comment-container">
         <Title level={2}>Comments</Title>
         <BacklogComment />
-        <Comment />
+        <Comment comments={comments} />
       </div>
     </GenericBoxWithBackground>
   );
