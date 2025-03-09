@@ -29,7 +29,7 @@ export default function AiChatButton({ onClick }: {
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={isHovered ? { opacity: 1, scale: 1, y: -40, x: -200 } : { opacity: 0, scale: 0.8, y: 10, x: -200 }}
+          animate={isHovered ? { opacity: 1, scale: 1, y: -40, x: -210 } : { opacity: 0, scale: 0.8, y: 10, x: -210 }}
           transition={{ type: 'spring', stiffness: 150, damping: 10 }}
           style={{
             position: 'absolute',
@@ -42,7 +42,7 @@ export default function AiChatButton({ onClick }: {
             fontWeight: '500',
           }}
         >
-          Need help? Ask TROFOS Copilot!
+          ✨️Need help? Ask TROFOS Copilot!
         </motion.div>
         <motion.div
           initial={{ scale: 1, opacity: 0.8 }}
@@ -59,7 +59,7 @@ export default function AiChatButton({ onClick }: {
             onClick={onClick}
             style={{
               border: 'none',
-              boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+              boxShadow: '0 8px 8px rgba(0, 0, 0, 0.2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

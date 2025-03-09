@@ -3,7 +3,7 @@ import {
   Drawer,
   Space,
 } from 'antd';
-import { FundProjectionScreenOutlined, ReadOutlined, UserOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, ReadOutlined, RobotOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Bubble,
   Prompts,
@@ -86,7 +86,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
   const roles: RolesType = {
     ai: {
       placement: 'start',
-      avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
+      avatar: { icon: <RobotOutlined />, style: { background: '#87d068' } },
       typing: { step: 5, interval: 20 },
       style: {
         maxWidth: 600,
@@ -94,7 +94,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
     },
     local: {
       placement: 'end',
-      avatar: { icon: <UserOutlined />, style: { background: '#87d068' } },
+      avatar: { icon: <UserOutlined />, style: { background: '#0000FF' } },
     },
   };
 
@@ -151,7 +151,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
 
   return (
     <Drawer
-      title="TROFOS Copilot"
+      title="✨️TROFOS Copilot"
       open={open}
       onClose={onClose}
       mask={false}
