@@ -35,7 +35,10 @@ const renderTitle = (icon: React.ReactElement, title: string) => (
 );
 
 const getLinksMarkDown = (links: string[]) => {
-  return links.map((link) => `[${link}](${link})`).join('\n\n');
+  if (!links || links.length === 0) {
+    return '';
+  }
+  return links.map((link, index) => `${index + 1}. [${link}](${link})`).join('\n\n');
 };
 
 export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Element {
@@ -60,7 +63,8 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg.id !== 'loading')
         );
-        onSuccess(data?.answer + '\n\nReferences:\n\n' + getLinksMarkDown(data?.links) || '');
+        const references = getLinksMarkDown(data?.links);
+        onSuccess(data?.answer + (references !== '' ? `\n\nRelated links:\n${references}` : ''));
       } catch (error) {
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg.id !== 'loading')

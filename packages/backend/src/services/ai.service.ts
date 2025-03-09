@@ -4,22 +4,24 @@ import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';
 
+const EMBEDDING_SIMILARITY_THRESHOLD = 1.15;
+
 const processUserGuideQuery = async (query: string, user: string): Promise<UserGuideQueryResponse> => {
   try {
     const embeddedQuery = await embedUserGuideQuery(query, user);
-    const similarRecord = await performUserGuideSimilaritySearch(embeddedQuery);
-    if (!similarRecord) {
-      throw new Error('No similar record found.');
+    const similarRecords = await performUserGuideSimilaritySearch(embeddedQuery);
+    if (!similarRecords || similarRecords.length === 0) {
+      throw new Error('No relevant answers found for the query');
     }
-    const answer = await askGptQueryWithContext(query, similarRecord, user);
+    const answer = await askGptQueryWithContext(query, similarRecords, user);
     return {
       answer,
-      links: [`https://project-trofos.github.io/trofos${similarRecord.endpoint}`]
+      links: similarRecords.map((record) => `https://project-trofos.github.io/trofos${record.endpoint}`)
     };
   } catch (error) {
     console.error(`Error processing user query: ${error}`);
     return {
-      answer: 'Sorry, I encountered an issue while processing your query.',
+      answer: `Sorry, I encountered an issue while processing your query: ${error}`,
       links: []
     };
   }
@@ -51,29 +53,34 @@ const embedUserGuideQuery = async (query: string, user: string): Promise<Array<N
   }
 }
 
-const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): Promise<UserGuideEmbedding | null> => {
+const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): Promise<UserGuideEmbedding[] | null> => {
   if (!embeddedQuery || embeddedQuery.length === 0) {
     return null;
   }
 
   try {
     const pgVectorEmbedding = pgvector.toSql(embeddedQuery);
-    const similarRecords = await prismaPgvector.$queryRaw<UserGuideEmbedding[]>`
+    const similarRecords = await prismaPgvector.$queryRaw<(UserGuideEmbedding & { similarity: number })[]>`
       SELECT
-      uge.id,
-      uge.section_title,
-      uge.created_at,
-      uge.content,
-      uge.endpoint
-      FROM "UserGuideEmbedding" uge 
-      ORDER BY uge.embedding <-> ${pgVectorEmbedding}::vector
-      LIMIT 5`;
+        uge.id,
+        uge.section_title,
+        uge.created_at,
+        uge.content,
+        uge.endpoint,
+        (uge.embedding <-> ${pgVectorEmbedding}::vector) AS similarity
+      FROM "UserGuideEmbedding" uge
+      WHERE uge.embedding <-> ${pgVectorEmbedding}::vector < ${EMBEDDING_SIMILARITY_THRESHOLD}
+      ORDER BY similarity
+      LIMIT 3`;
+
+    console.log(similarRecords);
 
     if (!similarRecords || similarRecords.length === 0) {
       console.warn('No matching records found for query.');
       return null;
     }
-    return similarRecords[0];
+    const results: UserGuideEmbedding[] = similarRecords.map(({similarity, ...record}) => record);
+    return results;
   } catch (error: unknown) {
     const err = error as Error;
     console.error(`Error querying the database: ${err.message || error}`);
@@ -81,10 +88,11 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
   }
 };
 
-const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding, user: string): Promise<string> => {
+const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuideEmbedding[], user: string): Promise<string> => {
   try { 
     const openai = getOpenAiClient();
     // TODO- for now just have developer role msg + user role msg. Next time maybe send previous message for continuous convo
+    const context = topSimilarResults.map((result) => result.section_title + ": " + result.content).join('\n');
     const chatCompletion = await openai.chat.completions.create({
       messages: [
         {
@@ -93,7 +101,7 @@ const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding
             {
               "type": "text",
               "text": `
-                You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context.content}
+                You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context}
               `
             }
           ]
