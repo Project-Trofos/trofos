@@ -3,8 +3,24 @@ import { UserGuideEmbedding } from '@trofos-nus/common/src/generated/pgvector_cl
 import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';
+import { redis } from './aiInsight.service';
 
 const EMBEDDING_SIMILARITY_THRESHOLD = 1.15;
+
+const getChatHistory = async (user: string): Promise<{ role: 'user' | 'assistant', content: string }[]> => {
+  const historyJson = await redis.get(COPILOT_CHAT_HISTORY_KEY_PREFIX + user);
+  return historyJson ? JSON.parse(historyJson) : [];
+};
+
+const pushNewChatMessage = async (user: string, query: string, response: string) {
+  const history = await getChatHistory(user);
+  history.push({ role: 'user', content: query });
+  history.push({ role: 'assistant', content: response });
+  if (history.length > 8) {
+    history.shift();
+  }
+  await redis.set(COPILOT_CHAT_HISTORY_KEY_PREFIX + user, JSON.stringify(history));
+};
 
 const processUserGuideQuery = async (query: string, user: string): Promise<UserGuideQueryResponse> => {
   try {
@@ -91,7 +107,7 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
 const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuideEmbedding[], user: string): Promise<string> => {
   try { 
     const openai = getOpenAiClient();
-    // TODO- for now just have developer role msg + user role msg. Next time maybe send previous message for continuous convo
+    const history = await getChatHistory(user);
     const context = topSimilarResults.map((result) => result.section_title + ": " + result.content).join('\n');
     const chatCompletion = await openai.chat.completions.create({
       messages: [
@@ -106,14 +122,10 @@ const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuid
             }
           ]
         },
+        ...history,
         {
           "role": "user",
-          "content": [
-            {
-              "type": "text",
-              "text": query
-            }
-          ]
+          "content": query
         }
       ],
       model: 'gpt-4o-mini',
@@ -121,6 +133,7 @@ const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuid
     });
     const response = chatCompletion.choices[0].message.content ?
       chatCompletion.choices[0].message.content: '';
+    await pushNewChatMessage(user, query, response);
     return response;
   } catch (error) {
     console.error(`Error generating GPT response: ${error}`);
