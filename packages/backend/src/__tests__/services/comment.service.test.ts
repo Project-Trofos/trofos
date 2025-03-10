@@ -1,8 +1,15 @@
 import { BaseComment, Prisma } from '@prisma/client';
-import { BacklogCommentWithBase, CommentFields } from '../../helpers/types/comment.service.types';
+import { BacklogCommentWithBase, CommentFields, IssueCommentFields } from '../../helpers/types/comment.service.types';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import commentService from '../../services/comment.service';
-import { mockBaseCommentData, mockCommentData, mockCommentFields } from '../mocks/commentData';
+import {
+  mockBaseCommentData,
+  mockBaseIssueCommentData,
+  mockCommentData,
+  mockCommentFields,
+  mockIssueCommentData,
+  mockIssueCommentFields,
+} from '../mocks/commentData';
 
 describe('comment.service tests', () => {
   describe('create comment', () => {
@@ -23,6 +30,28 @@ describe('comment.service tests', () => {
 
       await expect(
         commentService.create(comment.projectId, comment.backlogId, comment.commenterId, comment.content),
+      ).resolves.toEqual(mockReturnedComment);
+    });
+  });
+
+  describe('create issue comment', () => {
+    it('should create and return issue comment', async () => {
+      const mockData = { ...mockBaseIssueCommentData, IssueComment: mockIssueCommentData };
+      const mockReturnedComment = mockIssueCommentData;
+      const comment: IssueCommentFields = mockIssueCommentFields;
+
+      const mockTransactionClient = {
+        baseComment: {
+          create: jest.fn().mockResolvedValueOnce(mockData),
+        },
+      };
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        return callback(mockTransactionClient as unknown as Prisma.TransactionClient);
+      });
+
+      await expect(
+        commentService.createIssueComment(comment.issueId, comment.commenterId, comment.content),
       ).resolves.toEqual(mockReturnedComment);
     });
   });
@@ -50,6 +79,16 @@ describe('comment.service tests', () => {
       const backlogId = 1;
       prismaMock.backlogComment.findMany.mockResolvedValueOnce(mockData);
       await expect(commentService.list(projectId, backlogId)).resolves.toEqual(mockReturnedComments);
+    });
+  });
+
+  describe('get issue comments', () => {
+    it('should return issue comments when called with valid issue id', async () => {
+      const mockData = [mockIssueCommentData];
+      const mockReturnedComments = mockData;
+      const issueId = 1;
+      prismaMock.issueComment.findMany.mockResolvedValueOnce(mockData);
+      await expect(commentService.listIssueComments(issueId)).resolves.toEqual(mockReturnedComments);
     });
   });
 

@@ -7,5 +7,11 @@ export type CommentFields = {
   content: string;
 };
 
+export type IssueCommentFields = {
+  issueId: number;
+  commenterId: number;
+  content: string;
+};
+
 export type BacklogCommentWithBase = BacklogComment & { base_comment: BaseComment };
 export type IssueCommentWithBase = IssueComment & { base_comment: BaseComment };
