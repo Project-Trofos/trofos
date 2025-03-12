@@ -1,17 +1,23 @@
 import React from 'react';
 import { List } from 'antd';
 import { CommentOutlined } from '@ant-design/icons';
-import { useParams } from 'react-router-dom';
-import { useGetCommentsQuery } from '../../api/comment';
 import CommentItem from './CommentItem';
 import './Comment.css';
+import { BacklogComment, CommonComment, IssueComment } from '../../api/types';
 
-function Comment(): JSX.Element {
-  const params = useParams();
-  const projectId = Number(params.projectId);
-  const backlogId = Number(params.backlogId);
+interface CommentProps {
+  comments: BacklogComment[] | IssueComment[] | undefined;
+}
 
-  const { data: comments } = useGetCommentsQuery({ projectId, backlogId });
+const parseToCommonComment = (comment: BacklogComment | IssueComment): CommonComment => ({
+  comment_id: comment.comment_id,
+  commenter_id: comment.commenter_id,
+  base_comment: comment.base_comment,
+  commenter: comment.commenter,
+});
+
+function Comment({ comments }: CommentProps): JSX.Element {
+  const parsedComments: CommonComment[] = comments?.map(parseToCommonComment) || [];
 
   return (
     <List
@@ -25,8 +31,8 @@ function Comment(): JSX.Element {
       }}
       className="comment-list"
       itemLayout="horizontal"
-      dataSource={comments}
-      renderItem={(comment) => <CommentItem key={comment.comment_id} commentData={comment} />}
+      dataSource={parsedComments}
+      renderItem={(comment: CommonComment) => <CommentItem key={comment.comment_id} commentData={comment} />}
     />
   );
 }

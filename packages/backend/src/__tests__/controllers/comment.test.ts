@@ -1,14 +1,27 @@
 import StatusCodes from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
-import { Comment } from '@prisma/client';
+import { BacklogComment, BaseComment } from '@prisma/client';
 import commentController from '../../controllers/comment';
 import commentService from '../../services/comment.service';
-import { mockCommentData, mockCommentFields } from '../mocks/commentData';
-import { CommentFields } from '../../helpers/types/comment.service.types';
+import {
+  mockBaseCommentData,
+  mockCommentData,
+  mockCommentFields,
+  mockIssueCommentData,
+  mockIssueCommentFields,
+} from '../mocks/commentData';
+import {
+  BacklogCommentWithBase,
+  CommentFields,
+  IssueCommentFields,
+  IssueCommentWithBase,
+} from '../../helpers/types/comment.service.types';
 
 const commentServiceSpies = {
   create: jest.spyOn(commentService, 'create'),
+  createIssueComment: jest.spyOn(commentService, 'createIssueComment'),
   list: jest.spyOn(commentService, 'list'),
+  listIssueComments: jest.spyOn(commentService, 'listIssueComments'),
   update: jest.spyOn(commentService, 'update'),
   remove: jest.spyOn(commentService, 'remove'),
 };
@@ -21,7 +34,7 @@ describe('commentController tests', () => {
   describe('create comment', () => {
     const mockComment: CommentFields = mockCommentFields;
 
-    const expectedComment: Comment = mockCommentData;
+    const expectedComment: BacklogCommentWithBase = mockCommentData;
 
     const mockRequest = createRequest({
       body: mockComment,
@@ -59,6 +72,76 @@ describe('commentController tests', () => {
     });
   });
 
+  describe('create issue comment', () => {
+    const mockComment: IssueCommentFields = mockIssueCommentFields;
+
+    const expectedComment: IssueCommentWithBase = mockIssueCommentData;
+
+    const mockRequest = createRequest({
+      body: mockComment,
+    });
+
+    const mockResponse = createResponse();
+
+    it('should return new issue comment and status 200 when new comment is successfully created', async () => {
+      commentServiceSpies.createIssueComment.mockResolvedValueOnce(expectedComment);
+
+      await commentController.createIssueComment(mockRequest, mockResponse);
+      expect(commentServiceSpies.createIssueComment).toHaveBeenCalledWith(
+        mockComment.issueId,
+        mockComment.commenterId,
+        mockComment.content,
+      );
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedComment));
+    });
+
+    it('should throw an error and return status 500 when issueId is missing', async () => {
+      const mockMissingIssueIdRequest = createRequest({
+        body: {
+          ...mockComment,
+          issueId: undefined,
+        },
+      });
+
+      commentServiceSpies.createIssueComment.mockResolvedValueOnce(expectedComment);
+
+      await commentController.createIssueComment(mockMissingIssueIdRequest, mockResponse);
+      expect(commentServiceSpies.createIssueComment).not.toHaveBeenCalledWith();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should throw an error and return status 500 when commenterId is missing', async () => {
+      const mockMissingCommenterIdRequest = createRequest({
+        body: {
+          ...mockComment,
+          commenterId: undefined,
+        },
+      });
+
+      commentServiceSpies.createIssueComment.mockResolvedValueOnce(expectedComment);
+
+      await commentController.createIssueComment(mockMissingCommenterIdRequest, mockResponse);
+      expect(commentServiceSpies.createIssueComment).not.toHaveBeenCalledWith();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+
+    it('should throw an error and return status 500 when content is missing', async () => {
+      const mockMissingContentRequest = createRequest({
+        body: {
+          ...mockComment,
+          content: undefined,
+        },
+      });
+
+      commentServiceSpies.createIssueComment.mockResolvedValueOnce(expectedComment);
+
+      await commentController.createIssueComment(mockMissingContentRequest, mockResponse);
+      expect(commentServiceSpies.createIssueComment).not.toHaveBeenCalledWith();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
   describe('list comments', () => {
     const mockProjectAndBacklogId = {
       projectId: 123,
@@ -72,7 +155,7 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return array of comments and status 200 when called with valid projectId and backlogId', async () => {
-      const expectedComments: Comment[] = [mockCommentData];
+      const expectedComments = [mockCommentData];
       commentServiceSpies.list.mockResolvedValueOnce(expectedComments);
 
       await commentController.list(mockRequest, mockResponse);
@@ -96,6 +179,37 @@ describe('commentController tests', () => {
     });
   });
 
+  describe('list issue comments', () => {
+    const mockIssueId = {
+      issueId: 1,
+    };
+
+    const mockRequest = createRequest({
+      params: mockIssueId,
+    });
+
+    const mockResponse = createResponse();
+
+    it('should return array of issue comments and status 200 when called with valid issueId', async () => {
+      const expectedComments = [mockIssueCommentData];
+      commentServiceSpies.listIssueComments.mockResolvedValueOnce(expectedComments);
+
+      await commentController.listIssueComments(mockRequest, mockResponse);
+      expect(commentServiceSpies.listIssueComments).toHaveBeenCalledWith(mockIssueId.issueId);
+      expect(mockResponse.statusCode).toEqual(StatusCodes.OK);
+      expect(mockResponse._getData()).toEqual(JSON.stringify(expectedComments));
+    });
+
+    it('should throw an error and return status 400 when issueId is missing', async () => {
+      const mockMissingIssueIdRequest = createRequest({
+        params: { issueId: undefined },
+      });
+      await commentController.listIssueComments(mockMissingIssueIdRequest, mockResponse);
+      expect(commentServiceSpies.listIssueComments).not.toHaveBeenCalled();
+      expect(mockResponse.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+  });
+
   describe('update comment', () => {
     const mockCommentToUpdate = {
       commentId: 1,
@@ -109,8 +223,8 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return updated comment and status 200 when called with valid fields', async () => {
-      const expectedComment: Comment = {
-        ...mockCommentData,
+      const expectedComment: BaseComment = {
+        ...mockBaseCommentData,
         content: 'An updated comment',
         updated_at: new Date(Date.now()),
       };
@@ -150,7 +264,7 @@ describe('commentController tests', () => {
     const mockResponse = createResponse();
 
     it('should return comment and status 200 when called with valid fields', async () => {
-      const expectedComment: Comment = mockCommentData;
+      const expectedComment: BaseComment = mockBaseCommentData;
       commentServiceSpies.remove.mockResolvedValueOnce(expectedComment);
 
       await commentController.remove(mockRequest, mockResponse);
