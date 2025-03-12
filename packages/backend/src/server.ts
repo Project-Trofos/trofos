@@ -19,6 +19,7 @@ import aiRouter from './routes/ai.route';
 import featureFlagRouter from './routes/featureFlag.route';
 import setUpSwagger from './swagger/swagger';
 import promClient from 'prom-client';
+import { trackApiUsage } from './middleware/api_usage_tracking.middleware';
 
 // Prometheus metrics stuff
 const register = new promClient.Registry();
@@ -68,6 +69,9 @@ app.use((req, res, next) => {
 
 // Set up swagger documentation
 setUpSwagger(app);
+
+// API usage tracking middleware
+app.use(trackApiUsage);
 
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
