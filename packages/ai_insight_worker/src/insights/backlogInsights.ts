@@ -1,17 +1,10 @@
-import { Backlog, BacklogHistory } from "@prisma/client";
+import { Backlog, BacklogHistory, Sprint } from "@prisma/client";
 import prisma from "../models/prismaClient";
 import openAiClient from "../models/openAiClient";
 
-async function generateBacklogInsights(projectId: number, sprintId: number, user: string): Promise<string> {
-  const curSprint = await prisma.sprint.findUnique({
-    where: {
-      id: sprintId,
-    },
-  });
-
-  if (!curSprint) {
-    throw new Error(`Sprint with id ${sprintId} not found`);
-  }
+async function generateBacklogInsights(curSprint: Sprint, user: string): Promise<string> {
+  const sprintId = curSprint.id;
+  const projectId = curSprint.project_id;
 
   // Get summary of what was planned this sprint and what was completed
   const backlogsThisSprint: Backlog[] = await prisma.backlog.findMany({
