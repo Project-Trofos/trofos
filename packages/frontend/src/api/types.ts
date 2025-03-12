@@ -1,3 +1,5 @@
+import { Sprint } from "./sprint";
+
 export type Project = {
   id: number;
   pname: string;
@@ -402,6 +404,7 @@ export type SprintInsight = {
   sprint_id: number;
   category: string;
   content: string;
+  created_at: Date;
 };
 
 export type ProjectAssignment = {
@@ -448,4 +451,17 @@ export type BacklogFromIssuePayload = {
   reporterId: number;
   description: string | null;
   projectId: number;
+}
+
+export type CourseProjectsLatestInsights = {
+  pname: string;
+  sprints: {
+    id: number;
+    status: Sprint['status'];
+    name: string;
+    start_date: Date | null;
+    end_date: Date | null;
+    sprintInsights: SprintInsight[];
+  }[];
+  id: number;
 };

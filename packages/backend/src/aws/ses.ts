@@ -1,4 +1,4 @@
-import { inviteHTMLSubject, inviteHTMLTemplate } from '../templates/email';
+import { inviteHTMLSubject, inviteHTMLTemplate, inviteTextTemplate } from '../templates/email';
 import sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.EMAIL_KEY || '');
@@ -26,6 +26,7 @@ async function sendInviteEmail(emailDest: string, projectName: string, uniqueTok
     from: process.env.AWS_SES_FROM_EMAIL || '',
     subject: inviteHTMLSubject(projectName),
     html: inviteHTMLTemplate(uniqueToken),
+    text: inviteTextTemplate(uniqueToken),
   };
   sgMail.send(msg).then(() => {
     console.log('Email sent');
