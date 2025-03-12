@@ -78,6 +78,7 @@ describe('backlogController tests', () => {
           project_id: 123,
           status: 'todo',
           epic_id: null,
+          issue_id: null,
         },
       ];
       backlogServiceSpies.listBacklogsByProjectId.mockResolvedValueOnce(expectedBacklogs);

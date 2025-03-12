@@ -13,7 +13,8 @@ export const mockBacklogData: Backlog = {
   description: 'A test description here',
   project_id: 123,
   status: 'todo',
-  epic_id:  null,
+  epic_id: null,
+  issue_id: null,
 };
 
 export const mockBacklogFields: BacklogFields = {

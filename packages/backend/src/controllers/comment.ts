@@ -1,4 +1,4 @@
-import { Backlog, Comment, Project, User, UsersOnProjectOnSettings } from '@prisma/client';
+import { Backlog, BacklogComment, BaseComment, Project, User, UsersOnProjectOnSettings } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import {
@@ -15,8 +15,10 @@ import backlogService from '../services/backlog.service';
 import userService from '../services/user.service';
 import ses from '../aws/ses';
 import { commentSubject, commentBody } from '../templates/email';
+import { BacklogCommentWithBase, IssueCommentWithBase } from '../helpers/types/comment.service.types';
+import { assertIdIsValidNumber } from '../helpers/error/assertions';
 
-const getDataForEmail = async (comment: Comment) => {
+const getDataForEmail = async (comment: BacklogComment) => {
   const backlogData: Backlog = (await backlogService.getBacklog(comment.project_id, comment.backlog_id)) as Backlog;
   const projectData: Project = await projectService.getById(comment.project_id);
   const commenterData: User = await userService.get(comment.commenter_id);
@@ -45,7 +47,7 @@ const getDataForEmail = async (comment: Comment) => {
   };
 };
 
-const sendEmail = async (comment: Comment) => {
+const sendEmail = async (comment: BacklogCommentWithBase) => {
   if (!ses.isESPEnabled()) return;
   const { projectData, backlogData, commenterData, reporterData, reporterSettings, assigneeData, assingeeSettings } =
     await getDataForEmail(comment);
@@ -53,7 +55,12 @@ const sendEmail = async (comment: Comment) => {
     ? `${projectData.pkey}-${backlogData.backlog_id}`
     : `${backlogData.backlog_id}`;
   const subject = commentSubject(projectData.pname, backlogIdentifier);
-  const body = commentBody(commenterData.user_display_name, comment.content, projectData.id, backlogData.backlog_id);
+  const body = commentBody(
+    commenterData.user_display_name,
+    comment.base_comment.content,
+    projectData.id,
+    backlogData.backlog_id,
+  );
 
   if (commenterData.user_id !== reporterData.user_id && reporterSettings?.email_notification) {
     await ses.sendEmail(reporterData.user_email, subject, body);
@@ -72,7 +79,7 @@ const create = async (req: express.Request, res: express.Response) => {
     assertUserIdIsValid(commenterId);
     assertCommentIsValid(content);
 
-    const comment: Comment = await commentService.create(
+    const comment: BacklogCommentWithBase = await commentService.create(
       Number(projectId),
       Number(backlogId),
       Number(commenterId),
@@ -87,13 +94,44 @@ const create = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const createIssueComment = async (req: express.Request, res: express.Response) => {
+  try {
+    const { issueId, commenterId, content } = req.body;
+    assertIdIsValidNumber(issueId, 'issueId');
+    assertUserIdIsValid(commenterId);
+    assertCommentIsValid(content);
+
+    const comment: IssueCommentWithBase = await commentService.createIssueComment(
+      Number(issueId),
+      Number(commenterId),
+      content,
+    );
+
+    return res.status(StatusCodes.OK).json(comment);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 const list = async (req: express.Request, res: express.Response) => {
   try {
     const { projectId, backlogId } = req.params;
     assertProjectIdIsValid(projectId);
     assertBacklogIdIsValid(backlogId);
 
-    const comments: Comment[] = await commentService.list(Number(projectId), Number(backlogId));
+    const comments: BacklogCommentWithBase[] = await commentService.list(Number(projectId), Number(backlogId));
+    return res.status(StatusCodes.OK).json(comments);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const listIssueComments = async (req: express.Request, res: express.Response) => {
+  try {
+    const { issueId } = req.params;
+    assertIdIsValidNumber(issueId, 'issueId');
+
+    const comments: IssueCommentWithBase[] = await commentService.listIssueComments(Number(issueId));
     return res.status(StatusCodes.OK).json(comments);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -106,7 +144,7 @@ const update = async (req: express.Request, res: express.Response) => {
     assertCommentIdIsValid(commentId);
     assertCommentIsValid(updatedComment);
 
-    const comment: Comment = await commentService.update(Number(commentId), updatedComment);
+    const comment: BaseComment = await commentService.update(Number(commentId), updatedComment);
     return res.status(StatusCodes.OK).json(comment);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -118,7 +156,7 @@ const remove = async (req: express.Request, res: express.Response) => {
     const { commentId } = req.params;
     assertCommentIdIsValid(commentId);
 
-    const comment: Comment = await commentService.remove(Number(commentId));
+    const comment: BaseComment = await commentService.remove(Number(commentId));
     return res.status(StatusCodes.OK).json(comment);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -127,7 +165,9 @@ const remove = async (req: express.Request, res: express.Response) => {
 
 export default {
   create,
+  createIssueComment,
   list,
+  listIssueComments,
   update,
   remove,
 };
