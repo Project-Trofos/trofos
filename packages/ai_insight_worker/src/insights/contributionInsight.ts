@@ -1,4 +1,4 @@
-import { Backlog, User, UsersOnProjects } from '@prisma/client';
+import { Backlog, Sprint, User, UsersOnProjects } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import openAiClient from '../models/openAiClient';
 
@@ -11,7 +11,10 @@ type BacklogWithAssignee = (Backlog & {
   }) | null;
 });
 
-async function generateContributionInsights(projectId: number, sprintId: number, user: string): Promise<string> {
+async function generateContributionInsights(sprint: Sprint, user: string): Promise<string> {
+  const projectId = sprint.project_id;
+  const sprintId = sprint.id;
+  
   const backlogsThisSprint: BacklogWithAssignee[] = await prisma.backlog.findMany({
     where: {
       sprint_id: sprintId,

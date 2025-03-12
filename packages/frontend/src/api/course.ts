@@ -5,6 +5,7 @@ import {
   CourseData,
   CourseDataResponse,
   CourseImportCsvPayload,
+  CourseProjectsLatestInsights,
   Project,
   ProjectAssignmentImportPayload,
 } from './types';
@@ -377,6 +378,15 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Project'],
     }),
+
+    // Get latest insights of all projects in this course
+    getCourseProjectsLatestInsights: builder.query<CourseProjectsLatestInsights[], number>({
+      query: (id) => ({
+        url: `course/${id}/sprintInsights/latest`,
+        credentials: 'include',
+      }),
+      providesTags: (result, error, id) => [{ type: 'CourseProjectsLatestInsights', id }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -403,4 +413,5 @@ export const {
   useArchiveCourseMutation,
   useUnarchiveCourseMutation,
   useImportProjectAssignmentsMutation,
+  useGetCourseProjectsLatestInsightsQuery,
 } = extendedApi;

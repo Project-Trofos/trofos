@@ -6,6 +6,8 @@ Modifying this:
 
 2. `npm publish --access public`
 
+**ENSURE YOU HAVE `.env` WITH DATABASE_URL AND AI_DATABASE_URL FOR ALL PACKAGES WHICH INSTALLS THIS - NEEDED FOR POSTINSTALL**
+
 The main application backend's prisma client is automatically generated when this package is installed in another package. It can then be accessed from the installing package's node modules as per normal
 
 Since there is another prisma schema for the vector db, the prisma client for pgvector it is generated into a different directory and can be import with:
