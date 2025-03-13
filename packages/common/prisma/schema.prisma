@@ -8,86 +8,91 @@ datasource db {
 }
 
 model Settings {
-  id              Int @id @default(autoincrement())
-  current_year    Int
-  current_sem     Int
+  id           Int @id @default(autoincrement())
+  current_year Int
+  current_sem  Int
 }
 
 model User {
-  user_id Int @id @default(autoincrement())
-  user_email String @unique @db.VarChar(320)
-  user_display_name String @db.VarChar(50) @default(uuid())
-  user_password_hash String? @db.VarChar(4000)
-  has_completed_tour Boolean @default(false)
-  projects      UsersOnProjects[]
-  ownedProjects  Project[]
-  courses UsersOnRolesOnCourses[]
-  basicRoles UsersOnRoles[]
-  feedbacks Feedback[]
-  api_usages ApiUsage[]
-  user_api_key UserApiKey?
+  user_id            Int                     @id @default(autoincrement())
+  user_email         String                  @unique @db.VarChar(320)
+  user_display_name  String                  @default(uuid()) @db.VarChar(50)
+  user_password_hash String?                 @db.VarChar(4000)
+  has_completed_tour Boolean                 @default(false)
+  projects           UsersOnProjects[]
+  ownedProjects      Project[]
+  courses            UsersOnRolesOnCourses[]
+  basicRoles         UsersOnRoles[]
+  feedbacks          Feedback[]
+  api_usages         ApiUsage[]
+  user_api_key       UserApiKey?
+  comments           IssueComment[]
 }
 
 model UserSession {
-  session_id String @id
-  user_email String
-  user_role_id Int
-  user_id Int
-  user_is_admin Boolean
+  session_id     String   @id
+  user_email     String
+  user_role_id   Int
+  user_id        Int
+  user_is_admin  Boolean
   session_expiry DateTime @default(dbgenerated("NOW() + interval '1 day'"))
 }
 
 model Course {
-  id            Int               @id @default(autoincrement())
-  code          String            @default(uuid())
+  id            Int                     @id @default(autoincrement())
+  code          String                  @default(uuid())
   startYear     Int
-  startSem      Int               
+  startSem      Int
   endYear       Int
-  endSem        Int               
-  cname         String            @db.VarChar(256)
+  endSem        Int
+  cname         String                  @db.VarChar(256)
   description   String?
   projects      Project[]
   milestones    Milestone[]
   announcements Announcement[]
-  public        Boolean           @default(false)
-  created_at    DateTime          @default(now())
-  courseRoles UsersOnRolesOnCourses[]
-  shadow_course Boolean           @default(false)
-  is_archive      Boolean?
+  public        Boolean                 @default(false)
+  created_at    DateTime                @default(now())
+  courseRoles   UsersOnRolesOnCourses[]
+  shadow_course Boolean                 @default(false)
+  is_archive    Boolean?
+
   @@unique([code, startYear, startSem])
 }
 
 model Project {
-  id              Int               @id @default(autoincrement())
-  pname           String            @db.VarChar(256)
-  pkey            String?           @db.VarChar(64)
-  description     String?
+  id          Int     @id @default(autoincrement())
+  pname       String  @db.VarChar(256)
+  pkey        String? @db.VarChar(64)
+  description String?
 
   // A project might not belong to a course (open project)
-  course_id       Int
-  course          Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  course_id Int
+  course    Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
   // A project has at most one owner
   // Optional for backwards compatibility
-  owner_id        Int?
-  owner           User?              @relation(fields: [owner_id], references: [user_id], onDelete: Restrict)
+  owner_id Int?
+  owner    User? @relation(fields: [owner_id], references: [user_id], onDelete: Restrict)
 
-  users           UsersOnProjects[]
-  public          Boolean           @default(false)
-  created_at      DateTime          @default(now())
+  users      UsersOnProjects[]
+  public     Boolean           @default(false)
+  created_at DateTime          @default(now())
 
-  backlog_counter Int               @default(0)
+  backlog_counter Int @default(0)
 
-  sprints         Sprint[]
-  backlogs        Backlog[]
+  sprints          Sprint[]
+  backlogs         Backlog[]
   backlogHistories BacklogHistory[]
-  backlogStatuses BacklogStatus[]
-  standUps  StandUp[]
+  backlogStatuses  BacklogStatus[]
+  standUps         StandUp[]
 
-  projectGitLink  ProjectGitLink?
+  projectGitLink      ProjectGitLink?
   telegramChannelLink String?
-  is_archive      Boolean?
-  epics           Epic[]
+  is_archive          Boolean?
+  epics               Epic[]
+
+  assignedIssues Issue[] @relation("ProjectAssignedIssues")
+  receivedIssues Issue[] @relation("ProjectReceivedIssues")
 
   /// All projects that this project is assigned to act upon.
   assignedProjects ProjectAssignment[] @relation("SourceProject")
@@ -100,68 +105,70 @@ model Project {
 /// where one project is designated to act upon another.
 model ProjectAssignment {
   /// The unique identifier for this ProjectAssignment instance.
-  id                Int     @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   /// The ID of the project that is assigned to act upon another project.
-  sourceProjectId   Int
+  sourceProjectId Int
 
   /// The ID of the project that is the target of the assignment.
-  targetProjectId   Int
+  targetProjectId Int
 
   /// Relation to the project that is assigned to act upon another project.
-  sourceProject     Project @relation("SourceProject", fields: [sourceProjectId], references: [id], onDelete: Cascade)
+  sourceProject Project @relation("SourceProject", fields: [sourceProjectId], references: [id], onDelete: Cascade)
 
   /// Relation to the project that is the target of the assignment.
-  targetProject     Project @relation("TargetProject", fields: [targetProjectId], references: [id], onDelete: Cascade)
+  targetProject Project @relation("TargetProject", fields: [targetProjectId], references: [id], onDelete: Cascade)
 
   /// Ensures that the combination of sourceProjectId and targetProjectId is unique.
   @@unique([sourceProjectId, targetProjectId])
 }
 
-
 model Announcement {
-  id             Int              @id @default(autoincrement())
-  title          String
-  content        String
-  course_id      Int
-  course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  id        Int    @id @default(autoincrement())
+  title     String
+  content   String
+  course_id Int
+  course    Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
 
-  user_id        Int?
-  user           UsersOnRolesOnCourses?  @relation(fields: [user_id, course_id], references: [user_id, course_id])
+  user_id Int?
+  user    UsersOnRolesOnCourses? @relation(fields: [user_id, course_id], references: [user_id, course_id])
 
-  created_at     DateTime         @default(now())
-  updated_at     DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 }
 
 model Milestone {
-  id             Int              @id @default(autoincrement())
-  name           String
-  course_id      Int
-  course         Course           @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  start_date      DateTime
-  deadline       DateTime
+  id         Int      @id @default(autoincrement())
+  name       String
+  course_id  Int
+  course     Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  start_date DateTime
+  deadline   DateTime
 
-  created_at     DateTime         @default(now())
+  created_at DateTime @default(now())
 }
 
 model UsersOnProjects {
   project_id        Int
-  project           Project                   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project           Project                    @relation(fields: [project_id], references: [id], onDelete: Cascade)
   user_id           Int
-  user              User                      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  created_at        DateTime                  @default(now())
-  reported_backlogs Backlog[]                 @relation("ReportedBacklogs")
-  assigned_backlogs Backlog[]                 @relation("AssignedBacklogs")
-  comments          Comment[]
-  settings          UsersOnProjectOnSettings[] 
+  user              User                       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  created_at        DateTime                   @default(now())
+  reported_backlogs Backlog[]                  @relation("ReportedBacklogs")
+  assigned_backlogs Backlog[]                  @relation("AssignedBacklogs")
+  issues            Issue[]                    @relation("UserReportedIssues")
+  comments          BacklogComment[]
+  settings          UsersOnProjectOnSettings[]
+
   @@id([project_id, user_id])
 }
 
 model UsersOnProjectOnSettings {
-  project_id            Int
-  user_id               Int
-  usersOnProjects       UsersOnProjects       @relation(fields: [project_id, user_id], references: [project_id, user_id], onDelete: Cascade)
-  email_notification    Boolean               @default(false)
+  project_id         Int
+  user_id            Int
+  usersOnProjects    UsersOnProjects @relation(fields: [project_id, user_id], references: [project_id, user_id], onDelete: Cascade)
+  email_notification Boolean         @default(false)
+
   @@id([project_id, user_id])
 }
 
@@ -169,36 +176,39 @@ model Backlog {
   backlog_id    Int
   summary       String
   type          BacklogType?
-  sprint        Sprint?           @relation(fields: [sprint_id], references: [id], onDelete: SetNull)
+  sprint        Sprint?          @relation(fields: [sprint_id], references: [id], onDelete: SetNull)
   sprint_id     Int?
   priority      BacklogPriority?
-  reporter      UsersOnProjects   @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id])
+  reporter      UsersOnProjects  @relation("ReportedBacklogs", fields: [reporter_id, project_id], references: [user_id, project_id])
   reporter_id   Int
-  assignee      UsersOnProjects?  @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id])
+  assignee      UsersOnProjects? @relation("AssignedBacklogs", fields: [assignee_id, project_id], references: [user_id, project_id])
   assignee_id   Int?
   project_id    Int
-  project       Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project       Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
   points        Int?
   description   String?
-  backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name])
+  backlogStatus BacklogStatus    @relation(fields: [project_id, status], references: [project_id, name])
   status        String
-  comments      Comment[]
-  epic       Epic?             @relation("EpicBacklogs", fields: [epic_id], references: [epic_id], onDelete: SetNull)
+  comments      BacklogComment[]
+  epic          Epic?            @relation("EpicBacklogs", fields: [epic_id], references: [epic_id], onDelete: SetNull)
   epic_id       Int?
+
+  issue_id Int?   @unique
+  issue    Issue? @relation("IssueBacklogs", fields: [issue_id], references: [id], onDelete: SetNull)
 
   @@id([project_id, backlog_id])
 }
 
 // Track history of backlog for analysis
 model BacklogHistory {
-  project_id    Int
-  project       Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  backlog_id    Int
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  backlog_id Int
 
-  sprint_id     Int?
-  sprint        Sprint?          @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  sprint_id Int?
+  sprint    Sprint? @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
 
-  history_type  HistoryType
+  history_type HistoryType
 
   // Data in a Backlog
   type          BacklogType?
@@ -207,9 +217,10 @@ model BacklogHistory {
   assignee_id   Int?
   points        Int?
   status        String
-  backlogStatus BacklogStatus     @relation(fields: [project_id, status], references: [project_id, name], onDelete: Cascade)
+  backlogStatus BacklogStatus    @relation(fields: [project_id, status], references: [project_id, name], onDelete: Cascade)
 
-  date          DateTime          @default(now())
+  date DateTime @default(now())
+
   @@id([project_id, backlog_id, date])
 }
 
@@ -221,40 +232,63 @@ model BacklogStatus {
   backlogs          Backlog[]
   order             Int
   backlog_histories BacklogHistory[]
+
   @@id([project_id, name])
 }
 
-model Comment {
-  comment_id    Int               @id @default(autoincrement())
-  backlog       Backlog           @relation(fields: [backlog_id, project_id], references: [backlog_id, project_id], onDelete: Cascade)
-  backlog_id    Int
-  commenter     UsersOnProjects   @relation(fields: [commenter_id, project_id], references: [user_id, project_id])
-  commenter_id  Int
-  project_id    Int
-  content       String
-  created_at    DateTime          @default(now())
-  updated_at    DateTime?
+model BaseComment {
+  comment_id Int         @id @default(autoincrement())
+  content    String
+  created_at DateTime    @default(now())
+  updated_at DateTime?
+  type       CommentType
+
+  BacklogComment BacklogComment?
+  IssueComment   IssueComment?
+}
+
+model BacklogComment {
+  comment_id   Int             @id
+  backlog      Backlog         @relation(fields: [backlog_id, project_id], references: [backlog_id, project_id], onDelete: Cascade)
+  backlog_id   Int
+  commenter    UsersOnProjects @relation(fields: [commenter_id, project_id], references: [user_id, project_id])
+  commenter_id Int
+  project_id   Int
+  base_comment BaseComment     @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
+
+  @@unique([comment_id])
+}
+
+model IssueComment {
+  comment_id   Int         @id
+  issue        Issue       @relation(fields: [issue_id], references: [id], onDelete: Cascade)
+  issue_id     Int
+  commenter    User        @relation(fields: [commenter_id], references: [user_id], onDelete: Cascade)
+  commenter_id Int
+  base_comment BaseComment @relation(fields: [comment_id], references: [comment_id], onDelete: Cascade)
+
+  @@unique([comment_id])
 }
 
 model Epic {
-  epic_id           Int         @id @default(autoincrement())
-  project           Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  project_id        Int
-  name              String
-  description       String?
-  backlogs          Backlog[]   @relation("EpicBacklogs")
+  epic_id     Int       @id @default(autoincrement())
+  project     Project   @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id  Int
+  name        String
+  description String?
+  backlogs    Backlog[] @relation("EpicBacklogs")
 }
 
 model Sprint {
-  id              Int               @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   name            String
-  duration        Int               // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
+  duration        Int // 0 = custom, 1 = 1 week, 2 = 2 weeks, 3 = 3 weeks, 4 = 4 weeks
   start_date      DateTime?
   end_date        DateTime?
-  project         Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project         Project          @relation(fields: [project_id], references: [id], onDelete: Cascade)
   project_id      Int
   goals           String?
-  status          SprintStatus      @default(upcoming)
+  status          SprintStatus     @default(upcoming)
   notes           String?
   backlogs        Backlog[]
   backlog_history BacklogHistory[]
@@ -265,115 +299,145 @@ model Sprint {
 }
 
 model Feedback {
-  id            Int               @id @default(autoincrement())
-  user_id       Int?
-  user          User?             @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
-  sprint_id     Int               
-  sprint        Sprint            @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
-  content       String
-  created_at    DateTime          @default(now())
-  updated_at    DateTime?
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  user       User?     @relation(fields: [user_id], references: [user_id], onDelete: SetNull)
+  sprint_id  Int
+  sprint     Sprint    @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  content    String
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 }
 
 model Role {
-  id Int @id @default(autoincrement())
-  role_name String @unique @db.VarChar(50)
-  actions ActionsOnRoles[]
-  basicRoles UsersOnRoles[]
+  id          Int                     @id @default(autoincrement())
+  role_name   String                  @unique @db.VarChar(50)
+  actions     ActionsOnRoles[]
+  basicRoles  UsersOnRoles[]
   courseRoles UsersOnRolesOnCourses[]
 }
 
 model ActionsOnRoles {
   role_id Int
-  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
-  action Action
+  role    Role   @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  action  Action
+
   @@unique([role_id, action])
 }
 
 model UsersOnRoles {
-  user_id Int @unique
-  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id Int  @unique
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   role_id Int
-  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role    Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
 }
 
 model ProjectGitLink {
-  project       Project   @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  project_id    Int       @id
-  repo          String
+  project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  project_id Int     @id
+  repo       String
 }
 
 model UsersOnRolesOnCourses {
-  id Int @id @default(autoincrement())
-  user_id Int
-  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  role_id Int
-  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
-  course_id Int
-  course Course @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  created_announcements   Announcement[]
+  id                    Int            @id @default(autoincrement())
+  user_id               Int
+  user                  User           @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  role_id               Int
+  role                  Role           @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  course_id             Int
+  course                Course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  created_announcements Announcement[]
+
   @@unique([user_id, course_id])
 }
 
 model Retrospective {
-  id          Int                         @id @default(autoincrement())
-  sprint      Sprint                      @relation(fields: [sprint_id], references: [id], onDelete: Cascade) 
-  sprint_id   Int
-  content     String
-  type        RetrospectiveType
-  score       Int                         @default(0)
-  votes       RetrospectiveVote[]
-  is_action_taken Boolean                 @default(false)
+  id              Int                 @id @default(autoincrement())
+  sprint          Sprint              @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  sprint_id       Int
+  content         String
+  type            RetrospectiveType
+  score           Int                 @default(0)
+  votes           RetrospectiveVote[]
+  is_action_taken Boolean             @default(false)
 }
 
 model RetrospectiveVote {
-  retro       Retrospective   @relation(fields: [retro_id], references: [id], onDelete: Cascade)
-  retro_id    Int
+  retro    Retrospective         @relation(fields: [retro_id], references: [id], onDelete: Cascade)
+  retro_id Int
   // To keep it simple, user_id is not related to any user models to allow for anonymous votes in the future
-  user_id     Int
-  type        RetrospectiveVoteType
+  user_id  Int
+  type     RetrospectiveVoteType
+
   @@id([retro_id, user_id])
 }
 
 model StandUpNote {
-  id Int @id @default(autoincrement())
-  column_id Int
+  id          Int     @id @default(autoincrement())
+  column_id   Int
   stand_up_id Int
-  stand_up  StandUp @relation(fields: [stand_up_id], references: [id], onDelete: Cascade)
-  user_id Int
-  content String
+  stand_up    StandUp @relation(fields: [stand_up_id], references: [id], onDelete: Cascade)
+  user_id     Int
+  content     String
 }
 
 model StandUp {
-  id Int @id @default(autoincrement())
-  project_id  Int
-  project Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  date  DateTime
-  notes StandUpNote[]
+  id         Int           @id @default(autoincrement())
+  project_id Int
+  project    Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  date       DateTime
+  notes      StandUpNote[]
+}
+
+model Issue {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+
+  status             IssueStatusType @default(open)
+  status_explanation String?
+
+  priority BacklogPriority?
+
+  reporter    UsersOnProjects @relation("UserReportedIssues", fields: [reporter_id, assigner_project_id], references: [user_id, project_id])
+  reporter_id Int
+
+  assigner            Project @relation("ProjectAssignedIssues", fields: [assigner_project_id], references: [id], onDelete: Cascade)
+  assigner_project_id Int
+
+  assignee            Project @relation("ProjectReceivedIssues", fields: [assignee_project_id], references: [id], onDelete: Cascade)
+  assignee_project_id Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  backlog  Backlog?       @relation("IssueBacklogs")
+  comments IssueComment[]
 }
 
 model Invite {
-  project_id Int
-  email String
+  project_id   Int
+  email        String
   unique_token String
-  expiry_date DateTime @default(dbgenerated("NOW() + interval '1 week'"))
+  expiry_date  DateTime @default(dbgenerated("NOW() + interval '1 week'"))
+
   @@id([project_id, email]) //limit one invite per project per email
 }
 
 model UserApiKey {
-  id Int @id @default(autoincrement())
-  user_id Int @unique
-  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  api_key String @unique
-  created_at DateTime @default(now())
-  last_used DateTime?
-  active Boolean @default(true)
+  id         Int       @id @default(autoincrement())
+  user_id    Int       @unique
+  user       User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  api_key    String    @unique
+  created_at DateTime  @default(now())
+  last_used  DateTime?
+  active     Boolean   @default(true)
 }
 
 model FeatureFlag {
-  id Int @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   feature_name Feature @unique
-  active Boolean @default(true)
+  active       Boolean @default(true)
 }
 
 model SprintInsight {
@@ -457,6 +521,18 @@ enum BacklogStatusType {
   todo
   in_progress
   done
+}
+
+enum CommentType {
+  backlog
+  issue
+}
+
+enum IssueStatusType {
+  open // Default when an issue is reported
+  valid // Issue is confirmed as valid
+  invalid // Issue was reviewed but deemed invalid
+  unable_to_replicate // Issue could not be reproduced
 }
 
 enum SprintStatus {

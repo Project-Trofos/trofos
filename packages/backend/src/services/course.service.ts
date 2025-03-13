@@ -1,4 +1,4 @@
-import { Course, Prisma, Project, User, UsersOnRolesOnCourses, UsersOnProjects, Settings } from '@prisma/client';
+import { Course, Prisma, Project, User, UsersOnRolesOnCourses, UsersOnProjects, Settings, SprintStatus } from '@prisma/client';
 import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
@@ -643,6 +643,68 @@ async function unarchiveCourse(id: number): Promise<Course> {
   });
 }
 
+async function getLatestSprintInsightsForCourseProjects(courseId: number): Promise<{
+  pname: string;
+  sprints: {
+    id: number;
+    status: SprintStatus;
+    name: string;
+    start_date: Date | null;
+    end_date: Date | null;
+    sprintInsights: {
+      created_at: Date;
+      id: number;
+      category: string;
+      content: string;
+    }[];
+  }[];
+  id: number;
+}[]> {
+  // for each project of a course:
+  //  find the latest sprint that is either completed (higher priority) or closed (no completed, most recent end_date), and join the ai insights
+  //  else return empty array
+  return prisma.project.findMany({
+    where: {
+      course_id: courseId,
+    },
+    select: {
+      id: true,
+      pname: true,
+      sprints: {
+        where: {
+          OR: [
+            { status: "completed" },
+            { status: "closed" }
+          ]
+        },
+        orderBy: [
+          { status: "asc" }, // prisma orders by definition in schema - compelted then closed
+          { end_date: "desc" }, // Take the most recent one
+        ],
+        take: 1, // Take only one sprint per project
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          start_date: true,
+          end_date: true,
+          sprintInsights: {
+            select: {
+              id: true,
+              category: true,
+              content: true,
+              created_at: true,
+            },
+            orderBy: {
+              created_at: "desc", // Ensure latest insights appear first
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
 export default {
   create,
   bulkCreate,
@@ -659,4 +721,5 @@ export default {
   addProjectAndCourse,
   archiveCourse,
   unarchiveCourse,
+  getLatestSprintInsightsForCourseProjects,
 };

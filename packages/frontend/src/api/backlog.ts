@@ -163,7 +163,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         method: 'DELETE',
         credentials: 'include',
       }),
-      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory'],
+      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory', 'Issue'],
     }),
 
     // Backlog history related queries
