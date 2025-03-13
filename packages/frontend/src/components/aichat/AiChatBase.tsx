@@ -1,9 +1,15 @@
 import React, { useRef, useState } from 'react';
 import {
   Drawer,
+  Dropdown,
+  Flex,
   Space,
+  Switch,
+  Tag,
+  Typography,
+  theme,
 } from 'antd';
-import { FundProjectionScreenOutlined, ReadOutlined, RobotOutlined, UserOutlined } from '@ant-design/icons';
+import { FundProjectionScreenOutlined, ReadOutlined, RobotOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Bubble,
   Prompts,
@@ -13,7 +19,11 @@ import {
   useXChat,
 } from '@ant-design/x';
 import ReactMarkdown from 'react-markdown'
-import { useLazyAnswerUserGuideQueryQuery } from '../../api/ai';
+import { useAnswerUserGuideQueryMutation  } from '../../api/ai';
+
+const SEPERATOR = '|||';
+
+const { useToken } = theme;
 
 type AiChatBaseProps = {
   open: boolean;
@@ -41,10 +51,38 @@ const getLinksMarkDown = (links: string[]) => {
   return links.map((link, index) => `${index + 1}. [${link}](${link})`).join('\n\n');
 };
 
+const MemoryIndicator = ({ isEnableMemory }:
+  { isEnableMemory: boolean }
+) => (
+  <div
+    style={{
+      position: 'absolute',
+      bottom: '10%',
+      left: '20%',
+      transform: 'translateX(-50%)',
+      zIndex: 10,
+      pointerEvents: 'none',
+    }}
+  >
+    <Tag color={isEnableMemory ? 'green' : 'red'} style={{ opacity: 0.8 }}>
+      {isEnableMemory ? 'Memory Enabled' : 'Memory Disabled'}
+    </Tag>
+  </div>
+);
+
 export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Element {
   const [senderValue, setSenderValue] = useState('');
-  const [triggerSend, { data, error, isFetching }] = useLazyAnswerUserGuideQueryQuery();
+  const [triggerSend, { data, error }] = useAnswerUserGuideQueryMutation ();
   const abortRef = useRef<(() => void) | null>(null);
+  const { token } = useToken();
+  const [isEnableMemory, setIsEnableMemory] = useState(false);
+
+  const chatSettingsMenuContentStyle: React.CSSProperties = {
+    padding: 10,
+    background: token.colorBgContainer,
+    borderRadius: 8,
+    boxShadow: token.boxShadowSecondary,
+  };
 
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess, onError, onUpdate }) => {
@@ -52,12 +90,37 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
         onError(new Error('Message cannot be empty'));
         return;
       }
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { id: 'loading', role: 'ai', message: '...', status: 'loading' },
-      ]);
+      // workaround to extract isEnableMemory from message from limitation of useXAgent
+      const separatorIndex = message.indexOf(SEPERATOR);
+
+      let extractedIsEnableMemory = false;
+      let actualMessage = message;
+      if (separatorIndex !== -1) {
+        const memoryString = message.substring(0, separatorIndex);
+        actualMessage = message.substring(separatorIndex + SEPERATOR.length);
+        extractedIsEnableMemory = memoryString === 'true';
+      }
+
+      setMessages((prevMessages) => {
+        console.log(prevMessages)
+        if (prevMessages.length === 0) {
+          // If no previous messages, just add the new one
+          return [
+            { id: 'loading', role: 'ai', message: actualMessage, status: 'loading' },
+          ];
+        }
+      
+        // Copy all previous messages except the last one, then update the last message
+        return [
+          ...prevMessages.slice(0, -1),
+          {
+            ...prevMessages[prevMessages.length - 1], // Copy last message
+            message: actualMessage, // Update only message value
+          },
+        ];
+      });
       try {
-        const { unwrap, abort } = triggerSend(message);
+        const { unwrap, abort } = triggerSend({ query: actualMessage, isEnableMemory: extractedIsEnableMemory });
         abortRef.current = abort;
         const data = await unwrap();
         setMessages((prevMessages) =>
@@ -75,8 +138,8 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
         } else {
           onError(new Error(err.message));
         }
-      } 
-    },
+      }
+    }
   });
 
   const { onRequest, messages, setMessages } = useXChat({
@@ -122,10 +185,6 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
     onRequest(info.data.description as string);
   };
 
-  const LinkRenderer = (props: any) => {
-    return <a href={props.href} target="_blank">{props.children}</a>
-  }
-
   const placeholderNode = (
     <Space direction="vertical" size={16}>
       <Welcome
@@ -151,7 +210,29 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
 
   return (
     <Drawer
-      title="✨️TROFOS Copilot"
+      title={
+        <Flex justify="space-between" align="center">
+          <Typography.Title level={5} style={{ margin: 0 }}>
+            ✨️TROFOS Copilot
+          </Typography.Title>
+          <Dropdown
+            dropdownRender={(menu) => (
+              <Space style={chatSettingsMenuContentStyle}>
+                <Space direction='horizontal'>
+                  <Typography.Text>Enable memory</Typography.Text>
+                  <Switch
+                    checked={isEnableMemory}
+                    onChange={(checked) => setIsEnableMemory(checked)}
+                  />
+                </Space>
+              </Space> 
+            )}
+            trigger={['click']}
+          >
+            <SettingOutlined />
+          </Dropdown>
+        </Flex>
+      }
       open={open}
       onClose={onClose}
       mask={false}
@@ -161,7 +242,10 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
           onChange={(v)=>setSenderValue(v)}
           placeholder={'Ask TROFOS copilot...'}
           onSubmit={(v)=>{
-            onRequest(v);
+            // Concat with delimiter as workaround of limitation of x-chat, can't use most updated
+            // var as useXAgent useMemo and cannot update anymore
+            const messageWithMemory = `${isEnableMemory}${SEPERATOR}${v}`;
+            onRequest(messageWithMemory);
             setSenderValue('');
           }}
           onCancel={() => {
@@ -176,6 +260,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
         />
       }
     >
+      <MemoryIndicator isEnableMemory={isEnableMemory} />
       <Bubble.List
         items={messages.length > 0 ? 
           messages.map(({ id, message, status }) => ({
