@@ -27,6 +27,11 @@ API Keys
 
 As a faculty memeber, learn how to maximise the educational value of TROFOS using our [external APIs](/trofos/guide/api-key-management)
 
+AI Features
+----
+
+Learn more about how [AI is used to enhance your Agile experience in TROFOS](/trofos/guide/ai)
+
 Contribute to TROFOS
 ----
 

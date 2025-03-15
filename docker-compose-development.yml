@@ -1,4 +1,10 @@
 version: '3.8'
+
+networks:
+  application:
+    driver: bridge
+    name: trofos-application
+
 services:
   postgres:
     image: pgvector/pgvector:pg14
@@ -11,6 +17,8 @@ services:
       - '5432:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - application
 
   # cAdvisor (monitoring) uses this also: https://prometheus.io/docs/guides/cadvisor/
   redis:
@@ -19,5 +27,7 @@ services:
     restart: unless-stopped
     ports:
       - 6379:6379
+    networks:
+      - application
 volumes:
   postgres:
