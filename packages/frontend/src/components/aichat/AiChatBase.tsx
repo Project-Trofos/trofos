@@ -117,6 +117,7 @@ export default function AiChatBase({ open, onClose }: AiChatBaseProps): JSX.Elem
             ...prevMessages[prevMessages.length - 1], // Copy last message
             message: actualMessage, // Update only message value
           },
+          { id: 'loading', role: 'ai', message: actualMessage, status: 'loading' },
         ];
       });
       try {
