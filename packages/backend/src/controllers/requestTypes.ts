@@ -13,6 +13,13 @@ export type OptionRequestBody = {
   option: 'all' | 'past' | 'current' | 'future';
 };
 
+export type PaginatedRequestBody = {
+  pageIndex: number;
+  pageSize: number;
+  keyword?: string;
+  sortBy?: string;
+}
+
 export type UserEmailRequestBody = {
   userEmail: string;
 };

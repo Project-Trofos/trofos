@@ -11,159 +11,81 @@ import { BadRequestError } from '../helpers/error';
 async function getAll(
   policyConstraint: AppAbility,
   settings: Settings,
-  option?: 'current' | 'past' | 'all' | 'future',
-): Promise<Course[]> {
-  let result;
+  option: 'current' | 'past' | 'all' | 'future',
+  pageIndex: number,
+  pageSize: number,
+  keyword?: string,
+  sortBy?: string,
+): Promise<{
+  data: Course[],
+  totalCount: number,
+}> {
+  let whereClause: any = {
+    AND: [
+      accessibleBy(policyConstraint).Course,  
+      { shadow_course: false }
+    ],
+  };
 
-  if (option === 'current') {
-    // startYear <= currentYear <= endYear
-    // AND
-    // startSem <= currentSem <= endSem
-    result = await prisma.course.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Course,
-          {
-            AND: [
-              {
-                shadow_course: {
-                  equals: false,
-                },
-              },
-              {
-                AND: [
-                  {
-                    AND: [
-                      {
-                        startYear: {
-                          lte: settings.current_year,
-                        },
-                        endYear: {
-                          gte: settings.current_year,
-                        },
-                      },
-                    ],
-                  },
-                  {
-                    AND: [
-                      {
-                        startSem: {
-                          lte: settings.current_sem,
-                        },
-                        endSem: {
-                          gte: settings.current_sem,
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
-    });
-  } else if (option === 'past') {
-    // endYear < currentYear
-    // OR
-    // endYear = currentYear AND endSem < currentSem
-    result = await prisma.course.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Course,
-          {
-            AND: [
-              {
-                shadow_course: {
-                  equals: false,
-                },
-              },
-              {
-                OR: [
-                  {
-                    endYear: {
-                      lt: settings.current_year,
-                    },
-                  },
-                  {
-                    AND: [
-                      {
-                        endYear: settings.current_year,
-                      },
-                      {
-                        endSem: {
-                          lt: settings.current_sem,
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
-    });
-  } else if (option === 'future') {
-    // currentYear < startYear
-    // OR
-    // currentYear = startYear AND currentSem < startSem
-    result = await prisma.course.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Course,
-          {
-            AND: [
-              {
-                shadow_course: {
-                  equals: false,
-                },
-              },
-              {
-                OR: [
-                  {
-                    startYear: {
-                      gt: settings.current_year,
-                    },
-                  },
-                  {
-                    AND: [
-                      {
-                        startYear: settings.current_year,
-                      },
-                      {
-                        startSem: {
-                          gt: settings.current_sem,
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
-    });
-  } else {
-    result = await prisma.course.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Course,
-          {
-            shadow_course: {
-              equals: false,
-            },
-          },
-        ],
-      },
-      include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
+  if (keyword) {
+    whereClause.AND.push({
+      OR: [
+        { cname: { contains: keyword, mode: 'insensitive' } },
+        { code: { contains: keyword, mode: 'insensitive' } },
+      ],
     });
   }
-  return result;
+
+  if (option === 'current') {
+    whereClause.AND.push({
+      startYear: { lte: settings.current_year },
+      endYear: { gte: settings.current_year },
+      startSem: { lte: settings.current_sem },
+      endSem: { gte: settings.current_sem },
+    });
+  } else if (option === 'past') {
+    whereClause.AND.push({
+      OR: [
+        { endYear: { lt: settings.current_year } },
+        {
+          AND: [
+            { endYear: settings.current_year },
+            { endSem: { lt: settings.current_sem } },
+          ],
+        },
+      ],
+    });
+  } else if (option === 'future') {
+    whereClause.AND.push({
+      OR: [
+        { startYear: { gt: settings.current_year } },
+        {
+          AND: [
+            { startYear: settings.current_year },
+            { startSem: { gt: settings.current_sem } },
+          ],
+        },
+      ],
+    });
+  }
+  const sortByClause = sortBy === 'course' ? [
+    { shadow_course: 'asc' as Prisma.SortOrder },
+    { cname: 'asc' as Prisma.SortOrder },
+    { code : 'asc' as Prisma.SortOrder },
+  ] : sortBy === 'year' ? [
+    { startYear: 'desc' as Prisma.SortOrder },
+    { startSem: 'desc' as Prisma.SortOrder },
+  ] : undefined;
+
+  const totalCount = await prisma.course.count({ where: whereClause });
+  const data = await prisma.course.findMany({
+    where: whereClause,
+    include: INCLUDE_USERS_MILESTONES_ANNOUNCEMENTS,
+    skip: pageIndex * pageSize,
+    take: pageSize,
+    orderBy: sortByClause,
+  });
+  return { totalCount, data };
 }
 
 async function getById(id: number): Promise<Course> {

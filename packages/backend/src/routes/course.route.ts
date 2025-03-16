@@ -12,7 +12,7 @@ const router = express.Router();
 const upload = multer({ dest: 'tmp/csv' });
 
 // Get all courses
-router.get('/', hasAuth(null, coursePolicy.POLICY_NAME), course.getAll);
+router.post('/', hasAuth(null, coursePolicy.POLICY_NAME), course.getAll);
 
 // Create course
 router.post('/', hasAuth(Action.create_course, coursePolicy.POLICY_NAME), course.create);

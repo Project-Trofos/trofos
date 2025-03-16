@@ -298,3 +298,18 @@ export function assertSSORoleIsValid(role: string | undefined) {
     throw new BadRequestError('Invalid SSO role');
   }
 }
+
+export function assertPaginationParamsAreValid(pageIndex?: number, pageSize?: number) {
+  if (pageIndex === undefined || pageSize === undefined) {
+    throw new BadRequestError('Please provide both pageIndex and pageSize');
+  }
+  if (pageIndex < 0 || pageSize < 1) {
+    throw new BadRequestError('Invalid pagination parameters');
+  }
+}
+
+export function assertSortByIsValid(sortBy: string | undefined, allowedSortBy: string[]) {
+  if (sortBy && !allowedSortBy.includes(sortBy)) {
+    throw new BadRequestError('Invalid sortBy parameter, valid values are: ' + allowedSortBy.join(', '));
+  }
+}
