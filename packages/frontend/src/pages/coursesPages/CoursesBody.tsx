@@ -7,8 +7,8 @@ import ToggleButtonGroup from '../../components/button/ToggleButtons';
 import LoadingComponent from '../../components/common/LoadingComponent';
 
 export const sortOptions = {
-  SORT_BY_COURSE: 'Sort by Course',
-  SORT_BY_YEAR: 'Sort by Year',
+  SORT_BY_COURSE: 'course',
+  SORT_BY_YEAR: 'year',
 };
 
 export default function CoursesBody({

@@ -299,12 +299,12 @@ export function assertSSORoleIsValid(role: string | undefined) {
   }
 }
 
-export function assertPaginationParamsAreValid(pageIndex?: number, pageSize?: number) {
-  if (pageIndex === undefined || pageSize === undefined) {
-    throw new BadRequestError('Please provide both pageIndex and pageSize');
-  }
+export function assertPaginationParamsAreValid(pageIndex: number, pageSize: number) {
   if (pageIndex < 0 || pageSize < 1) {
     throw new BadRequestError('Invalid pagination parameters');
+  }
+  if (pageSize > 100) {
+    throw new BadRequestError('Maximum page size is 100');
   }
 }
 

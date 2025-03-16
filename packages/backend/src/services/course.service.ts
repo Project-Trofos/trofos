@@ -16,6 +16,7 @@ async function getAll(
   pageSize: number,
   keyword?: string,
   sortBy?: string,
+  ids?: number[],
 ): Promise<{
   data: Course[],
   totalCount: number,
@@ -33,6 +34,12 @@ async function getAll(
         { cname: { contains: keyword, mode: 'insensitive' } },
         { code: { contains: keyword, mode: 'insensitive' } },
       ],
+    });
+  }
+
+  if (ids) {
+    whereClause.AND.push({
+      id: { in: ids },
     });
   }
 

@@ -184,87 +184,126 @@ export const useCurrentAndPastProjects = ({
 
 // Filter courses by current and past
 export const useCurrentAndPastCourses = ({
+  pageSize,
+  pageIndex,
   searchNameParam,
   sortOption,
 }: {
+  pageSize?: number;
+  pageIndex?: number;
   searchNameParam?: string;
   sortOption?: string;
 } = {}) => {
-  const coursesData = useGetAllCoursesQuery();
-  const { data: settings } = useGetSettingsQuery();
+  const allCoursesData = useGetAllCoursesQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+  });
+  const pastCourseData = useGetAllCoursesQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'past',
+  });
+  const currentCourseData = useGetAllCoursesQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'current',
+  });
+  const futureCourseData = useGetAllCoursesQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'future',
+  });
+  const isLoading = allCoursesData.isLoading || pastCourseData.isLoading || currentCourseData.isLoading || futureCourseData.isLoading;
+  // const filteredCourses = useMemo(() => {
+  //   const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
+  //   const CURRENT_SEM = settings?.current_sem ?? 1;
 
-  const filteredCourses = useMemo(() => {
-    const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
-    const CURRENT_SEM = settings?.current_sem ?? 1;
+  //   if (coursesData.isError || coursesData.isLoading) {
+  //     return undefined;
+  //   }
 
-    if (coursesData.isError || coursesData.isLoading) {
-      return undefined;
-    }
+  //   const coursesFilteredByName = searchNameParam
+  //     ? (coursesData.data as Course[]).filter((c) =>
+  //         c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()),
+  //       )
+  //     : (coursesData.data as Course[]);
 
-    const coursesFilteredByName = searchNameParam
-      ? (coursesData.data as Course[]).filter((c) =>
-          c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()),
-        )
-      : (coursesData.data as Course[]);
+  //   const coursesSorted =
+  //     sortOption == courseSortOptions.SORT_BY_COURSE
+  //       ? [...coursesFilteredByName].sort((a, b) => {
+  //           if (a.shadow_course !== b.shadow_course) {
+  //             return a.shadow_course ? -1 : 1;
+  //           }
+  //           if (!a.shadow_course && !b.shadow_course) {
+  //             // Sort by course name
+  //             if (a.cname !== b.cname) {
+  //               return a.cname.localeCompare(b.cname);
+  //             }
+  //           }
+  //           // Sort by course code
+  //           return a.code.localeCompare(b.code);
+  //         })
+  //       : sortOption == courseSortOptions.SORT_BY_YEAR
+  //       ? [...coursesFilteredByName].sort((a, b) => {
+  //           if (a.shadow_course !== b.shadow_course) {
+  //             return a.shadow_course ? -1 : 1;
+  //           }
+  //           if (!a.shadow_course && !b.shadow_course) {
+  //             if (a.startYear !== b.startYear) {
+  //               return b.startYear - a.startYear;
+  //             }
+  //             if (a.startSem !== b.startSem) {
+  //               return b.startSem - a.startSem;
+  //             }
 
-    const coursesSorted =
-      sortOption == courseSortOptions.SORT_BY_COURSE
-        ? [...coursesFilteredByName].sort((a, b) => {
-            if (a.shadow_course !== b.shadow_course) {
-              return a.shadow_course ? -1 : 1;
-            }
-            if (!a.shadow_course && !b.shadow_course) {
-              // Sort by course name
-              if (a.cname !== b.cname) {
-                return a.cname.localeCompare(b.cname);
-              }
-            }
-            // Sort by course code
-            return a.code.localeCompare(b.code);
-          })
-        : sortOption == courseSortOptions.SORT_BY_YEAR
-        ? [...coursesFilteredByName].sort((a, b) => {
-            if (a.shadow_course !== b.shadow_course) {
-              return a.shadow_course ? -1 : 1;
-            }
-            if (!a.shadow_course && !b.shadow_course) {
-              if (a.startYear !== b.startYear) {
-                return b.startYear - a.startYear;
-              }
-              if (a.startSem !== b.startSem) {
-                return b.startSem - a.startSem;
-              }
+  //             // Sort by course name
+  //             if (a.cname !== b.cname) {
+  //               return a.cname.localeCompare(b.cname);
+  //             }
+  //           }
+  //           // Sort by course code
+  //           return a.code.localeCompare(b.code);
+  //         })
+  //       : coursesFilteredByName;
 
-              // Sort by course name
-              if (a.cname !== b.cname) {
-                return a.cname.localeCompare(b.cname);
-              }
-            }
-            // Sort by course code
-            return a.code.localeCompare(b.code);
-          })
-        : coursesFilteredByName;
+  //   return {
+  //     pastCourses: coursesSorted.filter(
+  //       (c) =>
+  //         !(c.is_archive === false) &&
+  //         (c.is_archive || isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
+  //     ),
+  //     currentCourses: coursesSorted.filter(
+  //       (c) =>
+  //         !c.is_archive &&
+  //         ((c.is_archive === false &&
+  //           !isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)) ||
+  //           isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
+  //     ),
+  //     futureCourses: coursesSorted.filter(
+  //       (c) => !c.is_archive && isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
+  //     ),
+  //   };
+  // }, [coursesData, settings, searchNameParam, sortOption]);
 
-    return {
-      pastCourses: coursesSorted.filter(
-        (c) =>
-          !(c.is_archive === false) &&
-          (c.is_archive || isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
-      ),
-      currentCourses: coursesSorted.filter(
-        (c) =>
-          !c.is_archive &&
-          ((c.is_archive === false &&
-            !isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)) ||
-            isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
-      ),
-      futureCourses: coursesSorted.filter(
-        (c) => !c.is_archive && isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
-      ),
-    };
-  }, [coursesData, settings, searchNameParam, sortOption]);
-
-  return { ...coursesData, ...filteredCourses };
+  return {
+    allCourses: allCoursesData.data?.data,
+    allCourseTotalCount: allCoursesData.data?.totalCount,
+    pastCourses: pastCourseData.data?.data,
+    pastCourseTotalCount: pastCourseData.data?.totalCount,
+    currentCourses: currentCourseData.data?.data,
+    currentCourseTotalCount: currentCourseData.data?.totalCount,
+    futureCourses: futureCourseData.data?.data,
+    futureCourseTotalCount: futureCourseData.data?.totalCount,
+    isLoading,
+  };
 };
 
 // Get project information by id
@@ -359,7 +398,9 @@ export function useProject(projectId: number) {
 // Get course information by id
 export const useCourse = (courseId?: string) => {
   const courseIdNumber = courseId ? Number(courseId) : undefined;
-  const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery();
+  const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery({
+    ids: courseIdNumber ? [courseIdNumber] : undefined,
+  });
   const { data: projects } = useGetAllProjectsQuery();
 
   const [removeUser] = useRemoveCourseUserMutation();
@@ -373,10 +414,10 @@ export const useCourse = (courseId?: string) => {
   const [updateAnnouncement] = useUpdateAnnouncementMutation();
 
   const course = useMemo(() => {
-    if (!courses || courses.length === 0 || !courseIdNumber) {
+    if (!courses || courses.data.length === 0 || !courseIdNumber) {
       return undefined;
     }
-    const possibleCourses = courses.filter((p) => p.id === courseIdNumber);
+    const possibleCourses = courses.data.filter((p) => p.id === courseIdNumber);
 
     if (possibleCourses.length === 0) {
       return undefined;
@@ -450,7 +491,7 @@ export const useCourse = (courseId?: string) => {
   );
 
   const courseUserRoles = useMemo(() => {
-    if (!courses || courses.length === 0 || !courseIdNumber) {
+    if (!courses || courses.data.length === 0 || !courseIdNumber) {
       return undefined;
     }
 

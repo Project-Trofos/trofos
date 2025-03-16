@@ -14,8 +14,9 @@ export type OptionRequestBody = {
 };
 
 export type PaginatedRequestBody = {
-  pageIndex: number;
-  pageSize: number;
+  pageIndex?: number;
+  pageSize?: number;
+  ids?: number[];
   keyword?: string;
   sortBy?: string;
 }
