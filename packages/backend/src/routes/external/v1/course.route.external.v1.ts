@@ -29,6 +29,6 @@ const router = express.Router();
  *      500:
  *        description: Internal server error
  */
-router.get('/', hasAuthForExternalApi(null, coursePolicy.POLICY_NAME), course.getAll);
+router.post('/list', hasAuthForExternalApi(null, coursePolicy.POLICY_NAME), course.getAll);
 
 export default router;
