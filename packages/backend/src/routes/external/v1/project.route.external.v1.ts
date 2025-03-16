@@ -28,7 +28,7 @@ const router = express.Router();
  *      500:
  *        description: Internal server error
  */
-router.get('/', hasAuthForExternalApi(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
+router.post('/list', hasAuthForExternalApi(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
 
 /**
  * @swagger

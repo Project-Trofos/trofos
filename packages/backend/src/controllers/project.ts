@@ -4,25 +4,37 @@ import { StatusCodes } from 'http-status-codes';
 import { assertProjectIdIsValid, assertUserIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertGetAllOptionIsValid,
+  assertPaginationParamsAreValid,
   assertProjectNameIsValid,
   assertRepoLinkIsValid,
+  assertSortByIsValid,
   assertStatusNameIsValid,
   assertUserSessionIsValid,
 } from '../helpers/error/assertions';
 import { sortBacklogStatus } from '../helpers/sortBacklogStatus';
 import project from '../services/project.service';
 import settings from '../services/settings.service';
-import { OptionRequestBody, ProjectRequestBody, UserEmailRequestBody, UserIdRequestBody } from './requestTypes';
+import { OptionRequestBody, PaginatedRequestBody, ProjectRequestBody, UserEmailRequestBody, UserIdRequestBody } from './requestTypes';
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
   try {
-    const body = req.body as OptionRequestBody;
+    const body = req.body as (OptionRequestBody & PaginatedRequestBody);
+    if (body.pageIndex === undefined) {
+      body.pageIndex = 0;
+    }
+    if (body.pageSize === undefined) {
+      body.pageSize = 30;
+    }
 
     assertGetAllOptionIsValid(body.option);
+    assertPaginationParamsAreValid(body.pageIndex, body.pageSize);
+    assertSortByIsValid(body.sortBy, ['course', 'year']);
 
     // default to all
     const setting = await settings.get();
-    const result = await project.getAll(res.locals.policyConstraint, setting, body.option ?? 'all');
+    const result = await project.getAll(res.locals.policyConstraint, setting,
+      body.option ?? 'all', body.pageIndex, body.pageSize, body.keyword,
+      body.sortBy, body.ids);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

@@ -19,8 +19,16 @@ import { UserSettingsType } from './types/project.service.types';
 async function getAll(
   policyConstraint: AppAbility,
   settings: Settings,
-  option?: 'all' | 'current' | 'past' | 'future',
-): Promise<Project[]> {
+  option: 'all' | 'current' | 'past' | 'future',
+  pageIndex: number,
+  pageSize: number,
+  keyword?: string,
+  sortBy?: string,
+  ids?: number[],
+): Promise<{
+  data: Project[]
+  totalCount: number,
+}> {
   let result;
 
   if (option === 'current') {
@@ -167,7 +175,10 @@ async function getAll(
     });
   }
 
-  return result;
+  return {
+    data: result,
+    totalCount: result.length,
+  };
 }
 
 async function getById(id: number): Promise<Project> {
