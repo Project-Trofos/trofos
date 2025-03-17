@@ -18,7 +18,7 @@ import { OptionRequestBody, PaginatedRequestBody, ProjectRequestBody, UserEmailR
 
 async function getAll(req: express.Request<unknown, Record<string, unknown>>, res: express.Response) {
   try {
-    const body = req.body as (OptionRequestBody & PaginatedRequestBody);
+    const body = req.body as (OptionRequestBody & PaginatedRequestBody & { course_id?: number });
     if (body.pageIndex === undefined) {
       body.pageIndex = 0;
     }
@@ -34,7 +34,7 @@ async function getAll(req: express.Request<unknown, Record<string, unknown>>, re
     const setting = await settings.get();
     const result = await project.getAll(res.locals.policyConstraint, setting,
       body.option ?? 'all', body.pageIndex, body.pageSize, body.keyword,
-      body.sortBy, body.ids);
+      body.sortBy, body.ids, body.course_id);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

@@ -17,8 +17,12 @@ export default function GlobalSearch(): JSX.Element {
   const navigate = useNavigate();
   const screens = useBreakpoint();
 
-  const { data: courses } = useGetAllCoursesQuery();
-  const { data: projects } = useGetAllProjectsQuery();
+  const { data: courses } = useGetAllCoursesQuery({
+    keyword: searchString
+  });
+  const { data: projects } = useGetAllProjectsQuery({
+    keyword: searchString
+  });
 
   const courseOptions = useMemo(() => {
     if (!courses || searchString.length === 0) {
@@ -26,7 +30,7 @@ export default function GlobalSearch(): JSX.Element {
     }
 
     // Filter courses by search string
-    const filteredCourses = courses
+    const filteredCourses = courses.data
       .filter((c) => c.cname.toLowerCase().includes(searchString.toLowerCase()))
       .map((c) => renderItem(c.cname, c.id, 'course'));
     if (filteredCourses.length === 0) {
@@ -43,7 +47,7 @@ export default function GlobalSearch(): JSX.Element {
     if (!projects || searchString.length === 0) {
       return undefined;
     }
-    const filteredProjects = projects
+    const filteredProjects = projects.data
       .filter((p) => p.pname.toLocaleLowerCase().includes(searchString.toLowerCase()))
       .map((p) => renderItem(p.pname, p.id, 'project'));
     if (filteredProjects.length === 0) {

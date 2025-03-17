@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { Project } from '../../api/types';
 import { useAddProjectToCourseMutation, useGetAllCoursesQuery } from '../../api/course';
@@ -12,17 +12,12 @@ const { Option } = Select;
  */
 export default function ProjectAttachModal({ project }: { project: Project }) {
   const [addProjectToCourse] = useAddProjectToCourseMutation();
-  const { data: courses } = useGetAllCoursesQuery();
 
   const [form] = Form.useForm();
 
   const onFinish = useCallback(
     async (data: { courseCode?: number }) => {
       try {
-        if (!courses) {
-          throw new Error('Courses not loaded!');
-        }
-
         const { courseCode } = data;
         if (!courseCode) {
           throw new Error('Invalid data!');
@@ -35,7 +30,7 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
         message.error(getErrorMessage(err));
       }
     },
-    [project.id, addProjectToCourse, courses],
+    [project.id, addProjectToCourse],
   );
 
   return (
@@ -51,13 +46,28 @@ export default function ProjectAttachModal({ project }: { project: Project }) {
 }
 
 function FormStep(): JSX.Element {
-  const { data: courses } = useGetAllCoursesQuery();
+  const [searchNameParam, setSearchNameParam] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(searchNameParam);
+  const { data: courses } = useGetAllCoursesQuery({
+    keyword: debouncedSearch,
+  });
+
+  // Debounce the search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchNameParam);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchNameParam]);
 
   const courseOptions = useMemo(() => {
     const results: JSX.Element[] = [];
     if (courses) {
       results.push(
-        ...courses.map((c) => (
+        ...courses.data.map((c) => (
           <Option key={`${c.id} ${c.cname}`} value={c.id}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>{c.id}</span>
@@ -77,6 +87,8 @@ function FormStep(): JSX.Element {
       <Form.Item label="Course" name="courseCode" rules={[{ required: true, message: 'Please select course!' }]}>
         <Select
           showSearch
+          value={searchNameParam}
+          onChange={(value) => setSearchNameParam(value as string)}
           placeholder="Search to Select"
           optionFilterProp="children"
           filterOption={(input, option) => {

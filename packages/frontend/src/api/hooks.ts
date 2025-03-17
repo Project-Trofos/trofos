@@ -30,8 +30,6 @@ import {
   useUpdateCourseUserRoleMutation,
   useUpdateProjectUserRoleMutation,
 } from './role';
-import { Project, Course } from './types';
-import { useGetSettingsQuery } from './settings';
 import { useParams } from 'react-router-dom';
 
 export const useProjectIdParam = () => {
@@ -48,138 +46,60 @@ export const useSprintIdParam = () => {
 
 // Filter projects by current and past
 export const useCurrentAndPastProjects = ({
+  pageSize,
+  pageIndex,
   searchNameParam,
   sortOption,
 }: {
+  pageSize?: number;
+  pageIndex?: number;
   searchNameParam?: string;
   sortOption?: string;
 } = {}) => {
-  const projectsData = useGetAllProjectsQuery();
-  const { data: settings } = useGetSettingsQuery();
+  const projectsData = useGetAllProjectsQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+  });
 
-  const filteredProjects = useMemo(() => {
-    const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
-    const CURRENT_SEM = settings?.current_sem ?? 1;
+  const pastProjectsData = useGetAllProjectsQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'past',
+  });
 
-    if (projectsData.isError || projectsData.isLoading) {
-      return undefined;
-    }
+  const currentProjectsData = useGetAllProjectsQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'current',
+  });
 
-    const projects = (projectsData.data as Project[]).map((project) => {
-      if (project.course?.shadow_course) {
-        return { ...project, course: undefined, course_id: null };
-      }
-      return project;
-    });
+  const futureProjectsData = useGetAllProjectsQuery({
+    pageSize,
+    pageIndex,
+    keyword: searchNameParam,
+    sortBy: sortOption,
+    option: 'future',
+  });
 
-    const projectsFilteredByName = searchNameParam
-      ? projects.filter((p) => p.pname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()))
-      : projects;
+  const isLoading = projectsData.isLoading || pastProjectsData.isLoading || currentProjectsData.isLoading || futureProjectsData.isLoading;
 
-    const projectsSorted =
-      sortOption == projectSortOptions.SORT_BY_COURSE
-        ? projectsFilteredByName.sort((a, b) => {
-            const aHasCourse = a.course != null;
-            const bHasCourse = b.course != null;
-            // If either project has a course, put it first
-            if (aHasCourse !== bHasCourse) {
-              return aHasCourse ? -1 : 1;
-            }
-            // If both projects have a course
-            if (aHasCourse && bHasCourse) {
-              // Sort by course name
-              if (a.course!.cname !== b.course!.cname) {
-                return a.course!.cname.localeCompare(b.course!.cname);
-              }
-            }
-            // Sort by project name
-            return a.pname.localeCompare(b.pname);
-          })
-        : sortOption == projectSortOptions.SORT_BY_YEAR
-        ? projectsFilteredByName.sort((a, b) => {
-            const aHasCourse = a.course != null;
-            const bHasCourse = b.course != null;
-            // If either project has a course, put it first
-            if (aHasCourse !== bHasCourse) {
-              return aHasCourse ? -1 : 1;
-            }
-            // If both projects have a course
-            if (aHasCourse && bHasCourse) {
-              if (a.course!.startYear !== b.course!.startYear) {
-                return b.course!.startYear - a.course!.startYear;
-              }
-              if (a.course!.startSem !== b.course!.startSem) {
-                return b.course!.startSem - a.course!.startSem;
-              }
-
-              // Sort by course name
-              if (a.course!.cname !== b.course!.cname) {
-                return a.course!.cname.localeCompare(b.course!.cname);
-              }
-            }
-            // Sort by project name
-            return a.pname.localeCompare(b.pname);
-          })
-        : projectsFilteredByName;
-
-    // archive false, date current or future -> move to current or future
-    // archive null, date current or future -> move to current or future
-    // archive true , date current or future -> move to past
-    // archive false, date in the past -> move to current (because user probably unarchived this project)
-    // archive null, date in the past -> move to past
-    // archive true, date in the past -> move to past
-    return {
-      pastProjects: projectsSorted.filter(
-        (p) =>
-          !(p.is_archive === false) &&
-          (p.is_archive ||
-            isPast(
-              p.course?.startYear,
-              p.course?.startSem,
-              p.course?.endYear,
-              p.course?.endSem,
-              CURRENT_YEAR,
-              CURRENT_SEM,
-            )),
-      ),
-      currentProjects: projectsSorted.filter(
-        (p) =>
-          !p.is_archive && // if is_archive is true, don't put it in current projects even if date is current
-          ((p.is_archive === false &&
-            !isFuture(
-              // this isFuture() check handles edge case where user archives then unarchives a future project, it should go under future and not current projects
-              p.course?.startYear,
-              p.course?.startSem,
-              p.course?.endYear,
-              p.course?.endSem,
-              CURRENT_YEAR,
-              CURRENT_SEM,
-            )) || // if is_archive is false and not null, put it in current projects even if the date is in the past
-            isCurrent(
-              p.course?.startYear,
-              p.course?.startSem,
-              p.course?.endYear,
-              p.course?.endSem,
-              CURRENT_YEAR,
-              CURRENT_SEM,
-            )),
-      ),
-      futureProjects: projectsSorted.filter(
-        (p) =>
-          !p.is_archive &&
-          isFuture(
-            p.course?.startYear,
-            p.course?.startSem,
-            p.course?.endYear,
-            p.course?.endSem,
-            CURRENT_YEAR,
-            CURRENT_SEM,
-          ),
-      ),
-    };
-  }, [projectsData, settings, searchNameParam, sortOption]);
-
-  return { ...projectsData, ...filteredProjects };
+  return {
+    projectsData: projectsData.data?.data,
+    projectTotalCount: projectsData.data?.totalCount,
+    currentProjects: currentProjectsData.data?.data,
+    currentProjectTotalCount: currentProjectsData.data?.totalCount,
+    pastProjects: pastProjectsData.data?.data,
+    pastProjectTotalCount: pastProjectsData.data?.totalCount,
+    futureProjects: futureProjectsData.data?.data,
+    futureProjectTotalCount: futureProjectsData.data?.totalCount,
+    isLoading,
+  };
 };
 
 // Filter courses by current and past
@@ -222,76 +142,6 @@ export const useCurrentAndPastCourses = ({
     option: 'future',
   });
   const isLoading = allCoursesData.isLoading || pastCourseData.isLoading || currentCourseData.isLoading || futureCourseData.isLoading;
-  // const filteredCourses = useMemo(() => {
-  //   const CURRENT_YEAR = settings?.current_year ?? dayjs().year();
-  //   const CURRENT_SEM = settings?.current_sem ?? 1;
-
-  //   if (coursesData.isError || coursesData.isLoading) {
-  //     return undefined;
-  //   }
-
-  //   const coursesFilteredByName = searchNameParam
-  //     ? (coursesData.data as Course[]).filter((c) =>
-  //         c.cname?.toLowerCase().includes(searchNameParam.toLocaleLowerCase()),
-  //       )
-  //     : (coursesData.data as Course[]);
-
-  //   const coursesSorted =
-  //     sortOption == courseSortOptions.SORT_BY_COURSE
-  //       ? [...coursesFilteredByName].sort((a, b) => {
-  //           if (a.shadow_course !== b.shadow_course) {
-  //             return a.shadow_course ? -1 : 1;
-  //           }
-  //           if (!a.shadow_course && !b.shadow_course) {
-  //             // Sort by course name
-  //             if (a.cname !== b.cname) {
-  //               return a.cname.localeCompare(b.cname);
-  //             }
-  //           }
-  //           // Sort by course code
-  //           return a.code.localeCompare(b.code);
-  //         })
-  //       : sortOption == courseSortOptions.SORT_BY_YEAR
-  //       ? [...coursesFilteredByName].sort((a, b) => {
-  //           if (a.shadow_course !== b.shadow_course) {
-  //             return a.shadow_course ? -1 : 1;
-  //           }
-  //           if (!a.shadow_course && !b.shadow_course) {
-  //             if (a.startYear !== b.startYear) {
-  //               return b.startYear - a.startYear;
-  //             }
-  //             if (a.startSem !== b.startSem) {
-  //               return b.startSem - a.startSem;
-  //             }
-
-  //             // Sort by course name
-  //             if (a.cname !== b.cname) {
-  //               return a.cname.localeCompare(b.cname);
-  //             }
-  //           }
-  //           // Sort by course code
-  //           return a.code.localeCompare(b.code);
-  //         })
-  //       : coursesFilteredByName;
-
-  //   return {
-  //     pastCourses: coursesSorted.filter(
-  //       (c) =>
-  //         !(c.is_archive === false) &&
-  //         (c.is_archive || isPast(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
-  //     ),
-  //     currentCourses: coursesSorted.filter(
-  //       (c) =>
-  //         !c.is_archive &&
-  //         ((c.is_archive === false &&
-  //           !isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)) ||
-  //           isCurrent(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM)),
-  //     ),
-  //     futureCourses: coursesSorted.filter(
-  //       (c) => !c.is_archive && isFuture(c.startYear, c.startSem, c.endYear, c.endSem, CURRENT_YEAR, CURRENT_SEM),
-  //     ),
-  //   };
-  // }, [coursesData, settings, searchNameParam, sortOption]);
 
   return {
     allCourses: allCoursesData.data?.data,
@@ -401,7 +251,9 @@ export const useCourse = (courseId?: string) => {
   const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery({
     ids: courseIdNumber ? [courseIdNumber] : undefined,
   });
-  const { data: projects } = useGetAllProjectsQuery();
+  const { data: filteredProjects } = useGetAllProjectsQuery({
+    courseId: courseIdNumber
+  });
 
   const [removeUser] = useRemoveCourseUserMutation();
   const [addUser] = useAddCourseUserMutation();
@@ -425,13 +277,6 @@ export const useCourse = (courseId?: string) => {
 
     return possibleCourses[0];
   }, [courses, courseIdNumber]);
-
-  const filteredProjects = useMemo(() => {
-    if (!course || !projects) {
-      return [];
-    }
-    return projects.filter((p) => p.course_id === course.id);
-  }, [course, projects]);
 
   const handleRemoveUser = useCallback(
     async (userId: number) => {

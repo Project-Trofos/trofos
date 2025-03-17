@@ -25,49 +25,17 @@ async function getAll(
   keyword?: string,
   sortBy?: string,
   ids?: number[],
+  courseId?: number,
 ): Promise<{
   data: Project[]
   totalCount: number,
 }> {
-  let result;
 
-  if (option === 'current') {
-    // Same constraints as course year and sem
-    // OR course id == null
-    result = await prisma.project.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Project,
-          {
-            OR: [
-              {
-                AND: [
-                  {
-                    course: {
-                      startYear: {
-                        lte: settings.current_year,
-                      },
-                      endYear: {
-                        gte: settings.current_year,
-                      },
-                    },
-                  },
-                  {
-                    course: {
-                      startSem: {
-                        lte: settings.current_sem,
-                      },
-                      endSem: {
-                        gte: settings.current_sem,
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
+  // if query by courseId, return all courses. TODO - optimize in future
+  if (courseId) {
+    const totalCount = await prisma.project.count({ where: { course_id: courseId } });
+    const data = await prisma.project.findMany({
+      where: { course_id: courseId },
       include: {
         course: {
           include: {
@@ -77,108 +45,151 @@ async function getAll(
         ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
       },
     });
-  } else if (option === 'past') {
-    // endYear < currentYear
-    // OR
-    // endYear = currentYear AND endSem < currentSem
-    result = await prisma.project.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Project,
-          {
-            course: {
-              OR: [
-                {
-                  endYear: {
-                    lt: settings.current_year,
-                  },
-                },
-                {
-                  AND: [
-                    {
-                      endYear: settings.current_year,
-                    },
-                    {
-                      endSem: {
-                        lt: settings.current_sem,
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      },
-      include: {
-        course: {
-          include: {
-            milestones: true,
-          },
-        },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
-      },
-    });
-  } else if (option === 'future') {
-    // currentYear < startYear
-    // OR
-    // currentYear = startYear AND currentSem < startSem
-    result = await prisma.project.findMany({
-      where: {
-        AND: [
-          accessibleBy(policyConstraint).Project,
-          {
-            course: {
-              OR: [
-                {
-                  startYear: {
-                    gt: settings.current_year,
-                  },
-                },
-                {
-                  AND: [
-                    {
-                      startYear: settings.current_year,
-                    },
-                    {
-                      startSem: {
-                        gt: settings.current_sem,
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      },
-      include: {
-        course: {
-          include: {
-            milestones: true,
-          },
-        },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
-      },
-    });
-  } else {
-    result = await prisma.project.findMany({
-      where: accessibleBy(policyConstraint).Project,
-      include: {
-        course: {
-          include: {
-            milestones: true,
-          },
-        },
-        ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
-      },
+    return { data, totalCount };
+  }
+
+  let whereClause: any = {
+    AND: [
+      accessibleBy(policyConstraint).Project,
+    ]
+  };
+
+  if (keyword) {
+    whereClause.AND.push({
+      OR: [
+        { pname: { contains: keyword, mode: 'insensitive' } },
+        { pkey: { contains: keyword, mode: 'insensitive' } }
+      ]
     });
   }
 
-  return {
-    data: result,
-    totalCount: result.length,
-  };
+  if (ids) {
+    whereClause.AND.push({
+      id: { in: ids },
+    });
+  }
+
+  if (option === 'current') {
+    // proj not archived and course not archived and within the current year and semester / independent projects
+    whereClause.AND.push({
+      course: {
+        OR: [
+          {
+            AND: [
+              {
+                OR: [
+                  { is_archive: false },
+                  { is_archive: null },
+                ],
+              }, {
+                startYear: { lte: settings.current_year },
+                endYear: { gte: settings.current_year },
+                startSem: { lte: settings.current_sem },
+                endSem: { gte: settings.current_sem },
+              }
+            ]
+          }, {
+            shadow_course: true
+          }
+        ]
+      } 
+    }, {
+      OR: [
+        { is_archive: false },
+        { is_archive: null },
+      ],
+    });
+  } else if (option === 'past') {
+    // project is_archive == true OR
+    // not shadow course and
+    // endYear < currentYear
+    // OR
+    // endYear = currentYear AND endSem < currentSem
+    // OR
+    // is_archive
+    whereClause.AND.push({
+      OR: [
+        { is_archive: true }, // The project itself is archived
+        {
+          course: {
+            AND: [
+              {
+                OR: [
+                  { endYear: { lt: settings.current_year } },
+                  {
+                    AND: [
+                      { endYear: settings.current_year },
+                      { endSem: { lt: settings.current_sem } }
+                    ]
+                  },
+                  { is_archive: true }
+                ]
+              }, {
+                shadow_course: false
+              }
+            ]
+          }
+        }
+      ]
+    });
+  } else if (option === 'future') {
+    // proj not archived and course not archived and:
+    // currentYear < startYear
+    // OR
+    // currentYear = startYear AND currentSem < startSem
+    whereClause.AND.push({
+      course: {
+        AND: [
+          {
+            OR: [
+              { is_archive: false },
+              { is_archive: null },
+            ],
+          }, {
+            OR: [
+              { startYear: { gt: settings.current_year } },
+              {
+                AND: [
+                  { startYear: settings.current_year },
+                  { startSem: { gt: settings.current_sem } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }, { // project itself is not archived
+      OR: [
+        { is_archive: false },
+        { is_archive: null },
+      ],
+    });
+  }
+
+  const sortByClause = sortBy === 'course' ? [
+    { course: { shadow_course: 'asc' as Prisma.SortOrder } }, // Places shadow_course=false first, true last
+    { course: { cname: 'asc' as Prisma.SortOrder } }, // Sorts by course name (cname) alphabetically
+  ] : sortBy === 'year' ? [
+    { course: { startYear: 'asc' as Prisma.SortOrder } }, // Sorts by startYear ascending
+    { course: { startSem: 'asc' as Prisma.SortOrder } }, // Sorts by startSem ascending
+  ]: undefined;
+
+  const totalCount = await prisma.project.count({ where: whereClause });
+  const data = await prisma.project.findMany({
+    where: whereClause,
+    include: {
+      course: {
+        include: {
+          milestones: true,
+        },
+      },
+      ...INCLUDE_USERS_ID_EMAIL_COURSEROLE,
+    },
+    skip: pageIndex * pageSize,
+    take: pageSize,
+    orderBy: sortByClause,
+  });
+  return { data, totalCount };
 }
 
 async function getById(id: number): Promise<Project> {

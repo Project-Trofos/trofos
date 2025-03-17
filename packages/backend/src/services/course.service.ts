@@ -45,6 +45,10 @@ async function getAll(
 
   if (option === 'current') {
     whereClause.AND.push({
+      OR: [
+        { is_archive: false },
+        { is_archive: null },
+      ],
       startYear: { lte: settings.current_year },
       endYear: { gte: settings.current_year },
       startSem: { lte: settings.current_sem },
@@ -53,6 +57,7 @@ async function getAll(
   } else if (option === 'past') {
     whereClause.AND.push({
       OR: [
+        { is_archive: true },
         { endYear: { lt: settings.current_year } },
         {
           AND: [
@@ -63,7 +68,7 @@ async function getAll(
       ],
     });
   } else if (option === 'future') {
-    whereClause.AND.push({
+    whereClause.AND.push({    
       OR: [
         { startYear: { gt: settings.current_year } },
         {
@@ -72,6 +77,11 @@ async function getAll(
             { startSem: { gt: settings.current_sem } },
           ],
         },
+      ],
+    }, {
+      OR: [
+        { is_archive: false },
+        { is_archive: null },
       ],
     });
   }
