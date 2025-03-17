@@ -21,8 +21,8 @@ importers:
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
       '@trofos-nus/common':
-        specifier: ^1.0.16
-        version: 1.0.16(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
+        specifier: ^1.0.17
+        version: 1.0.17(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -92,8 +92,8 @@ packages:
   '@prisma/engines@4.8.1':
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
 
-  '@trofos-nus/common@1.0.16':
-    resolution: {integrity: sha512-2tAGcsbYI4QRWiKLOlqrYklwAPMUbks+t36orE5cgGZBdlLG/npcJ74SySiFYf5Pf0hUEkVZQfHiYSlxRTso7g==}
+  '@trofos-nus/common@1.0.17':
+    resolution: {integrity: sha512-wOudr9oXqEfkvokR0gxstJzaWRK6o4pvQzLcP84wQUrhsz7kDnKM0aucfFQsN8BwsqWLv/aYUZtLSS/3GLNNMw==}
     peerDependencies:
       '@prisma/client': '>=4.8.1'
       '@types/bcryptjs': ^2.4.4
@@ -676,7 +676,7 @@ snapshots:
 
   '@prisma/engines@4.8.1': {}
 
-  '@trofos-nus/common@1.0.16(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+  '@trofos-nus/common@1.0.17(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
     dependencies:
       '@prisma/client': 4.8.1(prisma@4.8.1)
       '@types/bcryptjs': 2.4.6

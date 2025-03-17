@@ -471,6 +471,7 @@ enum Feature {
   onboarding_tour
   sso_login
   ai_insights
+  user_guide_recommender
 }
 
 enum Action {

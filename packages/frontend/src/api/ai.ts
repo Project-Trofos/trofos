@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { UserGuideQueryResponse } from './types';
+import { UserGuideQueryResponse, UserGuideRecommendation } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,9 +9,16 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
         method: 'POST',
         body: { query },
-      })
-    })
-  })
+      }),
+    }),
+    getUserGuideRecommendations: builder.query<UserGuideRecommendation[], void>({
+      query: () => ({
+        url: `ai/recommendUserGuide`,
+        method: 'POST',
+        credentials: 'include',
+      }),
+    }),
+  }),
 });
 
-export const { useLazyAnswerUserGuideQueryQuery } = extendedApi;
+export const { useLazyAnswerUserGuideQueryQuery, useLazyGetUserGuideRecommendationsQuery } = extendedApi;

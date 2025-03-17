@@ -8,28 +8,29 @@ const processUserGuideQuery = async (query: string, user: string): Promise<UserG
   try {
     const embeddedQuery = await embedUserGuideQuery(query, user);
     const similarRecord = await performUserGuideSimilaritySearch(embeddedQuery);
-    if (!similarRecord) {
+    if (!similarRecord || similarRecord.length === 0) {
       throw new Error('No similar record found.');
     }
-    const answer = await askGptQueryWithContext(query, similarRecord, user);
+    const firstRecord = similarRecord[0];
+    const answer = await askGptQueryWithContext(query, firstRecord, user);
     return {
       answer,
-      links: [`https://project-trofos.github.io/trofos${similarRecord.endpoint}`]
+      links: [`https://project-trofos.github.io/trofos${firstRecord.endpoint}`],
     };
   } catch (error) {
     console.error(`Error processing user query: ${error}`);
     return {
       answer: 'Sorry, I encountered an issue while processing your query.',
-      links: []
+      links: [],
     };
   }
 };
 
 const getOpenAiClient = (): OpenAI => {
   return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY,
   });
-}
+};
 
 const embedUserGuideQuery = async (query: string, user: string): Promise<Array<Number>> => {
   try {
@@ -49,9 +50,12 @@ const embedUserGuideQuery = async (query: string, user: string): Promise<Array<N
     console.error(`Error generating embedding: ${err.message || error}`);
     return [];
   }
-}
+};
 
-const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): Promise<UserGuideEmbedding | null> => {
+const performUserGuideSimilaritySearch = async (
+  embeddedQuery: Array<Number>,
+  limit: number = 1,
+): Promise<UserGuideEmbedding[] | null> => {
   if (!embeddedQuery || embeddedQuery.length === 0) {
     return null;
   }
@@ -67,13 +71,13 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
       uge.endpoint
       FROM "UserGuideEmbedding" uge 
       ORDER BY uge.embedding <-> ${pgVectorEmbedding}::vector
-      LIMIT 5`;
+      LIMIT ${limit}`;
 
     if (!similarRecords || similarRecords.length === 0) {
       console.warn('No matching records found for query.');
       return null;
     }
-    return similarRecords[0];
+    return similarRecords;
   } catch (error: unknown) {
     const err = error as Error;
     console.error(`Error querying the database: ${err.message || error}`);
@@ -82,37 +86,36 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
 };
 
 const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding, user: string): Promise<string> => {
-  try { 
+  try {
     const openai = getOpenAiClient();
     // TODO- for now just have developer role msg + user role msg. Next time maybe send previous message for continuous convo
     const chatCompletion = await openai.chat.completions.create({
       messages: [
         {
-          "role": "developer",
-          "content": [
+          role: 'developer',
+          content: [
             {
-              "type": "text",
-              "text": `
+              type: 'text',
+              text: `
                 You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context.content}
-              `
-            }
-          ]
+              `,
+            },
+          ],
         },
         {
-          "role": "user",
-          "content": [
+          role: 'user',
+          content: [
             {
-              "type": "text",
-              "text": query
-            }
-          ]
-        }
+              type: 'text',
+              text: query,
+            },
+          ],
+        },
       ],
       model: 'gpt-4o-mini',
       user: user,
     });
-    const response = chatCompletion.choices[0].message.content ?
-      chatCompletion.choices[0].message.content: '';
+    const response = chatCompletion.choices[0].message.content ? chatCompletion.choices[0].message.content : '';
     return response;
   } catch (error) {
     console.error(`Error generating GPT response: ${error}`);
@@ -120,6 +123,4 @@ const askGptQueryWithContext = async (query: string, context: UserGuideEmbedding
   }
 };
 
-export {
-  processUserGuideQuery,
-};
+export { processUserGuideQuery, embedUserGuideQuery, performUserGuideSimilaritySearch };

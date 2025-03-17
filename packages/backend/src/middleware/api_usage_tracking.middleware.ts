@@ -40,11 +40,14 @@ async function trackApiUsage(req: express.Request, res: express.Response, next: 
         return;
       }
 
-      const apiPath = `${req.baseUrl}${req.route?.path || req.path}`;
+      const apiPath = `${req.baseUrl}${req.route?.path || req.path}`.replace(/^\/api(\/|$)/, '/'); //remove /api prefix
       const method = parseApiMethod(req.method);
 
-      // Ignore GET method
-      if (method === ApiMethodType.get) {
+      if (!apiPath || apiPath === '/') {
+        return;
+      }
+
+      if (!method || method === ApiMethodType.get) {
         return;
       }
 

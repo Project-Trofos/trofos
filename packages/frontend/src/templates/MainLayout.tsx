@@ -1,5 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton, Button } from 'antd';
+import {
+  Col,
+  Layout,
+  Row,
+  MenuProps,
+  Dropdown,
+  Menu,
+  Typography,
+  Space,
+  Image,
+  FloatButton,
+  DropdownProps,
+  Button,
+} from 'antd';
 import {
   BookOutlined,
   HomeOutlined,
@@ -9,6 +22,7 @@ import {
   UnorderedListOutlined,
   RobotOutlined,
   QuestionCircleOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -30,6 +44,7 @@ import AiChatBase from '../components/aichat/AiChatBase';
 import TourComponent from '../components/tour/Tour';
 import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
 import { useGetFeatureFlagsQuery } from '../api/featureFlag';
+import RecommendGuide from '../components/aichat/RecommendGuide';
 
 const { Header, Sider, Content } = Layout;
 
@@ -68,6 +83,23 @@ function LogoutText() {
 
 function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
+
+  const handleDropdownOpenChange: DropdownProps['onOpenChange'] = (nextOpen, info) => {
+    if (info.source === 'trigger' || nextOpen) {
+      setIsDropdownOpen(nextOpen);
+    }
+  };
+
+  const userGuideItems = [
+    {
+      key: 'user-guide-recommendations',
+      label: featureFlags?.some((flag) => flag.feature_name === 'user_guide_recommender' && flag.active) && (
+        <RecommendGuide />
+      ),
+    },
+  ];
 
   const accountMenuItems = [
     {
@@ -97,9 +129,20 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <GlobalSearch />
       </Col>
       <Col>
-        <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
-          <QuestionCircleOutlined />
-        </Button>
+        <Dropdown
+          menu={{
+            items: userGuideItems,
+            onClick: undefined, // disable closing dropdown on click
+          }}
+          placement="bottomRight"
+          onOpenChange={handleDropdownOpenChange}
+          open={isDropdownOpen}
+        >
+          <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
+            <QuestionCircleOutlined />
+            <DownOutlined />
+          </Button>
+        </Dropdown>
       </Col>
       {/* TODO: To be implemented */}
       {/* 
