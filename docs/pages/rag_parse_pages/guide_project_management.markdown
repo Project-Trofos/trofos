@@ -104,7 +104,7 @@ A **backlog** represents a single task, issue, or piece of work that needs to be
 
 ## Viewing and editing a backlog
 
-To view the details of a backlog, click on the backlog ID in a backlog, in the 'Sprint' tab of a project. You can edit the details of a backlog in this page. Alternatively, you can edit some of the fields in the minified backlog in the project Sprints page. The scrum board also easliy allows you to change backlog statuses with a drag and drop interface.
+To view the details of a backlog, click on the backlog ID in a backlog, in the 'Sprint' tab of a project. You can edit the details of a backlog in this page. You can also delete a backlog by clicking on the gear icon in this page. Alternatively, you can edit some of the fields in the minified backlog in the project Sprints page. The scrum board also easliy allows you to change backlog statuses with a drag and drop interface.
 
 ## Epics
 
