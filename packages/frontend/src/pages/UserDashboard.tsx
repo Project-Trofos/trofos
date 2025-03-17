@@ -16,7 +16,10 @@ import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 import PageHeader from '../components/pageheader/PageHeader';
 
 export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
-  const { currentProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
+  const { currentProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects({
+    pageIndex: 0,
+    pageSize: 100,
+  });
   const { data: backlogs, isLoading: isBacklogsLoading } = useGetBacklogsQuery();
   const { data: sprints } = useGetSprintsQuery();
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();

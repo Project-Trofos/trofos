@@ -13,8 +13,14 @@ import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 export default function FacultyDashboard({ userInfo }: { userInfo: UserInfo }): JSX.Element {
   const [isPastProject, setIsPastProject] = useState(false);
   const [isPastCourse, setIsPastCourse] = useState(false);
-  const { currentProjects, pastProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects();
-  const { currentCourses, pastCourses, isLoading: isCourseLoading } = useCurrentAndPastCourses();
+  const { currentProjects, pastProjects, isLoading: isProjectLoading } = useCurrentAndPastProjects({
+    pageIndex: 0,
+    pageSize: 100,
+  });
+  const { currentCourses, pastCourses, isLoading: isCourseLoading } = useCurrentAndPastCourses({
+    pageIndex: 0,
+    pageSize: 100
+  });
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   const projectControl = useMemo(
