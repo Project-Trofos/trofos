@@ -21,13 +21,16 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
   const { data: sprints } = useGetSprintsQuery();
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
-  const { data: projects } = useGetAllProjectsQuery();
+  const { data: projects } = useGetAllProjectsQuery({
+    pageIndex: 0,
+    pageSize: 100,
+  });
 
   const userProjectIds = useMemo(() => {
     if (!projects) {
       return [];
     }
-    return projects.filter((p) => p.users.find((u) => u.user.user_id === userInfo.userId)).map((p) => p.id);
+    return projects?.data.filter((p) => p.users.find((u) => u.user.user_id === userInfo.userId)).map((p) => p.id);
   }, [projects, userInfo]);
 
   const sprintsForUser = useMemo(() => {
@@ -91,7 +94,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
                 removeRows={['Assignee']}
                 backlogs={userAssignedBacklogs.filter((b) => b.status !== 'Done')}
                 isLoading={isBacklogsLoading}
-                projects={projects}
+                projects={projects?.data}
               />
             </Card>
           </Col>
@@ -102,7 +105,7 @@ export default function UserDashboard({ userInfo }: { userInfo: UserInfo }): JSX
                 removeRows={['Assignee']}
                 backlogs={backlogsForUser.filter((b) => b.assignee_id === null)}
                 isLoading={isBacklogsLoading}
-                projects={projects}
+                projects={projects?.data}
               />
             </Card>
           </Col>
