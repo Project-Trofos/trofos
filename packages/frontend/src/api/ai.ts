@@ -11,7 +11,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: { query },
       }),
     }),
-    getUserGuideRecommendations: builder.query<UserGuideRecommendation[], void>({
+    recommendUserGuideSections: builder.mutation<UserGuideRecommendation[], void>({
       query: () => ({
         url: `ai/recommendUserGuide`,
         method: 'POST',
@@ -21,4 +21,4 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   }),
 });
 
-export const { useLazyAnswerUserGuideQueryQuery, useLazyGetUserGuideRecommendationsQuery } = extendedApi;
+export const { useLazyAnswerUserGuideQueryQuery, useRecommendUserGuideSectionsMutation } = extendedApi;

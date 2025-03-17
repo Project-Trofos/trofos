@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { message, Modal, Button, Space, Popover, Typography, Dropdown, DropdownProps } from 'antd';
 import { useGetUserInfoQuery } from '../../api/auth';
-import { useLazyGetUserGuideRecommendationsQuery } from '../../api/ai';
+import { useRecommendUserGuideSectionsMutation } from '../../api/ai';
 import { UserGuideRecommendation } from '../../api/types';
 import { getErrorMessage } from '../../helpers/error';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,7 @@ const { Text } = Typography;
 
 const RecommendGuide = () => {
   const [isPopOverOpen, setIsPopOverOpen] = useState(false);
-  const [trigger, { data, error, isFetching }] = useLazyGetUserGuideRecommendationsQuery();
+  const [recommend, { isLoading: isLoading }] = useRecommendUserGuideSectionsMutation();
   const [recommendations, setRecommendations] = useState<UserGuideRecommendation[]>([]);
 
   const handlePopoverOpenChange = (newOpen: boolean) => {
@@ -20,7 +20,7 @@ const RecommendGuide = () => {
 
   const handleRecommend = async () => {
     try {
-      const response = await trigger().unwrap();
+      const response = await recommend().unwrap();
       if (response) {
         setRecommendations(response);
         setIsPopOverOpen(true);
@@ -51,8 +51,8 @@ const RecommendGuide = () => {
       placement="bottomRight"
     >
       <Space onClick={handleRecommend}>
-        {isFetching ? <LoadingOutlined /> : <MonitorOutlined />}
-        <Text>{isFetching ? 'Loading...' : 'Suggest'}</Text>
+        {isLoading ? <LoadingOutlined /> : <MonitorOutlined />}
+        <Text>{isLoading ? 'Loading...' : 'Suggest'}</Text>
       </Space>
     </Popover>
   );
