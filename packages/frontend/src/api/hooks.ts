@@ -251,6 +251,7 @@ export const useCourse = (courseId?: string) => {
   const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery({
     ids: courseIdNumber ? [courseIdNumber] : undefined,
   });
+  // this returns ALL projects, when courseId param is passed. To see if pagination is needed
   const { data: filteredProjects } = useGetAllProjectsQuery({
     courseId: courseIdNumber
   });
@@ -433,7 +434,7 @@ export const useCourse = (courseId?: string) => {
 
   return {
     course,
-    filteredProjects,
+    filteredProjects: filteredProjects === undefined ? [] : filteredProjects.data,
     courseUserRoles,
     handleAddUser,
     handleRemoveUser,
