@@ -363,16 +363,22 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
 };
 
 const handlers = [
-  // Handles GET on /project
-  rest.get(`${BASE_URL}/project/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_PROJECT])))),
+  // Handles POST on /project/list
+  rest.post(`${BASE_URL}/project/list`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({
+    data: [MSW_PROJECT],
+    totalCount: 1
+  })))),
 
   // Handles GET on /project/:id
   rest.get(`${BASE_URL}/project/:id`, (req, res, ctx) =>
     res(ctx.status(200), ctx.body(JSON.stringify(MSW_PROJECT_BY_ID))),
   ),
 
-  // Handles GET on /course
-  rest.get(`${BASE_URL}/course/`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([MSW_COURSE])))),
+  // Handles POST on /course/list
+  rest.post(`${BASE_URL}/course/list`, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify({
+    data: [MSW_COURSE],
+    totalCounut: 1
+  })))),
 
   // Handles GET to NUSMODS
   rest.get(NUSMODS_URL, (req, res, ctx) => res(ctx.status(200), ctx.body(JSON.stringify([NUSMODS_MODULE])))),
