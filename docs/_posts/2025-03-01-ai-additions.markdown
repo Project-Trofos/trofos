@@ -6,7 +6,7 @@ categories: updates
 ---
 
 # 🚀 New AI Features to Enhance Your Agile Workflow!
-We’re excited to introduce AI-powered tools designed to make your experience even smoother!
+We’re excited to introduce [AI-powered tools](/trofos/guide/ai) designed to make your experience even smoother!
 
 ## 🗣️ Ask Our AI Chatbot
 Need help with our app or Agile best practices? Our AI chatbot pulls answers from our user guide, giving you quick and relevant responses to your questions.

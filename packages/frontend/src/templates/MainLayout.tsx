@@ -20,7 +20,6 @@ import {
   ProjectOutlined,
   SettingOutlined,
   UnorderedListOutlined,
-  RobotOutlined,
   QuestionCircleOutlined,
   DownOutlined,
 } from '@ant-design/icons';
@@ -45,6 +44,7 @@ import TourComponent from '../components/tour/Tour';
 import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
 import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 import RecommendGuide from '../components/aichat/RecommendGuide';
+import AiChatButton from '../components/aichat/AiChatButton';
 
 const { Header, Sider, Content } = Layout;
 
@@ -342,7 +342,7 @@ export default function MainLayout() {
       </Layout>
       {featureFlags?.some((flag) => flag.feature_name === 'onboarding_tour' && flag.active) && <TourComponent />}
       {featureFlags?.some((flag) => flag.feature_name === 'user_guide_copilot' && flag.active) && (
-        <FloatButton onClick={onOpenAiChat} icon={<RobotOutlined />} type="primary" />
+        <AiChatButton onClick={onOpenAiChat} />
       )}
       <AiChatBase open={aiChatIsOpen} onClose={onCloseAiChat} />
     </Layout>

@@ -81,7 +81,7 @@ async function recommendUserGuideSections(userId: number, user: string) {
   const query = parseUsagesIntoQuery(user, usages);
 
   const embeddedQuery = await embedUserGuideQuery(query, user);
-  const similarRecords = await performUserGuideSimilaritySearch(embeddedQuery, 3);
+  const similarRecords = await performUserGuideSimilaritySearch(embeddedQuery);
 
   if (!similarRecords || similarRecords.length === 0) {
     return gettingStartedSection;

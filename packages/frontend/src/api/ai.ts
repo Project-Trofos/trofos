@@ -3,12 +3,12 @@ import { UserGuideQueryResponse, UserGuideRecommendation } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    answerUserGuideQuery: builder.query<UserGuideQueryResponse, String>({
-      query: (query) => ({
+    answerUserGuideQuery: builder.mutation<UserGuideQueryResponse, { query: string; isEnableMemory: boolean }>({
+      query: ({ query, isEnableMemory }) => ({
         url: `ai/userGuideQuery`,
         credentials: 'include',
         method: 'POST',
-        body: { query },
+        body: { query, isEnableMemory },
       }),
     }),
     recommendUserGuideSections: builder.mutation<UserGuideRecommendation[], void>({
@@ -21,4 +21,4 @@ const extendedApi = trofosApiSlice.injectEndpoints({
   }),
 });
 
-export const { useLazyAnswerUserGuideQueryQuery, useRecommendUserGuideSectionsMutation } = extendedApi;
+export const { useAnswerUserGuideQueryMutation, useRecommendUserGuideSectionsMutation } = extendedApi;
