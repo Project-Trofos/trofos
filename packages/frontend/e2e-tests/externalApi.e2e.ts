@@ -58,6 +58,7 @@ test.describe.serial('API Key Generation & Usage', () => {
     expect(responseBody).toHaveProperty('totalCount');
     expect(responseBody).toHaveProperty('data');
     expect(Array.isArray(responseBody.data)).toBeTruthy();
+    expect(responseBody.data.length).toEqual(responseBody.totalCount);
   });
 
   test('Use API key to fetch project list', async ({ request }) => {
@@ -82,5 +83,58 @@ test.describe.serial('API Key Generation & Usage', () => {
     expect(responseBody).toHaveProperty('totalCount');
     expect(responseBody).toHaveProperty('data');
     expect(Array.isArray(responseBody.data)).toBeTruthy();
+    expect(responseBody.data.length).toEqual(responseBody.totalCount);
+  });
+
+  test('Search course by keyword', async ({ request }) => {
+    expect(generatedApiKey).toBeTruthy();
+
+    const response = await request.post('http://localhost:3003/api/external/v1/course/list', {
+      headers: {
+        'x-api-key': generatedApiKey,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        keyword: '1',
+        pageIndex: 0,
+        pageSize: 10
+      }
+    });
+
+    expect(response.status()).toBe(200);
+
+    const responseBody = await response.json();
+    console.log('Course Search Response:', responseBody);
+
+    expect(responseBody).toHaveProperty('totalCount');
+    expect(responseBody).toHaveProperty('data');
+    expect(Array.isArray(responseBody.data)).toBeTruthy();
+    expect(responseBody.data[0].cname).toEqual('course1');
+  });
+
+  test('Search project by keyword', async ({ request }) => {
+    expect(generatedApiKey).toBeTruthy();
+
+    const response = await request.post('http://localhost:3003/api/external/v1/project/list', {
+      headers: {
+        'x-api-key': generatedApiKey,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        keyword: '2',
+        pageIndex: 0,
+        pageSize: 10
+      }
+    });
+
+    expect(response.status()).toBe(200);
+
+    const responseBody = await response.json();
+    console.log('Project Search Response:', responseBody);
+
+    expect(responseBody).toHaveProperty('totalCount');
+    expect(responseBody).toHaveProperty('data');
+    expect(Array.isArray(responseBody.data)).toBeTruthy();
+    expect(responseBody.data[0].pname).toEqual('project2');
   });
 });
