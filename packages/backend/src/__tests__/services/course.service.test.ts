@@ -38,8 +38,8 @@ describe('course.service tests', () => {
     it('should return all courses', async () => {
       prismaMock.course.findMany.mockResolvedValueOnce(coursesData);
 
-      const result = await course.getAll(coursePolicyConstraint, settingsData, 'all');
-      expect(result).toEqual<Course[]>(coursesData);
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'all', 0, 30, undefined, undefined, undefined);
+      expect(result.data).toEqual<Course[]>(coursesData);
     });
 
     it('should return past courses', async () => {
@@ -50,8 +50,8 @@ describe('course.service tests', () => {
       );
       prismaMock.course.findMany.mockResolvedValueOnce(pastCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, settingsData, 'past');
-      expect(result).toEqual<Course[]>(pastCourses);
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'past', 0, 30, undefined, undefined, undefined);
+      expect(result.data).toEqual<Course[]>(pastCourses);
     });
 
     it('should return current courses', async () => {
@@ -60,8 +60,8 @@ describe('course.service tests', () => {
       );
       prismaMock.course.findMany.mockResolvedValueOnce(currentCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, settingsData, 'current');
-      expect(result).toEqual<Course[]>(currentCourses);
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'current', 0, 30, undefined, undefined, undefined);
+      expect(result.data).toEqual<Course[]>(currentCourses);
     });
 
     it('should return future courses', async () => {
@@ -72,8 +72,8 @@ describe('course.service tests', () => {
       );
       prismaMock.course.findMany.mockResolvedValueOnce(futureCourses);
 
-      const result = await course.getAll(coursePolicyConstraint, settingsData, 'future');
-      expect(result).toEqual<Course[]>(futureCourses);
+      const result = await course.getAll(coursePolicyConstraint, settingsData, 'future', 0, 30, undefined, undefined, undefined);
+      expect(result.data).toEqual<Course[]>(futureCourses);
     });
   });
 

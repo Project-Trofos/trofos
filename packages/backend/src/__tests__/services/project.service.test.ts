@@ -27,32 +27,32 @@ describe('project.service tests', () => {
     it('should return all projects', async () => {
       prismaMock.project.findMany.mockResolvedValueOnce(projectsData);
 
-      const result = await project.getAll(projectPolicyConstraint, settingsData, 'all');
-      expect(result).toEqual<Project[]>(projectsData);
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'all', 0, 30, undefined, undefined, undefined, undefined);
+      expect(result.data).toEqual<Project[]>(projectsData);
     });
 
     it('should return past projects', async () => {
       const pastProjects = [projectsData[2]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, settingsData, 'past');
-      expect(result).toEqual<Project[]>(pastProjects);
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'past', 0, 30, undefined, undefined, undefined, undefined);
+      expect(result.data).toEqual<Project[]>(pastProjects);
     });
 
     it('should return current projects', async () => {
       const currentProjects = [projectsData[0], projectsData[1]];
       prismaMock.project.findMany.mockResolvedValueOnce(currentProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, settingsData, 'current');
-      expect(result).toEqual<Project[]>(currentProjects);
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'current', 0, 30, undefined, undefined, undefined, undefined);
+      expect(result.data).toEqual<Project[]>(currentProjects);
     });
 
     it('should return past projects', async () => {
       const pastProjects = [projectsData[3]];
       prismaMock.project.findMany.mockResolvedValueOnce(pastProjects);
 
-      const result = await project.getAll(projectPolicyConstraint, settingsData, 'future');
-      expect(result).toEqual<Project[]>(pastProjects);
+      const result = await project.getAll(projectPolicyConstraint, settingsData, 'future', 0, 30, undefined, undefined, undefined, undefined);
+      expect(result.data).toEqual<Project[]>(pastProjects);
     });
   });
 
