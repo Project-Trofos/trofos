@@ -72,10 +72,11 @@ describe('course controller tests', () => {
   describe('getAll', () => {
     it('should return all courses', async () => {
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce({
+      const mockControllerRes = {
         data: coursesData,
         totalCount: 6
-      });
+      };
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest();
       const mockRes = createResponse();
       mockRes.locals.policyConstraint = coursePolicyConstraint;
@@ -84,7 +85,7 @@ describe('course controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData().data).toEqual(JSON.stringify(coursesData));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should return all past courses', async () => {
@@ -94,10 +95,11 @@ describe('course controller tests', () => {
           (c.startYear === settingsData.current_year && c.startSem < settingsData.current_sem),
       );
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce({
+      const mockControllerRes = {
         data: pastCourses,
         totalCount: 1
-      });
+      }
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest({
         body: {
           option: 'past',
@@ -110,7 +112,7 @@ describe('course controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData().data).toEqual(JSON.stringify(pastCourses));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should return all current courses', async () => {
@@ -118,10 +120,11 @@ describe('course controller tests', () => {
         (c) => c.startYear === settingsData.current_year && c.startSem === settingsData.current_sem,
       );
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce({
+      const mockControllerRes = {
         data: currentCourses,
         totalCount: 2
-      });
+      }
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest({
         body: {
           option: 'current',
@@ -134,7 +137,7 @@ describe('course controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData().data).toEqual(JSON.stringify(currentCourses));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should throw if option is incorrect', async () => {
