@@ -4,7 +4,7 @@ let generatedApiKey: string;
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe.serial('API Key Generation & Usage', () => {
-  test.beforeAll(async ({ browserName }) => {
+  test.beforeAll(async ({ browserName, request }) => {
     test.setTimeout(30000)
     if (browserName !== 'chromium') {
       test.skip(); // Skip API key generation in Firefox/WebKit
@@ -19,14 +19,26 @@ test.describe.serial('API Key Generation & Usage', () => {
     const browserContext = await browser.newContext();
     const page = await browserContext.newPage();
 
+    const response = await request.post('http://localhost:3000/api/account/updateUser', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: 3,
+        hasCompletedTour: true,
+      },
+    });
+
+    expect(response.status()).toBe(200);
+
     await page.goto('http://localhost:3000/manage-api-key');
 
     try {
       await page.getByRole('button', { name: 'Generate API key' }).click({ timeout: 5000 });
     } catch (error) {
       console.log('API key already exists, regenerating...');
+      await page.getByRole('button', { name: 'Regenerate' }).click();
     }
-    await page.getByRole('button', { name: 'Regenerate' }).click();
 
     const codeElement = await page.waitForSelector('code');
 
