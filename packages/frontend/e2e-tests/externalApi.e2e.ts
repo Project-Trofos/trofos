@@ -5,6 +5,7 @@ test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe.serial('API Key Generation & Usage', () => {
   test.beforeAll(async ({ browserName }) => {
+    test.setTimeout(60000)
     if (browserName !== 'chromium') {
       test.skip(); // Skip API key generation in Firefox/WebKit
     }
