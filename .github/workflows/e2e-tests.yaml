@@ -45,7 +45,8 @@ jobs:
       - name: Seed db
         run: docker exec trofos-backend-production pnpm run prisma-migrate-reset --force
       - name: Run E2E tests
-        run: pnpm exec playwright test --reporter=dot
+        # run: pnpm exec playwright test --reporter=dot
+        run: pnpm exec playwright test --debug
         working-directory: packages/frontend
       - name: Stop Application
         if: always()
