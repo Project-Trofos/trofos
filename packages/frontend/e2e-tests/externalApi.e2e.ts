@@ -150,4 +150,28 @@ test.describe.serial('API Key Generation & Usage', () => {
     expect(Array.isArray(responseBody.data)).toBeTruthy();
     expect(responseBody.data[0].pname).toEqual('project2');
   });
+
+  test('Search project by course ID', async ({ request }) => {
+    expect(generatedApiKey).toBeTruthy();
+
+    const response = await request.post('http://localhost:3003/api/external/v1/project/list', {
+      headers: {
+        'x-api-key': generatedApiKey,
+        'Content-Type': 'application/json'
+      },
+      data: {
+        courseId: 1
+      }
+    });
+
+    expect(response.status()).toBe(200);
+
+    const responseBody = await response.json();
+    console.log('Project Search Response:', responseBody);
+
+    expect(responseBody).toHaveProperty('totalCount');
+    expect(responseBody).toHaveProperty('data');
+    expect(Array.isArray(responseBody.data)).toBeTruthy();
+    expect(responseBody.data[0].pname).toEqual('project1');
+  });
 });
