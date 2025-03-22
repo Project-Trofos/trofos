@@ -14,4 +14,5 @@ COPY . .
 WORKDIR /app/rag_script
 
 # Command to run the Python script
-CMD ["python", "insert_user_guide_embeddings.py"]
+ENTRYPOINT ["python", "insert_user_guide_embeddings.py"]
+CMD []

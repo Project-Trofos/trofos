@@ -4,8 +4,8 @@ title: API key Management
 permalink: /guide/api-key-management
 ---
 
-* TOC
-{:toc}
+- TOC
+  {:toc}
 
 ## TROFOS External APIs
 
@@ -15,9 +15,11 @@ For faculty members or external developers looking to integrate TROFOS project d
 
 ## How to Generate an API Key
 
-1. Navigate to the **‘API Keys’** option in the side menu.  
-2. Click the **‘Generate’** button to create a new API key.  
-   - The API key will only be displayed once, so make sure to copy and store it securely.  
+<!-- API: POST /api/api-key/generate -->
+
+1. Navigate to the **‘API Keys’** option in the side menu.
+2. Click the **‘Generate’** button to create a new API key.
+   - The API key will only be displayed once, so make sure to copy and store it securely.
    - If the key is lost, you can regenerate a new one by repeating this process.
 
 ---

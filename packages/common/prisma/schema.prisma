@@ -24,6 +24,7 @@ model User {
   courses            UsersOnRolesOnCourses[]
   basicRoles         UsersOnRoles[]
   feedbacks          Feedback[]
+  api_usages         ApiUsage[]
   user_api_key       UserApiKey?
   comments           IssueComment[]
 }
@@ -449,11 +450,38 @@ model SprintInsight {
   @@unique([sprint_id, category])
 }
 
+// Tracks users' api usage behaviour
+model ApiUsage {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user  User  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  
+  path  String
+  method ApiMethodType
+  session_id String? // did not link to UserSession
+  
+  request_body  Json?
+  response_code  Int
+  response_time  Int // in milliseconds
+  timestamp   DateTime  @default(now())
+}
+
+// Stores Api endpoint to user guide section mapping
+model ApiMapping {
+  id Int @id @default(autoincrement())
+  method String
+  path String
+  section_title String
+  endpoint String
+  created_at DateTime @default(now())
+}
+
 enum Feature {
   user_guide_copilot
   onboarding_tour
   sso_login
   ai_insights
+  user_guide_recommender
 }
 
 enum Action {
@@ -540,4 +568,11 @@ enum RetrospectiveType {
 enum RetrospectiveVoteType {
   up
   down
+}
+
+enum ApiMethodType {
+  get
+  post
+  put
+  delete
 }
