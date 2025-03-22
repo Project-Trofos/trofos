@@ -1,5 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Col, Layout, Row, MenuProps, Dropdown, Menu, Typography, Space, Image, FloatButton, Button } from 'antd';
+import {
+  Col,
+  Layout,
+  Row,
+  MenuProps,
+  Dropdown,
+  Menu,
+  Typography,
+  Space,
+  Image,
+  FloatButton,
+  DropdownProps,
+  Button,
+  Popover,
+} from 'antd';
 import {
   BookOutlined,
   HomeOutlined,
@@ -8,6 +22,7 @@ import {
   SettingOutlined,
   UnorderedListOutlined,
   QuestionCircleOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -29,6 +44,7 @@ import AiChatBase from '../components/aichat/AiChatBase';
 import TourComponent from '../components/tour/Tour';
 import { StepTarget, STEP_PROP } from '../components/tour/TourSteps';
 import { useGetFeatureFlagsQuery } from '../api/featureFlag';
+import RecommendGuide from '../components/aichat/RecommendGuide';
 import AiChatButton from '../components/aichat/AiChatButton';
 
 const { Header, Sider, Content } = Layout;
@@ -68,6 +84,44 @@ function LogoutText() {
 
 function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
+  const doNotDisturbKey = 'helpPopoverDoNotDisturb';
+
+  const isUserGuideRecommenderActive = featureFlags?.some(
+    (flag) => flag.feature_name === 'user_guide_recommender' && flag.active,
+  );
+
+  // Check localStorage on component mount
+  useEffect(() => {
+    const doNotDisturb = localStorage.getItem(doNotDisturbKey);
+    if (doNotDisturb === null && isUserGuideRecommenderActive) {
+      setShowPopover(true);
+    }
+  }, [isUserGuideRecommenderActive]);
+
+  const handleClosePopover = () => {
+    setShowPopover(false);
+  };
+
+  const handleDoNotDisturb = () => {
+    localStorage.setItem(doNotDisturbKey, 'true');
+    setShowPopover(false);
+  };
+
+  const handleDropdownOpenChange: DropdownProps['onOpenChange'] = (nextOpen, info) => {
+    if (info.source === 'trigger' || nextOpen) {
+      setIsDropdownOpen(nextOpen);
+    }
+  };
+
+  const userGuideItems = [
+    {
+      key: 'user-guide-recommendations',
+      label: isUserGuideRecommenderActive && <RecommendGuide />,
+    },
+  ];
 
   const accountMenuItems = [
     {
@@ -88,6 +142,28 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
     },
   ];
 
+  const popoverContent = (
+    <>
+      <Row>
+        <Col span={24}>
+          <Typography.Text>Need help? Hover to see suggested documentation and guides.</Typography.Text>
+        </Col>
+      </Row>
+      <Row justify="end" style={{ marginTop: 8 }}>
+        <Col>
+          <Space size="middle" direction="horizontal">
+            <Typography.Link onClick={handleDoNotDisturb} style={{ fontSize: '14px' }}>
+              Don't show again
+            </Typography.Link>
+            <Button size="small" type="primary" onClick={handleClosePopover}>
+              Close
+            </Button>
+          </Space>
+        </Col>
+      </Row>
+    </>
+  );
+
   return (
     <Space size={'middle'}>
       <Col>
@@ -97,9 +173,22 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <GlobalSearch />
       </Col>
       <Col>
-        <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
-          <QuestionCircleOutlined />
-        </Button>
+        <Popover content={popoverContent} open={showPopover} placement="bottomRight" style={{ maxWidth: '300px' }}>
+          <Dropdown
+            menu={{
+              items: userGuideItems,
+              onClick: undefined, // disable closing dropdown on click
+            }}
+            placement="bottomRight"
+            onOpenChange={handleDropdownOpenChange}
+            open={isDropdownOpen}
+          >
+            <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
+              <QuestionCircleOutlined />
+              <DownOutlined />
+            </Button>
+          </Dropdown>
+        </Popover>
       </Col>
       {/* TODO: To be implemented */}
       {/* 

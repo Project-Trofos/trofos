@@ -4,6 +4,8 @@ from langchain_community.document_loaders import UnstructuredMarkdownLoader
 import psycopg
 import os
 import re
+import argparse
+from insert_api_user_guide_mapping import launch_api_user_guide_mapper, reset_api_mapping_db
 
 """
 Structure to store the embeddings of a jekyll page of the user guide
@@ -108,10 +110,18 @@ def reset_pg_vector_db():
   print("Done resetting the database")
 
 if __name__ == "__main__":
+  # Parse command-line arguments
+  parser = argparse.ArgumentParser(description='Process Jekyll pages and generate API mappings')
+  parser.add_argument('--map-api', action='store_true', help='Map API endpoints to sections')
+  args = parser.parse_args()
+
   load_dotenv()
 
   # Reset the database
   reset_pg_vector_db()
+
+  if args.map_api:
+    reset_api_mapping_db()
 
   # Get all the files in the directory to parse
   files_dir = '../pages/rag_parse_pages'
@@ -119,7 +129,14 @@ if __name__ == "__main__":
 
   for file in files:
     print(f"Processing file: {file}")
-    embed_store = process_jekyll_page(f'../pages/rag_parse_pages/{file}')
+
+    filePath = f'../pages/rag_parse_pages/{file}'
+
+    embed_store = process_jekyll_page(filePath)
     embed_store = embed_jekyll_page_sections(embed_store)
     insert_jekyll_page_embeddings(embed_store)
+
+    if args.map_api:
+      launch_api_user_guide_mapper(embed_store.permalink, filePath)
+
     print(f"Done processing file: {file}")

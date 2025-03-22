@@ -1,4 +1,4 @@
-import { Sprint } from "./sprint";
+import { Sprint } from './sprint';
 
 export type Project = {
   id: number;
@@ -394,6 +394,11 @@ export type UserGuideQueryResponse = {
   links: Array<string>;
 };
 
+export type UserGuideRecommendation = {
+  section_title: string;
+  endpoint: string;
+};
+
 export type FeatureFlag = {
   feature_name: string;
   active: boolean;
@@ -451,7 +456,7 @@ export type BacklogFromIssuePayload = {
   reporterId: number;
   description: string | null;
   projectId: number;
-}
+};
 
 export type CourseProjectsLatestInsights = {
   pname: string;

@@ -9,9 +9,9 @@ const COPILOT_CHAT_HISTORY_KEY_PREFIX = 'copilot_chat_history_';
 const EMBEDDING_SIMILARITY_THRESHOLD = 1.15;
 
 type RedisChatHistoryEntry = {
-  role: 'user' | 'assistant',
-  content: string,
-  hasRelevantContext?: boolean,
+  role: 'user' | 'assistant';
+  content: string;
+  hasRelevantContext?: boolean;
 };
 
 const getChatHistory = async (user: string): Promise<[RedisChatHistoryEntry]> => {
@@ -19,7 +19,12 @@ const getChatHistory = async (user: string): Promise<[RedisChatHistoryEntry]> =>
   return historyJson ? JSON.parse(historyJson) : [];
 };
 
-const pushNewChatMessage = async (user: string, query: string, response: string, hasRelevantContext: boolean): Promise<void> => {
+const pushNewChatMessage = async (
+  user: string,
+  query: string,
+  response: string,
+  hasRelevantContext: boolean,
+): Promise<void> => {
   const history = await getChatHistory(user);
   history.push({ role: 'user', content: query });
   history.push({ role: 'assistant', content: response, hasRelevantContext: hasRelevantContext });
@@ -30,10 +35,14 @@ const pushNewChatMessage = async (user: string, query: string, response: string,
   await redis.expire(COPILOT_CHAT_HISTORY_KEY_PREFIX + user, 30 * 60); // memory persists for 30 minutes
 };
 
-const processUserGuideQuery = async (query: string, user: string, isEnableMemory: boolean): Promise<UserGuideQueryResponse> => {
+const processUserGuideQuery = async (
+  query: string,
+  user: string,
+  isEnableMemory: boolean,
+): Promise<UserGuideQueryResponse> => {
   try {
     const embeddedQuery = await embedUserGuideQuery(query, user);
-    const similarRecords = await performUserGuideSimilaritySearch(embeddedQuery) || [];
+    const similarRecords = (await performUserGuideSimilaritySearch(embeddedQuery)) || [];
     // If memory is enabled, allow query with no similar record IF there is a chat history that is relevant
     const history = isEnableMemory ? await getChatHistory(user) : [];
     const hasRelevantContext = history.some((entry) => entry.hasRelevantContext);
@@ -44,22 +53,22 @@ const processUserGuideQuery = async (query: string, user: string, isEnableMemory
     const answer = await askGptQueryWithContext(query, similarRecords, user, history, isEnableMemory);
     return {
       answer,
-      links: similarRecords.map((record) => `https://project-trofos.github.io/trofos${record.endpoint}`)
+      links: similarRecords.map((record) => `https://project-trofos.github.io/trofos${record.endpoint}`),
     };
   } catch (error) {
     console.error(`Error processing user query: ${error}`);
     return {
       answer: `Sorry, I encountered an issue while processing your query: ${error}`,
-      links: []
+      links: [],
     };
   }
 };
 
 const getOpenAiClient = (): OpenAI => {
   return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY,
   });
-}
+};
 
 const embedUserGuideQuery = async (query: string, user: string): Promise<Array<Number>> => {
   try {
@@ -79,7 +88,7 @@ const embedUserGuideQuery = async (query: string, user: string): Promise<Array<N
     console.error(`Error generating embedding: ${err.message || error}`);
     return [];
   }
-}
+};
 
 const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): Promise<UserGuideEmbedding[] | null> => {
   if (!embeddedQuery || embeddedQuery.length === 0) {
@@ -105,7 +114,7 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
       console.warn('No matching records found for query.');
       return null;
     }
-    const results: UserGuideEmbedding[] = similarRecords.map(({similarity, ...record}) => record);
+    const results: UserGuideEmbedding[] = similarRecords.map(({ similarity, ...record }) => record);
     return results;
   } catch (error: unknown) {
     const err = error as Error;
@@ -114,38 +123,42 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
   }
 };
 
-const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuideEmbedding[],
-  user: string, history: RedisChatHistoryEntry[], isEnableMemory: boolean
+const askGptQueryWithContext = async (
+  query: string,
+  topSimilarResults: UserGuideEmbedding[],
+  user: string,
+  history: RedisChatHistoryEntry[],
+  isEnableMemory: boolean,
 ): Promise<string> => {
-  try { 
+  try {
     const openai = getOpenAiClient();
-    const context = topSimilarResults.length > 0 ?
-      topSimilarResults.map((result) => result.section_title + ": " + result.content).join('\n')
-      : 'No context. Use previous chat history or do not answer if the question is irrelevant.';
+    const context =
+      topSimilarResults.length > 0
+        ? topSimilarResults.map((result) => result.section_title + ': ' + result.content).join('\n')
+        : 'No context. Use previous chat history or do not answer if the question is irrelevant.';
     const chatCompletion = await openai.chat.completions.create({
       messages: [
         {
-          "role": "developer",
-          "content": [
+          role: 'developer',
+          content: [
             {
-              "type": "text",
-              "text": `
+              type: 'text',
+              text: `
                 You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context}
-              `
-            }
-          ]
+              `,
+            },
+          ],
         },
         ...history,
         {
-          "role": "user",
-          "content": query
-        }
+          role: 'user',
+          content: query,
+        },
       ],
       model: 'gpt-4o-mini',
       user: user,
     });
-    const response = chatCompletion.choices[0].message.content ?
-      chatCompletion.choices[0].message.content: '';
+    const response = chatCompletion.choices[0].message.content ? chatCompletion.choices[0].message.content : '';
     if (isEnableMemory) {
       await pushNewChatMessage(user, query, response, topSimilarResults.length > 0);
     }
@@ -156,6 +169,4 @@ const askGptQueryWithContext = async (query: string, topSimilarResults: UserGuid
   }
 };
 
-export {
-  processUserGuideQuery,
-};
+export { processUserGuideQuery };
