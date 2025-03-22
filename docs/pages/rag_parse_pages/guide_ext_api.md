@@ -4,8 +4,8 @@ title: API key Management
 permalink: /guide/api-key-management
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
 
 ## TROFOS External APIs
 

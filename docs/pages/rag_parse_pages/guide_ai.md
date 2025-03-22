@@ -4,8 +4,8 @@ title: AI in TROFOS
 permalink: /guide/ai
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
 
 ## TROFOS Copilot
 
