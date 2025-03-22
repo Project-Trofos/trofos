@@ -4,12 +4,12 @@ title: Course Management
 permalink: /guide/course-management
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
 
 ## How to View Your Courses
 
-<!-- API: GET /api/course/ -->
+<!-- API: POST /api/course/list -->
 
 To view your courses, follow these steps:
 

@@ -4,12 +4,12 @@ title: Project Management
 permalink: /guide/project-management
 ---
 
-- TOC
-  {:toc}
+* TOC
+{:toc}
 
 ## How to view my Projects
 
-<!-- API: GET /api/project/ -->
+<!-- API: POST /api/project/list -->
 
 Click the 'Projects' tab in the side bar to view your projects. Only projects where you have viewing permissions will be displayed. In the 'Projects' page, projects are further divided into past, future and present projects, determined by the start and end year and semester of the courses associated with it. If you can't find your project, try checking it 'Past projects' tab!
 
