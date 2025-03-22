@@ -18,7 +18,9 @@ import {
 import {
   assertCourseCodeIsValid,
   assertGetAllOptionIsValid,
+  assertPaginationParamsAreValid,
   assertProjectNameIsValid,
+  assertSortByIsValid,
   assertUserSessionIsValid,
 } from '../helpers/error/assertions';
 import {
@@ -26,6 +28,7 @@ import {
   BulkCreateProjectBody,
   CourseRequestBody,
   OptionRequestBody,
+  PaginatedRequestBody,
   ProjectIdRequestBody,
   UserEmailRequestBody,
   UserIdRequestBody,
@@ -35,14 +38,24 @@ import csvService from '../services/csv.service';
 
 async function getAll(req: express.Request, res: express.Response) {
   try {
-    const body = req.body as OptionRequestBody;
+    const body = req.body as (OptionRequestBody & PaginatedRequestBody);
+    if (body.pageIndex === undefined) {
+      body.pageIndex = 0;
+    }
+    if (body.pageSize === undefined) {
+      body.pageSize = 30;
+    }
 
     // If option is provided, it must be one of the following
     assertGetAllOptionIsValid(body.option);
+    assertPaginationParamsAreValid(body.pageIndex, body.pageSize);
+    assertSortByIsValid(body.sortBy, ['course', 'year']);
 
     // Default to all
     const setting = await settings.get();
-    const result = await course.getAll(res.locals.policyConstraint, setting, body.option ?? 'all');
+    const result = await course.getAll(res.locals.policyConstraint, setting,
+      body.option ?? 'all', body.pageIndex, body.pageSize, body.keyword,
+      body.sortBy, body.ids);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

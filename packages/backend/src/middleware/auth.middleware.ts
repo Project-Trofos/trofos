@@ -213,6 +213,9 @@ const hasAuthForExternalApi =
   async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       const apiKey = req.headers['x-api-key'] as string;
+      if (!apiKey) {
+        return res.status(StatusCodes.UNAUTHORIZED).send();
+      }
       const apiKeyAuth = await apiKeyService.authenticateApiKey(apiKey);
 
       if (!apiKeyAuth.isValidUser) {

@@ -13,16 +13,45 @@ import {
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllProjects: builder.query<ProjectData[], void>({
-      query: () => ({
-        url: 'project/',
+    getAllProjects: builder.query<{
+      data: ProjectData[],
+      totalCount: number,
+    }, {
+      keyword?: string;
+      sortBy?: string;
+      pageIndex?: number;
+      pageSize?: number;
+      ids?: number[];
+      option?: 'all' | 'past' | 'current' | 'future';
+      courseId?: number;
+    }>({
+      query: ({
+        pageIndex,
+        pageSize,
+        keyword,
+        sortBy,
+        ids,
+        option,
+        courseId,
+      }) => ({
+        url: 'project/list',
         credentials: 'include',
+        method: 'POST',
+        body: {
+          pageIndex,
+          pageSize,
+          keyword,
+          sortBy,
+          ids,
+          option,
+          courseId,
+        }
       }),
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'Project' as const, id })),
-              ...result.filter((p) => p.course).map((p) => ({ type: 'Course' as const, id: p.course.id })),
+              ...result.data.map(({ id }) => ({ type: 'Project' as const, id })),
+              ...result.data.filter((p) => p.course).map((p) => ({ type: 'Course' as const, id: p.course.id })),
               'Project',
             ]
           : ['Project'],

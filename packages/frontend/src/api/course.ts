@@ -13,22 +13,55 @@ import {
 // Project management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllCourses: builder.query<CourseData[], void>({
-      query: () => ({
-        url: 'course/',
+    getAllCourses: builder.query<{
+        data: CourseData[],
+        totalCount: number,
+      }, {
+        keyword?: string;
+        sortBy?: string;
+        pageIndex?: number;
+        pageSize?: number;
+        ids?: number[];
+        option?: 'all' | 'past' | 'current' | 'future';
+      }
+    >({
+      query: ({
+        pageIndex,
+        pageSize,
+        keyword,
+        sortBy,
+        ids,
+        option,
+      }) => ({
+        url: 'course/list',
         credentials: 'include',
+        method: 'POST',
+        body: {
+          pageIndex,
+          pageSize,
+          keyword,
+          sortBy,
+          ids,
+          option,
+        }
       }),
-      transformResponse: (response: CourseDataResponse[]) => {
-        const transformedResponse: CourseData[] = response.map((courseData) => {
+      transformResponse: (response: {
+        data: CourseDataResponse[],
+        totalCount: number
+      }) => {
+        const transformedResponse: CourseData[] = response.data.map((courseData) => {
           return {
             ...courseData,
             users: courseData.courseRoles,
           };
         });
-        return transformedResponse;
+        return {
+          data: transformedResponse,
+          totalCount: response.totalCount,
+        };
       },
       providesTags: (result, error, arg) =>
-        result ? [...result.map(({ id }) => ({ type: 'Course' as const, id })), 'Course'] : ['Course'],
+        result ? [...result.data.map(({ id }) => ({ type: 'Course' as const, id })), 'Course'] : ['Course'],
     }),
 
     getCourse: builder.query<CourseData, Pick<Course, 'id'>>({

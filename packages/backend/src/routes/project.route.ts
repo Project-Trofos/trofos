@@ -14,7 +14,7 @@ const router = express.Router();
 router.use('/:projectId/standup', standupRouter);
 
 // Get all projects
-router.get('/', hasAuth(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
+router.post('/list', hasAuth(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
 
 // Create project
 router.post('/', hasAuth(Action.create_project, null), project.create);

@@ -316,7 +316,9 @@ describe('auth.middleware tests', () => {
 
   describe('when an external api request is made', () => {
     it('should reject the request if the api key is not valid', async () => {
-      const mockRequest = createRequest();
+      const mockRequest = createRequest({
+        headers: { 'x-api-key': 'invalid-key' }
+      });
       const mockResponse = createResponse();
       const mockNext = jest.fn() as express.NextFunction;
       const notValidObj = {
@@ -338,7 +340,9 @@ describe('auth.middleware tests', () => {
     } as ApiKeyAuthIsValid;
 
     it('should reject the request if it is not a valid action by role', async () => {
-      const mockRequest = createRequest();
+      const mockRequest = createRequest({
+        headers: { 'x-api-key': 'invalid-key' }
+      });
       const mockResponse = createResponse();
       const mockNext = jest.fn() as express.NextFunction;
       apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);
@@ -351,7 +355,9 @@ describe('auth.middleware tests', () => {
     });
 
     it('should reject the request if the policy is not valid', async () => {
-      const mockRequest = createRequest();
+      const mockRequest = createRequest({
+        headers: { 'x-api-key': 'invalid-key' }
+      });
       const mockResponse = createResponse();
       const mockNext = jest.fn() as express.NextFunction;
       apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);
@@ -369,7 +375,9 @@ describe('auth.middleware tests', () => {
       const policyEngineResponseObject = {
         isPolicyValid: true,
       } as PolicyOutcome;
-      const mockRequest = createRequest();
+      const mockRequest = createRequest({
+        headers: { 'x-api-key': 'invalid-key' }
+      });
       const mockResponse = createResponse();
       const mockNext = jest.fn() as express.NextFunction;
       apiKeyServiceAuthApiKeySpy.mockResolvedValueOnce(validApiKeyAuth);

@@ -18,6 +18,8 @@ describe('SelectCourseCodeFormItem test', () => {
               CS1010 Programming Methodology
             </Select.Option>,
           ]}
+          searchCourseKeyword=''
+          setSearchCourseKeyword={() => {}}
         />
       </FormWrapper>,
     );

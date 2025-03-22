@@ -11,6 +11,7 @@ import {
   projectsData,
 } from '../mocks/projectData';
 import { settingsData } from '../mocks/settingsData';
+import { mock } from 'node:test';
 
 const spies = {
   getAll: jest.spyOn(project, 'getAll'),
@@ -62,7 +63,11 @@ describe('project controller tests', () => {
   describe('getAll', () => {
     it('should return all projects', async () => {
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce(projectsData);
+      const mockControllerRes = {
+        data: projectsData,
+        totalCount: 4
+      };
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
 
       const mockReq = createRequest();
       const mockRes = createResponse();
@@ -71,13 +76,17 @@ describe('project controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(projectsData));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should return all past projects', async () => {
       const pastProjects = [projectsData[2]];
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce(pastProjects);
+      const mockControllerRes = {
+        data: pastProjects,
+        totalCount: 1
+      };
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest({
         body: {
           option: 'past',
@@ -89,13 +98,17 @@ describe('project controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(pastProjects));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should return all current projects', async () => {
       const currentProjects = [projectsData[0], projectsData[1]];
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce(currentProjects);
+      const mockControllerRes = {
+        data: currentProjects,
+        totalCount: 2
+      };
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest({
         body: {
           option: 'current',
@@ -107,13 +120,17 @@ describe('project controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(currentProjects));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should return all future projects', async () => {
       const futureProjects = [projectsData[3]];
       spies.getSettings.mockResolvedValue(settingsData);
-      spies.getAll.mockResolvedValueOnce(futureProjects);
+      const mockControllerRes = {
+        data: futureProjects,
+        totalCount: 1
+      };
+      spies.getAll.mockResolvedValueOnce(mockControllerRes);
       const mockReq = createRequest({
         body: {
           option: 'future',
@@ -125,7 +142,7 @@ describe('project controller tests', () => {
 
       expect(spies.getAll).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(futureProjects));
+      expect(mockRes._getData()).toEqual(JSON.stringify(mockControllerRes));
     });
 
     it('should throw if option is incorrect', async () => {

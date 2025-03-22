@@ -29,9 +29,14 @@ export default function ProjectCreationModal({
   course?: Course;
   disableClickEvent?: boolean;
 }): JSX.Element {
+  const [searchCourseKeyword, setSearchCourseKeyword] = useState('');
   const [addProject] = useAddProjectMutation();
   const [addProjectAndCourse] = useAddProjectAndCourseMutation();
-  const { data: courses } = useGetAllCoursesQuery();
+  const { data: courses } = useGetAllCoursesQuery({
+    pageIndex: 0,
+    pageSize: 100,
+    keyword: searchCourseKeyword === '' ? undefined : searchCourseKeyword,
+  });
   const { data: modules } = useGetAllModulesQuery();
 
   const [form] = Form.useForm();
@@ -62,7 +67,7 @@ export default function ProjectCreationModal({
             courseName:
               courseName ??
               // Add in names if possible
-              courses?.filter((c) => c.code === courseCode)[0]?.cname ??
+              courses?.data?.filter((c) => c.code === courseCode)[0]?.cname ??
               modules?.filter((m) => m.moduleCode === courseCode)[0]?.title,
           }).unwrap();
         } else if (course) {
@@ -93,7 +98,15 @@ export default function ProjectCreationModal({
       title="Create Project"
       buttonChildren="Create Project"
       form={form}
-      formSteps={course ? [<FormStep1 />] : [<FormStep1 />, <FormStep2 courses={courses} modules={modules} />]}
+      formSteps={course ? [<FormStep1 />] : [
+        <FormStep1 />,
+        <FormStep2
+          courses={courses?.data}
+          modules={modules}
+          searchCourseKeyword={searchCourseKeyword}
+          setSearchCourseKeyword={setSearchCourseKeyword}
+        />
+      ]}
       onSubmit={onFinish}
       buttonType="primary"
       tourProps={{ [STEP_PROP]: StepTarget.CREATE_PROJECT_BUTTON }}
@@ -115,9 +128,13 @@ function FormStep1(): JSX.Element {
 function FormStep2({
   courses,
   modules,
+  searchCourseKeyword,
+  setSearchCourseKeyword,
 }: {
   courses: CourseData[] | undefined;
   modules: Module[] | undefined;
+  searchCourseKeyword: string;
+  setSearchCourseKeyword: (keyword: string) => void;
 }): JSX.Element {
   const segmentOptions = ['Independent', 'Choose from existing', 'Create new'];
   const [type, setType] = useState<string>('Independent');
@@ -153,7 +170,11 @@ function FormStep2({
 
       {type === 'Choose from existing' && (
         <>
-          <SelectCourseCodeFormItem courseOptions={courseOptions} />
+          <SelectCourseCodeFormItem
+            courseOptions={courseOptions}
+            searchCourseKeyword={searchCourseKeyword}
+            setSearchCourseKeyword={setSearchCourseKeyword}
+          />
           <CourseYearSemFormItems />
         </>
       )}

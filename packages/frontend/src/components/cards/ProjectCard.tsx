@@ -103,7 +103,7 @@ export default function ProjectCard(props: ProjectCardProps): JSX.Element {
           <>
             <Row gutter={[0, 8]}>
               <Tag color="blue">{project.course ? project.course.cname : 'Independent'}</Tag>
-              {project.course && <Tag>{`${project.course.startYear} Semester ${project.course.startSem}`}</Tag>}
+              {project.course && !(project.course?.shadow_course === true) && <Tag>{`${project.course.startYear} Semester ${project.course.startSem}`}</Tag>}
             </Row>
             <Row gutter={[0, 8]}>{project.description ?? 'No description'}</Row>
           </>

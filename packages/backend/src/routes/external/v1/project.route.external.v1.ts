@@ -10,25 +10,69 @@ const router = express.Router();
 /**
  * @swagger
  * /v1/project:
- *  get:
- *    description: Get all projects applicable to the owner of the API key
+ *  post:
+ *    summary: Get all projects applicable to the owner of the API key
+ *    description: Retrieve a list of projects with pagination, filtering, and sorting options.
  *    tags: [Project]
+ *    security:
+ *      - ApiKeyAuth: []
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              option:
+ *                type: string
+ *                enum: [all, past, current, future]
+ *                description: Filter courses by time category, relative to current year & sem. Archived projects, or projects with archived courses are considered past.
+ *              pageIndex:
+ *                type: integer
+ *                description: The index of the page to retrieve (optional).
+ *                example: 0
+ *              pageSize:
+ *                type: integer
+ *                description: The number of projects per page (optional). Maximum is 100.
+ *                example: 10
+ *              ids:
+ *                type: array
+ *                items:
+ *                  type: integer
+ *                description: List of project IDs to filter (optional).
+ *              keyword:
+ *                type: string
+ *                description: Search term for project name or description (optional).
+ *              sortBy:
+ *                type: string
+ *                description: Sorting option (e.g., project name or year).
+ *              course_id:
+ *                type: integer
+ *                description: Filter projects by a specific course ID (optional). No limit of number of projects returned if this is provided.
+ *                example: 5
  *    produces:
  *      - application/json
  *    responses:
  *      200:
- *        description: Gets all projects for user that he has permissions for
+ *        description: Gets all projects for user that they have permissions for.
  *        content:
  *          application/json:
  *            schema:
- *              type: array
- *              $ref: "#/components/schemas/Project"
+ *              type: object
+ *              properties:
+ *                totalCount:
+ *                  type: integer
+ *                  description: The total number of projects matching the filters.
+ *                data:
+ *                  type: array
+ *                  items:
+ *                    $ref: "#/components/schemas/Project"
  *      401:
- *        description: Unauthorized
+ *        description: Unauthorized. API key is missing or invalid.
  *      500:
- *        description: Internal server error
+ *        description: Internal server error.
  */
-router.get('/', hasAuthForExternalApi(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
+router.post('/list', hasAuthForExternalApi(Action.read_project, projectPolicy.POLICY_NAME), project.getAll);
 
 /**
  * @swagger
