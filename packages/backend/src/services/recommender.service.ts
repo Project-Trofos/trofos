@@ -1,38 +1,34 @@
 import { StatusCodes } from 'http-status-codes';
 import prisma from '../models/prismaClient';
-import { UserGuideEmbedding } from '@trofos-nus/common/src/generated/pgvector_client';
-import { embedUserGuideQuery, performUserGuideSimilaritySearch } from './ai.service';
-
-type Usage = {
-  path: string;
-  method: string;
-  _count: { id: number };
-};
 
 type UserGuideRecommendation = {
   section_title: string;
   endpoint: string;
 };
 
-const gettingStartedSection = [
+const gettingStartedSection: UserGuideRecommendation[] = [
   {
     section_title: 'Getting Started',
     endpoint: 'https://project-trofos.github.io/trofos/guide/quick-start',
   },
 ];
 
-async function getUserApiUsage(userId: number, limit: number = 5) {
-  const now = new Date(Date.now());
-  const oneWeekAgo = new Date(now);
-  oneWeekAgo.setDate(now.getDate() - 7);
+const excludePaths = ['/api/account', '/api/settings', '/api/ai/recommendUserGuide'];
 
-  const excludePaths = ['/account', '/settings', '/ai/recommendUserGuide'];
+/**
+ * Generate personalized recommendations for a user
+ */
+async function generateRecommendations(user_id: number, user_role_id: number): Promise<UserGuideRecommendation[]> {
+  return prisma.$transaction(async (tx) => {
+    // Calculate timeframe once
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  return await prisma.apiUsage.groupBy({
-    by: ['path', 'method'],
-    where: {
-      user_id: userId,
-      timestamp: { gte: oneWeekAgo },
+    // Common filters for fetching api usages
+    const commonFilters = {
+      timestamp: {
+        gte: oneWeekAgo,
+      },
       response_code: StatusCodes.OK,
       AND: [
         {
@@ -45,54 +41,104 @@ async function getUserApiUsage(userId: number, limit: number = 5) {
           },
         },
       ],
-    },
-    _count: {
-      id: true,
-    },
-    orderBy: {
-      _count: {
-        id: 'desc',
-      },
-    },
-    take: limit,
+    };
+
+    // Get all api endpoints
+    const allApiEndpoints = await prisma.apiMapping.findMany();
+
+    // Create a map for quick lookups of API documentation
+    const apiDocsMap = new Map(
+      allApiEndpoints.map((endpoint) => [
+        `${endpoint.method}:${endpoint.path}`,
+        {
+          section: endpoint.section_title,
+          docUrl: endpoint.endpoint,
+        },
+      ]),
+    );
+
+    const [globalApiUsage, userApiUsage] = await Promise.all([
+      tx.apiUsage.groupBy({
+        by: ['method', 'path'],
+        where: {
+          user: {
+            basicRoles: {
+              some: {
+                role_id: user_role_id,
+              },
+            },
+          },
+          NOT: {
+            user_id,
+          },
+          ...commonFilters,
+        },
+        _count: {
+          id: true,
+        },
+        orderBy: {
+          _count: {
+            id: 'desc',
+          },
+        },
+      }),
+
+      tx.apiUsage.groupBy({
+        by: ['method', 'path'],
+        where: {
+          user_id,
+          ...commonFilters,
+        },
+        _count: {
+          id: true,
+        },
+      }),
+    ]);
+
+    // Find APIs the user hasn't used or has used infrequently
+    const userUsagePaths = new Set(userApiUsage.map((u) => `${u.method}:${u.path}`));
+
+    // Build unique recommendations in a single pass
+    const uniqueKeys = new Set();
+    const recommendations = globalApiUsage
+      .map((stats) => {
+        const key = `${stats.method}:${stats.path}`;
+        const docInfo = apiDocsMap.get(key) || { section: null, docUrl: null };
+
+        return {
+          key,
+          usageCount: stats._count.id,
+          documentationSection: docInfo.section,
+          documentationUrl: docInfo.docUrl,
+        };
+      })
+      .filter(
+        (stat) =>
+          // Filter for features the user hasn't tried yet but others have
+          !userUsagePaths.has(stat.key) &&
+          stat.usageCount > 0 &&
+          stat.documentationSection !== null &&
+          stat.documentationUrl !== null,
+      )
+      .sort((a, b) => a.usageCount - b.usageCount) // Prioritize least used APIs
+      .reduce((unique: UserGuideRecommendation[], stat) => {
+        const recommendation = {
+          section_title: stat.documentationSection!,
+          endpoint: `https://project-trofos.github.io/trofos${stat.documentationUrl!}`,
+        };
+
+        const uniqueKey = `${recommendation.section_title}::${recommendation.endpoint}`;
+
+        if (!uniqueKeys.has(uniqueKey)) {
+          uniqueKeys.add(uniqueKey);
+          unique.push(recommendation);
+        }
+
+        return unique;
+      }, []);
+
+    return recommendations.concat(gettingStartedSection).slice(0, 5);
   });
 }
 
-const parseUsagesIntoQuery = (user: string, usages: Usage[]) => {
-  const queryArr: Array<String> = [];
-  const contextString = `Here are the top 5 most common feature usages for ${user} from the past week.`;
-  queryArr.push(contextString);
-
-  usages.forEach((usage, idx) => {
-    const usageString = `${idx + 1}. ${usage.method.toUpperCase()} ${usage.path} called ${usage._count.id} times`;
-    queryArr.push(usageString);
-  });
-
-  return queryArr.join('\n');
-};
-
-async function recommendUserGuideSections(userId: number, user: string) {
-  const usages = await getUserApiUsage(userId);
-
-  if (!usages || usages.length === 0) {
-    return gettingStartedSection;
-  }
-
-  const query = parseUsagesIntoQuery(user, usages);
-
-  const embeddedQuery = await embedUserGuideQuery(query, user);
-  const similarRecords = await performUserGuideSimilaritySearch(embeddedQuery);
-
-  if (!similarRecords || similarRecords.length === 0) {
-    return gettingStartedSection;
-  }
-
-  return similarRecords.map(
-    (record: UserGuideEmbedding): UserGuideRecommendation => ({
-      section_title: record.section_title,
-      endpoint: `https://project-trofos.github.io/trofos${record.endpoint}`,
-    }),
-  );
-}
-
-export default { recommendUserGuideSections };
+export default { generateRecommendations };

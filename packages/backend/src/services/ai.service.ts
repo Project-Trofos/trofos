@@ -169,4 +169,4 @@ const askGptQueryWithContext = async (
   }
 };
 
-export { processUserGuideQuery, embedUserGuideQuery, performUserGuideSimilaritySearch };
+export { processUserGuideQuery };

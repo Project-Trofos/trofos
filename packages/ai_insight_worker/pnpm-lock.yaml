@@ -12,8 +12,8 @@ importers:
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
       '@trofos-nus/common':
-        specifier: ^1.0.17
-        version: 1.0.17(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
+        specifier: ^1.0.18
+        version: 1.0.18(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -100,8 +100,8 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@trofos-nus/common@1.0.17':
-    resolution: {integrity: sha512-wOudr9oXqEfkvokR0gxstJzaWRK6o4pvQzLcP84wQUrhsz7kDnKM0aucfFQsN8BwsqWLv/aYUZtLSS/3GLNNMw==}
+  '@trofos-nus/common@1.0.18':
+    resolution: {integrity: sha512-tEC7lKZiFyzXj5A/46m4SZCbr9JpMnV4ty3x0xi9+zqog1W2aYdUGOV2FgHlpEy1NUZd3n2FgXGYJBmBGSOrLw==}
     peerDependencies:
       '@prisma/client': '>=4.8.1'
       '@types/bcryptjs': ^2.4.4
@@ -443,7 +443,7 @@ snapshots:
     dependencies:
       '@redis/client': 1.6.0
 
-  '@trofos-nus/common@1.0.17(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+  '@trofos-nus/common@1.0.18(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
     dependencies:
       '@prisma/client': 4.8.1(prisma@4.8.1)
       '@types/bcryptjs': 2.4.6

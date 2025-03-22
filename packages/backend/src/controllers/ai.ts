@@ -20,11 +20,11 @@ const answerUserGuideQuery = async (req: express.Request, res: express.Response)
 
 const getUserGuideRecommendations = async (req: express.Request, res: express.Response) => {
   try {
-    const user = res.locals.userSession.user_email;
     const userId = res.locals.userSession.user_id;
+    const userRoleId = res.locals.userSession.user_role_id;
     assertUserIdIsValid(userId);
 
-    const response = await recommenderService.recommendUserGuideSections(Number(userId), user);
+    const response = await recommenderService.generateRecommendations(Number(userId), Number(userRoleId));
 
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

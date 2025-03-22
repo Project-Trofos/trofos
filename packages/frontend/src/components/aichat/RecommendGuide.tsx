@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { message, Modal, Button, Space, Popover, Typography, Dropdown, DropdownProps } from 'antd';
-import { useGetUserInfoQuery } from '../../api/auth';
+import React, { useState } from 'react';
+import { message, Space, Popover, Typography } from 'antd';
 import { useRecommendUserGuideSectionsMutation } from '../../api/ai';
 import { UserGuideRecommendation } from '../../api/types';
 import { getErrorMessage } from '../../helpers/error';

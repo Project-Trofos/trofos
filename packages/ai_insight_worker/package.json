@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@prisma/client": "4.8.1",
-    "@trofos-nus/common": "^1.0.17",
+    "@trofos-nus/common": "^1.0.18",
     "dotenv-cli": "^6.0.0",
     "openai": "^4.78.1",
     "prisma": "4.8.1",

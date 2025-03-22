@@ -15,13 +15,22 @@ Have .env file:
 ```
 OPENAI_API_KEY=...
 PG_VECTOR_CONN_STR="postgresql://postgres:postgres@postgres:5432/pgvector"
+DATABASE_URL="postgresql://postgres:postgres@postgres:5432/trofos"
 ```
 
-In `./docs`:
+To insert the user guide into the vector DB:
 
-`docker build -t insert_script .`
+1\. `cd` into `./docs`
 
-`docker run --rm --network trofos-application --env-file ./rag_script/.env insert_script`
+2\. Build the Docker image with `docker build -t insert_script .`
+
+3\. Run the Docker container with `docker run --rm --network trofos-application --env-file ./rag_script/.env insert_script`
+
+- This will only insert the user guide content into the vector DB
+
+3a\. If you want to re-insert the API mappings as well, run instead `docker run --rm --network trofos-application --env-file ./rag_script/.env insert_script --map-api`
+
+- This will insert both the user guide content into the vector DB and the API mappings into the trofos DB
 
 ## Guide
 
@@ -37,4 +46,4 @@ In `./docs`:
 
 ## Posts
 
-Add on into _posts to create new posts. Don't edit files in _site as it is auto-generated
+Add on into \_posts to create new posts. Don't edit files in \_site as it is auto-generated

@@ -12,6 +12,7 @@ import {
   FloatButton,
   DropdownProps,
   Button,
+  Popover,
 } from 'antd';
 import {
   BookOutlined,
@@ -84,7 +85,30 @@ function LogoutText() {
 function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
+  const doNotDisturbKey = 'helpPopoverDoNotDisturb';
+
+  const isUserGuideRecommenderActive = featureFlags?.some(
+    (flag) => flag.feature_name === 'user_guide_recommender' && flag.active,
+  );
+
+  // Check localStorage on component mount
+  useEffect(() => {
+    const doNotDisturb = localStorage.getItem(doNotDisturbKey);
+    if (doNotDisturb === null && isUserGuideRecommenderActive) {
+      setShowPopover(true);
+    }
+  }, [isUserGuideRecommenderActive]);
+
+  const handleClosePopover = () => {
+    setShowPopover(false);
+  };
+
+  const handleDoNotDisturb = () => {
+    localStorage.setItem(doNotDisturbKey, 'true');
+    setShowPopover(false);
+  };
 
   const handleDropdownOpenChange: DropdownProps['onOpenChange'] = (nextOpen, info) => {
     if (info.source === 'trigger' || nextOpen) {
@@ -95,9 +119,7 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
   const userGuideItems = [
     {
       key: 'user-guide-recommendations',
-      label: featureFlags?.some((flag) => flag.feature_name === 'user_guide_recommender' && flag.active) && (
-        <RecommendGuide />
-      ),
+      label: isUserGuideRecommenderActive && <RecommendGuide />,
     },
   ];
 
@@ -120,6 +142,28 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
     },
   ];
 
+  const popoverContent = (
+    <>
+      <Row>
+        <Col span={24}>
+          <Typography.Text>Need help? Hover to see suggested documentation and guides.</Typography.Text>
+        </Col>
+      </Row>
+      <Row justify="end" style={{ marginTop: 8 }}>
+        <Col>
+          <Space size="middle" direction="horizontal">
+            <Typography.Link onClick={handleDoNotDisturb} style={{ fontSize: '14px' }}>
+              Don't show again
+            </Typography.Link>
+            <Button size="small" type="primary" onClick={handleClosePopover}>
+              Close
+            </Button>
+          </Space>
+        </Col>
+      </Row>
+    </>
+  );
+
   return (
     <Space size={'middle'}>
       <Col>
@@ -129,20 +173,22 @@ function LoggedInHeader({ userInfo }: { userInfo: UserInfo | undefined }) {
         <GlobalSearch />
       </Col>
       <Col>
-        <Dropdown
-          menu={{
-            items: userGuideItems,
-            onClick: undefined, // disable closing dropdown on click
-          }}
-          placement="bottomRight"
-          onOpenChange={handleDropdownOpenChange}
-          open={isDropdownOpen}
-        >
-          <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
-            <QuestionCircleOutlined />
-            <DownOutlined />
-          </Button>
-        </Dropdown>
+        <Popover content={popoverContent} open={showPopover} placement="bottomRight" style={{ maxWidth: '300px' }}>
+          <Dropdown
+            menu={{
+              items: userGuideItems,
+              onClick: undefined, // disable closing dropdown on click
+            }}
+            placement="bottomRight"
+            onOpenChange={handleDropdownOpenChange}
+            open={isDropdownOpen}
+          >
+            <Button type="text" href="https://project-trofos.github.io/trofos/" target="_blank">
+              <QuestionCircleOutlined />
+              <DownOutlined />
+            </Button>
+          </Dropdown>
+        </Popover>
       </Col>
       {/* TODO: To be implemented */}
       {/* 

@@ -466,6 +466,16 @@ model ApiUsage {
   timestamp   DateTime  @default(now())
 }
 
+// Stores Api endpoint to user guide section mapping
+model ApiMapping {
+  id Int @id @default(autoincrement())
+  method String
+  path String
+  section_title String
+  endpoint String
+  created_at DateTime @default(now())
+}
+
 enum Feature {
   user_guide_copilot
   onboarding_tour

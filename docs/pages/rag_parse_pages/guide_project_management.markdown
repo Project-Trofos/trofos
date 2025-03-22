@@ -4,10 +4,12 @@ title: Project Management
 permalink: /guide/project-management
 ---
 
-* TOC
-{:toc}
+- TOC
+  {:toc}
 
 ## How to view my Projects
+
+<!-- API: GET /api/project/ -->
 
 Click the 'Projects' tab in the side bar to view your projects. Only projects where you have viewing permissions will be displayed. In the 'Projects' page, projects are further divided into past, future and present projects, determined by the start and end year and semester of the courses associated with it. If you can't find your project, try checking it 'Past projects' tab!
 
@@ -15,16 +17,22 @@ Click the 'Projects' tab in the side bar to view your projects. Only projects wh
 
 A **Project** organizes work and collaboration in the application. It involves users, sprints, backlogs, and epics, and can be associated with a course or independent.
 
-## Creating a project 
+## Creating a project
 
-You can create a new project in the ‘Projects’ page by clicking on the ‘Create project’ button.  Enter your project name and key, which will be used to prefix you backlogs (ie P1-1 for your first backlog of prefix P1). You can then choose to attach this project to a course,
+<!-- API: POST /api/project/ -->
+
+You can create a new project in the ‘Projects’ page by clicking on the ‘Create project’ button. Enter your project name and key, which will be used to prefix you backlogs (ie P1-1 for your first backlog of prefix P1). You can then choose to attach this project to a course,
 or leave it as an independent project. Only faculty members of a course can attach projects to a course. Similarly, only faculty memebrs can detach a project from a course after the project has been created, by clicking the 'More' icon (3 dots), in a specific project in its header displaying the project name at the top of the page..
 
 ## Viewing a project
 
+<!-- API: GET /api/project/:projectId -->
+
 To find your project, go to the ‘Projects’ page. You will see all the projects you have permission to. If your project is under a course, look at the corresponding ‘past’, ‘future’ or ‘present’ tabs. You can use strict project name search, or sort by course name or year. You can also use the search bar at the top to quickly navigate to a project by searching for its name.
 
 ## Deleting a project
+
+<!-- API: DELETE /api/project/:projectId -->
 
 A project can be deleted by clicking on the 'More' icon (3 dots), in a specific project in its header displaying the project name at the top of the page.
 
@@ -32,21 +40,31 @@ A project can be deleted by clicking on the 'More' icon (3 dots), in a specific 
 
 In the 'Overview' tab of a project, you can see a dashboard of the active sprint and a burndown chart. The dashboard shows a breakdown of what has been done so far for the active sprint, such as the number of story points completed each day and the breakdown of the statuses of backlogs. The burndown chart shows how much work is left to do in the project or sprint compared to the time remaining. It's a tool that helps teams visualize their progress and determine if they're on track to meet their goals. You can view the burndown chart of a specific sprint or the whole project with the dropdown at the top right of the chart. You can hover over points in the charts to see the details of the change in story points.
 
-A "good" burndown chart displays a line that generally slopes downwards in a relatively straight path, closely following the "ideal" line, indicating a steady and consistent rate of work completion throughout the sprint, with the line ideally reaching zero at the end of the sprint, signifying all work is finished; essentially, it shows a consistent decrease in remaining work over time, with minimal fluctuations and a clear trend towards completion. 
+A "good" burndown chart displays a line that generally slopes downwards in a relatively straight path, closely following the "ideal" line, indicating a steady and consistent rate of work completion throughout the sprint, with the line ideally reaching zero at the end of the sprint, signifying all work is finished; essentially, it shows a consistent decrease in remaining work over time, with minimal fluctuations and a clear trend towards completion.
 
 ## Project User Management
+
+<!-- API: GET /api/project/:projectId/user -->
+<!-- API: POST /api/project/:projectId/user -->
+<!-- API: DELETE /api/project/:projectId/user -->
 
 As a student, you can invite users by email. They will receive an email invite to join your project. Faculty members and admins can directly add users into projects and have permissions to remove users as well. You can track email invites sent in the project users page as well.
 
 ## Project sprints
 
+<!-- API: GET /api/sprint/listSprints/ -->
+
 You can view and manage your sprints in a project's 'Sprint' tab. A sprint is a short, focused period of work. In TROFOS, sprints have 3 states- upcoming, active and completed. An active sprint's details will be displayed in the project 'Board' tab in a scrum board, and completed sprints will have details of past backlogs, sprint boards and sprint retrospectives. In TROFOS, sprints are made up of backlogs. Some other additional features of sprints in TROFOS include sprint goals, sprint notes, scrum boards and sprint retrospectives. Avoid using the 'Sprint notes' in the sprint page as it is not synchronized with your groupmates and will be removed in the future. Instead, use the sprint notes in the 'Board' tab. It is comparable to Google Docs and changes made are reflected in real time.
 
 ## Creating a sprint
 
+<!-- API: POST /api/sprint/newSprint -->
+
 In the 'Sprint' tab of a project, click the 'New sprint' button to create sprints. Fill up the name, duration, start date and sprint goal if necessary. For less common sprint durations, select 'custom' in the sprint duration dropdown, and you can specify an end date for the sprint.
 
 ## Editing a sprint
+
+<!-- API: PUT /api/sprint/updateSprint -->
 
 To edit a sprint, click on the gear icon on a sprint in the 'Sprint' tab in a project. Details like the name, duration, start date and sprint goal can be edited.
 
@@ -56,13 +74,17 @@ To complete a sprint, click on the 'Complete sprint' button button on an active 
 
 ## Sprint retrospective
 
+<!-- API: POST /api/sprint/addRetrospective -->
+<!-- API: DELETE /api/sprint/deleteRetrospective/:retroId -->
+<!-- API: GET /api/sprint/getRetrospectives/:sprintId/:type -->
+
 Upon the completion of a sprint, you can access the retrospective page for that sprint in the 'Sprint' tab of a project, click on the 'Retrospective' button of a sprint. The Sprint Retrospective is an important part of Agile project management. Reflect on your sprint with these sections:
 
-* **What Went Well**: Note successes (e.g., "Completed all sprint goals on time", "Daily stand-ups improved communication").
+- **What Went Well**: Note successes (e.g., "Completed all sprint goals on time", "Daily stand-ups improved communication").
 
-* **What Could Be Done Better**: Identify issues constructively (e.g., "Underestimated task complexity", "Testing environment caused delays").
+- **What Could Be Done Better**: Identify issues constructively (e.g., "Underestimated task complexity", "Testing environment caused delays").
 
-* **Actions for Next Sprint**: Plan specific, actionable steps (e.g., "Refine task breakdowns for better estimates", "Document testing process").
+- **Actions for Next Sprint**: Plan specific, actionable steps (e.g., "Refine task breakdowns for better estimates", "Document testing process").
 
 Tips:
 
@@ -77,6 +99,9 @@ Tips:
 The most recently closed sprint can be re-opened if you have yet to start (make active) another sprint. Under the completed sprints section in the 'Sprint' tab of a project, click on the 'Reopen sprint' button.
 
 ## Backlogs
+
+<!-- API: POST /api/backlog/newBacklog -->
+<!-- API: GET /api/backlog/listBacklogs -->
 
 A **backlog** represents a single task, issue, or piece of work that needs to be completed. It contains all the details about the work, such as who is responsible, its priority, and its progress. Think of it as a structured way to track and manage individual tasks within your project. A backlog consists of the following fields:
 
@@ -104,9 +129,17 @@ A **backlog** represents a single task, issue, or piece of work that needs to be
 
 ## Viewing and editing a backlog
 
+<!-- API: PUT /api/backlog/updateBacklog -->
+<!-- API: DELETE /api/backlog/deleteBacklog/:projectId/:backllogId -->
+
 To view the details of a backlog, click on the backlog ID in a backlog, in the 'Sprint' tab of a project. You can edit the details of a backlog in this page. You can also delete a backlog by clicking on the gear icon in this page. Alternatively, you can edit some of the fields in the minified backlog in the project Sprints page. The scrum board also easliy allows you to change backlog statuses with a drag and drop interface.
 
 ## Epics
+
+<!-- API: POST /api/epic/newEpic -->
+<!-- API: POST /api/epic/addBacklog -->
+<!-- API: POST /api/epic/removeBacklog -->
+<!-- API: DELETE /api/epic/:epicId -->
 
 An epic is a large body of work that can be broken down into smaller tasks, (backlogs). It represents a major goal or feature in your project and helps you organize related work under one overarching theme.
 
@@ -128,6 +161,11 @@ A scrum board is a visual tool used in Agile to track the progress of tasks duri
 - Live Sprint Notes: Collaborate on live, Google Docs-like rich text editor for sprint discussions or updates.
 
 ## Stand ups
+
+<!-- API: POST /api/project/:projectId/standup/createStandUp -->
+<!-- API: PUT /api/project/:projectId/standup/updateStandUp -->
+<!-- API: GET /api/project/:projectId/standup/ -->
+<!-- API: DELETE /api/project/:projectId/standup/deleteStandUp/:standUpId -->
 
 Standups are short team meetings in Agile where members share three key updates: what’s done, what’s next, and any blockers. The goal is to keep everyone aligned, identify issues early, and adjust plans if needed. These are usually quick, lasting around 15 minutes, and focus on collaboration and progress.
 
@@ -161,6 +199,7 @@ A bar chart showing the team's performance over sprints.
   - **Completed**: Story points actually finished by the end.
 
 **How to Use It**:
+
 - Sprint velocity helps you understand how much work your team can handle over time, which is useful for planning future sprints.
 - Compare the committed and completed bars for each sprint to identify patterns.
 - Large gaps might indicate overcommitment or unexpected blockers.
@@ -179,6 +218,7 @@ A line chart that tracks the cumulative progress of story points over time.
   - **Done**
 
 **How to Use It**:
+
 - CFDs help you monitor workflow stability, ensuring work is progressing smoothly across statuses.
 - Use the date input field to focus on a specific time range.
 - Look for consistent, upward trends in the **Done** line, which indicates progress.
@@ -193,6 +233,7 @@ Tracks total work remaining for the project versus time.
 - **Key Insight**: A steady decline shows progress; plateaus suggest delays.
 
 **How to Use It**:
+
 - A burndown chart helps the team measure whether they’re on track to finish the project within the expected timeline.
 - Check the slope: Steeper declines mean faster completion.
 - Adjust workload or resources if the burndown doesn’t align with your project deadlines.
@@ -204,6 +245,7 @@ Tracks total work remaining for the project versus time.
 A pie chart that breaks down story point contributions by user.
 
 **How to Use It**:
+
 - Visualize team workload distribution and identify potential imbalances.
 - Ensure workload is evenly distributed.
 - Use this chart to recognize high contributors and redistribute tasks if needed.
@@ -231,15 +273,15 @@ The **Project Settings** section allows you to customize and manage key aspects 
 
 - **Add New Backlog Statuses**  
   If the default statuses (**To Do**, **In Progress**, **Done**) don’t meet your needs, you can create custom statuses to better track your workflow.  
-  *Example*: Add statuses like **Under Review** or **Testing** for more detailed progress tracking.
+  _Example_: Add statuses like **Under Review** or **Testing** for more detailed progress tracking.
 
-- **GitHub Linkage and Telegram Channel Notifications**  
-  - **GitHub Linkage**: Set up integration to your project. * 
-  - **Telegram Notifications**: Receive updates in your Telegram channel by *:  
-    - Adding **@trofos_nus_bot** to your Telegram channel.  
-    - Running the `/start` command.  
+- **GitHub Linkage and Telegram Channel Notifications**
+  - **GitHub Linkage**: Set up integration to your project. \*
+  - **Telegram Notifications**: Receive updates in your Telegram channel by \*:
+    - Adding **@trofos_nus_bot** to your Telegram channel.
+    - Running the `/start` command.
     - Copying your channel’s ID into the Project Settings.  
-  *Note*: These features are currently being reviewed for full functionality and will be enabled in future updates.
+      _Note_: These features are currently being reviewed for full functionality and will be enabled in future updates.
 
 **Future Updates\***
 
