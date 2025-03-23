@@ -14,7 +14,7 @@ const { Title } = Typography;
 export default function CourseProjectAssignments(): JSX.Element {
   const params = useParams();
   const { filteredProjects, isLoading } = useCourse(params.courseId);
-  const sortedProjects = filteredProjects.sort((a, b) => a.pname.localeCompare(b.pname));
+  const sortedProjects = [...filteredProjects].sort((a, b) => a.pname.localeCompare(b.pname));
 
   if (isLoading) {
     return <LoadingComponent />;
