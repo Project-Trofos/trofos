@@ -1,4 +1,4 @@
-import { Backlog, BacklogPriority, BacklogType, Issue, IssueStatusType } from '@prisma/client';
+import { Backlog, BacklogPriority, BacklogType, Issue, IssueStatusType, IssueType } from '@prisma/client';
 import { BacklogFromIssueFields, IssueFields } from '../../helpers/types/issue.service.types';
 
 export const mockIssueData: Issue = {
@@ -7,6 +7,7 @@ export const mockIssueData: Issue = {
   description: 'Test issue description',
   status: IssueStatusType.open,
   status_explanation: null,
+  type: IssueType.bug,
   priority: BacklogPriority.high,
   reporter_id: 1,
   assigner_project_id: 1,
@@ -33,6 +34,7 @@ export const mockIssueBacklog: Backlog = {
 
 export const mockBacklogFields: BacklogFromIssueFields = {
   summary: 'Test issue title',
+  type: IssueType.bug,
   priority: BacklogPriority.high,
   reporterId: 1,
   description: 'Test issue description',
@@ -43,6 +45,7 @@ export const mockIssueFields: IssueFields = {
   title: 'Test issue title',
   description: 'Test issue description',
   status: IssueStatusType.open,
+  type: IssueType.bug,
   priority: BacklogPriority.high,
   reporterId: 1,
   assignerProjectId: 1,
@@ -53,6 +56,7 @@ export const mockSelfAssignedIssueFields: IssueFields = {
   title: 'Test issue title',
   description: 'Test issue description',
   status: IssueStatusType.open,
+  type: IssueType.bug,
   priority: BacklogPriority.high,
   reporterId: 1,
   assignerProjectId: 1,
@@ -65,6 +69,7 @@ export const mockSelfAssignedIssueData: Issue = {
   description: 'Test issue description',
   status: IssueStatusType.open,
   status_explanation: null,
+  type: IssueType.bug,
   priority: BacklogPriority.high,
   reporter_id: 1,
   assigner_project_id: 1,

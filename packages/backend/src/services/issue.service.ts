@@ -1,12 +1,18 @@
-import { Backlog, BacklogStatusType, BacklogType, Issue, Prisma } from '@prisma/client';
+import { Backlog, BacklogStatusType, BacklogType, Issue, IssueType, Prisma } from '@prisma/client';
 import prisma from '../models/prismaClient';
 import { BacklogFromIssueFields, IssueFields } from '../helpers/types/issue.service.types';
 import projectAssignmentService from './projectAssignment.service';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 import backlogService from './backlog.service';
 
+const issueTypeToBacklogTypeMap: Map<IssueType, BacklogType> = new Map([
+  [IssueType.bug, BacklogType.bug],
+  [IssueType.enhancement, BacklogType.story],
+  [IssueType.task, BacklogType.task],
+]);
+
 async function newIssue(issueFields: IssueFields): Promise<Issue> {
-  const { title, description, status, priority, reporterId, assignerProjectId, assigneeProjectId } = issueFields;
+  const { title, description, status, type, priority, reporterId, assignerProjectId, assigneeProjectId } = issueFields;
 
   return prisma.$transaction<Issue>(async (tx: Prisma.TransactionClient) => {
     if (
@@ -21,6 +27,7 @@ async function newIssue(issueFields: IssueFields): Promise<Issue> {
         title,
         description,
         status,
+        type,
         priority,
         reporter: {
           connect: {
@@ -198,7 +205,7 @@ async function createBacklogFromIssue(
     // Prepare backlog fields
     const backlogFields: BacklogFields = {
       ...backlogFromIssueFields,
-      type: BacklogType.bug,
+      type: issueTypeToBacklogTypeMap.get(backlogFromIssueFields.type) || BacklogType.bug,
     };
 
     const createdBacklog = await backlogService.newBacklog(backlogFields);

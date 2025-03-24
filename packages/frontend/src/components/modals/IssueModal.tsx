@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Button, Form, Input, Modal, Select, message, Typography, Space, Row, Col } from 'antd';
 import { useCreateBacklogMutation, useCreateIssueMutation, useUpdateIssueMutation } from '../../api/issue';
 import { getErrorMessage } from '../../helpers/error';
-import { BacklogFromIssuePayload, BacklogPriority, Issue, IssueStatus } from '../../api/types';
+import { BacklogFromIssuePayload, BacklogPriority, Issue, IssueStatus, IssueType } from '../../api/types';
 import { useProject } from '../../api/hooks';
 import { Link, useParams } from 'react-router-dom';
 import { UserAvatar } from '../avatar/UserAvatar';
@@ -46,6 +46,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
       form.setFieldsValue({
         title: defaultIssue.title,
         assigneeProjectId: defaultIssue.assignee_project_id,
+        type: defaultIssue.type,
         priority: defaultIssue.priority,
         reporterId: defaultIssue.reporter_id,
         status: defaultIssue.status,
@@ -99,6 +100,7 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
     const backlogPayload: BacklogFromIssuePayload = {
       issueId: issue.id,
       summary: issue.title,
+      type: issue.type,
       priority: issue.priority || null,
       reporterId: userInfo.userId,
       description: descriptionPlaintext || null,
@@ -136,12 +138,14 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
             {readOnly ? <Text>{defaultIssue?.title || '-'}</Text> : <Input placeholder="Enter issue title here..." />}
           </Form.Item>
 
-          {!readOnly && (
-            <Form.Item
-              name="assigneeProjectId"
-              label="Project"
-              rules={[{ required: true, message: 'Please select a project!' }]}
-            >
+          <Form.Item
+            name="assigneeProjectId"
+            label={readOnly ? 'FROM Project' : 'Project'}
+            rules={[{ required: true, message: 'Please select a project!' }]}
+          >
+            {readOnly ? (
+              <Text>{defaultIssue?.assigner?.pname || '-'}</Text>
+            ) : (
               <Select placeholder="Select a project" allowClear>
                 <Select.Option key={project?.id} value={project?.id}>
                   {project?.pname}
@@ -152,8 +156,8 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
                   </Select.Option>
                 ))}
               </Select>
-            </Form.Item>
-          )}
+            )}
+          </Form.Item>
 
           {defaultIssue && (
             <>
@@ -180,6 +184,20 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
               </Form.Item>
             </>
           )}
+
+          <Form.Item name="type" label="Type" rules={[{ required: true, message: 'Please select a reporter!' }]}>
+            {readOnly ? (
+              <Text>{defaultIssue?.type ? transformToLabel(defaultIssue?.type) : '-'}</Text>
+            ) : (
+              <Select placeholder="Select a type">
+                {Object.values(IssueType).map((type) => (
+                  <Select.Option key={type} value={type}>
+                    {transformToLabel(type)}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
 
           <Form.Item name="priority" label="Priority">
             {readOnly ? (

@@ -1,12 +1,11 @@
 import { Button, Input, message, Select, Space, Table, Tag } from 'antd';
-import { BacklogPriority, Issue, IssueStatus } from '../../api/types';
+import { BacklogPriority, Issue, IssueStatus, IssueType } from '../../api/types';
 import { useDeleteIssueMutation, useUpdateIssueMutation } from '../../api/issue';
 import { getErrorMessage } from '../../helpers/error';
 import { UserAvatar } from '../avatar/UserAvatar';
 import { BACKLOG_PRIORITY_OPTIONS } from '../../helpers/constants';
 import IssueModal from '../modals/IssueModal';
 import { confirmDeleteIssue } from '../modals/confirm';
-import { useGetUserInfoQuery } from '../../api/auth';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../../api/hooks';
 
@@ -27,7 +26,7 @@ export const transformToLabel = (value: string) => value.charAt(0).toUpperCase()
 
 const IssuesTable: React.FC<IssuesTableProps> = ({ issues, loading, assignedBy = false }) => {
   const params = useParams();
-  const { project, assignedProjects } = useProject(Number(params.projectId || -1));
+  const { project } = useProject(Number(params.projectId || -1));
   const [updateIssue] = useUpdateIssueMutation();
   const [deleteIssue] = useDeleteIssueMutation();
 
@@ -128,6 +127,28 @@ const IssuesTable: React.FC<IssuesTableProps> = ({ issues, loading, assignedBy =
       />
       <Table.Column
         width={200}
+        title="Type"
+        dataIndex="type"
+        sorter={(a: Issue, b: Issue) => a.type.localeCompare(b.type)}
+        sortDirections={['ascend', 'descend']}
+        render={(type: IssueType, record: Issue) =>
+          assignedBy ? (
+            <Select
+              value={type}
+              onChange={(newType: IssueType) => updateIssueField(record.id, { type: newType })}
+              options={Object.values(IssueType).map((type) => ({
+                label: transformToLabel(type),
+                value: type,
+              }))}
+              style={{ width: '100%' }}
+            />
+          ) : (
+            <>{transformToLabel(type)}</>
+          )
+        }
+      />
+      <Table.Column
+        width={200}
         title="Priority"
         dataIndex="priority"
         sorter={(a: Issue, b: Issue) => {
@@ -191,36 +212,6 @@ const IssuesTable: React.FC<IssuesTableProps> = ({ issues, loading, assignedBy =
           )
         }
       />
-      {assignedBy ? (
-        <Table.Column
-          width={200}
-          title="TO Project"
-          dataIndex="assignee"
-          render={(assignee, record: Issue) => (
-            <Select
-              value={assignee?.id}
-              onChange={(newAssignee: number) => updateIssueField(record.id, { assignee_project_id: newAssignee })}
-              style={{ width: '100%' }}
-            >
-              <Select.Option key={project?.id} value={project?.id}>
-                {project?.pname}
-              </Select.Option>
-              {assignedProjects?.map(({ id, targetProject }) => (
-                <Select.Option key={id} value={targetProject.id}>
-                  {targetProject.pname}
-                </Select.Option>
-              ))}
-            </Select>
-          )}
-        />
-      ) : (
-        <Table.Column
-          width={200}
-          title="FROM Project"
-          dataIndex="assigner"
-          render={(assigner) => <>{assigner ? assigner.pname : '-'}</>}
-        />
-      )}
       <Table.Column
         width={200}
         title="Action"
