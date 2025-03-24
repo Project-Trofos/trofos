@@ -93,7 +93,7 @@ const IssuesTable: React.FC<IssuesTableProps> = ({ issues, loading, assignedBy =
               }}
             />
           ) : (
-            <span>{title}</span>
+            <>{title}</>
           )
         }
       />
@@ -202,6 +202,9 @@ const IssuesTable: React.FC<IssuesTableProps> = ({ issues, loading, assignedBy =
               onChange={(newAssignee: number) => updateIssueField(record.id, { assignee_project_id: newAssignee })}
               style={{ width: '100%' }}
             >
+              <Select.Option key={project?.id} value={project?.id}>
+                {project?.pname}
+              </Select.Option>
               {assignedProjects?.map(({ id, targetProject }) => (
                 <Select.Option key={id} value={targetProject.id}>
                   {targetProject.pname}
