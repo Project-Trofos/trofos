@@ -66,7 +66,7 @@ describe('issue.service tests', () => {
       await expect(issueService.newIssue(issueFields)).resolves.toEqual(mockSelfAssignedIssueData);
     });
 
-    it('should throw an error if assignee project is not assigned to the assigner project', async () => {
+    it('should not create if assignee project is not assigned to the assigner project and the issue is not self assigned', async () => {
       const issueFields: IssueFields = mockIssueFields;
       const projectAssignment: ProjectAssignment = {
         id: 1,
@@ -76,7 +76,7 @@ describe('issue.service tests', () => {
 
       serviceSpies.isProjectAssigned.mockResolvedValueOnce(false);
 
-      await expect(issueService.newIssue(issueFields)).rejects.toThrowError();
+      await issueService.newIssue(issueFields);
       expect(prismaMock.issue.create).not.toHaveBeenCalled();
     });
   });
