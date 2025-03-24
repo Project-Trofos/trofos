@@ -143,6 +143,9 @@ const IssueModal: React.FC<IssueModalProps> = ({ defaultIssue, readOnly }) => {
               rules={[{ required: true, message: 'Please select a project!' }]}
             >
               <Select placeholder="Select a project" allowClear>
+                <Select.Option key={project?.id} value={project?.id}>
+                  {project?.pname}
+                </Select.Option>
                 {assignedProjects?.map(({ id, targetProject }) => (
                   <Select.Option key={id} value={targetProject.id}>
                     {targetProject.pname}

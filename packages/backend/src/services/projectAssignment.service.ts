@@ -61,7 +61,7 @@ async function getAssignedProjects(projectId: number): Promise<{ id: number; tar
   });
 }
 
-async function checkProjectAssigned(sourceProjectId: number, targetProjectId: number): Promise<void> {
+async function isProjectAssigned(sourceProjectId: number, targetProjectId: number): Promise<boolean> {
   const projectAssignment = await prisma.projectAssignment.findUnique({
     where: {
       sourceProjectId_targetProjectId: {
@@ -71,9 +71,7 @@ async function checkProjectAssigned(sourceProjectId: number, targetProjectId: nu
     },
   });
 
-  if (!projectAssignment) {
-    throw new Error('Invalid project assignment. Action not permitted.');
-  }
+  return !!projectAssignment;
 }
 
-export default { create, remove, getAssignedProjects, checkProjectAssigned };
+export default { create, remove, getAssignedProjects, isProjectAssigned };

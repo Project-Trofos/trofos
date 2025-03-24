@@ -48,3 +48,27 @@ export const mockIssueFields: IssueFields = {
   assignerProjectId: 1,
   assigneeProjectId: 2,
 };
+
+export const mockSelfAssignedIssueFields: IssueFields = {
+  title: 'Test issue title',
+  description: 'Test issue description',
+  status: IssueStatusType.open,
+  priority: BacklogPriority.high,
+  reporterId: 1,
+  assignerProjectId: 1,
+  assigneeProjectId: 1,
+};
+
+export const mockSelfAssignedIssueData: Issue = {
+  id: 1,
+  title: 'Test issue title',
+  description: 'Test issue description',
+  status: IssueStatusType.open,
+  status_explanation: null,
+  priority: BacklogPriority.high,
+  reporter_id: 1,
+  assigner_project_id: 1,
+  assignee_project_id: 1,
+  created_at: new Date(Date.now()),
+  updated_at: new Date(Date.now()),
+};

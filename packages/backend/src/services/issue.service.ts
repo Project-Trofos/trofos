@@ -9,7 +9,12 @@ async function newIssue(issueFields: IssueFields): Promise<Issue> {
   const { title, description, status, priority, reporterId, assignerProjectId, assigneeProjectId } = issueFields;
 
   return prisma.$transaction<Issue>(async (tx: Prisma.TransactionClient) => {
-    projectAssignmentService.checkProjectAssigned(assignerProjectId, assigneeProjectId);
+    if (
+      !(await projectAssignmentService.isProjectAssigned(assignerProjectId, assigneeProjectId)) &&
+      assignerProjectId !== assigneeProjectId
+    ) {
+      throw new Error('Assignee project is not assigned to the assigner project');
+    }
 
     return tx.issue.create({
       data: {
