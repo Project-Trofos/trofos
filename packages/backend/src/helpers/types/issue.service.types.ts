@@ -1,9 +1,10 @@
-import { BacklogPriority, IssueStatusType } from '@prisma/client';
+import { BacklogPriority, IssueStatusType, IssueType } from '@prisma/client';
 
 export type IssueFields = {
   title: string;
   description?: string;
   status?: IssueStatusType;
+  type: IssueType;
   priority?: BacklogPriority;
   reporterId: number;
   assignerProjectId: number;
@@ -12,6 +13,7 @@ export type IssueFields = {
 
 export type BacklogFromIssueFields = {
   summary: string;
+  type: IssueType;
   priority: BacklogPriority;
   reporterId: number;
   description?: string;

@@ -2,13 +2,20 @@ import { Prisma, ProjectAssignment } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import issueService from '../../services/issue.service';
 import { IssueFields } from '../../helpers/types/issue.service.types';
-import { mockIssueBacklog, mockIssueData, mockIssueFields, mockBacklogFields } from '../mocks/issueData';
+import {
+  mockIssueBacklog,
+  mockIssueData,
+  mockIssueFields,
+  mockBacklogFields,
+  mockSelfAssignedIssueFields,
+  mockSelfAssignedIssueData,
+} from '../mocks/issueData';
 import backlogService from '../../services/backlog.service';
 import projectAssignmentService from '../../services/projectAssignment.service';
 
 const serviceSpies = {
   newBacklog: jest.spyOn(backlogService, 'newBacklog'),
-  checkProjectAssigned: jest.spyOn(projectAssignmentService, 'checkProjectAssigned'),
+  isProjectAssigned: jest.spyOn(projectAssignmentService, 'isProjectAssigned'),
 };
 
 describe('issue.service tests', () => {
@@ -21,7 +28,7 @@ describe('issue.service tests', () => {
         targetProjectId: issueFields.assigneeProjectId,
       };
 
-      serviceSpies.checkProjectAssigned.mockResolvedValueOnce(undefined as void);
+      serviceSpies.isProjectAssigned.mockResolvedValueOnce(true);
 
       const mockTransactionClient = {
         issue: {
@@ -34,6 +41,43 @@ describe('issue.service tests', () => {
       });
 
       await expect(issueService.newIssue(issueFields)).resolves.toEqual(mockIssueData);
+    });
+
+    it('should create and return a self assigned issue', async () => {
+      const issueFields: IssueFields = mockSelfAssignedIssueFields;
+      const projectAssignment: ProjectAssignment = {
+        id: 1,
+        sourceProjectId: issueFields.assignerProjectId,
+        targetProjectId: issueFields.assigneeProjectId,
+      };
+
+      serviceSpies.isProjectAssigned.mockResolvedValueOnce(false);
+
+      const mockTransactionClient = {
+        issue: {
+          create: jest.fn().mockResolvedValueOnce(mockSelfAssignedIssueData),
+        },
+      };
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        return callback(mockTransactionClient as unknown as Prisma.TransactionClient);
+      });
+
+      await expect(issueService.newIssue(issueFields)).resolves.toEqual(mockSelfAssignedIssueData);
+    });
+
+    it('should not create if assignee project is not assigned to the assigner project and the issue is not self assigned', async () => {
+      const issueFields: IssueFields = mockIssueFields;
+      const projectAssignment: ProjectAssignment = {
+        id: 1,
+        sourceProjectId: issueFields.assignerProjectId,
+        targetProjectId: issueFields.assigneeProjectId,
+      };
+
+      serviceSpies.isProjectAssigned.mockResolvedValueOnce(false);
+
+      await issueService.newIssue(issueFields);
+      expect(prismaMock.issue.create).not.toHaveBeenCalled();
     });
   });
 

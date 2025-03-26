@@ -166,4 +166,39 @@ describe('projectAssignment.service tests', () => {
       });
     });
   });
+
+  describe('isProjectAssigned', () => {
+    it('should return true if the project is assigned', async () => {
+      const sourceProjectId = 1;
+      const targetProjectId = 2;
+      const mockProjectAssignment: ProjectAssignment = {
+        id: 10,
+        sourceProjectId,
+        targetProjectId,
+      };
+
+      prismaMock.projectAssignment.findUnique.mockResolvedValueOnce(mockProjectAssignment);
+
+      const result = await projectAssignmentService.isProjectAssigned(sourceProjectId, targetProjectId);
+
+      expect(result).toBe(true);
+      expect(prismaMock.projectAssignment.findUnique).toHaveBeenCalledWith({
+        where: { sourceProjectId_targetProjectId: { sourceProjectId, targetProjectId } },
+      });
+    });
+
+    it('should return false if the project is not assigned', async () => {
+      const sourceProjectId = 1;
+      const targetProjectId = 2;
+
+      prismaMock.projectAssignment.findUnique.mockResolvedValueOnce(null);
+
+      const result = await projectAssignmentService.isProjectAssigned(sourceProjectId, targetProjectId);
+
+      expect(result).toBe(false);
+      expect(prismaMock.projectAssignment.findUnique).toHaveBeenCalledWith({
+        where: { sourceProjectId_targetProjectId: { sourceProjectId, targetProjectId } },
+      });
+    });
+  });
 });

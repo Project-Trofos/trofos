@@ -397,6 +397,7 @@ model Issue {
   status             IssueStatusType @default(open)
   status_explanation String?
 
+  type  IssueType @default(bug)
   priority BacklogPriority?
 
   reporter    UsersOnProjects @relation("UserReportedIssues", fields: [reporter_id, assigner_project_id], references: [user_id, project_id])
@@ -518,6 +519,12 @@ enum BacklogType {
   story
   task
   bug
+}
+
+enum IssueType {
+  bug
+  enhancement
+  task
 }
 
 enum BacklogPriority {

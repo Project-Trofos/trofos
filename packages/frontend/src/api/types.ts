@@ -427,6 +427,7 @@ export type Issue = {
   status_explanation: string | null;
 
   priority: BacklogPriority;
+  type: IssueType;
 
   reporter: {
     user: Pick<User, 'user_display_name' | 'user_email'>;
@@ -442,6 +443,12 @@ export type Issue = {
   backlog: Pick<Backlog, 'backlog_id'>;
 };
 
+export enum IssueType {
+  BUG = 'bug',
+  ENHANCEMENT = 'enhancement',
+  TASK = 'task',
+}
+
 export enum IssueStatus {
   OPEN = 'open',
   VALID = 'valid',
@@ -452,6 +459,7 @@ export enum IssueStatus {
 export type BacklogFromIssuePayload = {
   issueId: number;
   summary: string;
+  type: IssueType;
   priority: BacklogPriority;
   reporterId: number;
   description: string | null;
