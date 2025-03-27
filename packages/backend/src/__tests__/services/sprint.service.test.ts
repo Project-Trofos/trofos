@@ -1,4 +1,4 @@
-import { Sprint, SprintStatus } from '@prisma/client';
+import { Feature, Sprint, SprintStatus } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import sprintService from '../../services/sprint.service';
 import { SprintFields } from '../../helpers/types/sprint.service.types';
@@ -134,6 +134,7 @@ describe('sprint.service tests', () => {
         status: 'current',
         projectId: 123,
       };
+      prismaMock.sprint.findFirstOrThrow.mockResolvedValueOnce(mockSprintData);
       prismaMock.sprint.findFirst.mockResolvedValueOnce(null);
       prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
       prismaMock.sprint.updateMany.mockResolvedValue({ count: 0 });
@@ -156,7 +157,13 @@ describe('sprint.service tests', () => {
         status: 'completed',
         projectId: 123,
       };
-      prismaMock.sprint.update.mockResolvedValue(mockReturnedSprint);
+      prismaMock.sprint.findFirstOrThrow.mockResolvedValueOnce({
+        ...mockSprintData,
+        status: 'current',
+      });
+      // ignore sprint insights
+      prismaMock.featureFlag.findUnique.mockResolvedValueOnce({ id: 1, feature_name: Feature.ai_insights , active: false });
+      prismaMock.$transaction.mockResolvedValue(mockReturnedSprint);
       await expect(sprintService.updateSprintStatus(sprintToUpdate, "user")).resolves.toEqual(mockReturnedSprint);
     });
 
@@ -170,6 +177,7 @@ describe('sprint.service tests', () => {
         status: 'current',
         projectId: 123,
       };
+      prismaMock.sprint.findFirstOrThrow.mockResolvedValueOnce(mockSprintData);
       prismaMock.$transaction.mockRejectedValueOnce(new BadRequestError(SPRINT_EXIST_ERR_MSG));
       await expect(sprintService.updateSprintStatus(sprintToUpdate, "user")).rejects.toThrow(SPRINT_EXIST_ERR_MSG);
     });

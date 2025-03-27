@@ -217,7 +217,7 @@ async function updateSprintStatus(
   // upcoming is auto created, closed is handled automatically when new 'current' sprint is created
   if (status === 'current') {
     if (sprintToUpdateInstance.status !== 'upcoming' && sprintToUpdateInstance.status !== 'completed') {
-      throw new BadRequestError('Invalid status transition');
+      throw new BadRequestError('Invalid status transition: ' + sprintToUpdateInstance.status + ' -> ' + status);
     }
 
     return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
@@ -261,7 +261,7 @@ async function updateSprintStatus(
   // publish event to generate retrospective insights
   else if (status === 'completed') {
     if (sprintToUpdateInstance.status !== 'current') {
-      throw new BadRequestError('Invalid status transition');
+      throw new BadRequestError('Invalid status transition: ' + sprintToUpdateInstance.status + ' -> ' + status);
     }
 
     return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
