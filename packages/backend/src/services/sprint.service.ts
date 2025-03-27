@@ -202,9 +202,23 @@ async function updateSprintStatus(
   user: string,
 ): Promise<Sprint> {
   const { sprintId, projectId, status } = sprintToUpdate;
+  
+  assertProjectIdIsValid(projectId);
 
+  const sprintToUpdateInstance = await prisma.sprint.findFirstOrThrow({
+    where: {
+      id: sprintId,
+      project_id: projectId,
+    },
+  });
+
+  // only 2 actions available currently - upcoming -> current, completed -> current
+  // and current -> completed
+  // upcoming is auto created, closed is handled automatically when new 'current' sprint is created
   if (status === 'current') {
-    assertProjectIdIsValid(projectId);
+    if (sprintToUpdateInstance.status !== 'upcoming' && sprintToUpdateInstance.status !== 'completed') {
+      throw new BadRequestError('Invalid status transition');
+    }
 
     return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
       // ensure there are no other active sprint for the project
@@ -245,30 +259,53 @@ async function updateSprintStatus(
   }
 
   // publish event to generate retrospective insights
-  if (status === 'completed' && await checkFeatureFlagInCode(Feature.ai_insights)) {
-    // there shouldn't be completed sprints yet - since only 1 active sprint at a time and all others are closed
-    const isCompletedPresent = await prisma.sprint.findFirst({
-      where: {
-        project_id: projectId,
-        status: 'completed',
-      },
-    });
-    if (isCompletedPresent) {
-      throw new BadRequestError('A completed sprint already exists');
+  else if (status === 'completed') {
+    if (sprintToUpdateInstance.status !== 'current') {
+      throw new BadRequestError('Invalid status transition');
     }
-    publishTask(projectId, sprintId, user);
+
+    return prisma.$transaction<Sprint>(async (tx: Prisma.TransactionClient) => {
+      // there shouldn't be completed sprints yet - since only 1 active sprint at a time and all others are closed
+      const isCompletedPresent = await tx.sprint.findFirst({
+        where: {
+          project_id: projectId,
+          status: 'completed',
+        },
+      });
+      if (isCompletedPresent) {
+        // by right should not reach here, but we will auto remedy by setting completed -> closed
+        console.error('Completed sprint already exists');
+        await tx.sprint.updateMany({
+          where: {
+            project_id: projectId,
+            status: 'completed',
+          },
+          data: {
+            status: 'closed',
+          },
+        });
+      }
+
+      if (await checkFeatureFlagInCode(Feature.ai_insights)) {
+        publishTask(projectId, sprintId, user);
+      }
+
+      const updatedSprint = await prisma.sprint.update({
+        where: {
+          id: sprintId,
+        },
+        data: {
+          status,
+        },
+      });
+    
+      return updatedSprint;
+    });
   }
 
-  const updatedSprint = await prisma.sprint.update({
-    where: {
-      id: sprintId,
-    },
-    data: {
-      status,
-    },
-  });
-
-  return updatedSprint;
+  else {
+    throw new BadRequestError('Invalid status transition');
+  }
 }
 
 async function deleteSprint(sprintId: number): Promise<Sprint> {
