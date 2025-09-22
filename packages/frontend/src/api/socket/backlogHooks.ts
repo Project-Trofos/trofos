@@ -1,5 +1,6 @@
 import {
   useAddBacklogMutation as rtkUseAddBacklogMutation,
+  useAddBacklogsMutation as rtkUseAddBacklogsMutation,
   useUpdateBacklogMutation as rtkUseUpdateBacklogMutation,
   useDeleteBacklogMutation as rtkUseDeleteBacklogMutation,
   useAddEpicMutation as rtkUseAddEpicMutation,
@@ -16,6 +17,13 @@ const useAddBacklogMutation = attachFunctionToRtkHookHOF(rtkUseAddBacklogMutatio
   emitUpdateEvent(`${UpdateType.BACKLOG}/${mutArgs.projectId}`);
 }, (mutArgs) => {
   emitUpdateEvent(`${UpdateType.RETRO}/${mutArgs.retrospective?.sprint_id}`, mutArgs.retrospective?.type);
+});
+
+// not complete
+const useAddBacklogsMutation = attachFunctionToRtkHookHOF(rtkUseAddBacklogsMutation, (mutArgs) => {
+  
+}, (mutArgs) => {
+  
 });
 
 // Update backlog mutation hook, also emit update event to backend via socket io
@@ -49,6 +57,7 @@ const useDeleteEpicMutation = attachFunctionToRtkHookHOF(rtkUseDeleteEpicMutatio
 
 export {
   useAddBacklogMutation,
+  useAddBacklogsMutation,
   useUpdateBacklogMutation,
   useDeleteBacklogMutation,
   useAddEpicMutation,

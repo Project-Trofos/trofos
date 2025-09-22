@@ -4,6 +4,8 @@ import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';
 import { redis } from './aiInsight.service';
+import { z } from 'zod';
+import { zodTextFormat } from 'openai/helpers/zod';
 
 const COPILOT_CHAT_HISTORY_KEY_PREFIX = 'copilot_chat_history_';
 const EMBEDDING_SIMILARITY_THRESHOLD = 1.15;
@@ -13,6 +15,18 @@ type RedisChatHistoryEntry = {
   content: string;
   hasRelevantContext?: boolean;
 };
+
+const backlogsFormat = z.array(
+  z.object({
+    summary: z.string().min(1).max(255),
+    description: z.string().min(1).max(2000),
+    type: z.enum(['story', 'bug', 'task']),
+    priority: z.enum(['very_high', 'high', 'medium', 'low', 'very_low']),
+    points: z.number().min(1),
+  }),
+);
+
+export type PartialBacklogs = z.infer<typeof backlogsFormat>;
 
 const getChatHistory = async (user: string): Promise<[RedisChatHistoryEntry]> => {
   const historyJson = await redis.get(COPILOT_CHAT_HISTORY_KEY_PREFIX + user);
@@ -123,6 +137,45 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
   }
 };
 
+const generateBacklogsItems = async (query: string): Promise<PartialBacklogs> => {
+  try {
+    const openai = getOpenAiClient();
+    const response = await openai.responses.parse({
+      model: 'gpt-4o-mini',
+      input: [
+        {
+          role: 'developer',
+          content: `You are an Agile product owner. Given the following prompt for the sprint, expand it into multiple backlog items with clear, actionable summary and descriptions. Each item should include a category, priority, and story points.
+            - Feature: new functionality visible to users
+            - Bug: issues/errors that break expected functionality
+            - Task: technical chores not visible to users
+            Priority ranges from very_high, high, medium, low, very_low, and 1 story point should be about 4 hours of work.
+
+            Strictly output the result as JSON in the following format:
+            [
+              {
+                "summary": "Short actionable title",
+                "description": "Detailed description of backlog item",
+                "category": "Feature | Bug | Task",
+                "priority": "very_high | high | medium | low | very_low",
+                "points": number
+              }
+            ]`
+        },
+        { role: 'user', content: query },
+      ],
+      text: {
+        format: zodTextFormat(z.object({backlogs: backlogsFormat}), 'backlogs'),
+      },
+    });
+    console.log(response.output_parsed);
+    return response.output_parsed?.backlogs ?? [];
+  } catch (error) {
+    console.error(`Error generating GPT response: ${error}`);
+    return [];
+  }
+};
+
 const askGptQueryWithContext = async (
   query: string,
   topSimilarResults: UserGuideEmbedding[],
@@ -136,20 +189,27 @@ const askGptQueryWithContext = async (
       topSimilarResults.length > 0
         ? topSimilarResults.map((result) => result.section_title + ': ' + result.content).join('\n')
         : 'No context. Use previous chat history or do not answer if the question is irrelevant.';
-    const chatCompletion = await openai.chat.completions.create({
-      messages: [
+    const chatCompletion = await openai.responses.parse({
+      input: [
         {
           role: 'developer',
-          content: [
-            {
-              type: 'text',
-              text: `
-                You are a helpful assistant in a RAG that answers user queries on our agile project management application. Strictly only answer questions regarding our project management application, according to the following context. This is additional context for the user query: ${context}
-              `,
-            },
-          ],
+          content: `You are an Agile product owner. Given the following prompt for the sprint, expand it into multiple backlog items with clear, actionable titles and descriptions. Each item should include a category, priority, and story points.
+            - Feature: new functionality visible to users
+            - Bug: issues/errors that break expected functionality
+            - Task: technical chores not visible to users
+            Priority ranges from very_high, high, medium, low, very_low, and 1 story point should be about 4 hours of work.
+
+            Strictly output the result as JSON in the following format:
+            [
+              {
+                "title": "Short actionable title",
+                "description": "Detailed description of backlog item",
+                "category": "Feature | Bug | Task",
+                "priority": "very_high | high | medium | low | very_low",
+                "story_points": number
+              }
+            ]`
         },
-        ...history,
         {
           role: 'user',
           content: query,
@@ -157,8 +217,12 @@ const askGptQueryWithContext = async (
       ],
       model: 'gpt-4o-mini',
       user: user,
+      text: {
+        format: zodTextFormat(backlogsFormat, 'backlogs'),
+      },
     });
-    const response = chatCompletion.choices[0].message.content ? chatCompletion.choices[0].message.content : '';
+    console.log(chatCompletion.output_parsed);
+    const response = String(chatCompletion.output_parsed) ?? '';
     if (isEnableMemory) {
       await pushNewChatMessage(user, query, response, topSimilarResults.length > 0);
     }
@@ -169,4 +233,4 @@ const askGptQueryWithContext = async (
   }
 };
 
-export { processUserGuideQuery };
+export { processUserGuideQuery, generateBacklogsItems };

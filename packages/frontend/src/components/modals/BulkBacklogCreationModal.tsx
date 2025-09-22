@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Col, Form, Modal, Row, Tooltip, message } from 'antd';
+import { Button, Form, Modal, Tooltip, message } from 'antd';
 import { useParams } from 'react-router-dom';
-import { useAddBacklogMutation } from '../../api/socket/backlogHooks';
-import BacklogSummaryInput from '../fields/BacklogSummaryInput';
-import BacklogSelect from '../fields/BacklogSelect';
+import { useAddBacklogsMutation } from '../../api/socket/backlogHooks';
 import BacklogUserSelect from '../fields/BacklogUserSelect';
-import BacklogInputNumber from '../fields/BacklogInputNumber';
 import BacklogTextArea from '../fields/BacklogTextArea';
 import type { BacklogSelectTypes, BacklogFormFields } from '../../helpers/BacklogModal.types';
 import './BacklogCreationModal.css';
@@ -14,12 +11,11 @@ import { Sprint, useGetSprintsByProjectIdQuery } from '../../api/sprint';
 import { DefaultBacklog, Retrospective } from '../../api/types';
 import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
-import SprintCreationModal from './SprintCreationModal';
 import { GENERIC_NEW_SPRINT, autoSuggestNewSprint } from '../../helpers/sprintCreationHelper';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 import { useGetUserInfoQuery } from '../../api/auth';
 
-function BacklogCreationModal({
+function BulkBacklogCreationModal({
   fixedSprint,
   title,
   modalKey,
@@ -36,25 +32,13 @@ function BacklogCreationModal({
   retrospective?: Retrospective;
   disableClickEvent?: boolean;
 }): JSX.Element {
-  const TYPES: BacklogSelectTypes[] = [
-    { id: 'story', name: 'Story' },
-    { id: 'task', name: 'Task' },
-    { id: 'bug', name: 'Bug' },
-  ];
-  const PRIORITIES: BacklogSelectTypes[] = [
-    { id: 'very_high', name: 'Very High' },
-    { id: 'high', name: 'High' },
-    { id: 'medium', name: 'Medium' },
-    { id: 'low', name: 'Low' },
-    { id: 'very_low', name: 'Very Low' },
-  ];
 
   const params = useParams();
   const [form] = Form.useForm();
 
   const projectId = Number(params.projectId);
 
-  const [addBacklog] = useAddBacklogMutation();
+  const [addBacklogs] = useAddBacklogsMutation();
   const { data: projectData } = useGetProjectQuery({ id: projectId });
   const { data: epicData } = useGetEpicsByProjectIdQuery({ projectId: projectId });
   const { data: projectSprintData } = useGetSprintsByProjectIdQuery(projectId);
@@ -77,20 +61,21 @@ function BacklogCreationModal({
     setIsModalVisible(false);
   };
 
-  const handleFormSubmit = async (data: FormData): Promise<void> => {
+  const handleFormSubmit = async (data: {reporterId: number, prompt: string}): Promise<void> => {
     setIsLoading(true);
 
-    const payload: BacklogFormFields = {
+    console.log(data);
+
+    const payload = {
       ...data,
       projectId: Number(params.projectId),
-      retrospective,
     };
 
     try {
-      await addBacklog(payload).unwrap();
+      await addBacklogs(payload).unwrap();
       setIsModalVisible(false);
       form.resetFields();
-      message.success('Backlog created successfully');
+      message.success('Backlogs created successfully');
     } catch (e) {
       console.error(e);
       message.error(getErrorMessage(e));
@@ -101,7 +86,7 @@ function BacklogCreationModal({
 
   const renderFooter = (): JSX.Element[] => [
     <Button
-      form={`newBacklog${modalKey ? `-${modalKey}` : ''}`}
+      form={`newBacklogs${modalKey ? `-${modalKey}` : ''}`}
       key="submit"
       type="primary"
       htmlType="submit"
@@ -110,15 +95,6 @@ function BacklogCreationModal({
       Create
     </Button>,
   ];
-
-  const renderTypeSelect = (): JSX.Element => {
-    const defaultType = defaultBacklog?.type ? TYPES.find((p) => p.id === defaultBacklog?.type) : undefined;
-    return (
-      <Form.Item name="type" label="Type" rules={[{ required: true }]} initialValue={defaultType?.id}>
-        <BacklogSelect options={TYPES} placeholder="Type of backlog" defaultValue={defaultType} />
-      </Form.Item>
-    );
-  };
 
   // Sort sprints by ID desc
   let sprintOptionsDescending = projectSprintData?.sprints
@@ -144,60 +120,6 @@ function BacklogCreationModal({
       ? autoSuggestNewSprint(projectSprintData.sprints[projectSprintData.sprints.length - 1])
       : GENERIC_NEW_SPRINT;
 
-  const renderSprintSelect = (): JSX.Element => {
-    const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
-    return (
-      <Row gutter={8}>
-        <Col>
-          <Form.Item name="sprintId" label="Sprint" initialValue={fixedSprint ? fixedSprint.id : undefined}>
-            <BacklogSelect
-              options={sprintOptionsDescending || []}
-              placeholder="Select Sprint"
-              allowClear
-              fixedValue={fixedSprintValue}
-              showSearch
-              className="sprint-select"
-            />
-          </Form.Item>
-        </Col>
-        {shouldCreateNewSprint && (
-          <Col>
-            <SprintCreationModal
-              isModalVisible={isSprintModalVisible}
-              setIsModalVisible={setIsSprintModalVisible}
-              sprint={newSprint}
-              setSprint={setNewSprint}
-              latestSprint={autoGeneratedNewSprint}
-            />
-          </Col>
-        )}
-      </Row>
-    );
-  };
-
-  const renderEpicSelect = (): JSX.Element => {
-    return (
-      <Form.Item name="epicId" label="Epic">
-        <BacklogSelect
-          options={epicData ? epicData.map((e) => ({ id: e.epic_id, name: e.name })) : []}
-          placeholder="Select Epic"
-          allowClear
-        />
-      </Form.Item>
-    );
-  };
-
-  const renderPrioritySelect = (): JSX.Element => {
-    const defaultPriority = defaultBacklog?.priority
-      ? PRIORITIES.find((p) => p.id === defaultBacklog?.priority)
-      : undefined;
-    return (
-      <Form.Item name="priority" label="Priority" initialValue={defaultPriority?.id}>
-        <BacklogSelect options={PRIORITIES} placeholder="Select Priority" defaultValue={defaultPriority} allowClear />
-      </Form.Item>
-    );
-  };
-
   const renderReporterSelect = (): JSX.Element => {
     //todo
     console.log(defaultBacklog);
@@ -209,30 +131,11 @@ function BacklogCreationModal({
     );
   };
 
-  const renderAssigneeSelect = (): JSX.Element => (
-    <Form.Item name="assigneeId" label="Assignee">
-      <BacklogUserSelect options={projectData?.users || []} placeholder="Assign to" allowClear />
-    </Form.Item>
-  );
-
   const renderContent = (): JSX.Element => (
-    <Form id={`newBacklog${modalKey ? `-${modalKey}` : ''}`} form={form} onFinish={handleFormSubmit}>
-      <Form.Item name="summary" rules={[{ required: true }]} initialValue={defaultBacklog?.summary ?? ''}>
-        <BacklogSummaryInput placeholder="* Type summary here..." defaultValue={defaultBacklog?.summary ?? ''} />
-      </Form.Item>
-      {renderTypeSelect()}
-      {renderSprintSelect()}
-      {renderEpicSelect()}
-      {renderPrioritySelect()}
-      <Row gutter={8}>
-        <Col span={12}>{renderReporterSelect()}</Col>
-        <Col span={12}>{renderAssigneeSelect()}</Col>
-      </Row>
-      <Form.Item name="points" label="Points" initialValue={defaultBacklog?.points ?? undefined}>
-        <BacklogInputNumber defaultValue={defaultBacklog?.points ?? undefined} />
-      </Form.Item>
-      <Form.Item name="description">
-        <BacklogTextArea placeholder="Description..." autoSize={{ minRows: 5, maxRows: 8 }} />
+    <Form id={`newBacklogs${modalKey ? `-${modalKey}` : ''}`} form={form} onFinish={handleFormSubmit}>
+      {renderReporterSelect()}
+      <Form.Item name="prompt">
+        <BacklogTextArea placeholder="Type prompt here..." autoSize={{ minRows: 5, maxRows: 8 }} />
       </Form.Item>
     </Form>
   );
@@ -242,7 +145,7 @@ function BacklogCreationModal({
       {disabled ? (
         <Tooltip title={`Backlog has already been created for this action`}>
           <Button className="new-backlog-btn" type="primary" disabled={disabled}>
-            {title ?? 'New Backlog'}
+            {title ?? 'Create Many Backlogs'}
           </Button>
         </Tooltip>
       ) : (
@@ -250,13 +153,12 @@ function BacklogCreationModal({
           className="new-backlog-btn"
           type="primary"
           onClick={disableClickEvent ? undefined : showModal}
-          {...{ [STEP_PROP]: StepTarget.NEW_BACKLOG_BUTTON }}
         >
-          {title ?? 'New Backlog'}
+          {title ?? 'Create Many Backlogs'}
         </Button>
       )}
       <Modal
-        title={title ?? 'New Backlog'}
+        title={title ?? 'Bulk Backlog Creation'}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -269,4 +171,4 @@ function BacklogCreationModal({
   );
 }
 
-export default BacklogCreationModal;
+export default BulkBacklogCreationModal;

@@ -41,6 +41,19 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         { type: 'Retrospective', id: `${arg.retrospective?.sprint_id}-${arg.retrospective?.type}` },
       ],
     }),
+    addBacklogs: builder.mutation<void, { projectId: number; reporterId: number, prompt: string }>({
+      query: (backlog) => ({
+        url: 'backlog/newBacklogs/',
+        method: 'POST',
+        body: backlog,
+        credentials: 'include',
+      }),
+      invalidatesTags: (result, error, arg) => [
+        'Backlog',
+        'Sprint',
+        'BacklogHistory',
+      ],
+    }),
     updateBacklog: builder.mutation<Backlog, BacklogUpdatePayload>({
       query: (backlogToUpdate) => ({
         url: 'backlog/updateBacklog/',
@@ -264,6 +277,7 @@ export const {
   useGetBacklogsByProjectIdQuery,
   useGetBacklogQuery,
   useAddBacklogMutation,
+  useAddBacklogsMutation,
   useUpdateBacklogMutation,
   useDeleteBacklogMutation,
   useGetBacklogHistoryQuery,

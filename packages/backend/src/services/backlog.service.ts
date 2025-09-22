@@ -3,6 +3,7 @@ import { accessibleBy } from '@casl/prisma';
 import prisma from '../models/prismaClient';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 import { AppAbility } from '../policies/policyTypes';
+import { report } from 'process';
 
 async function newBacklog(backlogFields: BacklogFields): Promise<Backlog> {
   const {

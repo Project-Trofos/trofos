@@ -5,6 +5,7 @@ import backlogService from '../services/backlog.service';
 import { BadRequestError, getDefaultErrorRes, assertProjectIdIsValid, assertEpicNameIsValid } from '../helpers/error';
 import { sendToProject } from '../notifications/NotificationHandler';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
+import { generateBacklogsItems, PartialBacklogs } from '../services/ai.service';
 
 const newBacklog = async (req: express.Request, res: express.Response) => {
   try {
@@ -195,6 +196,38 @@ const deleteEpic = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const newBulkBacklog = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId, reporterId, prompt } = req.body;
+    console.log(req.body, req.params);
+    if (!projectId || !reporterId || !prompt) {
+      throw new BadRequestError('projectId, reporterId, or prompt cannot be empty');
+    }
+
+    const partialBacklogs: PartialBacklogs = await generateBacklogsItems(prompt);
+    if (partialBacklogs.length === 0) {
+      throw new BadRequestError('AI failed to generate backlog items');
+    }
+    const itemsWithProject = partialBacklogs.map(item => ({
+      ...item,
+      projectId: Number(projectId),
+      reporterId: Number(reporterId),
+    }));
+
+    // Create all backlogs
+    const createdBacklogs: Backlog[] = [];
+    for (const item of itemsWithProject) {
+      const backlog = await backlogService.newBacklog(item);
+      createdBacklogs.push(backlog);
+      sendToProject(Number(projectId), `Backlog added: ${backlog.summary}, priority: ${backlog.priority}`);
+    }
+
+    return res.status(StatusCodes.OK).json(createdBacklogs);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   newBacklog,
   listBacklogsByProjectId,
@@ -209,4 +242,5 @@ export default {
   addBacklogToEpic,
   removeBacklogFromEpic,
   deleteEpic,
+  newBulkBacklog,
 };
