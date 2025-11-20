@@ -145,11 +145,17 @@ const generateBacklogsItems = async (query: string): Promise<PartialBacklogs> =>
       input: [
         {
           role: 'developer',
-          content: `You are an Agile product owner. Given the following prompt for the sprint, expand it into multiple backlog items with clear, actionable summary and descriptions. Each item should include a category, priority, and story points.
+          content: `You are an Agile product owner. Given the following prompt for the sprint, expand it into multiple backlog items with clear, actionable summary and descriptions. 
+
+          Each item should include a category, priority, and story points.
             - Feature: new functionality visible to users
             - Bug: issues/errors that break expected functionality
             - Task: technical chores not visible to users
-            Priority ranges from very_high, high, medium, low, very_low, and 1 story point should be about 4 hours of work.
+            Priority ranges from very_high, high, medium, low, very_low.
+            Story points must reflect realistic Agile sizing:
+            - Each story point is about 4 hours of work.
+            - Do NOT exceed 5 points.
+            - Break down work into small, well-scoped items instead of assigning large point values.
 
             Strictly output the result as JSON in the following format:
             [

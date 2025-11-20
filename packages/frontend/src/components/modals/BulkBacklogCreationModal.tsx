@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Modal, Tooltip, message } from 'antd';
+import { Button, Col, Form, Modal, Row, Tooltip, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useAddBacklogsMutation } from '../../api/socket/backlogHooks';
 import BacklogUserSelect from '../fields/BacklogUserSelect';
@@ -14,6 +14,7 @@ import { getErrorMessage } from '../../helpers/error';
 import { GENERIC_NEW_SPRINT, autoSuggestNewSprint } from '../../helpers/sprintCreationHelper';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 import { useGetUserInfoQuery } from '../../api/auth';
+import BacklogSelect from '../fields/BacklogSelect';
 
 function BulkBacklogCreationModal({
   fixedSprint,
@@ -119,21 +120,47 @@ function BulkBacklogCreationModal({
     projectSprintData?.sprints && projectSprintData.sprints.length > 0
       ? autoSuggestNewSprint(projectSprintData.sprints[projectSprintData.sprints.length - 1])
       : GENERIC_NEW_SPRINT;
+    
+  const renderSprintSelect = (): JSX.Element => {
+      const fixedSprintValue = fixedSprint ? { id: fixedSprint.id, name: fixedSprint.name } : undefined;
+      return (
+        <Row gutter={8}>
+          <Col>
+            <Form.Item name="sprintId" label="Sprint" initialValue={fixedSprint ? fixedSprint.id : undefined}>
+              <BacklogSelect
+                options={sprintOptionsDescending || []}
+                placeholder="Select Sprint"
+                allowClear
+                fixedValue={fixedSprintValue}
+                showSearch
+                className="sprint-select"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      );
+    };
 
   const renderReporterSelect = (): JSX.Element => {
     //todo
     console.log(defaultBacklog);
     const defaultReporter = defaultBacklog?.reporter_id ?? undefined;
     return (
-      <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]} initialValue={defaultReporter}>
-        <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
-      </Form.Item>
+      <Row gutter={8}>
+        <Col>
+          <Form.Item name="reporterId" label="Reporter" rules={[{ required: true }]} initialValue={defaultReporter}>
+            <BacklogUserSelect options={projectData?.users || []} placeholder="Select User" />
+          </Form.Item>
+        </Col>
+        
+      </Row>
     );
   };
 
   const renderContent = (): JSX.Element => (
     <Form id={`newBacklogs${modalKey ? `-${modalKey}` : ''}`} form={form} onFinish={handleFormSubmit}>
       {renderReporterSelect()}
+      {renderSprintSelect()}
       <Form.Item name="prompt">
         <BacklogTextArea placeholder="Type prompt here..." autoSize={{ minRows: 5, maxRows: 8 }} />
       </Form.Item>
@@ -145,7 +172,7 @@ function BulkBacklogCreationModal({
       {disabled ? (
         <Tooltip title={`Backlog has already been created for this action`}>
           <Button className="new-backlog-btn" type="primary" disabled={disabled}>
-            {title ?? 'Create Many Backlogs'}
+            {title ?? 'Create Backlogs ✨'}
           </Button>
         </Tooltip>
       ) : (
@@ -154,7 +181,7 @@ function BulkBacklogCreationModal({
           type="primary"
           onClick={disableClickEvent ? undefined : showModal}
         >
-          {title ?? 'Create Many Backlogs'}
+          {title ?? 'Create Backlogs ✨'}
         </Button>
       )}
       <Modal

@@ -198,7 +198,7 @@ const deleteEpic = async (req: express.Request, res: express.Response) => {
 
 const newBulkBacklog = async (req: express.Request, res: express.Response) => {
   try {
-    const { projectId, reporterId, prompt } = req.body;
+    const { projectId, reporterId, sprintId, prompt } = req.body;
     console.log(req.body, req.params);
     if (!projectId || !reporterId || !prompt) {
       throw new BadRequestError('projectId, reporterId, or prompt cannot be empty');
@@ -212,6 +212,7 @@ const newBulkBacklog = async (req: express.Request, res: express.Response) => {
       ...item,
       projectId: Number(projectId),
       reporterId: Number(reporterId),
+      ...(sprintId != null && { sprintId: Number(sprintId)}),
     }));
 
     // Create all backlogs
@@ -224,6 +225,7 @@ const newBulkBacklog = async (req: express.Request, res: express.Response) => {
 
     return res.status(StatusCodes.OK).json(createdBacklogs);
   } catch (error) {
+    console.log(error);
     return getDefaultErrorRes(error, res);
   }
 }
