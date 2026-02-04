@@ -1,4 +1,13 @@
-# TROFOS User guide
+# TROFOS Documentation
+
+This directory contains user guides and technical documentation for TROFOS.
+
+## 📚 Documentation Index
+
+- **[FEATURE_COMPARISON.md](FEATURE_COMPARISON.md)** - Comprehensive analysis of TROFOS features vs JIRA
+- **[FEATURE_SUMMARY.md](FEATURE_SUMMARY.md)** - Quick reference guide for TROFOS features
+
+## User Guide
 
 This user guide is deployed using Github Pages with Jekyll. The guide will serve as a user guide and the source information to be parsed and broken down to populate the vector DB in the Retrieve Augmented Generation (RAG) copilot, so it needs to adhere to a style guide so the information can be easily parsed to be embedded
 

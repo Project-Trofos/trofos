@@ -2,6 +2,11 @@
 
 TROFOS, is intended to be the academic counterpart of Jira, equipping students with a tool that mirrors Jira's capabilities to develop a grasp of agile methodologies, aligning with industry practices.
 
+## 📖 Documentation
+
+- **[Feature Comparison](docs/FEATURE_COMPARISON.md)** - Comprehensive comparison of TROFOS vs JIRA features
+- **[Feature Summary](docs/FEATURE_SUMMARY.md)** - Quick reference guide for available features
+
 ## Contributor guide
 
 Looking to report a bug or request for a feature? Checkout our Wiki's [contributing page](https://github.com/Project-Trofos/trofos/wiki/Contributing)
