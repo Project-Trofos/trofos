@@ -13,7 +13,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
           class="ant-spin-container"
         >
           <div
-            class="ant-table ant-table-bordered"
+            class="ant-table ant-table-small ant-table-bordered"
           >
             <div
               class="ant-table-container"
@@ -92,7 +92,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
             </div>
           </div>
           <ul
-            class="ant-pagination ant-table-pagination ant-table-pagination-right"
+            class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
           >
             <li
               aria-disabled="true"
