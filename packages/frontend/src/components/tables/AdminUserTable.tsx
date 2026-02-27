@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Table } from 'antd';
+import { Table, Space } from 'antd';
 import { Role, User } from '../../api/types';
 import UserManagementModal from '../modals/UserManagementModal';
+import UserDeletionModal from '../modals/UserDeletionModal';
 
 type UserTableProps = {
   users: User[] | undefined;
@@ -43,7 +44,12 @@ export default function UserTable(props: UserTableProps): JSX.Element {
       <Table.Column
         title="Actions"
         dataIndex="action"
-        render={(_, record: User) => <UserManagementModal user={record} roles={roles} />}
+        render={(_, record: User) => (
+          <Space>
+            <UserManagementModal user={record} roles={roles} />
+            <UserDeletionModal user={record} />
+          </Space>
+        )}
       />
     </Table>
   );
