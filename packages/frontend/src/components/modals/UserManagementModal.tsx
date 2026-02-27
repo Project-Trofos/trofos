@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Select, Space, message } from 'antd';
-
+import { EditOutlined } from '@ant-design/icons';
 import { Role, UpdateUserRolePayload, User } from '../../api/types';
 import { Subheading } from '../typography';
 import { useUpdateUserRoleMutation } from '../../api/role';
@@ -49,7 +49,7 @@ export default function UserManagementModal(props: UserManagement): JSX.Element 
 
   return (
     <>
-      <Button onClick={showModal}>Manage</Button>
+      <Button type="text" icon={<EditOutlined />} onClick={showModal} />
       <Modal title="User Management Panel" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Space wrap>
           <Space direction="vertical">
