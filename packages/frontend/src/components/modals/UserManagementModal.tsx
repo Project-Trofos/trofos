@@ -49,7 +49,7 @@ export default function UserManagementModal(props: UserManagement): JSX.Element 
 
   return (
     <>
-      <Button type="text" icon={<EditOutlined />} onClick={showModal} />
+      <Button type="text" icon={<EditOutlined />} onClick={showModal} title="Edit User"/>
       <Modal title="User Management Panel" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Space wrap>
           <Space direction="vertical">

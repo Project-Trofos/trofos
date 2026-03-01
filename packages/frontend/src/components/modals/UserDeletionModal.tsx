@@ -27,7 +27,7 @@ export default function UserDeletionModal({ user }: UserDeletion): JSX.Element {
 
   return (
     <>
-      <Button danger type="text" icon={<DeleteOutlined />} onClick={showModal} />
+      <Button danger type="text" icon={<DeleteOutlined />} onClick={showModal} title="Delete User"/>
       <Modal
         title="Delete User"
         open={isModalOpen}
