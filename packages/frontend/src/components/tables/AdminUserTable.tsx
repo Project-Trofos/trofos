@@ -57,7 +57,7 @@ export default function UserTable(props: UserTableProps): JSX.Element {
           const lastUsage = record.api_usages?.[0]?.timestamp;
           if (!lastUsage) return <span style={{ color: 'gray' }}>Never</span>;
           
-          return new Date(lastUsage).toLocaleDateString('en-US');
+          return new Date(lastUsage).toLocaleDateString('en-GB');
         }} 
       />
 
