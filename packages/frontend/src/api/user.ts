@@ -30,8 +30,16 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
+    deleteUser: builder.mutation<void, number>({
+      query: (userId) => ({
+        url: `user/${userId}`,
+        method: 'DELETE',
+        credentials: 'include',
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetUsersQuery, useFindUserByEmailMutation, useCreateUserMutation } = extendedApi;
+export const { useGetUsersQuery, useFindUserByEmailMutation, useCreateUserMutation, useDeleteUserMutation } = extendedApi;

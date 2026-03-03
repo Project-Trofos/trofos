@@ -1,4 +1,4 @@
-import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses } from '@prisma/client';
+import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses, Project } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
@@ -9,9 +9,10 @@ const USER_DISPLAY_NAME_MAX_LENGTH = 50;
 export type Users = {
   user_email: string;
   user_id: number;
-  projects: UsersOnProjects[];
+  projects: (UsersOnProjects & { project?: Project })[];
   basicRoles: UsersOnRoles[];
   courses: UsersOnRolesOnCourses[];
+  api_usages?: { timestamp: Date }[];
 };
 
 async function get(user_id: number): Promise<User> {
@@ -54,9 +55,22 @@ async function getByEmail(user_email: string): Promise<User> {
 async function getAll(): Promise<Users[]> {
   const users = await prisma.user.findMany({
     include: {
-      projects: true,
+      projects: {
+        include: {
+          project: true, // Load the actual project details
+        },
+      },
       basicRoles: true,
       courses: true,
+      api_usages: {
+        orderBy: {
+          timestamp: 'desc'
+        },
+        take: 1,
+        select: {
+          timestamp: true
+        }
+      },
     },
   });
 
@@ -85,10 +99,21 @@ async function create(userEmail: string, userPassword: string): Promise<User> {
   return user;
 }
 
+async function remove(user_id: number): Promise<User> {
+  const deletedUser = await prisma.user.delete({
+    where: {
+      user_id,
+    },
+  });
+
+  return deletedUser;
+}
+
 export default {
   getAll,
   get,
   findByEmail,
   getByEmail,
   create,
+  remove,
 };
