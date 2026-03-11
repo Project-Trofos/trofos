@@ -249,14 +249,6 @@ async function processSAMLResponseStudent(req: express.Request, res: express.Res
   const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
   const sessionId = await sessionService.createUserSession(userInfo.user_email, userRoleInformation, userInfo.user_id);
 
-  // // Set secure cookie for session
-  // res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-  //   httpOnly: true,
-  //   secure: process.env.NODE_ENV === 'production',
-  // });
-
-  // // Redirect the user to the homepage
-  // return res.redirect('/');
   const relayState = req.body.RelayState;
 
   if (relayState === 'student_mobile') {
