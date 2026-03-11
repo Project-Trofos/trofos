@@ -445,6 +445,40 @@ describe('account.controller tests', () => {
     });
   });
 
+  describe('generateSAMLRequestMobile', () => {
+    it('should return status 200 OK with a redirect URL', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      mockSp.createLoginRequest.mockReturnValue({
+        id: 'mobile-12345',
+        context: 'https://example.com/login',
+      });
+
+      await authentication.generateSAMLRequestMobile(mockReq, mockRes);
+
+      expect(getCachedSp).toHaveBeenCalled();
+      expect(getCachedIdp).toHaveBeenCalled();
+      expect(mockSp.createLoginRequest).toHaveBeenCalledWith(mockIdp, 'redirect');
+      expect(mockRes.statusCode).toBe(StatusCodes.OK);
+      expect(mockRes._getJSONData()).toEqual({ redirectUrl: 'https://example.com/login?RelayState=student_mobile' });
+    });
+
+    it('should return status 500 INTERNAL SERVER ERROR if an error occurs', async () => {
+      const mockReq = createRequest();
+      const mockRes = createResponse();
+
+      (getCachedSp as jest.Mock).mockRejectedValue(new Error('Failed to fetch SP'));
+
+      await authentication.generateSAMLRequestMobile(mockReq, mockRes);
+
+      expect(getCachedSp).toHaveBeenCalled();
+      expect(getCachedIdp).not.toHaveBeenCalled();
+      expect(mockRes.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(mockRes._getJSONData()).toEqual({ error: 'Failed to fetch SP' });
+    });
+  });
+
   describe('generateSAMLRequestStaff', () => {
     it('should return status 200 OK with a redirect URL', async () => {
       const mockReq = createRequest();

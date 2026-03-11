@@ -1,6 +1,6 @@
 openai
 python-dotenv
-langchain
+langchain==0.3.27
 psycopg[binary,pool]
 unstructured[md]
 nltk
