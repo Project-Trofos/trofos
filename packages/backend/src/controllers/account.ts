@@ -172,6 +172,27 @@ async function generateSAMLRequest(req: express.Request, res: express.Response) 
   }
 }
 
+async function generateSAMLRequestMobile(req: express.Request, res: express.Response) {
+  try {
+    const sp = await getCachedSp();
+      const idp = await getCachedIdp();
+
+      const { id, context } = sp.createLoginRequest(idp, 'redirect');
+
+      const redirectUrlObj = new URL(context);
+      redirectUrlObj.searchParams.set('RelayState', 'student_mobile');
+      const finalRedirectUrl = redirectUrlObj.toString();
+
+      console.log('Generated Mobile SAML Request ID:', id);
+      console.log('Redirect URL for Mobile:', finalRedirectUrl);
+
+      return res.status(StatusCodes.OK).json({ redirectUrl: finalRedirectUrl });
+    } catch (error) {
+        console.error('Error generating mobile SAML request:', error);
+        return getDefaultErrorRes(error, res);
+    }
+}
+
 async function generateSAMLRequestStaff(req: express.Request, res: express.Response) {
   try {
     const sp = await getCachedSpStaff();
@@ -201,7 +222,7 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
 
     if (relayState === SSORoles.STAFF) {
       await processSAMLResponseStaff(req, res);
-    } else if (relayState === SSORoles.STUDENT) {
+    } else if (relayState === SSORoles.STUDENT || relayState === SSORoles.STUDENT_MOBILE) {
       await processSAMLResponseStudent(req, res);
     }
   } catch (error) {
@@ -228,14 +249,25 @@ async function processSAMLResponseStudent(req: express.Request, res: express.Res
   const userRoleInformation = await roleService.getUserRoleInformation(userInfo.user_id);
   const sessionId = await sessionService.createUserSession(userInfo.user_email, userRoleInformation, userInfo.user_id);
 
-  // Set secure cookie for session
-  res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-  });
+  const relayState = req.body.RelayState;
 
-  // Redirect the user to the homepage
-  return res.redirect('/');
+  if (relayState === 'student_mobile') {
+      const baseUrl = process.env.FRONTEND_BASE_URL;
+      const redirectUrl = `${baseUrl}/auth-success#token=${sessionId}`;
+      
+      console.log('Mobile Redirect Triggered:', redirectUrl);
+      return res.redirect(redirectUrl);
+      
+  } else {
+      // Set secure cookie for session
+      res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+      
+      // Redirect the user to the homepage
+      return res.redirect('/');
+  }
 }
 
 async function processSAMLResponseStaff(req: express.Request, res: express.Response) {
@@ -275,6 +307,7 @@ export default {
   oauth2Login,
   register,
   generateSAMLRequest,
+  generateSAMLRequestMobile,
   generateSAMLRequestStaff,
   processSAMLResponse,
 };
