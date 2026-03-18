@@ -8,6 +8,7 @@ networks:
 volumes:
   prometheus_data: {}
   grafana_data: {}
+  loki_data: {}
 
 services:
   # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
@@ -105,3 +106,39 @@ services:
       - 9001
     networks:
       - application
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/config.yml
+    volumes:
+      - ./loki/config.yml:/etc/loki/config.yml:ro
+      - loki_data:/loki
+    ports:
+      - 3100:3100
+    expose:
+      - 3100
+    networks:
+      - application
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 12345:12345
+    expose:
+      - 12345
+    networks:
+      - application
+    depends_on:
+      - loki
