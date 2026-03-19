@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import promClient from 'prom-client';
 import accountRouter from './routes/account.route';
 import courseRouter from './routes/course.route';
 import projectRouter from './routes/project.route';
@@ -19,8 +20,8 @@ import aiRouter from './routes/ai.route';
 import featureFlagRouter from './routes/featureFlag.route';
 import issueRouter from './routes/issue.route';
 import setUpSwagger from './swagger/swagger';
-import promClient from 'prom-client';
 import { trackApiUsage } from './middleware/api_usage_tracking.middleware';
+import requestLogger from './middleware/request_logger.middleware';
 
 // Prometheus metrics stuff
 const register = new promClient.Registry();
@@ -43,6 +44,9 @@ register.registerMetric(httpRequestTimer);
 // end of prometheus metrics stuff
 
 const app = express();
+
+// Logging
+app.use(requestLogger());
 
 export const port = 3003;
 export const frontendUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
