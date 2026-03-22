@@ -8,7 +8,7 @@ import {
 
 export const userDetailsMap = new Map<string, ImportCourseDataUser>();
 export const groupDetailsMap = new Map<string, ImportCourseDataGroup>();
-export const userGroupingMap = new Map<string, string>();
+export const userGroupingMap = new Map<string, string[]>();
 
 export type CallbackReturnTest = {
   error?: Error | null | undefined;

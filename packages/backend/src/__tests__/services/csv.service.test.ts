@@ -191,7 +191,7 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       csvService.transformImportCourseData(dataRow, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUser@test.com')).toEqual('testProject');
+      expect(userGroupingMap.get('testUser@test.com')).toEqual(['testProject']);
     });
 
     it('should return the correct mappings when two different user-group mappings are provided', () => {
@@ -213,8 +213,8 @@ describe('csv.service.tests', () => {
       );
       csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
       csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUserOne@test.com')).toEqual('testProject1');
-      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual('testProject2');
+      expect(userGroupingMap.get('testUserOne@test.com')).toEqual(['testProject1']);
+      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual(['testProject2']);
     });
 
     it('should return the correct mappings when two users map to the same group', () => {
@@ -236,8 +236,30 @@ describe('csv.service.tests', () => {
       );
       csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
       csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUserOne@test.com')).toEqual('testProject1');
-      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual('testProject1');
+      expect(userGroupingMap.get('testUserOne@test.com')).toEqual(['testProject1']);
+      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual(['testProject1']);
+    });
+
+    it('should return the correct mappings when one user maps to multiple groups', () => {
+      const dataRowOne = ImportCourseDataCsvBuilder(
+        'testUser',
+        'testUser@test.com',
+        '',
+        'student',
+        'testKey1',
+        'testProject1',
+      );
+      const dataRowTwo = ImportCourseDataCsvBuilder(
+        'testUser',
+        'testUser@test.com',
+        '',
+        'student',
+        'testKey2',
+        'testProject2',
+      );
+      csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
+      csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
+      expect(userGroupingMap.get('testUser@test.com')).toEqual(['testProject1', 'testProject2']);
     });
   });
 
@@ -245,7 +267,7 @@ describe('csv.service.tests', () => {
     it('should create a project and add a user to it when there is a single user-group mapping', async () => {
       userDetailsMap.set(studentOne.email, studentOne);
       groupDetailsMap.set(projectOne.projectName, projectOne);
-      userGroupingMap.set(studentOne.email, projectOne.projectName);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName]);
 
       prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
       prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
@@ -265,8 +287,8 @@ describe('csv.service.tests', () => {
       userDetailsMap.set(studentTwo.email, studentTwo);
       groupDetailsMap.set(projectOne.projectName, projectOne);
       groupDetailsMap.set(projectTwo.projectName, projectTwo);
-      userGroupingMap.set(studentOne.email, projectOne.projectName);
-      userGroupingMap.set(studentTwo.email, projectTwo.projectName);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName]);
+      userGroupingMap.set(studentTwo.email, [projectTwo.projectName]);
       prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
       prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaCreateMock);
       prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
@@ -279,6 +301,31 @@ describe('csv.service.tests', () => {
       prismaMock.usersOnProjects.create.mockResolvedValueOnce({
         project_id: projectTwo.projectId as number,
         user_id: studentTwo.id as number,
+        created_at: new Date(Date.now()),
+      });
+      prismaMock.$transaction.mockResolvedValueOnce(true);
+      await expect(
+        csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap),
+      ).resolves.toEqual(true);
+    });
+
+    it('should add a single user to multiple projects', async () => {
+      userDetailsMap.set(studentOne.email, studentOne);
+      groupDetailsMap.set(projectOne.projectName, projectOne);
+      groupDetailsMap.set(projectTwo.projectName, projectTwo);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName, projectTwo.projectName]);
+
+      prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
+      prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaCreateMock);
+      prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
+      prismaMock.usersOnProjects.upsert.mockResolvedValueOnce({
+        project_id: projectOne.projectId as number,
+        user_id: studentOne.id as number,
+        created_at: new Date(Date.now()),
+      });
+      prismaMock.usersOnProjects.upsert.mockResolvedValueOnce({
+        project_id: projectTwo.projectId as number,
+        user_id: studentOne.id as number,
         created_at: new Date(Date.now()),
       });
       prismaMock.$transaction.mockResolvedValueOnce(true);

@@ -57,14 +57,16 @@ function transformImportCourseData(
   courseId: number,
   userDetailsMap: Map<string, ImportCourseDataUser>,
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
-  userGroupingMap: Map<string, string>,
+  userGroupingMap: Map<string, string[]>,
 ) {
   const userData = getUserData(row);
   const groupData = getGroupData(row, courseId);
   userDetailsMap.set(row.email, userData);
   if (row.projectName) {
     groupDetailsMap.set(row.projectName, groupData);
-    userGroupingMap.set(row.email, row.projectName);
+    const existingGroups = userGroupingMap.get(row.email) || [];
+    existingGroups.push(row.projectName);
+    userGroupingMap.set(row.email, existingGroups);
   }
 }
 
@@ -72,7 +74,7 @@ async function processImportCourseData(
   courseId: number,
   userDetailsMap: Map<string, ImportCourseDataUser>,
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
-  userGroupingMap: Map<string, string>,
+  userGroupingMap: Map<string, string[]>,
 ) {
   return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     // Create projects
@@ -163,22 +165,24 @@ async function processImportCourseData(
 
       // Add users to project/course
       if (userData.roleId === STUDENT_ROLE_ID) {
-        const userGroup = userGroupingMap.get(userEmail);
-        if (userGroup) {
-          const projectId = groupDetailsMap.get(userGroup)?.projectId;
-          await tx.usersOnProjects.upsert({
-            where: {
-              project_id_user_id: {
+        const userGroups = userGroupingMap.get(userEmail);
+        if (userGroups) {
+          for (const groupName of userGroups) {
+            const projectId = groupDetailsMap.get(groupName)?.projectId;
+            await tx.usersOnProjects.upsert({
+              where: {
+                project_id_user_id: {
+                  user_id: user.user_id,
+                  project_id: Number(projectId),
+                },
+              },
+              update: {},
+              create: {
                 user_id: user.user_id,
                 project_id: Number(projectId),
               },
-            },
-            update: {},
-            create: {
-              user_id: user.user_id,
-              project_id: Number(projectId),
-            },
-          });
+            });
+          }
         } else {
           throw new Error(`${userEmail}: userGroup undefined`);
         }
@@ -204,7 +208,7 @@ async function importCourseData(csvFilePath: string, courseId: number): Promise<
     let errorMessages = '';
     const userDetailsMap = new Map<string, ImportCourseDataUser>();
     const groupDetailsMap = new Map<string, ImportCourseDataGroup>();
-    const userGroupingMap = new Map<string, string>();
+    const userGroupingMap = new Map<string, string[]>();
     const csvParseStream = csv.parseFile<ImportCourseDataCsv, ImportCourseDataCsv>(
       csvFilePath,
       IMPORT_COURSE_DATA_CONFIG,
