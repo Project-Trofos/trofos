@@ -1,8 +1,16 @@
-import { Backlog, Epic } from '@prisma/client';
+import { Backlog, Epic, UserSession } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
+import fs from 'fs';
 import backlogService from '../services/backlog.service';
-import { BadRequestError, getDefaultErrorRes, assertProjectIdIsValid, assertEpicNameIsValid } from '../helpers/error';
+import backlogCsvService from '../services/backlogCsv.service';
+import {
+  BadRequestError,
+  getDefaultErrorRes,
+  assertProjectIdIsValid,
+  assertEpicNameIsValid,
+  assertInputIsNotEmpty,
+} from '../helpers/error';
 import { sendToProject } from '../notifications/NotificationHandler';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
 
@@ -180,6 +188,28 @@ const removeBacklogFromEpic = async (req: express.Request, res: express.Response
   }
 };
 
+const importBacklogCsv = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId } = req.params;
+
+    assertInputIsNotEmpty(req.file, 'Csv file');
+    assertProjectIdIsValid(Number(projectId));
+
+    const userSession = res.locals.userSession as UserSession | undefined;
+    assertInputIsNotEmpty(userSession, 'userSession');
+
+    const result = await backlogCsvService.importBacklogData(req.file.path, Number(projectId), userSession.user_id);
+    sendToProject(Number(projectId), 'Backlogs imported from CSV');
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  } finally {
+    if (req.file?.path) {
+      fs.unlinkSync(req.file.path);
+    }
+  }
+};
+
 const deleteEpic = async (req: express.Request, res: express.Response) => {
   try {
     const { epicId } = req.params;
@@ -202,6 +232,7 @@ export default {
   getBacklog,
   updateBacklog,
   deleteBacklog,
+  importBacklogCsv,
   createEpic,
   getBacklogsForEpic,
   getEpicsForProject,
