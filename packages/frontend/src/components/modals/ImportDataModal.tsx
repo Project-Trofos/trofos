@@ -4,7 +4,7 @@ import { Button, Modal, message, Upload, Space } from 'antd';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useImportCsvMutation } from '../../api/course';
 import { getErrorMessage } from '../../helpers/error';
-import { CourseData, ProjectData } from '../../api/types';
+import { CourseData } from '../../api/types';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
 const CSV_TEMPLATE_PATH = '/download/importCourseData.csv';
@@ -12,11 +12,9 @@ const CSV_TEMPLATE_NAME = 'importCourseData.csv';
 
 export default function ImportDataModal({
   course,
-  projects,
   disableClickEvent,
 }: {
   course: CourseData | undefined;
-  projects: ProjectData[] | undefined;
   disableClickEvent?: boolean;
 }): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,26 +27,22 @@ export default function ImportDataModal({
   };
 
   const handleOk = async () => {
-    if (!projects || projects.length > 0) {
-      message.error('Course already has projects. Please delete them before uploading a new CSV file.');
-    } else {
-      const formData = new FormData();
-      formData.append('file', fileList[0] as RcFile);
-      setIsUploading(true);
-      try {
-        if (course) {
-          await importCsv({
-            courseId: course.id,
-            payload: formData,
-          }).unwrap();
-          setFileList([]);
-          message.success('Import successful.');
-        }
-      } catch (error) {
-        message.error(getErrorMessage(error));
+    const formData = new FormData();
+    formData.append('file', fileList[0] as RcFile);
+    setIsUploading(true);
+    try {
+      if (course) {
+        await importCsv({
+          courseId: course.id,
+          payload: formData,
+        }).unwrap();
+        setFileList([]);
+        message.success('Import successful.');
       }
-      setIsUploading(false);
+    } catch (error) {
+      message.error(getErrorMessage(error));
     }
+    setIsUploading(false);
     setIsModalOpen(false);
   };
 

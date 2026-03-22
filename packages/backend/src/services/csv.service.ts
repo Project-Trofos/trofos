@@ -78,19 +78,31 @@ async function processImportCourseData(
     // Create projects
     /* eslint-disable array-callback-return, no-param-reassign */
     const projectPromises = Array.from(groupDetailsMap).map(async ([groupName, groupData]) => {
-      const project = await tx.project.create({
-        data: {
+      // Check if a project with the same name already exists in the course
+      const existingProject = await tx.project.findFirst({
+        where: {
           pname: groupData.projectName,
-          pkey: groupData.projectKey,
           course_id: groupData.courseId,
-          backlogStatuses: {
-            createMany: {
-              data: defaultBacklogStatus,
-            },
-          },
         },
       });
-      groupData.projectId = project.id;
+
+      if (existingProject) {
+        groupData.projectId = existingProject.id;
+      } else {
+        const project = await tx.project.create({
+          data: {
+            pname: groupData.projectName,
+            pkey: groupData.projectKey,
+            course_id: groupData.courseId,
+            backlogStatuses: {
+              createMany: {
+                data: defaultBacklogStatus,
+              },
+            },
+          },
+        });
+        groupData.projectId = project.id;
+      }
       groupDetailsMap.set(groupName, groupData);
     });
 
@@ -154,9 +166,15 @@ async function processImportCourseData(
         const userGroup = userGroupingMap.get(userEmail);
         if (userGroup) {
           const projectId = groupDetailsMap.get(userGroup)?.projectId;
-          // Since Project names are not unique within a course, a new project is always created on csv submission
-          await tx.usersOnProjects.create({
-            data: {
+          await tx.usersOnProjects.upsert({
+            where: {
+              project_id_user_id: {
+                user_id: user.user_id,
+                project_id: Number(projectId),
+              },
+            },
+            update: {},
+            create: {
               user_id: user.user_id,
               project_id: Number(projectId),
             },

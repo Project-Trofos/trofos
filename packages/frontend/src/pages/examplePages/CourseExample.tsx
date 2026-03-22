@@ -55,7 +55,7 @@ export default function CourseExample(): JSX.Element {
         breadCrumbs={breadCrumbs}
         tagText={course.code}
         buttons={[
-          <ImportDataModal key="import-csv" course={course} projects={[]} disableClickEvent={true} />,
+          <ImportDataModal key="import-csv" course={course} disableClickEvent={true} />,
           <ProjectCreationModal key="create-project" course={course} disableClickEvent={true} />,
           <DropdownMenu key="more" courseMenu={courseMenu} />,
         ]}
