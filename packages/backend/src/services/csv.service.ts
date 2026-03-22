@@ -11,23 +11,14 @@ import {
   INVALID_EMAIL,
   INVALID_PASSWORD,
   INVALID_ROLE,
-  INVALID_TEAM_NAME,
+  INVALID_PROJECT_NAME,
   MESSAGE_SPACE,
   ImportProjectAssignmentsCsv,
   INVALID_PROPERTIES,
-  INVALID_PROJECT_NAME,
 } from './types/csv.service.types';
 import { ADMIN_ROLE_ID, ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 
-function validateTeamName(data: ImportCourseDataCsv): boolean {
-  // Assumption: Team name is required for all students. A student cannot be unassigned
-  const roleId = ROLE_ID_MAP.get(data.role.toUpperCase());
-  if (!data.teamName && roleId === STUDENT_ROLE_ID) {
-    return false;
-  }
-  return true;
-}
 
 // Default password is required for new users
 // Existing users already have a password set, so it can be omitted
@@ -52,8 +43,8 @@ async function validateImportCourseData(data: ImportCourseDataCsv, callback: csv
   if (!validateRole(data)) {
     errorMessages += INVALID_ROLE + MESSAGE_SPACE;
   }
-  if (!validateTeamName(data)) {
-    errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
+  if (!validateProjectNameRequired(data)) {
+    errorMessages += INVALID_PROJECT_NAME + MESSAGE_SPACE;
   }
   if (errorMessages) {
     return callback(null, false, errorMessages.trimEnd());
@@ -71,9 +62,9 @@ function transformImportCourseData(
   const userData = getUserData(row);
   const groupData = getGroupData(row, courseId);
   userDetailsMap.set(row.email, userData);
-  if (row.teamName) {
-    groupDetailsMap.set(row.teamName, groupData);
-    userGroupingMap.set(row.email, row.teamName);
+  if (row.projectName) {
+    groupDetailsMap.set(row.projectName, groupData);
+    userGroupingMap.set(row.email, row.projectName);
   }
 }
 
@@ -90,7 +81,7 @@ async function processImportCourseData(
       const project = await tx.project.create({
         data: {
           pname: groupData.projectName,
-          pkey: groupData.teamName,
+          pkey: groupData.projectKey,
           course_id: groupData.courseId,
           backlogStatuses: {
             createMany: {
@@ -238,6 +229,15 @@ function validateProjectName(projectName: unknown): boolean {
   if (typeof projectName !== 'string') return false; // Ensure it's a string
   const trimmedName = projectName.trim();
   return trimmedName.length > 0;
+}
+
+function validateProjectNameRequired(data: ImportCourseDataCsv): boolean {
+  // Project name is required for all students. A student cannot be unassigned
+  const roleId = ROLE_ID_MAP.get(data.role.toUpperCase());
+  if (!data.projectName && roleId === STUDENT_ROLE_ID) {
+    return false;
+  }
+  return true;
 }
 
 function validateProjectAssignmentData(

@@ -33,7 +33,7 @@ export function ImportCourseDataCsvBuilder(
   email: string,
   password: string,
   role: string,
-  teamName: string,
+  projectKey: string,
   projectName: string,
 ): ImportCourseDataCsv {
   return {
@@ -41,7 +41,7 @@ export function ImportCourseDataCsvBuilder(
     email,
     password,
     role,
-    teamName,
+    projectKey,
     projectName,
   };
 }
@@ -73,14 +73,14 @@ export const facultyOne: ImportCourseDataUser = {
 export const projectOne: ImportCourseDataGroup = {
   projectId: 1,
   courseId: 1,
-  teamName: 'projectOne',
+  projectKey: 'projectOne',
   projectName: 'projectOne',
 };
 
 export const projectTwo: ImportCourseDataGroup = {
   projectId: 2,
   courseId: 1,
-  teamName: 'projectTwo',
+  projectKey: 'projectTwo',
   projectName: 'projectTwo',
 };
 

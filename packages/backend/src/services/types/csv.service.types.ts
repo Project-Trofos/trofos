@@ -8,8 +8,7 @@ export const IMPORT_COURSE_DATA_CONFIG = {
 export const INVALID_EMAIL = 'Email provided has an invalid format';
 export const INVALID_PASSWORD = 'Default password cannot be empty';
 export const INVALID_ROLE = 'Role provided is invalid';
-export const INVALID_TEAM_NAME = 'Team name cannot be empty';
-export const INVALID_PROJECT_NAME = 'Project Name is invalid';
+export const INVALID_PROJECT_NAME = 'Project name cannot be empty';
 export const INVALID_PROPERTIES = 'Invalid properties provided';
 export const MESSAGE_SPACE = ' ';
 
@@ -18,7 +17,7 @@ export type ImportCourseDataCsv = {
   email: string;
   password: string;
   role: string;
-  teamName: string;
+  projectKey: string;
   projectName: string;
 };
 
@@ -33,7 +32,7 @@ export type ImportCourseDataUser = {
 export type ImportCourseDataGroup = {
   projectId: number | undefined;
   courseId: number;
-  teamName: string;
+  projectKey: string | null;
   projectName: string;
 };
 
@@ -65,8 +64,8 @@ export function getGroupData(data: ImportCourseDataCsv, courseId: number): Impor
   const group: ImportCourseDataGroup = {
     projectId: undefined,
     courseId,
-    teamName: data.teamName,
-    projectName: data.projectName || data.teamName,
+    projectKey: data.projectKey || null,
+    projectName: data.projectName,
   };
 
   return group;
