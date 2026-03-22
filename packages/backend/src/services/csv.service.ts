@@ -29,7 +29,8 @@ function validateTeamName(data: ImportCourseDataCsv): boolean {
   return true;
 }
 
-// Default password is required for all students
+// Default password is required for new users
+// Existing users already have a password set, so it can be omitted
 // Students can still login using SSO
 const validatePassword = (data: ImportCourseDataCsv) => !!data.password?.length;
 
@@ -37,13 +38,16 @@ function validateRole(data: ImportCourseDataCsv): boolean {
   return ROLE_ID_MAP.has(data.role.toUpperCase()) && ROLE_ID_MAP.get(data.role.toUpperCase()) != ADMIN_ROLE_ID;
 }
 
-function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
+async function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
   let errorMessages = '';
   if (!validate(data.email)) {
     errorMessages += INVALID_EMAIL + MESSAGE_SPACE;
   }
   if (!validatePassword(data)) {
-    errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
+    const existingUser = await prisma.user.findUnique({ where: { user_email: data.email } });
+    if (!existingUser) {
+      errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
+    }
   }
   if (!validateRole(data)) {
     errorMessages += INVALID_ROLE + MESSAGE_SPACE;

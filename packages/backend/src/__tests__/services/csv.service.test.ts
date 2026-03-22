@@ -47,7 +47,7 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       const expectedErrorMessage = INVALID_EMAIL;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
@@ -62,7 +62,7 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       const expectedErrorMessage = INVALID_ROLE;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
@@ -70,7 +70,7 @@ describe('csv.service.tests', () => {
     it('should return an error message if the team name is invalid', async () => {
       const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', '', 'testProject');
       const expectedErrorMessage = INVALID_TEAM_NAME;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
@@ -78,16 +78,38 @@ describe('csv.service.tests', () => {
     it('should return an error message if multiple fields are invalid', async () => {
       const dataRow = ImportCourseDataCsvBuilder('testUser', 'invalidEmail', 'p/w', 'student', '', 'testProject');
       const expectedErrorMessage = INVALID_EMAIL + MESSAGE_SPACE + INVALID_TEAM_NAME;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
 
     it('should return true if the row is valid', async () => {
       const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', 'p/w', 'faculty', '', 'testProject');
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(true);
       expect((result as CallbackReturnTest).reason).toEqual(undefined);
+    });
+
+    it('should allow empty password for existing users', async () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', '', 'faculty', '', 'testProject');
+      prismaMock.user.findUnique.mockResolvedValueOnce({
+        user_id: 1,
+        user_display_name: 'testUser',
+        user_email: 'testEmail@test.com',
+        user_password_hash: 'hashedPassword',
+        has_completed_tour: false,
+      });
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      expect((result as CallbackReturnTest).isValid).toEqual(true);
+      expect((result as CallbackReturnTest).reason).toEqual(undefined);
+    });
+
+    it('should reject empty password for new users', async () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', '', 'faculty', '', 'testProject');
+      prismaMock.user.findUnique.mockResolvedValueOnce(null);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      expect((result as CallbackReturnTest).isValid).toEqual(false);
+      expect((result as CallbackReturnTest).reason).toContain('Default password cannot be empty');
     });
   });
 
