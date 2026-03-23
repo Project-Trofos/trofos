@@ -1,6 +1,31 @@
 import fs from 'fs';
 import ExcelJS from 'exceljs';
 
+export const TEMPLATE_DATA_START_ROW = 3;
+export const TEMPLATE_DATA_END_ROW = 1000;
+
+/**
+ * Adds data validation dropdown to a column for the template data rows.
+ */
+export function addDropdownValidation(
+  sheet: ExcelJS.Worksheet,
+  column: string,
+  options: string[],
+  showError = false,
+  errorMessage?: string,
+) {
+  const formula = `"${options.join(',')}"`;
+  for (let row = TEMPLATE_DATA_START_ROW; row <= TEMPLATE_DATA_END_ROW; row++) {
+    sheet.getCell(`${column}${row}`).dataValidation = {
+      type: 'list',
+      allowBlank: true,
+      formulae: [formula],
+      showErrorMessage: showError,
+      ...(errorMessage && { errorTitle: 'Invalid value', error: errorMessage }),
+    };
+  }
+}
+
 /**
  * Extracts a string value from an ExcelJS cell value, handling all cell types:
  * - Formula cells: extracts the cached result

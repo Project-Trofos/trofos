@@ -1,5 +1,5 @@
 import * as csv from '@fast-csv/parse';
-import { BacklogStatusType, Epic, HistoryType, Prisma, Sprint } from '@prisma/client';
+import { BacklogStatusType, Epic, HistoryType, Prisma, Sprint, SprintStatus } from '@prisma/client';
 import {
   BACKLOG_PRIORITY_MAP,
   BACKLOG_TYPE_MAP,
@@ -37,14 +37,16 @@ function validatePoints(data: ImportBacklogDataCsv): boolean {
   return !isNaN(num) && num > 0 && Number.isInteger(num);
 }
 
-function validateSprint(data: ImportBacklogDataCsv, sprintMap: Map<string, Sprint>): boolean {
-  if (!data.sprint) return true; // optional - goes to unassigned
-  return sprintMap.has(data.sprint);
+function validateSprint(data: ImportBacklogDataCsv, _sprintMap: Map<string, Sprint>): boolean {
+  if (!data.sprint) return true;
+  if (data.sprint.trim() === '<Enter New Sprint Name>') return false;
+  return true;
 }
 
-function validateEpic(data: ImportBacklogDataCsv, epicMap: Map<string, Epic>): boolean {
-  if (!data.epic) return true; // optional
-  return epicMap.has(data.epic);
+function validateEpic(data: ImportBacklogDataCsv, _epicMap: Map<string, Epic>): boolean {
+  if (!data.epic) return true;
+  if (data.epic.trim() === '<Enter New Epic Name>') return false;
+  return true;
 }
 
 function validateAssignee(data: ImportBacklogDataCsv, memberEmailMap: Map<string, number>): boolean {
@@ -127,8 +129,40 @@ async function processImportBacklogData(
       const type = BACKLOG_TYPE_MAP.get(row.type.toUpperCase())!;
       const priority = row.priority ? BACKLOG_PRIORITY_MAP.get(row.priority.toUpperCase()) || null : null;
       const points = row.points ? Number(row.points) : null;
-      const sprintId = row.sprint ? sprintMap.get(row.sprint)?.id : undefined;
-      const epicId = row.epic ? epicMap.get(row.epic)?.epic_id : undefined;
+      let sprintId: number | undefined;
+      if (row.sprint) {
+        const existing = sprintMap.get(row.sprint);
+        if (existing) {
+          sprintId = existing.id;
+        } else {
+          const newSprint = await tx.sprint.create({
+            data: {
+              name: row.sprint,
+              project_id: projectId,
+              duration: 2, // 2 weeks default
+              start_date: new Date(),
+              end_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+              status: SprintStatus.upcoming,
+            },
+          });
+          sprintMap.set(row.sprint, newSprint);
+          sprintId = newSprint.id;
+        }
+      }
+      let epicId: number | undefined;
+      if (row.epic) {
+        const existing = epicMap.get(row.epic);
+        if (existing) {
+          epicId = existing.epic_id;
+        } else {
+          // Create new epic if it doesn't exist
+          const newEpic = await tx.epic.create({
+            data: { name: row.epic, project_id: projectId },
+          });
+          epicMap.set(row.epic, newEpic);
+          epicId = newEpic.epic_id;
+        }
+      }
       const rowReporterId = row.reporter ? memberEmailMap.get(row.reporter.toLowerCase())! : reporterId;
       const assigneeId = row.assignee ? memberEmailMap.get(row.assignee.toLowerCase()) : undefined;
 

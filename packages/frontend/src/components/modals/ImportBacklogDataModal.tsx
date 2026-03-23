@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Upload, Space } from 'antd';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
@@ -6,19 +6,41 @@ import { useParams } from 'react-router-dom';
 import { useImportBacklogCsvMutation } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
 
-const CSV_TEMPLATE_PATH = '/download/importBacklogData.csv';
-const CSV_TEMPLATE_NAME = 'importBacklogData.csv';
-
 export default function ImportBacklogDataModal(): JSX.Element {
   const params = useParams();
   const projectId = Number(params.projectId);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [importBacklogCsv] = useImportBacklogCsvMutation();
 
   const showModal = () => {
     setIsModalOpen(true);
+  };
+
+  const handleDownloadTemplate = async () => {
+    setIsDownloading(true);
+    try {
+      const response = await fetch(`/api/backlog/${projectId}/template/import`, {
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to download template');
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'importBacklogData.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      message.error('Failed to download template');
+    }
+    setIsDownloading(false);
   };
 
   const handleOk = async () => {
@@ -78,8 +100,8 @@ export default function ImportBacklogDataModal(): JSX.Element {
           <Upload data-testid="upload-button" {...props}>
             <Button icon={<UploadOutlined />}>Select File</Button>
           </Upload>
-          <a href={CSV_TEMPLATE_PATH} download={CSV_TEMPLATE_NAME}>
-            Download csv template
+          <a onClick={handleDownloadTemplate} style={{ cursor: isDownloading ? 'wait' : 'pointer' }}>
+            {isDownloading ? 'Downloading...' : 'Download csv template'}
           </a>
         </Space>
       </Modal>

@@ -5,7 +5,7 @@ import { UserSession } from '@prisma/client';
 import ExcelJS from 'exceljs';
 import course from '../services/course.service';
 import settings from '../services/settings.service';
-import { convertXlsxToCsv } from '../helpers/xlsx';
+import { convertXlsxToCsv, addDropdownValidation, TEMPLATE_DATA_START_ROW, TEMPLATE_DATA_END_ROW } from '../helpers/xlsx';
 import {
   assertCourseIdIsValid,
   assertCourseNameIsValid,
@@ -382,28 +382,6 @@ async function getLatestSprintInsightsForCourseProjects(req: express.Request, re
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
-  }
-}
-
-const TEMPLATE_DATA_START_ROW = 3;
-const TEMPLATE_DATA_END_ROW = 1000;
-
-function addDropdownValidation(
-  sheet: ExcelJS.Worksheet,
-  column: string,
-  options: string[],
-  showError = false,
-  errorMessage?: string,
-) {
-  const formula = `"${options.join(',')}"`;
-  for (let row = TEMPLATE_DATA_START_ROW; row <= TEMPLATE_DATA_END_ROW; row++) {
-    sheet.getCell(`${column}${row}`).dataValidation = {
-      type: 'list',
-      allowBlank: true,
-      formulae: [formula],
-      showErrorMessage: showError,
-      ...(errorMessage && { errorTitle: 'Invalid value', error: errorMessage }),
-    };
   }
 }
 

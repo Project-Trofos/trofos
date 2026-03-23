@@ -2,8 +2,10 @@ import { Backlog, Epic, UserSession } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
 import express from 'express';
 import fs from 'fs';
+import ExcelJS from 'exceljs';
 import backlogService from '../services/backlog.service';
 import backlogCsvService from '../services/backlogCsv.service';
+import prisma from '../models/prismaClient';
 import {
   BadRequestError,
   getDefaultErrorRes,
@@ -13,6 +15,7 @@ import {
 } from '../helpers/error';
 import { sendToProject } from '../notifications/NotificationHandler';
 import { BacklogFields } from '../helpers/types/backlog.service.types';
+import { convertXlsxToCsv, addDropdownValidation } from '../helpers/xlsx';
 
 const newBacklog = async (req: express.Request, res: express.Response) => {
   try {
@@ -189,6 +192,7 @@ const removeBacklogFromEpic = async (req: express.Request, res: express.Response
 };
 
 const importBacklogCsv = async (req: express.Request, res: express.Response) => {
+  let convertedCsvPath: string | undefined;
   try {
     const { projectId } = req.params;
 
@@ -198,7 +202,21 @@ const importBacklogCsv = async (req: express.Request, res: express.Response) => 
     const userSession = res.locals.userSession as UserSession | undefined;
     assertInputIsNotEmpty(userSession, 'userSession');
 
-    const result = await backlogCsvService.importBacklogData(req.file.path, Number(projectId), userSession.user_id);
+    const isXlsx = req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      || req.file.originalname?.endsWith('.xlsx');
+    const isCsv = req.file.mimetype.includes('csv');
+
+    if (!isXlsx && !isCsv) {
+      throw new Error('Invalid file type. File must be CSV or XLSX.');
+    }
+
+    let filePath = req.file.path;
+    if (isXlsx) {
+      convertedCsvPath = await convertXlsxToCsv(req.file.path);
+      filePath = convertedCsvPath;
+    }
+
+    const result = await backlogCsvService.importBacklogData(filePath, Number(projectId), userSession.user_id);
     sendToProject(Number(projectId), 'Backlogs imported from CSV');
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
@@ -207,6 +225,84 @@ const importBacklogCsv = async (req: express.Request, res: express.Response) => 
     if (req.file?.path) {
       fs.unlinkSync(req.file.path);
     }
+    if (convertedCsvPath && fs.existsSync(convertedCsvPath)) {
+      fs.unlinkSync(convertedCsvPath);
+    }
+  }
+};
+
+const getBacklogImportTemplate = async (req: express.Request, res: express.Response) => {
+  try {
+    const { projectId } = req.params;
+    assertProjectIdIsValid(Number(projectId));
+
+    // Fetch project data for dropdowns
+    const [sprints, epics, members] = await Promise.all([
+      prisma.sprint.findMany({ where: { project_id: Number(projectId) } }),
+      prisma.epic.findMany({ where: { project_id: Number(projectId) } }),
+      prisma.usersOnProjects.findMany({
+        where: { project_id: Number(projectId) },
+        include: { user: { select: { user_email: true } } },
+      }),
+    ]);
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Import Backlogs');
+
+    // Headers and column widths
+    sheet.addRow(['summary', 'type', 'sprint', 'epic', 'priority', 'points', 'reporter', 'assignee', 'description']);
+    sheet.getRow(1).font = { bold: true };
+    sheet.columns = [
+      { width: 35 }, // A: summary
+      { width: 15 }, // B: type
+      { width: 20 }, // C: sprint
+      { width: 20 }, // D: epic
+      { width: 15 }, // E: priority
+      { width: 10 }, // F: points
+      { width: 30 }, // G: reporter
+      { width: 30 }, // H: assignee
+      { width: 40 }, // I: description
+    ];
+
+    // Example row (skipped during import)
+    sheet.addRow([
+      'User Story Title',
+      'story, task, or bug',
+      'Sprint name (Optional)',
+      'Epic name (Optional, new epics created automatically)',
+      'very_high to very_low (Optional)',
+      'Story points (Optional)',
+      'Reporter email (Optional, defaults to you)',
+      'Assignee email (Optional)',
+      'Description text (Optional)',
+    ]);
+    sheet.getRow(2).font = { italic: true, color: { argb: 'FF888888' } };
+
+    // Type dropdown (column B)
+    addDropdownValidation(sheet, 'B', ['story', 'task', 'bug'], true, 'Must be story, task, or bug');
+
+    // Sprint dropdown (column C)
+    addDropdownValidation(sheet, 'C', [...sprints.map((s) => s.name), '<Enter New Sprint Name>']);
+
+    // Epic dropdown (column D)
+    addDropdownValidation(sheet, 'D', [...epics.map((e) => e.name), '<Enter New Epic Name>']);
+
+    // Priority dropdown (column E)
+    addDropdownValidation(sheet, 'E', ['very_high', 'high', 'medium', 'low', 'very_low']);
+
+    // Reporter dropdown (column G) and Assignee dropdown (column H)
+    if (members.length > 0) {
+      const memberEmails = members.map((m) => m.user.user_email);
+      addDropdownValidation(sheet, 'G', memberEmails);
+      addDropdownValidation(sheet, 'H', memberEmails);
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=importBacklogData.xlsx');
+    await workbook.xlsx.write(res);
+    return res.end();
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
   }
 };
 
@@ -233,6 +329,7 @@ export default {
   updateBacklog,
   deleteBacklog,
   importBacklogCsv,
+  getBacklogImportTemplate,
   createEpic,
   getBacklogsForEpic,
   getEpicsForProject,
