@@ -259,6 +259,10 @@ function validateProjectNameRequired(data: ImportCourseDataCsv): boolean {
   if (!data.projectName && roleId === STUDENT_ROLE_ID) {
     return false;
   }
+  // Reject placeholder value if user forgot to edit it
+  if (data.projectName?.trim() === '<Enter New Project Name>' || data.projectName?.trim() === '') {
+    return false;
+  }
   return true;
 }
 

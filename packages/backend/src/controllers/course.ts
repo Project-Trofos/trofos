@@ -2,8 +2,10 @@ import express from 'express';
 import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import { UserSession } from '@prisma/client';
+import ExcelJS from 'exceljs';
 import course from '../services/course.service';
 import settings from '../services/settings.service';
+import { convertXlsxToCsv } from '../helpers/xlsx';
 import {
   assertCourseIdIsValid,
   assertCourseNameIsValid,
@@ -290,20 +292,37 @@ async function addProjectAndCourse(req: express.Request, res: express.Response) 
 }
 
 async function importCsv(req: express.Request, res: express.Response) {
+  let convertedCsvPath: string | undefined;
   try {
     const { courseId } = req.params;
 
     assertInputIsNotEmpty(req.file, 'Csv file');
-    assertFileIsCorrectType(req.file.mimetype, 'csv');
     assertCourseIdIsValid(courseId);
 
-    const result = await csvService.importCourseData(req.file.path, Number(courseId));
+    const isXlsx = req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      || req.file.originalname?.endsWith('.xlsx');
+    const isCsv = req.file.mimetype.includes('csv');
+
+    if (!isXlsx && !isCsv) {
+      throw new Error('Invalid file type. File must be CSV or XLSX.');
+    }
+
+    let filePath = req.file.path;
+    if (isXlsx) {
+      convertedCsvPath = await convertXlsxToCsv(req.file.path);
+      filePath = convertedCsvPath;
+    }
+
+    const result = await csvService.importCourseData(filePath, Number(courseId));
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   } finally {
     if (req.file?.path) {
       fs.unlinkSync(req.file.path);
+    }
+    if (convertedCsvPath && fs.existsSync(convertedCsvPath)) {
+      fs.unlinkSync(convertedCsvPath);
     }
   }
 }
@@ -366,6 +385,97 @@ async function getLatestSprintInsightsForCourseProjects(req: express.Request, re
   }
 }
 
+const TEMPLATE_DATA_START_ROW = 3;
+const TEMPLATE_DATA_END_ROW = 1000;
+
+function addDropdownValidation(
+  sheet: ExcelJS.Worksheet,
+  column: string,
+  options: string[],
+  showError = false,
+  errorMessage?: string,
+) {
+  const formula = `"${options.join(',')}"`;
+  for (let row = TEMPLATE_DATA_START_ROW; row <= TEMPLATE_DATA_END_ROW; row++) {
+    sheet.getCell(`${column}${row}`).dataValidation = {
+      type: 'list',
+      allowBlank: true,
+      formulae: [formula],
+      showErrorMessage: showError,
+      ...(errorMessage && { errorTitle: 'Invalid value', error: errorMessage }),
+    };
+  }
+}
+
+async function getImportTemplate(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+    assertCourseIdIsValid(courseId);
+
+    const projects = await course.getProjects(res.locals.policyConstraint, Number(courseId));
+    const users = await course.getUsers(Number(courseId));
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Import Data');
+
+    // Headers and column widths
+    sheet.addRow(['email', 'name', 'password', 'role', 'projectKey', 'projectName']);
+    sheet.getRow(1).font = { bold: true };
+    sheet.columns = [
+      { width: 30 }, // A: email
+      { width: 25 }, // B: name
+      { width: 25 }, // C: password
+      { width: 20 }, // D: role
+      { width: 30 }, // E: projectKey
+      { width: 30 }, // F: projectName
+    ];
+
+    // Example row (skipped during import)
+    sheet.addRow(['Student Email', 'Student Name', 'For Non-SSO emails (Optional)', 'STUDENT or FACULTY', 'Short project identifier (Optional)', 'Name of the project']);
+    sheet.getRow(2).font = { italic: true, color: { argb: 'FF888888' } };
+
+    // User lookup: hidden columns G (email) & H (name) for VLOOKUP
+    if (users.length > 0) {
+      sheet.getCell('G1').value = '_email';
+      sheet.getCell('H1').value = '_name';
+      users.forEach((u, i) => {
+        sheet.getCell(`G${i + 2}`).value = u.user_email;
+        sheet.getCell(`H${i + 2}`).value = u.user_display_name;
+      });
+      const placeholderRow = users.length + 2;
+      sheet.getCell(`G${placeholderRow}`).value = '<Enter New Email>';
+      sheet.getCell(`H${placeholderRow}`).value = '<Enter New Name>';
+      sheet.getColumn(7).hidden = true;
+      sheet.getColumn(8).hidden = true;
+
+      // Email dropdown (column A) — selecting auto-populates name via VLOOKUP
+      const emailOptions = [...users.map((u) => u.user_email), '<Enter New Email>'];
+      addDropdownValidation(sheet, 'A', emailOptions);
+
+      // Name (column B) — auto-populated from email via VLOOKUP
+      for (let row = TEMPLATE_DATA_START_ROW; row <= TEMPLATE_DATA_END_ROW; row++) {
+        sheet.getCell(`B${row}`).value = {
+          formula: `IFERROR(VLOOKUP(A${row},$G$2:$H$${placeholderRow},2,FALSE),"")`,
+        };
+      }
+    }
+
+    // Role dropdown (column D)
+    addDropdownValidation(sheet, 'D', ['STUDENT', 'FACULTY'], true, 'Please select STUDENT or FACULTY');
+
+    // Project name dropdown (column F)
+    const projectOptions = [...projects.map((p) => p.pname), '<Enter New Project Name>'];
+    addDropdownValidation(sheet, 'F', projectOptions);
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=importCourseData.xlsx');
+    await workbook.xlsx.write(res);
+    return res.end();
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 export default {
   getAll,
   get,
@@ -385,4 +495,5 @@ export default {
   unarchiveCourse,
   importProjectAssignments,
   getLatestSprintInsightsForCourseProjects,
+  getImportTemplate,
 };

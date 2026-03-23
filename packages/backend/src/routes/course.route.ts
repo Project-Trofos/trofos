@@ -92,6 +92,13 @@ router.delete(
   course.removeProject,
 );
 
+// Download dynamic import template (XLSX with project name dropdown)
+router.get(
+  '/:courseId/template/import',
+  hasAuthForCourse(Action.read_course, projectPolicy.POLICY_NAME),
+  course.getImportTemplate,
+);
+
 // Import course data via a csv file
 router.post(
   '/:courseId/import/csv',
