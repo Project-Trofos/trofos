@@ -1,7 +1,7 @@
 import trofosApiSlice from '.';
 import { extendedApi as sprintApi } from './sprint';
 import type { BacklogFormFields } from '../helpers/BacklogModal.types';
-import type { Backlog, BacklogHistory, BacklogUpdatePayload, Epic } from './types';
+import type { Backlog, BacklogHistory, BacklogImportCsvPayload, BacklogUpdatePayload, Epic } from './types';
 import { EpicFormFields } from '../helpers/EpicModal.types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
@@ -165,6 +165,15 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory', 'Issue'],
     }),
+    importBacklogCsv: builder.mutation<void, BacklogImportCsvPayload>({
+      query: (params) => ({
+        url: `backlog/${params.projectId}/import/csv`,
+        method: 'POST',
+        body: params.payload,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Backlog', 'Sprint', 'BacklogHistory'],
+    }),
 
     // Backlog history related queries
     getSprintBacklogHistory: builder.query<BacklogHistory[], { sprintId: number }>({
@@ -275,4 +284,5 @@ export const {
   useAddBacklogToEpicMutation,
   useRemoveBacklogFromEpicMutation,
   useDeleteEpicMutation,
+  useImportBacklogCsvMutation,
 } = extendedApi;

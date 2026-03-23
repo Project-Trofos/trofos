@@ -7,7 +7,6 @@ import {
   INVALID_PROJECT_NAME,
   INVALID_PROPERTIES,
   INVALID_ROLE,
-  INVALID_TEAM_NAME,
   MESSAGE_SPACE,
 } from '../../services/types/csv.service.types';
 import {
@@ -47,7 +46,7 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       const expectedErrorMessage = INVALID_EMAIL;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
@@ -62,59 +61,82 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       const expectedErrorMessage = INVALID_ROLE;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
 
-    it('should return an error message if the team name is invalid', async () => {
-      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', '', 'testProject');
-      const expectedErrorMessage = INVALID_TEAM_NAME;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+    it('should return an error message if the project name is empty', async () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', 'testKey', '');
+      const expectedErrorMessage = INVALID_PROJECT_NAME;
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
 
     it('should return an error message if multiple fields are invalid', async () => {
-      const dataRow = ImportCourseDataCsvBuilder('testUser', 'invalidEmail', 'p/w', 'student', '', 'testProject');
-      const expectedErrorMessage = INVALID_EMAIL + MESSAGE_SPACE + INVALID_TEAM_NAME;
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'invalidEmail', 'p/w', 'student', '', '');
+      const expectedErrorMessage = INVALID_EMAIL + MESSAGE_SPACE + INVALID_PROJECT_NAME;
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(false);
       expect((result as CallbackReturnTest).reason).toEqual(expectedErrorMessage);
     });
 
     it('should return true if the row is valid', async () => {
       const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', 'p/w', 'faculty', '', 'testProject');
-      const result: unknown = csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
       expect((result as CallbackReturnTest).isValid).toEqual(true);
       expect((result as CallbackReturnTest).reason).toEqual(undefined);
+    });
+
+    it('should allow empty password for existing users', async () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', '', 'faculty', '', 'testProject');
+      prismaMock.user.findUnique.mockResolvedValueOnce({
+        user_id: 1,
+        user_display_name: 'testUser',
+        user_email: 'testEmail@test.com',
+        user_password_hash: 'hashedPassword',
+        has_completed_tour: false,
+      });
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      expect((result as CallbackReturnTest).isValid).toEqual(true);
+      expect((result as CallbackReturnTest).reason).toEqual(undefined);
+    });
+
+    it('should reject empty password for new users', async () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testEmail@test.com', '', 'faculty', '', 'testProject');
+      prismaMock.user.findUnique.mockResolvedValueOnce(null);
+      const result: unknown = await csvService.validateImportCourseData(dataRow, validateImportCourseDataCallback);
+      expect((result as CallbackReturnTest).isValid).toEqual(false);
+      expect((result as CallbackReturnTest).reason).toContain('Default password cannot be empty');
     });
   });
 
   describe('transformImportCourseData', () => {
-    it('should not use teamName as projectName when projectName is specified', () => {
+    it('should set projectName from CSV data', () => {
       const dataRow = ImportCourseDataCsvBuilder(
         'testUser',
         'testUser@test.com',
         'p/w',
         'student',
-        'testTeam',
+        'testKey',
         'testProject',
       );
       csvService.transformImportCourseData(dataRow, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(groupDetailsMap.get('testTeam')?.projectName).toEqual('testProject');
+      expect(groupDetailsMap.get('testProject')?.projectName).toEqual('testProject');
+      expect(groupDetailsMap.get('testProject')?.projectKey).toEqual('testKey');
     });
 
-    it('should use teamName as projectName when projectName is not specified', () => {
-      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', 'testTeam', '');
+    it('should set projectKey to null when projectKey is not specified', () => {
+      const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', '', 'testProject');
       csvService.transformImportCourseData(dataRow, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(groupDetailsMap.get('testTeam')?.projectName).toEqual('testTeam');
+      expect(groupDetailsMap.get('testProject')?.projectKey).toEqual(null);
     });
 
-    it('should not set groupDetails and userGrouping when teamName is not specified', () => {
+    it('should not set groupDetails and userGrouping when projectName is not specified', () => {
       const dataRow = ImportCourseDataCsvBuilder('testUser', 'testUser@test.com', 'p/w', 'student', '', '');
       csvService.transformImportCourseData(dataRow, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(groupDetailsMap.get('testTeam')).toEqual(undefined);
+      expect(groupDetailsMap.get('testProject')).toEqual(undefined);
       expect(userGroupingMap.get('testUser@test.com')).toEqual(undefined);
     });
 
@@ -169,7 +191,7 @@ describe('csv.service.tests', () => {
         'testProject',
       );
       csvService.transformImportCourseData(dataRow, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUser@test.com')).toEqual('testTeam');
+      expect(userGroupingMap.get('testUser@test.com')).toEqual(['testProject']);
     });
 
     it('should return the correct mappings when two different user-group mappings are provided', () => {
@@ -178,7 +200,7 @@ describe('csv.service.tests', () => {
         'testUserOne@test.com',
         '',
         'student',
-        'testTeam1',
+        'testKey1',
         'testProject1',
       );
       const dataRowTwo = ImportCourseDataCsvBuilder(
@@ -186,13 +208,13 @@ describe('csv.service.tests', () => {
         'testUserTwo@test.com',
         '',
         'student',
-        'testTeam2',
+        'testKey2',
         'testProject2',
       );
       csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
       csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUserOne@test.com')).toEqual('testTeam1');
-      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual('testTeam2');
+      expect(userGroupingMap.get('testUserOne@test.com')).toEqual(['testProject1']);
+      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual(['testProject2']);
     });
 
     it('should return the correct mappings when two users map to the same group', () => {
@@ -201,7 +223,7 @@ describe('csv.service.tests', () => {
         'testUserOne@test.com',
         '',
         'student',
-        'testTeam1',
+        'testKey1',
         'testProject1',
       );
       const dataRowTwo = ImportCourseDataCsvBuilder(
@@ -209,21 +231,43 @@ describe('csv.service.tests', () => {
         'testUserTwo@test.com',
         '',
         'student',
-        'testTeam1',
+        'testKey1',
         'testProject1',
       );
       csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
       csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
-      expect(userGroupingMap.get('testUserOne@test.com')).toEqual('testTeam1');
-      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual('testTeam1');
+      expect(userGroupingMap.get('testUserOne@test.com')).toEqual(['testProject1']);
+      expect(userGroupingMap.get('testUserTwo@test.com')).toEqual(['testProject1']);
+    });
+
+    it('should return the correct mappings when one user maps to multiple groups', () => {
+      const dataRowOne = ImportCourseDataCsvBuilder(
+        'testUser',
+        'testUser@test.com',
+        '',
+        'student',
+        'testKey1',
+        'testProject1',
+      );
+      const dataRowTwo = ImportCourseDataCsvBuilder(
+        'testUser',
+        'testUser@test.com',
+        '',
+        'student',
+        'testKey2',
+        'testProject2',
+      );
+      csvService.transformImportCourseData(dataRowOne, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
+      csvService.transformImportCourseData(dataRowTwo, 1, userDetailsMap, groupDetailsMap, userGroupingMap);
+      expect(userGroupingMap.get('testUser@test.com')).toEqual(['testProject1', 'testProject2']);
     });
   });
 
   describe('processImportCourseData', () => {
     it('should create a project and add a user to it when there is a single user-group mapping', async () => {
       userDetailsMap.set(studentOne.email, studentOne);
-      groupDetailsMap.set(projectOne.teamName, projectOne);
-      userGroupingMap.set(studentOne.email, projectOne.teamName);
+      groupDetailsMap.set(projectOne.projectName, projectOne);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName]);
 
       prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
       prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
@@ -241,10 +285,10 @@ describe('csv.service.tests', () => {
     it('should create two projects and add users to them when there are two user-group mappings', async () => {
       userDetailsMap.set(studentOne.email, studentOne);
       userDetailsMap.set(studentTwo.email, studentTwo);
-      groupDetailsMap.set(projectOne.teamName, projectOne);
-      groupDetailsMap.set(projectTwo.teamName, projectTwo);
-      userGroupingMap.set(studentOne.email, projectOne.teamName);
-      userGroupingMap.set(studentTwo.email, projectTwo.teamName);
+      groupDetailsMap.set(projectOne.projectName, projectOne);
+      groupDetailsMap.set(projectTwo.projectName, projectTwo);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName]);
+      userGroupingMap.set(studentTwo.email, [projectTwo.projectName]);
       prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
       prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaCreateMock);
       prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
@@ -257,6 +301,31 @@ describe('csv.service.tests', () => {
       prismaMock.usersOnProjects.create.mockResolvedValueOnce({
         project_id: projectTwo.projectId as number,
         user_id: studentTwo.id as number,
+        created_at: new Date(Date.now()),
+      });
+      prismaMock.$transaction.mockResolvedValueOnce(true);
+      await expect(
+        csvService.processImportCourseData(1, userDetailsMap, groupDetailsMap, userGroupingMap),
+      ).resolves.toEqual(true);
+    });
+
+    it('should add a single user to multiple projects', async () => {
+      userDetailsMap.set(studentOne.email, studentOne);
+      groupDetailsMap.set(projectOne.projectName, projectOne);
+      groupDetailsMap.set(projectTwo.projectName, projectTwo);
+      userGroupingMap.set(studentOne.email, [projectOne.projectName, projectTwo.projectName]);
+
+      prismaMock.project.create.mockResolvedValueOnce(projectOnePrismaCreateMock);
+      prismaMock.project.create.mockResolvedValueOnce(projectTwoPrismaCreateMock);
+      prismaMock.user.upsert.mockResolvedValueOnce(studentOnePrismaUserUpsertMock);
+      prismaMock.usersOnProjects.upsert.mockResolvedValueOnce({
+        project_id: projectOne.projectId as number,
+        user_id: studentOne.id as number,
+        created_at: new Date(Date.now()),
+      });
+      prismaMock.usersOnProjects.upsert.mockResolvedValueOnce({
+        project_id: projectTwo.projectId as number,
+        user_id: studentOne.id as number,
         created_at: new Date(Date.now()),
       });
       prismaMock.$transaction.mockResolvedValueOnce(true);

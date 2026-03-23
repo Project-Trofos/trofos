@@ -2,33 +2,27 @@ import { useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Upload, Space } from 'antd';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { useImportCsvMutation } from '../../api/course';
+import { useParams } from 'react-router-dom';
+import { useImportBacklogCsvMutation } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
-import { CourseData } from '../../api/types';
-import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
-export default function ImportDataModal({
-  course,
-  disableClickEvent,
-}: {
-  course: CourseData | undefined;
-  disableClickEvent?: boolean;
-}): JSX.Element {
+export default function ImportBacklogDataModal(): JSX.Element {
+  const params = useParams();
+  const projectId = Number(params.projectId);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [importCsv] = useImportCsvMutation();
+  const [importBacklogCsv] = useImportBacklogCsvMutation();
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleDownloadTemplate = async () => {
-    if (!course) return;
     setIsDownloading(true);
     try {
-      const response = await fetch(`/api/course/${course.id}/template/import`, {
+      const response = await fetch(`/api/backlog/${projectId}/template/import`, {
         credentials: 'include',
       });
       if (!response.ok) {
@@ -38,7 +32,7 @@ export default function ImportDataModal({
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'importCourseData.xlsx';
+      a.download = 'importBacklogData.xlsx';
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -54,14 +48,12 @@ export default function ImportDataModal({
     formData.append('file', fileList[0] as RcFile);
     setIsUploading(true);
     try {
-      if (course) {
-        await importCsv({
-          courseId: course.id,
-          payload: formData,
-        }).unwrap();
-        setFileList([]);
-        message.success('Import successful.');
-      }
+      await importBacklogCsv({
+        projectId,
+        payload: formData,
+      }).unwrap();
+      setFileList([]);
+      message.success('Backlogs imported successfully.');
     } catch (error) {
       message.error(getErrorMessage(error));
     }
@@ -82,7 +74,6 @@ export default function ImportDataModal({
     },
     beforeUpload: (file) => {
       setFileList([file]);
-
       return false;
     },
     fileList,
@@ -90,15 +81,11 @@ export default function ImportDataModal({
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={disableClickEvent ? undefined : showModal}
-        {...{ [STEP_PROP]: StepTarget.IMPORT_CSV_BUTTON }}
-      >
+      <Button type="primary" onClick={showModal}>
         Import CSV Data
       </Button>
       <Modal
-        title="Import CSV Data"
+        title="Import Backlogs from CSV Data"
         okButtonProps={{
           disabled: fileList.length === 0,
           loading: isUploading,

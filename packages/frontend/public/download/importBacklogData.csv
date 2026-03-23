@@ -1,0 +1,2 @@
+summary,type,sprint,epic,priority,points,reporter,assignee,description
+User Story Title,"[story, task, bug]",Sprint name (leave empty for unassigned),Epic name (leave empty for none),"[very_high, high, medium, low, very_low]",Story points,Reporter email (leave empty for current user),Assignee email (leave empty for unassigned),Description text

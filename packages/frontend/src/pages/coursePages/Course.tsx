@@ -35,7 +35,7 @@ export default function CoursePage(): JSX.Element {
     return split[3];
   }, [location.pathname]);
 
-  const { course, filteredProjects, isLoading } = useCourse(params.courseId);
+  const { course, isLoading } = useCourse(params.courseId);
   const { isCourseManager } = useIsCourseManager();
 
   const handleMenuClick = useCallback(
@@ -92,7 +92,7 @@ export default function CoursePage(): JSX.Element {
         tagText={course.code}
         buttons={isCourseManager
           ? [
-              <ImportDataModal key="import-csv" course={course} projects={filteredProjects} />,
+              <ImportDataModal key="import-csv" course={course} />,
               <ProjectCreationModal key="create-project" course={course} />,
               <DropdownMenu key="more" courseMenu={courseMenu} />,
             ]
