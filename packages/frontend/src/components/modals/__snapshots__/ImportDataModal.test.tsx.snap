@@ -145,8 +145,7 @@ exports[`test import data modal > should display the components correctly 1`] = 
                     class="ant-space-item"
                   >
                     <a
-                      download="importCourseData.csv"
-                      href="/download/importCourseData.csv"
+                      style="cursor: pointer;"
                     >
                       Download csv template
                     </a>
