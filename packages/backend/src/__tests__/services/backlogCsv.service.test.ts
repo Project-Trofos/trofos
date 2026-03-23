@@ -108,9 +108,29 @@ describe('backlogCsv.service.tests', () => {
       expect((result as CallbackReturnTest).reason).toContain(INVALID_POINTS);
     });
 
-    it('should return an error if sprint does not exist', () => {
+    it('should accept unknown sprint names (auto-created during import)', () => {
       const dataRow = ImportBacklogDataCsvBuilder(
-        'Test Story', 'story', 'Nonexistent Sprint', '', '', '', '', '', '',
+        'Test Story', 'story', 'New Sprint', '', '', '', '', '', '',
+      );
+      const result: unknown = backlogCsvService.validateImportBacklogData(
+        dataRow, sprintMap, epicMap, memberEmailMap, validateImportBacklogDataCallback,
+      );
+      expect((result as CallbackReturnTest).isValid).toEqual(true);
+    });
+
+    it('should accept unknown epic names (auto-created during import)', () => {
+      const dataRow = ImportBacklogDataCsvBuilder(
+        'Test Story', 'story', '', 'New Epic', '', '', '', '', '',
+      );
+      const result: unknown = backlogCsvService.validateImportBacklogData(
+        dataRow, sprintMap, epicMap, memberEmailMap, validateImportBacklogDataCallback,
+      );
+      expect((result as CallbackReturnTest).isValid).toEqual(true);
+    });
+
+    it('should reject placeholder sprint name', () => {
+      const dataRow = ImportBacklogDataCsvBuilder(
+        'Test Story', 'story', '<Enter New Sprint Name>', '', '', '', '', '', '',
       );
       const result: unknown = backlogCsvService.validateImportBacklogData(
         dataRow, sprintMap, epicMap, memberEmailMap, validateImportBacklogDataCallback,
@@ -119,9 +139,9 @@ describe('backlogCsv.service.tests', () => {
       expect((result as CallbackReturnTest).reason).toContain(INVALID_SPRINT);
     });
 
-    it('should return an error if epic does not exist', () => {
+    it('should reject placeholder epic name', () => {
       const dataRow = ImportBacklogDataCsvBuilder(
-        'Test Story', 'story', '', 'Nonexistent Epic', '', '', '', '', '',
+        'Test Story', 'story', '', '<Enter New Epic Name>', '', '', '', '', '',
       );
       const result: unknown = backlogCsvService.validateImportBacklogData(
         dataRow, sprintMap, epicMap, memberEmailMap, validateImportBacklogDataCallback,
@@ -154,7 +174,7 @@ describe('backlogCsv.service.tests', () => {
 
     it('should return multiple errors when multiple fields are invalid', () => {
       const dataRow = ImportBacklogDataCsvBuilder(
-        '', 'invalid', 'Bad Sprint', '', 'invalid', '-1', '', '', '',
+        '', 'invalid', '', '', 'invalid', '-1', '', '', '',
       );
       const result: unknown = backlogCsvService.validateImportBacklogData(
         dataRow, sprintMap, epicMap, memberEmailMap, validateImportBacklogDataCallback,
@@ -165,7 +185,6 @@ describe('backlogCsv.service.tests', () => {
       expect(reason).toContain(INVALID_TYPE);
       expect(reason).toContain(INVALID_PRIORITY);
       expect(reason).toContain(INVALID_POINTS);
-      expect(reason).toContain(INVALID_SPRINT);
     });
   });
 
@@ -236,6 +255,122 @@ describe('backlogCsv.service.tests', () => {
         where: { id: 1 },
         data: { backlog_counter: 8 },
       });
+    });
+
+    it('should auto-create sprint if not found in sprintMap', async () => {
+      const rows = [
+        ImportBacklogDataCsvBuilder('Story 1', 'story', 'New Sprint', '', '', '', '', '', ''),
+      ];
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        await callback(prismaMock);
+        return Promise.resolve();
+      });
+
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce({
+        backlog_counter: 0,
+      } as any);
+
+      prismaMock.backlogStatus.findFirst.mockResolvedValueOnce({
+        name: 'To do',
+      } as any);
+
+      prismaMock.sprint.create.mockResolvedValueOnce({
+        id: 99,
+        name: 'New Sprint',
+        project_id: 1,
+      } as any);
+
+      prismaMock.backlog.create.mockResolvedValueOnce({} as any);
+      prismaMock.backlogHistory.create.mockResolvedValueOnce({} as any);
+      prismaMock.project.update.mockResolvedValueOnce({} as any);
+
+      await expect(
+        backlogCsvService.processImportBacklogData(1, 1, rows, new Map(), epicMap, memberEmailMap),
+      ).resolves.toBeUndefined();
+
+      expect(prismaMock.sprint.create).toHaveBeenCalledTimes(1);
+      expect(prismaMock.sprint.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ name: 'New Sprint', project_id: 1 }),
+        }),
+      );
+    });
+
+    it('should auto-create epic if not found in epicMap', async () => {
+      const rows = [
+        ImportBacklogDataCsvBuilder('Story 1', 'story', '', 'New Epic', '', '', '', '', ''),
+      ];
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        await callback(prismaMock);
+        return Promise.resolve();
+      });
+
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce({
+        backlog_counter: 0,
+      } as any);
+
+      prismaMock.backlogStatus.findFirst.mockResolvedValueOnce({
+        name: 'To do',
+      } as any);
+
+      prismaMock.epic.create.mockResolvedValueOnce({
+        epic_id: 99,
+        name: 'New Epic',
+        project_id: 1,
+      } as any);
+
+      prismaMock.backlog.create.mockResolvedValueOnce({} as any);
+      prismaMock.backlogHistory.create.mockResolvedValueOnce({} as any);
+      prismaMock.project.update.mockResolvedValueOnce({} as any);
+
+      await expect(
+        backlogCsvService.processImportBacklogData(1, 1, rows, sprintMap, new Map(), memberEmailMap),
+      ).resolves.toBeUndefined();
+
+      expect(prismaMock.epic.create).toHaveBeenCalledTimes(1);
+      expect(prismaMock.epic.create).toHaveBeenCalledWith({
+        data: { name: 'New Epic', project_id: 1 },
+      });
+    });
+
+    it('should reuse auto-created sprint for subsequent rows', async () => {
+      const rows = [
+        ImportBacklogDataCsvBuilder('Story 1', 'story', 'Brand New Sprint', '', '', '', '', '', ''),
+        ImportBacklogDataCsvBuilder('Story 2', 'task', 'Brand New Sprint', '', '', '', '', '', ''),
+      ];
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        await callback(prismaMock);
+        return Promise.resolve();
+      });
+
+      prismaMock.project.findUniqueOrThrow.mockResolvedValueOnce({
+        backlog_counter: 0,
+      } as any);
+
+      prismaMock.backlogStatus.findFirst.mockResolvedValueOnce({
+        name: 'To do',
+      } as any);
+
+      prismaMock.sprint.create.mockResolvedValueOnce({
+        id: 50,
+        name: 'Brand New Sprint',
+        project_id: 1,
+      } as any);
+
+      prismaMock.backlog.create.mockResolvedValue({} as any);
+      prismaMock.backlogHistory.create.mockResolvedValue({} as any);
+      prismaMock.project.update.mockResolvedValueOnce({} as any);
+
+      await expect(
+        backlogCsvService.processImportBacklogData(1, 1, rows, new Map(), epicMap, memberEmailMap),
+      ).resolves.toBeUndefined();
+
+      // Sprint should only be created once, reused for second row
+      expect(prismaMock.sprint.create).toHaveBeenCalledTimes(1);
+      expect(prismaMock.backlog.create).toHaveBeenCalledTimes(2);
     });
   });
 });
