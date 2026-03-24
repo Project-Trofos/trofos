@@ -29,7 +29,7 @@ async function trackApiUsage(req: express.Request, res: express.Response, next: 
     const sessionId = req.cookies[TROFOS_SESSIONCOOKIE_NAME];
 
     if (sessionId === undefined) {
-      return res.status(StatusCodes.UNAUTHORIZED).send();;
+      return res.status(StatusCodes.UNAUTHORIZED).send();
     }
 
     try {
@@ -37,6 +37,7 @@ async function trackApiUsage(req: express.Request, res: express.Response, next: 
 
       if (!sessionInfo.user_id) {
         console.log('No user ID found, skipping API usage tracking');
+        return;
       }
 
       const apiPath = `${req.baseUrl}${req.route?.path || req.path}`;
