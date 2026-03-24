@@ -4,6 +4,7 @@ import app, { corsOptions, port } from './server';
 import { init } from './services/socket.service';
 import { init as initBot} from './notifications/NotificationHandler'
 import { initCompleteInsightSub } from './services/aiInsight.service';
+import { syncFeatureFlags } from './helpers/featureFlagSync';
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
@@ -29,6 +30,8 @@ initBot()
 init(io);
 
 initCompleteInsightSub();
+
+syncFeatureFlags();
 
 // For unit testing
 export default server;

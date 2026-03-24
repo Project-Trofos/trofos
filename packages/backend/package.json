@@ -4,15 +4,15 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.production.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
+    "prisma-generate": "pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
-    "prisma-seed-dev": "pnpm exec prisma db seed",
-    "prisma-migrate-prod": "dotenv -e .env.production.local -- pnpm exec prisma migrate deploy --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.production.local -- pnpm exec prisma migrate deploy --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
+    "prisma-seed-dev": "pnpm run prisma-generate && pnpm exec prisma db seed",
+    "prisma-migrate-prod": "pnpm exec prisma migrate deploy --schema node_modules/@trofos-nus/common/prisma/schema.prisma && pnpm exec prisma migrate deploy --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-migrate-dev": "dotenv -e .env.development.local -- pnpm exec prisma migrate dev",
     "prisma-migrate-reset": "dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.development.local -- pnpm exec prisma migrate reset --force --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma --skip-seed",
     "prisma-migrate-ci": "pnpm run prisma-migrate-reset && pnpm run prisma-generate",
     "build": "tsc --project tsconfig.build.json",
-    "start-prod": "dotenv -e .env.production.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
+    "start-prod": "pnpm run build && node dist/index.js",
     "start-dev": "dotenv -e .env.development.local -- pnpm run build && dotenv -e .env.development.local -- nodemon",
     "start": "pnpm run build && node dist/index.js",
     "start:nodemon": "nodemon",
@@ -20,7 +20,7 @@
     "test-e2e": "jest --colors --runInBand ./src/__tests__/e2e/tests "
   },
   "prisma": {
-    "seed": "ts-node node_modules/@trofos-nus/common/prisma/seed.ts"
+    "seed": "ts-node --transpile-only node_modules/@trofos-nus/common/prisma/seed.ts"
   },
   "author": "",
   "license": "ISC",

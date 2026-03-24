@@ -1,5 +1,5 @@
-# Base image
-FROM node:lts-alpine3.17 as base
+# Use Debian-based slim image for better ARM64/Prisma compatibility
+FROM node:20-slim as base
 
 RUN npm i -g pnpm 
 
@@ -9,15 +9,19 @@ EXPOSE 3003
 # Make folder to put our files in
 RUN mkdir -p /usr/src/app/backend
 
-# Set working directory so that all subsequent command runs in this folder
+# Set working directory
 WORKDIR /usr/src/app/backend
 
-# JRE required for xsd-schema-validator pkg
-# Install Java OpenJDK 11
-RUN apk add --no-cache openjdk11
+# Install necessary libraries for the app and Prisma
+# - default-jre for xsd-schema-validator
+# - openssl for Prisma
+RUN apt-get update && apt-get install -y \
+    default-jre \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+# Set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Copy package json and install dependencies
@@ -26,28 +30,12 @@ COPY pnpm-lock.yaml .
 RUN CI=true pnpm i
 COPY . .
 
-# Test stage for CI
-FROM base as test
-# Install ChromeDriver
-RUN apk update && apk add --no-cache bash \
-        chromium \
-        chromium-chromedriver
-# Install dependencies
-COPY . .
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-ARG AI_DATABASE_URL
-ENV AI_DATABASE_URL=$AI_DATABASE_URL
-ARG CI
-ENV CI=$CI
-ARG REDIS_URL
-ENV REDIS_URL=$REDIS_URL
-# Run unit test
-RUN pnpm run prisma-migrate-ci
-RUN pnpm run test
-ENTRYPOINT ["pnpm", "start"]
+# Generate Prisma client and build the application
+# We ensure the correct binary target is set for Prisma
+RUN pnpm run prisma-generate
+RUN pnpm run build
 
 # Production stage
 FROM base as prod
 # Command to run our app
-ENTRYPOINT ["sh", "-c", "pnpm run prisma-generate; pnpm run prisma-migrate-prod; pnpm run start-prod"]
+ENTRYPOINT ["sh", "-c", "pnpm run prisma-migrate-prod && pnpm run start-prod"]

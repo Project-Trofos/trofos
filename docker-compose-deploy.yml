@@ -9,7 +9,7 @@ services:
   frontend:
     image: ghcr.io/project-trofos/trofos/frontend:main
     ports:
-      - '3000:80'
+      - '${FRONTEND_PORT:-3000}:80'
     container_name: trofos-frontend-production
     restart: always
     links:
@@ -19,7 +19,7 @@ services:
   api_gateway:
     image: ghcr.io/project-trofos/trofos/api_gateway:main
     ports:
-      - '3001:80'
+      - '${API_GATEWAY_PORT:-3001}:80'
     container_name: trofos-api-gateway-production
     restart: always
     networks:
@@ -27,7 +27,7 @@ services:
   backend:
     image: ghcr.io/project-trofos/trofos/backend:main
     ports:
-      - '3003:3003'
+      - '${BACKEND_PORT:-3003}:3003'
     container_name: trofos-backend-production
     restart: always
     environment:
@@ -44,6 +44,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - AI_DATABASE_URL=${AI_DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
+      - ENABLE_NUS_SSO=${ENABLE_NUS_SSO}
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,7 +55,7 @@ services:
   hocus_pocus_server:
     image: ghcr.io/project-trofos/trofos/hocus_pocus_server:main
     ports:
-      - '3002:3002'
+      - '${HOCUS_POCUS_PORT:-3002}:3002'
     container_name: trofos-hocus-pocus-server-production
     restart: always
     environment:
@@ -86,6 +87,8 @@ services:
       retries: 5
     volumes:
       - postgres:/var/lib/postgresql/data
+    ports:
+      - '${DB_PORT:-5432}:5432'
     networks:
       - application
   redis:
@@ -93,7 +96,7 @@ services:
     container_name: redis
     restart: unless-stopped
     ports:
-      - 6379:6379
+      - '${REDIS_PORT:-6379}:6379'
     networks:
       - application
 volumes:
