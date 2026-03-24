@@ -8,7 +8,7 @@
     "prisma-generate-docker": "pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-generate-dev-docker": "pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
-    "start-dev": "dotenv -e .env.development.local ts-node src/index.ts",
+    "start-dev": "dotenv -e .env ts-node src/index.ts",
     "start-dev-docker": "ts-node src/index.ts",
     "build": "tsc --project tsconfig.build.json",
     "start-prod": "dotenv -e .env.production.local -- pnpm run build && dotenv -e .env.production.local -- node dist/index.js",
