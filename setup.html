@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trofos Setup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+      padding: 40px;
+      max-width: 560px;
+      width: 100%;
+    }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .subtitle { color: #666; margin-bottom: 32px; font-size: 14px; }
+
+    .drop-zone {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 24px;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: #1677ff;
+      background: #f0f5ff;
+    }
+    .drop-zone.loaded {
+      border-color: #52c41a;
+      background: #f6ffed;
+    }
+    .drop-zone p { font-size: 15px; color: #888; }
+    .drop-zone.loaded p { color: #52c41a; }
+    .drop-zone .icon { font-size: 36px; margin-bottom: 8px; }
+    .drop-zone input[type="file"] { display: none; }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-top: 1px solid #f0f0f0;
+    }
+    .option-label { font-size: 15px; font-weight: 500; }
+    .option-desc { font-size: 13px; color: #888; margin-top: 2px; }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle .slider {
+      position: absolute;
+      inset: 0;
+      background: #ccc;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle .slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .slider { background: #1677ff; }
+    .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: #1677ff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 24px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #0958d9; }
+    .btn:disabled { background: #d9d9d9; cursor: not-allowed; }
+    .btn.btn-secondary { background: #fff; color: #1677ff; border: 1px solid #1677ff; }
+    .btn.btn-secondary:hover { background: #f0f5ff; }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-group .btn { margin-top: 0; }
+
+    .terminal {
+      margin-top: 24px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .terminal-header {
+      background: #333;
+      padding: 8px 16px;
+      color: #ddd;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .terminal-header button {
+      background: transparent;
+      border: 1px solid #555;
+      color: #aaa;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .terminal-header button:hover {
+      background: #444;
+      color: #fff;
+    }
+    .terminal pre {
+      padding: 16px;
+      color: #00ff00;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .error { color: #ff4d4f; font-size: 13px; margin-top: 8px; }
+    .file-name { font-size: 13px; color: #52c41a; margin-top: 4px; }
+
+    .preview-section {
+      margin-top: 24px;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 16px;
+    }
+    .preview-section h3 { font-size: 14px; margin-bottom: 8px; color: #666; }
+    .preview-table {
+      width: 100%;
+      font-size: 13px;
+      border-collapse: collapse;
+    }
+    .preview-table td {
+      padding: 4px 8px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .preview-table td:first-child {
+      font-weight: 500;
+      color: #555;
+      width: 40%;
+    }
+    .preview-table td:last-child {
+      color: #888;
+      word-break: break-all;
+    }
+    .preview-table .empty { color: #ccc; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Trofos Setup</h1>
+    <p class="subtitle">Drag and drop your <code>secrets.csv</code> file, choose your settings, then run the setup.</p>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="icon">&#128196;</div>
+      <p id="dropText">Drop your <strong>secrets.csv</strong> here or click to browse</p>
+      <input type="file" id="fileInput" accept=".csv">
+    </div>
+    <div id="error" class="error"></div>
+
+    <div id="previewSection" class="preview-section" style="display:none;">
+      <h3>Configuration Preview</h3>
+      <table class="preview-table" id="previewTable"></table>
+    </div>
+
+    <div class="option-row">
+      <div>
+        <div class="option-label">Enable NUS SSO</div>
+        <div class="option-desc">Turn off to use email/password login instead</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="ssoToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="option-row">
+      <div>
+        <div class="option-label">Production Mode</div>
+        <div class="option-desc">Use Docker for everything. Turn off for local development.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="modeToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="generateBtn" disabled>Download Setup Script</button>
+      <button class="btn" id="runBtn" disabled>Run Setup Now</button>
+    </div>
+
+    <div id="terminal" class="terminal" style="display:none;">
+      <div class="terminal-header">
+        <span>Terminal Output</span>
+        <button id="clearTerminal">Clear</button>
+      </div>
+      <pre id="terminalBody"></pre>
+    </div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const runBtn = document.getElementById('runBtn');
+    const ssoToggle = document.getElementById('ssoToggle');
+    const modeToggle = document.getElementById('modeToggle');
+    const errorEl = document.getElementById('error');
+    const previewSection = document.getElementById('previewSection');
+    const previewTable = document.getElementById('previewTable');
+    const terminal = document.getElementById('terminal');
+    const terminalBody = document.getElementById('terminalBody');
+    const clearTerminal = document.getElementById('clearTerminal');
+
+    let csvData = null;
+
+    // Terminal handling
+    clearTerminal.onclick = () => { terminalBody.textContent = ''; };
+    
+    function logToTerminal(text) {
+      terminal.style.display = 'block';
+      terminalBody.textContent += text;
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    // Drag and drop handlers
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+      errorEl.textContent = '';
+
+      if (!file.name.endsWith('.csv')) {
+        errorEl.textContent = 'Please upload a .csv file.';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          csvData = parseCSV(e.target.result);
+          validateCSV(csvData);
+
+          dropZone.classList.add('loaded');
+          document.getElementById('dropText').innerHTML = '&#10003; <strong>' + file.name + '</strong> loaded';
+          generateBtn.disabled = false;
+          runBtn.disabled = false;
+
+          // Set SSO toggle based on CSV value
+          const ssoVal = (csvData['ENABLE_NUS_SSO'] || '').toLowerCase();
+          ssoToggle.checked = ssoVal === 'yes' || ssoVal === 'true';
+
+          renderPreview(csvData);
+        } catch (err) {
+          errorEl.textContent = err.message;
+          csvData = null;
+          generateBtn.disabled = true;
+          runBtn.disabled = true;
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const data = {};
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // Skip header row
+        if (i === 0 && line.toLowerCase().startsWith('variable')) continue;
+
+        const commaIdx = line.indexOf(',');
+        if (commaIdx === -1) continue;
+
+        const key = line.substring(0, commaIdx).trim();
+        const value = line.substring(commaIdx + 1).trim();
+        if (key) data[key] = value;
+      }
+
+      return data;
+    }
+
+    function validateCSV(data) {
+      const required = ['POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_DB'];
+      const missing = required.filter(k => !data[k]);
+      if (missing.length > 0) {
+        throw new Error('Missing required fields: ' + missing.join(', '));
+      }
+    }
+
+    function renderPreview(data) {
+      const displayKeys = [
+        'POSTGRES_USER', 'POSTGRES_PASSWORD', 'POSTGRES_DB',
+        'FRONTEND_PORT', 'BACKEND_PORT', 'API_GATEWAY_PORT',
+        'HOCUS_POCUS_PORT', 'DB_PORT', 'REDIS_PORT',
+        'OPENAI_API_KEY', 'TELEGRAM_TOKEN'
+      ];
+
+      let html = '';
+      for (const key of displayKeys) {
+        const val = data[key] || '';
+        const display = key === 'POSTGRES_PASSWORD' && val
+          ? '&#8226;'.repeat(8)
+          : val || '<span class="empty">not set</span>';
+        html += '<tr><td>' + key + '</td><td>' + display + '</td></tr>';
+      }
+
+      previewTable.innerHTML = html;
+      previewSection.style.display = 'block';
+    }
+
+    function generateScript() {
+      if (!csvData) return null;
+
+      const enableSSO = ssoToggle.checked ? 'true' : 'false';
+      const deployMode = modeToggle.checked ? 'production' : 'development';
+
+      const pgUser = csvData['POSTGRES_USER'] || '';
+      const pgPass = csvData['POSTGRES_PASSWORD'] || '';
+      const pgDB = csvData['POSTGRES_DB'] || '';
+
+      const frontendPort = csvData['FRONTEND_PORT'] || '3000';
+      const backendPort = csvData['BACKEND_PORT'] || '3003';
+      const apiGatewayPort = csvData['API_GATEWAY_PORT'] || '3001';
+      const hocusPocusPort = csvData['HOCUS_POCUS_PORT'] || '3002';
+      const dbPort = csvData['DB_PORT'] || '5432';
+      const redisPort = csvData['REDIS_PORT'] || '6379';
+
+      const frontendBaseUrl = csvData['FRONTEND_BASE_URL'] || 'http://localhost:' + frontendPort;
+      const backendUrl = csvData['BACKEND_URL'] || 'http://backend:3003';
+      const databaseUrl = csvData['DATABASE_URL'] || 'postgresql://' + pgUser + ':' + pgPass + '@postgres:5432/' + pgDB + '?schema=public';
+      const aiDatabaseUrl = csvData['AI_DATABASE_URL'] || 'postgresql://' + pgUser + ':' + pgPass + '@postgres:5432/pgvector?schema=public';
+      const redisUrl = csvData['REDIS_URL'] || 'redis://redis:6379';
+
+      const openaiKey = csvData['OPENAI_API_KEY'] || '';
+      const telegramToken = csvData['TELEGRAM_TOKEN'] || '';
+      const emailKey = csvData['EMAIL_KEY'] || '';
+      const awsSesEmail = csvData['AWS_SES_FROM_EMAIL'] || '';
+
+      const devDbUrl = databaseUrl.replace('@postgres:5432', '@localhost:' + dbPort);
+      const devAiDbUrl = aiDatabaseUrl.replace('@postgres:5432', '@localhost:' + dbPort);
+      const devRedisUrl = redisUrl.replace('redis:6379', 'localhost:' + redisPort);
+      const devBackendUrl = backendUrl.replace('http://backend:3003', 'http://localhost:' + backendPort);
+
+      return `#!/bin/bash
+set -e
+
+echo "============================================"
+echo "  Trofos Setup (generated by setup.html)"
+echo "  Mode: ${deployMode}"
+echo "============================================"
+echo ""
+
+# Check Docker is available
+if ! command -v docker &> /dev/null; then
+  echo "Error: Docker is not installed or not in PATH."
+  echo "Please install Docker Desktop from https://www.docker.com/products/docker-desktop/"
+  exit 1
+fi
+
+if ! docker info &> /dev/null 2>&1; then
+  echo "Error: Docker is not running. Please start Docker Desktop and try again."
+  exit 1
+fi
+
+echo "Docker found. Setting up environment..."
+
+ENV_FILE=".env"
+
+# Generate root .env
+cat > "$ENV_FILE" <<'ENVEOF'
+POSTGRES_USER=${pgUser}
+POSTGRES_PASSWORD=${pgPass}
+POSTGRES_DB=${pgDB}
+
+FRONTEND_PORT=${frontendPort}
+BACKEND_PORT=${backendPort}
+API_GATEWAY_PORT=${apiGatewayPort}
+HOCUS_POCUS_PORT=${hocusPocusPort}
+DB_PORT=${dbPort}
+REDIS_PORT=${redisPort}
+
+DATABASE_URL=${databaseUrl}
+AI_DATABASE_URL=${aiDatabaseUrl}
+
+FRONTEND_BASE_URL=${frontendBaseUrl}
+BACKEND_URL=${backendUrl}
+REDIS_URL=${redisUrl}
+
+ENABLE_NUS_SSO=${enableSSO}
+
+NODE_ENV=production
+
+TELEGRAM_TOKEN=${telegramToken}
+OPENAI_API_KEY=${openaiKey}
+EMAIL_KEY=${emailKey}
+AWS_SES_FROM_EMAIL=${awsSesEmail}
+SP_PRIVATE_KEY_BASE64=
+ENVEOF
+
+cp .env .env.production.local
+cp .env .env.docker
+
+echo "Generated .env, .env.production.local, and .env.docker"
+
+# Generate package-specific .env files
+echo "Generating package-specific .env files..."
+
+mkdir -p packages/backend packages/ai_insight_worker packages/hocus_pocus_server
+
+# Backend
+cat > packages/backend/.env <<'BEOF'
+POSTGRES_USER=${pgUser}
+POSTGRES_PASSWORD=${pgPass}
+POSTGRES_DB=${pgDB}
+DATABASE_URL=${databaseUrl}
+AI_DATABASE_URL=${aiDatabaseUrl}
+TELEGRAM_TOKEN=${telegramToken}
+FRONTEND_BASE_URL=${frontendBaseUrl}
+OPENAI_API_KEY=${openaiKey}
+ENABLE_NUS_SSO=${enableSSO}
+NODE_ENV=production
+BEOF
+cp packages/backend/.env packages/backend/.env.production.local
+
+cat > packages/backend/.env.development.local <<'BDEOF'
+POSTGRES_USER=${pgUser}
+POSTGRES_PASSWORD=${pgPass}
+POSTGRES_DB=${pgDB}
+DATABASE_URL=${devDbUrl}
+AI_DATABASE_URL=${devAiDbUrl}
+TELEGRAM_TOKEN=${telegramToken}
+FRONTEND_BASE_URL=${frontendBaseUrl}
+OPENAI_API_KEY=${openaiKey}
+ENABLE_NUS_SSO=${enableSSO}
+NODE_ENV=production
+BDEOF
+
+# AI Insight Worker
+cat > packages/ai_insight_worker/.env <<'AEOF'
+DATABASE_URL=${aiDatabaseUrl}
+OPENAI_API_KEY=${openaiKey}
+REDIS_URL=${redisUrl}
+AEOF
+cp packages/ai_insight_worker/.env packages/ai_insight_worker/.env.production.local
+
+cat > packages/ai_insight_worker/.env.development.local <<'ADEOF'
+DATABASE_URL=${devAiDbUrl}
+OPENAI_API_KEY=${openaiKey}
+REDIS_URL=${devRedisUrl}
+ADEOF
+
+# Hocus Pocus Server
+cat > packages/hocus_pocus_server/.env <<'HEOF'
+DATABASE_URL=${databaseUrl}
+BACKEND_URL=${backendUrl}
+HEOF
+cp packages/hocus_pocus_server/.env packages/hocus_pocus_server/.env.production.local
+
+cat > packages/hocus_pocus_server/.env.development.local <<'HDEOF'
+DATABASE_URL=${devDbUrl}
+BACKEND_URL=${devBackendUrl}
+HDEOF
+
+echo "All environment files generated."
+
+# Clean up any existing containers
+echo ""
+echo "Cleaning up any existing Trofos containers..."
+docker compose -f docker-compose-production.yml down --remove-orphans 2>/dev/null || true
+docker compose -f docker-compose-development.yml down --remove-orphans 2>/dev/null || true
+
+if [ "${deployMode}" = "production" ]; then
+  # Start production
+  echo ""
+  echo "Starting Trofos in production mode..."
+  docker compose -f docker-compose-production.yml --env-file .env.docker up --build -d
+
+  echo ""
+  echo "Waiting for backend to be ready..."
+  
+  # Health Check Loop
+  MAX_RETRIES=30
+  COUNT=0
+  until $(curl --output /dev/null --silent --head --fail http://localhost:${backendPort}/api/health); do
+    printf '.'
+    sleep 2
+    COUNT=$((COUNT+1))
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+      echo -e "\\nBackend failed to start in time. Check logs with 'docker logs trofos-backend-production'"
+      exit 1
+    fi
+  done
+  echo -e "\\nBackend is live!"
+
+  echo "Seeding database..."
+  docker exec trofos-backend-production pnpm run prisma-seed-dev || echo "Note: Seeding skipped (database may already be populated)."
+
+  echo ""
+  echo "============================================"
+  echo "  Trofos is running at ${frontendBaseUrl}"
+  echo "============================================"
+  ` + (enableSSO === 'false' ? `
+  echo ""
+  echo "Login with: testadmin@test.com / testPassword"
+  ` : '') + `
+else
+  # Start development
+  echo ""
+  echo "Starting Database and Redis..."
+  docker compose -f docker-compose-development.yml up -d postgres redis
+
+  echo "Running pnpm install..."
+  if command -v pnpm &> /dev/null; then
+    pnpm install
+  else
+    echo "Warning: pnpm not found. Please run 'pnpm install' manually."
+  fi
+
+  echo ""
+  echo "============================================"
+  echo "  Dev Infrastructure started."
+  echo "  Next steps:"
+  echo "  1. pnpm run generate"
+  echo "  2. pnpm run seed"
+  echo "  3. pnpm run start-dev"
+  echo "============================================"
+fi
+`;
+    }
+
+    // Download the script
+    generateBtn.addEventListener('click', () => {
+      const script = generateScript();
+      if (!script) return;
+
+      const blob = new Blob([script], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'setup.sh';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Run the setup script via server
+    runBtn.addEventListener('click', async () => {
+      const script = generateScript();
+      if (!script) return;
+
+      runBtn.disabled = true;
+      generateBtn.disabled = true;
+      terminalBody.textContent = 'Starting setup...\n';
+      terminal.style.display = 'block';
+
+      try {
+        const response = await fetch('/run-setup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ script })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          logToTerminal(decoder.decode(value, { stream: true }));
+        }
+      } catch (err) {
+        logToTerminal('\nError communicating with server: ' + err.message);
+      } finally {
+        runBtn.disabled = false;
+        generateBtn.disabled = false;
+      }
+    });
+
+  </script>
+</body>
+</html>

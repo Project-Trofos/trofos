@@ -45,21 +45,30 @@ DATABASE_URL=$(read_config "DATABASE_URL")
 AI_DATABASE_URL=$(read_config "AI_DATABASE_URL")
 REDIS_URL=$(read_config "REDIS_URL")
 
-ENABLE_NUS_SSO=$(read_config "ENABLE_NUS_SSO")
+# 1a. Choose Login Mode (Support Non-Interactive)
+# We check if ENABLE_NUS_SSO is already set in the environment or CSV
+if [ -z "$ENABLE_NUS_SSO" ]; then
+  CSV_SSO=$(read_config "ENABLE_NUS_SSO")
+  if [ -n "$CSV_SSO" ]; then
+    ENABLE_NUS_SSO="$CSV_SSO"
+  else
+    echo ""
+    read -p "Enable NUS SSO login? (y/n): " SSO_CONFIRM
+    if [[ "$SSO_CONFIRM" =~ ^[Yy]$ ]]; then
+      ENABLE_NUS_SSO="true"
+    else
+      ENABLE_NUS_SSO="false"
+    fi
+  fi
+fi
 
-# 1a. Choose Login Mode
-echo ""
-echo "How should users log in?"
-echo "  1) NUS SSO"
-echo "  2) Non-NUS SSO"
-read -p "Choose [1 or 2]: " LOGIN_CHOICE
-
-if [ "$LOGIN_CHOICE" = "2" ]; then
-  ENABLE_NUS_SSO="false"
-  echo "Setting login mode to: Non-NUS SSO"
-else
+# Normalize ENABLE_NUS_SSO to true/false
+if [[ "$ENABLE_NUS_SSO" =~ ^(yes|true|y)$ ]]; then
   ENABLE_NUS_SSO="true"
-  echo "Setting login mode to: NUS SSO"
+  echo "Login mode: NUS SSO enabled"
+else
+  ENABLE_NUS_SSO="false"
+  echo "Login mode: Email/Password (SSO disabled)"
 fi
 
 OPENAI_API_KEY=$(read_config "OPENAI_API_KEY")
@@ -87,13 +96,6 @@ BACKEND_URL=${BACKEND_URL:-"http://backend:3003"}
 DATABASE_URL=${DATABASE_URL:-"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"}
 AI_DATABASE_URL=${AI_DATABASE_URL:-"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/pgvector?schema=public"}
 REDIS_URL=${REDIS_URL:-"redis://redis:6379"}
-
-# Normalize ENABLE_NUS_SSO to true/false
-if [ "$ENABLE_NUS_SSO" = "yes" ] || [ "$ENABLE_NUS_SSO" = "true" ]; then
-  ENABLE_NUS_SSO="true"
-else
-  ENABLE_NUS_SSO="false"
-fi
 
 # 3. Generate root .env from config values
 cat > "$ENV_FILE" <<EOF
@@ -126,7 +128,7 @@ AWS_SES_FROM_EMAIL=${AWS_SES_FROM_EMAIL}
 SP_PRIVATE_KEY_BASE64=
 EOF
 
-# Copy root .env to .env.production.local and .env.docker for repo/docker compatibility
+# Copy root .env to .env.production.local and .env.docker
 cp .env .env.production.local
 cp .env .env.docker
 
@@ -171,59 +173,76 @@ create_pkg_envs "packages/hocus_pocus_server" "${HP_PROD}" "${HP_DEV}"
 
 echo "All environment files generated."
 
-# 4. Deployment choice
-echo ""
-echo "Setup complete! How would you like to proceed?"
-echo "  1) Start Production (Docker containers for everything)"
-echo "  2) Development Mode (Run code locally, only DB in Docker)"
-read -p "Choose [1 or 2]: " CHOICE
+# 4. Deployment choice (Support Non-Interactive)
+if [ -z "$DEPLOY_MODE" ]; then
+  echo ""
+  echo "Choose deployment mode:"
+  echo "  1) Production (Docker containers for everything)"
+  echo "  2) Development (Local code, Docker for DB/Redis)"
+  read -p "Enter 1 or 2: " MODE_CHOICE
+  if [ "$MODE_CHOICE" = "1" ]; then
+    DEPLOY_MODE="production"
+  else
+    DEPLOY_MODE="development"
+  fi
+fi
 
 cleanup_containers() {
   echo "Cleaning up any existing Trofos containers..."
-  docker compose -f docker-compose-production.yml down --remove-orphans || true
-  docker compose -f docker-compose-development.yml down --remove-orphans || true
+  docker compose -f docker-compose-production.yml down --remove-orphans 2>/dev/null || true
+  docker compose -f docker-compose-development.yml down --remove-orphans 2>/dev/null || true
 }
 
-if [ "$CHOICE" = "1" ]; then
+if [ "$DEPLOY_MODE" = "production" ]; then
   cleanup_containers
   echo "Starting services in Production mode..."
   docker compose -f docker-compose-production.yml --env-file .env.docker up --build -d
-  
-  echo "Waiting for backend to be ready (30s)..."
-  sleep 30
-  
-  echo "Ensuring production database is seeded..."
-  # If it fails, it's likely because data already exists. We ignore the error to allow startup to continue.
-  docker exec trofos-backend-production pnpm run prisma-seed-dev || echo "Note: Seeding skipped (database may already be populated)."
-  
+
   echo ""
-  echo "Trofos is starting up at http://localhost:${FRONTEND_PORT}"
+  echo "Waiting for backend to be ready..."
   
+  # Health Check Loop
+  MAX_RETRIES=30
+  COUNT=0
+  until $(curl --output /dev/null --silent --head --fail http://localhost:${BACKEND_PORT}/api/health); do
+    printf '.'
+    sleep 2
+    COUNT=$((COUNT+1))
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+      echo -e "\nBackend failed to start in time. Check logs with 'docker logs trofos-backend-production'"
+      exit 1
+    fi
+  done
+  echo -e "\nBackend is live!"
+
+  echo "Ensuring production database is seeded..."
+  docker exec trofos-backend-production pnpm run prisma-seed-dev || echo "Note: Seeding skipped (database may already be populated)."
+
+  echo ""
+  echo "================================================================"
+  echo "  Trofos is running at ${FRONTEND_BASE_URL}"
+  echo "================================================================"
+
   if [ "$ENABLE_NUS_SSO" = "false" ]; then
-    echo ""
-    echo "----------------------------------------------------------------"
-    echo "NO-SSO DEPLOYMENT FIX:"
     echo "Login with: testadmin@test.com / testPassword"
-    echo "----------------------------------------------------------------"
   fi
 else
   cleanup_containers
   echo "Starting Database and Redis..."
-  docker compose -f docker-compose-development.yml up -d
-  
+  docker compose -f docker-compose-development.yml up -d postgres redis
+
   echo "Running pnpm install..."
   pnpm install
-  
+
   echo "Generating prisma clients..."
-  pnpm run generate
-  
+  lerna run prisma-generate-dev
+
   echo "Seeding data..."
-  pnpm run migrate:reset
+  lerna run prisma-run-migrate-reset --scope=backend
 
   if [ "$ENABLE_NUS_SSO" = "false" ]; then
     echo ""
     echo "----------------------------------------------------------------"
-    echo "NO-SSO DEPLOYMENT FIX:"
     echo "Login with: testadmin@test.com / testPassword"
     echo "----------------------------------------------------------------"
   fi
