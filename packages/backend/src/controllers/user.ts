@@ -43,8 +43,25 @@ async function create(req: express.Request, res: express.Response) {
   }
 }
 
+async function remove(req: express.Request, res: express.Response) {
+  try {
+    const { id } = req.params;
+
+    assertInputIsNotEmpty<string>(id, 'User ID');
+
+    const userId = parseInt(id, 10);
+    await userService.remove(userId);
+
+    return res.status(StatusCodes.OK).json({ message: 'User successfully deleted' });
+  } catch (error) {
+    console.error(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: getErrorMessage(error) });
+  }
+}
+
 export default {
   getAll,
   queryEmail,
   create,
+  remove,
 };

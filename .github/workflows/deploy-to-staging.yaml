@@ -153,7 +153,7 @@ jobs:
       packages: write
     steps: 
       - name: Send deployment request to webhook
-        run: curl ${{ secrets.DEPLOYMENT_WEBHOOK_API }}
+        run: curl --fail ${{ secrets.DEPLOYMENT_WEBHOOK_API }}
       - name: Send notification on failure
         if: failure()
         run: |

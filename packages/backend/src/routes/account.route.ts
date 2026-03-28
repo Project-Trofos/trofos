@@ -27,6 +27,8 @@ router.post('/generateSAMLReq/student', checkFeatureFlag(Feature.sso_login), acc
 
 router.post('/generateSAMLReq/staff', checkFeatureFlag(Feature.sso_login), account.generateSAMLRequestStaff);
 
+router.post('/generateSAMLReq/student/mobile', checkFeatureFlag(Feature.sso_login), account.generateSAMLRequestMobile);
+
 router.post('/callback/saml', checkFeatureFlag(Feature.sso_login), upload.none(), account.processSAMLResponse);
 
 export default router;

@@ -20,6 +20,7 @@ setSchemaValidator({
 const SSORoles = {
   STAFF: 'staff',
   STUDENT: 'student',
+  STUDENT_MOBILE: 'student_mobile',
 };
 
 const configureSp = async (isStaff = false) => {
