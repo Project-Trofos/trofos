@@ -22,6 +22,7 @@ import issueRouter from './routes/issue.route';
 import setUpSwagger from './swagger/swagger';
 import { trackApiUsage } from './middleware/api_usage_tracking.middleware';
 import requestLogger from './middleware/request_logger.middleware';
+import errorLogger from './middleware/error_logger.middleware';
 
 // Prometheus metrics stuff
 const register = new promClient.Registry();
@@ -45,7 +46,7 @@ register.registerMetric(httpRequestTimer);
 
 const app = express();
 
-// Logging
+// Request logging
 app.use(requestLogger());
 
 export const port = 3003;
@@ -142,5 +143,8 @@ router.use('/feature-flags', featureFlagRouter);
 router.use('/issue', issueRouter);
 
 app.use('/api', router);
+
+// Error logging
+app.use(errorLogger());
 
 export default app;
