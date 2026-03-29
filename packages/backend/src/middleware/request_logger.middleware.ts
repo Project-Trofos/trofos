@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import pinoHttp from 'pino-http';
-import { getLogger } from '../logger/logger';
+import { getLogger } from '../logger/loggerProvider';
 
 function requestLogger(): RequestHandler {
   const logger = getLogger();

@@ -2,15 +2,15 @@ import pino, { Logger, LoggerOptions, Bindings } from 'pino';
 import defaultConfig from './config';
 import { ENVIRONMENTS } from './constants';
 
-class LoggerFactory {
-  private static instance: LoggerFactory | null = null;
+class LoggerProvider {
+  private static instance: LoggerProvider | null = null;
   private logger: Logger | null = null;
 
   constructor() {
-    if (LoggerFactory.instance) {
-      return LoggerFactory.instance;
+    if (LoggerProvider.instance) {
+      return LoggerProvider.instance;
     }
-    LoggerFactory.instance = this;
+    LoggerProvider.instance = this;
   }
 
   initialize(options: LoggerOptions = {}): Logger {
@@ -50,8 +50,8 @@ class LoggerFactory {
   }
 }
 
-const loggerFactory = new LoggerFactory();
-export default loggerFactory;
+const loggerProvider = new LoggerProvider();
+export default loggerProvider;
 
-export const getLogger = () => loggerFactory.getLogger();
-export const createChildLogger = (bindings: Bindings) => loggerFactory.createChildLogger(bindings);
+export const getLogger = () => loggerProvider.getLogger();
+export const createChildLogger = (bindings: Bindings) => loggerProvider.createChildLogger(bindings);

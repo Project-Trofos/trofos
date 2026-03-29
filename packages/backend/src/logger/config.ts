@@ -8,7 +8,7 @@ interface LoggerConfig {
   test: LoggerOptions;
 }
 
-const baseConfig: LoggerOptions['base'] = {
+const baseConfig: Record<string, string> = {
   service: 'backend',
   env: process.env.NODE_ENV || ENVIRONMENTS.DEVELOPMENT,
 };
