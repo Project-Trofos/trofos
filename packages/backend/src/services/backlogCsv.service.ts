@@ -23,17 +23,17 @@ function validateSummary(data: ImportBacklogDataCsv): boolean {
 }
 
 function validateType(data: ImportBacklogDataCsv): boolean {
-  return BACKLOG_TYPE_MAP.has(data.type.toUpperCase());
+  return BACKLOG_TYPE_MAP.has(data.type.trim().toUpperCase());
 }
 
 function validatePriority(data: ImportBacklogDataCsv): boolean {
   if (!data.priority) return true; // optional
-  return BACKLOG_PRIORITY_MAP.has(data.priority.toUpperCase());
+  return BACKLOG_PRIORITY_MAP.has(data.priority.trim().toUpperCase());
 }
 
 function validatePoints(data: ImportBacklogDataCsv): boolean {
   if (!data.points) return true; // optional
-  const num = Number(data.points);
+  const num = Number(data.points.trim());
   return !isNaN(num) && num > 0 && Number.isInteger(num);
 }
 
@@ -51,12 +51,12 @@ function validateEpic(data: ImportBacklogDataCsv, _epicMap: Map<string, Epic>): 
 
 function validateAssignee(data: ImportBacklogDataCsv, memberEmailMap: Map<string, number>): boolean {
   if (!data.assignee) return true; // optional
-  return memberEmailMap.has(data.assignee.toLowerCase());
+  return memberEmailMap.has(data.assignee.trim().toLowerCase());
 }
 
 function validateReporter(data: ImportBacklogDataCsv, memberEmailMap: Map<string, number>): boolean {
   if (!data.reporter) return true; // optional - defaults to current user
-  return memberEmailMap.has(data.reporter.toLowerCase());
+  return memberEmailMap.has(data.reporter.trim().toLowerCase());
 }
 
 function validateImportBacklogData(
@@ -126,18 +126,19 @@ async function processImportBacklogData(
     for (const row of rows) {
       currentCounter += 1;
 
-      const type = BACKLOG_TYPE_MAP.get(row.type.toUpperCase())!;
-      const priority = row.priority ? BACKLOG_PRIORITY_MAP.get(row.priority.toUpperCase()) || null : null;
-      const points = row.points ? Number(row.points) : null;
+      const type = BACKLOG_TYPE_MAP.get(row.type.trim().toUpperCase())!;
+      const priority = row.priority ? BACKLOG_PRIORITY_MAP.get(row.priority.trim().toUpperCase()) || null : null;
+      const points = row.points ? Number(row.points.trim()) : null;
       let sprintId: number | undefined;
-      if (row.sprint) {
-        const existing = sprintMap.get(row.sprint);
+      const sprintName = row.sprint?.trim();
+      if (sprintName) {
+        const existing = sprintMap.get(sprintName);
         if (existing) {
           sprintId = existing.id;
         } else {
           const newSprint = await tx.sprint.create({
             data: {
-              name: row.sprint,
+              name: sprintName,
               project_id: projectId,
               duration: 2, // 2 weeks default
               start_date: new Date(),
@@ -145,31 +146,32 @@ async function processImportBacklogData(
               status: SprintStatus.upcoming,
             },
           });
-          sprintMap.set(row.sprint, newSprint);
+          sprintMap.set(sprintName, newSprint);
           sprintId = newSprint.id;
         }
       }
       let epicId: number | undefined;
-      if (row.epic) {
-        const existing = epicMap.get(row.epic);
+      const epicName = row.epic?.trim();
+      if (epicName) {
+        const existing = epicMap.get(epicName);
         if (existing) {
           epicId = existing.epic_id;
         } else {
           // Create new epic if it doesn't exist
           const newEpic = await tx.epic.create({
-            data: { name: row.epic, project_id: projectId },
+            data: { name: epicName, project_id: projectId },
           });
-          epicMap.set(row.epic, newEpic);
+          epicMap.set(epicName, newEpic);
           epicId = newEpic.epic_id;
         }
       }
-      const rowReporterId = row.reporter ? memberEmailMap.get(row.reporter.toLowerCase())! : reporterId;
-      const assigneeId = row.assignee ? memberEmailMap.get(row.assignee.toLowerCase()) : undefined;
+      const rowReporterId = row.reporter ? memberEmailMap.get(row.reporter.trim().toLowerCase())! : reporterId;
+      const assigneeId = row.assignee ? memberEmailMap.get(row.assignee.trim().toLowerCase()) : undefined;
 
       await tx.backlog.create({
         data: {
           backlog_id: currentCounter,
-          summary: row.summary,
+          summary: row.summary.trim(),
           type,
           ...(sprintId && {
             sprint: { connect: { id: sprintId } },
@@ -197,7 +199,7 @@ async function processImportBacklogData(
             epic: { connect: { epic_id: epicId } },
           }),
           points,
-          description: row.description || null,
+          description: row.description?.trim() || null,
           backlogStatus: {
             connect: {
               project_id_name: {
