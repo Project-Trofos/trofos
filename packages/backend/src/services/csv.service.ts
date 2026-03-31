@@ -11,25 +11,17 @@ import {
   INVALID_EMAIL,
   INVALID_PASSWORD,
   INVALID_ROLE,
-  INVALID_TEAM_NAME,
+  INVALID_PROJECT_NAME,
   MESSAGE_SPACE,
   ImportProjectAssignmentsCsv,
   INVALID_PROPERTIES,
-  INVALID_PROJECT_NAME,
 } from './types/csv.service.types';
 import { ADMIN_ROLE_ID, ROLE_ID_MAP, STUDENT_ROLE_ID, defaultBacklogStatus } from '../helpers/constants';
 import prisma from '../models/prismaClient';
 
-function validateTeamName(data: ImportCourseDataCsv): boolean {
-  // Assumption: Team name is required for all students. A student cannot be unassigned
-  const roleId = ROLE_ID_MAP.get(data.role.toUpperCase());
-  if (!data.teamName && roleId === STUDENT_ROLE_ID) {
-    return false;
-  }
-  return true;
-}
 
-// Default password is required for all students
+// Default password is required for new users
+// Existing users already have a password set, so it can be omitted
 // Students can still login using SSO
 const validatePassword = (data: ImportCourseDataCsv) => !!data.password?.length;
 
@@ -37,19 +29,22 @@ function validateRole(data: ImportCourseDataCsv): boolean {
   return ROLE_ID_MAP.has(data.role.toUpperCase()) && ROLE_ID_MAP.get(data.role.toUpperCase()) != ADMIN_ROLE_ID;
 }
 
-function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
+async function validateImportCourseData(data: ImportCourseDataCsv, callback: csv.RowValidateCallback) {
   let errorMessages = '';
   if (!validate(data.email)) {
     errorMessages += INVALID_EMAIL + MESSAGE_SPACE;
   }
   if (!validatePassword(data)) {
-    errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
+    const existingUser = await prisma.user.findUnique({ where: { user_email: data.email } });
+    if (!existingUser) {
+      errorMessages += INVALID_PASSWORD + MESSAGE_SPACE;
+    }
   }
   if (!validateRole(data)) {
     errorMessages += INVALID_ROLE + MESSAGE_SPACE;
   }
-  if (!validateTeamName(data)) {
-    errorMessages += INVALID_TEAM_NAME + MESSAGE_SPACE;
+  if (!validateProjectNameRequired(data)) {
+    errorMessages += INVALID_PROJECT_NAME + MESSAGE_SPACE;
   }
   if (errorMessages) {
     return callback(null, false, errorMessages.trimEnd());
@@ -62,14 +57,16 @@ function transformImportCourseData(
   courseId: number,
   userDetailsMap: Map<string, ImportCourseDataUser>,
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
-  userGroupingMap: Map<string, string>,
+  userGroupingMap: Map<string, string[]>,
 ) {
   const userData = getUserData(row);
   const groupData = getGroupData(row, courseId);
   userDetailsMap.set(row.email, userData);
-  if (row.teamName) {
-    groupDetailsMap.set(row.teamName, groupData);
-    userGroupingMap.set(row.email, row.teamName);
+  if (row.projectName) {
+    groupDetailsMap.set(row.projectName, groupData);
+    const existingGroups = userGroupingMap.get(row.email) || [];
+    existingGroups.push(row.projectName);
+    userGroupingMap.set(row.email, existingGroups);
   }
 }
 
@@ -77,25 +74,37 @@ async function processImportCourseData(
   courseId: number,
   userDetailsMap: Map<string, ImportCourseDataUser>,
   groupDetailsMap: Map<string, ImportCourseDataGroup>,
-  userGroupingMap: Map<string, string>,
+  userGroupingMap: Map<string, string[]>,
 ) {
   return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     // Create projects
     /* eslint-disable array-callback-return, no-param-reassign */
     const projectPromises = Array.from(groupDetailsMap).map(async ([groupName, groupData]) => {
-      const project = await tx.project.create({
-        data: {
+      // Check if a project with the same name already exists in the course
+      const existingProject = await tx.project.findFirst({
+        where: {
           pname: groupData.projectName,
-          pkey: groupData.teamName,
           course_id: groupData.courseId,
-          backlogStatuses: {
-            createMany: {
-              data: defaultBacklogStatus,
-            },
-          },
         },
       });
-      groupData.projectId = project.id;
+
+      if (existingProject) {
+        groupData.projectId = existingProject.id;
+      } else {
+        const project = await tx.project.create({
+          data: {
+            pname: groupData.projectName,
+            pkey: groupData.projectKey,
+            course_id: groupData.courseId,
+            backlogStatuses: {
+              createMany: {
+                data: defaultBacklogStatus,
+              },
+            },
+          },
+        });
+        groupData.projectId = project.id;
+      }
       groupDetailsMap.set(groupName, groupData);
     });
 
@@ -156,16 +165,24 @@ async function processImportCourseData(
 
       // Add users to project/course
       if (userData.roleId === STUDENT_ROLE_ID) {
-        const userGroup = userGroupingMap.get(userEmail);
-        if (userGroup) {
-          const projectId = groupDetailsMap.get(userGroup)?.projectId;
-          // Since Project names are not unique within a course, a new project is always created on csv submission
-          await tx.usersOnProjects.create({
-            data: {
-              user_id: user.user_id,
-              project_id: Number(projectId),
-            },
-          });
+        const userGroups = userGroupingMap.get(userEmail);
+        if (userGroups) {
+          for (const groupName of userGroups) {
+            const projectId = groupDetailsMap.get(groupName)?.projectId;
+            await tx.usersOnProjects.upsert({
+              where: {
+                project_id_user_id: {
+                  user_id: user.user_id,
+                  project_id: Number(projectId),
+                },
+              },
+              update: {},
+              create: {
+                user_id: user.user_id,
+                project_id: Number(projectId),
+              },
+            });
+          }
         } else {
           throw new Error(`${userEmail}: userGroup undefined`);
         }
@@ -191,7 +208,7 @@ async function importCourseData(csvFilePath: string, courseId: number): Promise<
     let errorMessages = '';
     const userDetailsMap = new Map<string, ImportCourseDataUser>();
     const groupDetailsMap = new Map<string, ImportCourseDataGroup>();
-    const userGroupingMap = new Map<string, string>();
+    const userGroupingMap = new Map<string, string[]>();
     const csvParseStream = csv.parseFile<ImportCourseDataCsv, ImportCourseDataCsv>(
       csvFilePath,
       IMPORT_COURSE_DATA_CONFIG,
@@ -234,6 +251,19 @@ function validateProjectName(projectName: unknown): boolean {
   if (typeof projectName !== 'string') return false; // Ensure it's a string
   const trimmedName = projectName.trim();
   return trimmedName.length > 0;
+}
+
+function validateProjectNameRequired(data: ImportCourseDataCsv): boolean {
+  // Project name is required for all students. A student cannot be unassigned
+  const roleId = ROLE_ID_MAP.get(data.role.toUpperCase());
+  if (!data.projectName && roleId === STUDENT_ROLE_ID) {
+    return false;
+  }
+  // Reject placeholder value if user forgot to edit it
+  if (data.projectName?.trim() === '<Enter New Project Name>' || data.projectName?.trim() === '') {
+    return false;
+  }
+  return true;
 }
 
 function validateProjectAssignmentData(

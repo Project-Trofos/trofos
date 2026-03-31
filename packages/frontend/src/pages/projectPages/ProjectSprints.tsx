@@ -14,6 +14,7 @@ import StrictModeDroppable from '../../components/dnd/StrictModeDroppable';
 import './ProjectSprints.css';
 import Container from '../../components/layouts/Container';
 import EpicCreationModal from '../../components/modals/EpicCreationModal';
+import ImportBacklogDataModal from '../../components/modals/ImportBacklogDataModal';
 import { Epic } from '../../api/types';
 import EpicListingCard from '../../components/cards/EpicListingCard';
 import { useGetEpicsByProjectIdQuery } from '../../api/backlog';
@@ -115,6 +116,9 @@ function ProjectSprints(): JSX.Element {
         />
         <BacklogCreationModal />
         <EpicCreationModal />
+        <div style={{ marginLeft: 'auto' }}>
+          <ImportBacklogDataModal />
+        </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="sprint-list">

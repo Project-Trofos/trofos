@@ -5,7 +5,7 @@ import user from '@testing-library/user-event';
 import server from '../../mocks/server';
 import ImportDataModal from './ImportDataModal';
 import store from '../../app/store';
-import { CourseData, ProjectData } from '../../api/types';
+import { CourseData } from '../../api/types';
 
 const mockFile = new File(['hello'], 'hello.png', { type: 'image/png' });
 
@@ -43,23 +43,6 @@ const mockCourseData: CourseData = {
   ],
 };
 
-const mockProjectData: ProjectData = {
-  id: 1,
-  pname: 'c1',
-  created_at: new Date().toISOString(),
-  course_id: 5,
-  course: mockCourseData,
-  pkey: null,
-  description: 'd1',
-  public: false,
-  users: [],
-  sprints: [],
-  backlogStatuses: [],
-  telegramChannelLink: '',
-  is_archive: null,
-  owner_id: null,
-};
-
 describe('test import data modal', () => {
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
@@ -72,10 +55,10 @@ describe('test import data modal', () => {
   // Clean up after the tests are finished.
   afterAll(() => server.close());
 
-  const setup = (course: CourseData | undefined, projects: ProjectData[] | undefined) => {
+  const setup = (course: CourseData | undefined) => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <ImportDataModal course={course} projects={projects} />
+        <ImportDataModal course={course} />
       </Provider>,
     );
 
@@ -87,7 +70,7 @@ describe('test import data modal', () => {
   };
 
   it('should display the components correctly', () => {
-    const { baseElement } = setup(mockCourseData, [mockProjectData]);
+    const { baseElement } = setup(mockCourseData);
 
     // Ensure components are present
     expect(screen.getByText(/select file/i)).toBeInTheDocument();
@@ -100,14 +83,14 @@ describe('test import data modal', () => {
   });
 
   it('should disable the import button when no files are selected', () => {
-    setup(mockCourseData, [mockProjectData]);
+    setup(mockCourseData);
 
     const button = screen.getByRole('button', { name: /^import$/i });
     expect(button).toBeDisabled();
   });
 
   it('should enable the import button when a file is selected to be uploaded', async () => {
-    setup(mockCourseData, [mockProjectData]);
+    setup(mockCourseData);
     const input = screen.getByTestId('upload-button') as HTMLInputElement;
     /* eslint-disable testing-library/no-unnecessary-act */
     await act(async () => {
@@ -120,24 +103,5 @@ describe('test import data modal', () => {
 
     const button = screen.getByRole('button', { name: /^import$/i });
     expect(button).toBeEnabled();
-  });
-
-  it('should prevent the user from uploading a csv if the course has projects', async () => {
-    setup(mockCourseData, [mockProjectData]);
-    const input = screen.getByTestId('upload-button') as HTMLInputElement;
-    /* eslint-disable testing-library/no-unnecessary-act */
-    await act(async () => {
-      fireEvent.change(input, { target: { files: [mockFile] } });
-    });
-    /* eslint-enable */
-
-    expect(input.files![0]).toStrictEqual(mockFile);
-    expect(input.files).toHaveLength(1);
-
-    const button = screen.getByText(/^import$/i);
-    fireEvent.click(button);
-    expect(
-      await screen.findByText(/course already has projects. please delete them before uploading a new csv file./i),
-    ).toBeInTheDocument();
   });
 });

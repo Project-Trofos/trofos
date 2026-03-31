@@ -1,2 +1,2 @@
-name,email,password,role,teamName,projectName
-Student Name,Student Email,For Non-SSO emails,"[STUDENT, FACULTY]",Used to group students,Optional field
+name,email,password,role,projectKey,projectName
+Student Name,Student Email,For Non-SSO emails,"[STUDENT, FACULTY]",Optional field,Name of the project

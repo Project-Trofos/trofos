@@ -1,11 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`test import data modal > should display the components correctly 1`] = `
+exports[`test import backlog data modal > should display the components correctly 1`] = `
 <body>
   <div>
     <button
       class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
-      data-tour="import-csv-button"
       type="button"
     >
       <span>
@@ -75,7 +74,7 @@ exports[`test import data modal > should display the components correctly 1`] = 
                   class="ant-modal-title"
                   id="test-id"
                 >
-                  Import CSV Data
+                  Import Backlogs from CSV Data
                 </div>
               </div>
               <div

@@ -410,6 +410,19 @@ async function removeBacklogFromEpic(projectId: number, epicId: number, backlogI
   return updatedBacklog;
 }
 
+async function getProjectData(projectId: number) {
+  const [sprints, epics, members] = await Promise.all([
+    prisma.sprint.findMany({ where: { project_id: projectId } }),
+    prisma.epic.findMany({ where: { project_id: projectId } }),
+    prisma.usersOnProjects.findMany({
+      where: { project_id: projectId },
+      include: { user: { select: { user_email: true } } },
+    }),
+  ]);
+
+  return { sprints, epics, members };
+}
+
 async function deleteEpic(epicId: number): Promise<Epic> {
   const epic = await prisma.epic.delete({
     where: {
@@ -435,4 +448,5 @@ export default {
   addBacklogToEpic,
   removeBacklogFromEpic,
   deleteEpic,
+  getProjectData,
 };
