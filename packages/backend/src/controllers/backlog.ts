@@ -5,7 +5,6 @@ import fs from 'fs';
 import ExcelJS from 'exceljs';
 import backlogService from '../services/backlog.service';
 import backlogCsvService from '../services/backlogCsv.service';
-import prisma from '../models/prismaClient';
 import {
   BadRequestError,
   getDefaultErrorRes,
@@ -237,14 +236,7 @@ const getBacklogImportTemplate = async (req: express.Request, res: express.Respo
     assertProjectIdIsValid(Number(projectId));
 
     // Fetch project data for dropdowns
-    const [sprints, epics, members] = await Promise.all([
-      prisma.sprint.findMany({ where: { project_id: Number(projectId) } }),
-      prisma.epic.findMany({ where: { project_id: Number(projectId) } }),
-      prisma.usersOnProjects.findMany({
-        where: { project_id: Number(projectId) },
-        include: { user: { select: { user_email: true } } },
-      }),
-    ]);
+    const { sprints, epics, members } = await backlogService.getProjectData(Number(projectId));
 
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Import Backlogs');
