@@ -30,7 +30,7 @@ export default function ImportDataModal({
     if (!course) return;
     setIsDownloading(true);
     try {
-      const response = await fetch(`/api/course/${course.id}/template/import`, {
+      const response = await fetch(`/api/course/${course.id}/import/template`, {
         credentials: 'include',
       });
       if (!response.ok) {

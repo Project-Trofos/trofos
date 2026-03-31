@@ -24,7 +24,7 @@ export default function ImportBacklogDataModal(): JSX.Element {
   const handleDownloadTemplate = async () => {
     setIsDownloading(true);
     try {
-      const response = await fetch(`/api/backlog/${projectId}/template/import`, {
+      const response = await fetch(`/api/backlog/${projectId}/import/template`, {
         credentials: 'include',
       });
       if (!response.ok) {
