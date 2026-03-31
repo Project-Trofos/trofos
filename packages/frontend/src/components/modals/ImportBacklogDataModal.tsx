@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import { useImportBacklogCsvMutation } from '../../api/backlog';
 import { getErrorMessage } from '../../helpers/error';
 
+const TEMPLATE_FILENAME = 'importBacklogData.xlsx';
+
 export default function ImportBacklogDataModal(): JSX.Element {
   const params = useParams();
   const projectId = Number(params.projectId);
@@ -32,7 +34,7 @@ export default function ImportBacklogDataModal(): JSX.Element {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'importBacklogData.xlsx';
+      a.download = TEMPLATE_FILENAME;
       document.body.appendChild(a);
       a.click();
       a.remove();

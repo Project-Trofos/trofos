@@ -7,6 +7,8 @@ import { getErrorMessage } from '../../helpers/error';
 import { CourseData } from '../../api/types';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
 
+const TEMPLATE_FILENAME = 'importCourseData.xlsx';
+
 export default function ImportDataModal({
   course,
   disableClickEvent,
@@ -38,7 +40,7 @@ export default function ImportDataModal({
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'importCourseData.xlsx';
+      a.download = TEMPLATE_FILENAME;
       document.body.appendChild(a);
       a.click();
       a.remove();
