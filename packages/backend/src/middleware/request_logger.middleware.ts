@@ -10,7 +10,7 @@ function requestLogger(): RequestHandler {
     customProps: function (req) {
       return {
         request_method: req.method,
-        request_url: req.path,
+        request_url: req.originalUrl || req.url,
       };
     },
     customLogLevel: function (req, res, err) {
