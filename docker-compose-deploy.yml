@@ -44,6 +44,7 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - AI_DATABASE_URL=${AI_DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
+      - SSO_ENABLED=${SSO_ENABLED}
     depends_on:
       postgres:
         condition: service_healthy
