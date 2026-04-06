@@ -3,6 +3,9 @@ import prisma from '../models/prismaClient';
 import sessionService from '../services/session.service';
 import { ApiMethodType } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -36,7 +39,7 @@ async function trackApiUsage(req: express.Request, res: express.Response, next: 
       const sessionInfo = await sessionService.getUserSession(sessionId);
 
       if (!sessionInfo.user_id) {
-        console.log('No user ID found, skipping API usage tracking');
+        logger.info('No user ID found, skipping API usage tracking');
         return;
       }
 
@@ -64,7 +67,7 @@ async function trackApiUsage(req: express.Request, res: express.Response, next: 
         },
       });
     } catch (error) {
-      console.error('Error tracking API usage:', error);
+      logger.error(error, 'Error tracking API usage');
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
   });

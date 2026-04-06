@@ -10,6 +10,9 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff, SSORoles } from '../helpers/ssoHelper';
 import { assertInputsAreNotAllEmpty, assertSSORoleIsValid } from '../helpers/error/assertions';
 import { UpdateUserData } from '../helpers/types/user.service.types';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -32,7 +35,7 @@ const loginUser = async (req: express.Request, res: express.Response) => {
     res.cookie(TROFOS_SESSIONCOOKIE_NAME, sessionId);
     return res.status(StatusCodes.OK).send();
   } catch (e) {
-    console.error(e);
+    logger.error({ err: e, user_email: userEmail }, 'Error logging in user');
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
 };
@@ -65,7 +68,7 @@ const logoutUser = async (req: express.Request, res: express.Response) => {
     await sessionService.deleteUserSession(sessionId);
     return res.status(StatusCodes.OK).send();
   } catch (e) {
-    console.error(e);
+    logger.error({ err: e, session_id: sessionId }, 'Error logging out user');
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
 };
@@ -89,7 +92,7 @@ const getUserInfo = async (req: express.Request, res: express.Response) => {
 
     return res.status(StatusCodes.OK).json(userInformation);
   } catch (e) {
-    console.error(e);
+    logger.error({ err: e, session_id: sessionId }, 'Error getting user info');
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
   }
 };
@@ -147,7 +150,7 @@ async function register(req: express.Request, res: express.Response) {
 
     return res.status(StatusCodes.OK).json({ message: 'User successfully created' });
   } catch (error) {
-    console.error(error);
+    logger.error(error, 'Error registering account');
     const err = error as PrismaClientKnownRequestError;
     if (err.code == 'P2002') return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Email already in use' });
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
@@ -162,12 +165,12 @@ async function generateSAMLRequest(req: express.Request, res: express.Response) 
     // Create auth SAML request
     const { id, context } = sp.createLoginRequest(idp, 'redirect');
 
-    console.log('Generated SAML Request ID:', id);
-    console.log('Redirect URL:', context);
+    logger.info('Generated SAML Request ID:', id);
+    logger.info('Redirect URL:', context);
 
     return res.status(StatusCodes.OK).json({ redirectUrl: context });
   } catch (error) {
-    console.error('Error generating SAML request:', error);
+    logger.error(error, 'Error generating SAML request');
     return getDefaultErrorRes(error, res);
   }
 }
@@ -183,12 +186,12 @@ async function generateSAMLRequestMobile(req: express.Request, res: express.Resp
       redirectUrlObj.searchParams.set('RelayState', 'student_mobile');
       const finalRedirectUrl = redirectUrlObj.toString();
 
-      console.log('Generated Mobile SAML Request ID:', id);
-      console.log('Redirect URL for Mobile:', finalRedirectUrl);
+      logger.info('Generated Mobile SAML Request ID:', id);
+      logger.info('Redirect URL for Mobile:', finalRedirectUrl);
 
       return res.status(StatusCodes.OK).json({ redirectUrl: finalRedirectUrl });
     } catch (error) {
-        console.error('Error generating mobile SAML request:', error);
+        logger.error(error, 'Error generating mobile SAML request');
         return getDefaultErrorRes(error, res);
     }
 }
@@ -201,12 +204,12 @@ async function generateSAMLRequestStaff(req: express.Request, res: express.Respo
     // Create auth SAML request
     const { id, context } = sp.createLoginRequest(idp, 'redirect');
 
-    console.log('Generated SAML Request ID:', id);
-    console.log('Redirect URL:', context);
+    logger.info('Generated SAML Request ID:', id);
+    logger.info('Redirect URL:', context);
 
     return res.status(StatusCodes.OK).json({ redirectUrl: context });
   } catch (error) {
-    console.error('Error generating SAML request:', error);
+    logger.error(error, 'Error generating SAML request');
     return getDefaultErrorRes(error, res);
   }
 }
@@ -226,7 +229,7 @@ async function processSAMLResponse(req: express.Request, res: express.Response) 
       await processSAMLResponseStudent(req, res);
     }
   } catch (error) {
-    console.error('Error processing SAML Response:', error);
+    logger.error(error, 'Error processing SAML Response');
     return getDefaultErrorRes(error, res);
   }
 }
@@ -254,8 +257,8 @@ async function processSAMLResponseStudent(req: express.Request, res: express.Res
   if (relayState === 'student_mobile') {
       const baseUrl = process.env.FRONTEND_BASE_URL;
       const redirectUrl = `${baseUrl}/auth-success#token=${sessionId}`;
-      
-      console.log('Mobile Redirect Triggered:', redirectUrl);
+
+      logger.info('Mobile Redirect Triggered:', redirectUrl);
       return res.redirect(redirectUrl);
       
   } else {

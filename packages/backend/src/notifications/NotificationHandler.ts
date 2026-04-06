@@ -1,17 +1,20 @@
 import { prisma } from '@prisma/client';
 import { Api, Bot, Context, RawApi } from 'grammy';
 import projectService from '../services/project.service';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 let bot: Bot<Context, Api<RawApi>>;
 export async function init() {
-  // console.log(process.env.TELEGRAM_TOKEN);
-  console.log('Starting bot');
+  // logger.debug(process.env.TELEGRAM_TOKEN);
+  logger.info('Starting telegram bot');
 
   bot = new Bot(process.env.TELEGRAM_TOKEN!);
-  // bot.catch((e) => console.log(e))
+  // bot.catch((e) => logger.error(e))
   bot.start();
   await bot.init();
-  console.log('Telegram bot started', bot.botInfo.username);
+  logger.info('Telegram bot started', bot.botInfo.username);
 
   bot.command('start', (ctx) => {
     ctx.reply(
