@@ -6,6 +6,9 @@ import {
   TASK_COMPLETED_CHANNEL,
   Task,
 } from "@trofos-nus/common";
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 export const redis = createClient({
   url: process.env.REDIS_URL,
@@ -27,27 +30,27 @@ const publishTask = async (projectId: number, sprintId: number, user: string) =>
     user,
   }));
   const taskId = `${projectId}_${sprintId}_${user}`;
-  console.log(`[AI Insight] Task (projId_sprId_usr) ${taskId} added to queue`);
+  logger.info(`[AI Insight] Task (projId_sprId_usr) ${taskId} added to queue`);
 
   // Publish a notification about the new task
   await redis.publish(TASK_NOTIFICATIONS_CHANNEL, 'new_task');
-  console.log(`[AI Insight] Notification published for task ${taskId}`);
+  logger.info(`[AI Insight] Notification published for task ${taskId}`);
 };
 
 const initCompleteInsightSub = async () => {
 
   subscriber.subscribe(TASK_COMPLETED_CHANNEL, async (message) => {
     try {
-      console.log(`[AI Insight] Received message: ${message}`);
+      logger.info(`[AI Insight] Received message: ${message}`);
       const task: Task = JSON.parse(message);
-      console.log(`[AI Insight] Task completed: ${task.projectId} ${task.sprintId} ${task.user}`);
+      logger.info(`[AI Insight] Task completed: ${task.projectId} ${task.sprintId} ${task.user}`);
       if (!task || !task.sprintId) {
-        console.error('[AI Insight] Task not found');
+        logger.error({ message }, '[AI Insight] Task not found');
         return;
       }
       emitToFrontendInsightChanged(task.sprintId);
     } catch (error) {
-      console.error(error);
+      logger.error({ err: error, message }, '[AI Insight] Error processing task completion');
     }
   });
 };

@@ -18,6 +18,9 @@ import { exclude } from '../helpers/common';
 import { emitToFrontendInsightChanged, publishTask, redis } from './aiInsight.service';
 import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
 import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 function removeNotesFromSprints(sprints: Sprint[]): Omit<Sprint, 'notes'>[] {
   return sprints.map((sprint) => exclude(sprint, ['notes']));
@@ -274,7 +277,7 @@ async function updateSprintStatus(
       });
       if (isCompletedPresent) {
         // by right should not reach here, but we will auto remedy by setting completed -> closed
-        console.error('Completed sprint already exists');
+        logger.warn({ project_id: projectId, sprint_id: sprintId }, 'Completed sprint already exists');
         await tx.sprint.updateMany({
           where: {
             project_id: projectId,

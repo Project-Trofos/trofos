@@ -4,6 +4,9 @@ import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';
 import { redis } from './aiInsight.service';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 const COPILOT_CHAT_HISTORY_KEY_PREFIX = 'copilot_chat_history_';
 const EMBEDDING_SIMILARITY_THRESHOLD = 1.15;
@@ -48,7 +51,11 @@ const processUserGuideQuery = async (
     const hasRelevantContext = history.some((entry) => entry.hasRelevantContext);
 
     if (similarRecords.length === 0 && !hasRelevantContext) {
-      throw new Error('No relevant answers found for the query');
+      logger.info({ query, user }, 'No relevant answers found for the query');
+      return {
+        answer: "Sorry, I couldn't find any relevant answers to your query.",
+        links: [],
+      };
     }
     const answer = await askGptQueryWithContext(query, similarRecords, user, history, isEnableMemory);
     return {
@@ -56,7 +63,7 @@ const processUserGuideQuery = async (
       links: similarRecords.map((record) => `https://project-trofos.github.io/trofos${record.endpoint}`),
     };
   } catch (error) {
-    console.error(`Error processing user query: ${error}`);
+    logger.error({ err: error, query, user }, 'Error processing user query');
     return {
       answer: `Sorry, I encountered an issue while processing your query: ${error}`,
       links: [],
@@ -84,8 +91,7 @@ const embedUserGuideQuery = async (query: string, user: string): Promise<Array<N
     }
     return res.data[0].embedding;
   } catch (error: unknown) {
-    const err = error as Error;
-    console.error(`Error generating embedding: ${err.message || error}`);
+    logger.error({ err: error, query, user }, 'Error generating embedding');
     return [];
   }
 };
@@ -111,14 +117,13 @@ const performUserGuideSimilaritySearch = async (embeddedQuery: Array<Number>): P
       LIMIT 3`;
 
     if (!similarRecords || similarRecords.length === 0) {
-      console.warn('No matching records found for query.');
+      logger.info('No matching records found for query.');
       return null;
     }
     const results: UserGuideEmbedding[] = similarRecords.map(({ similarity, ...record }) => record);
     return results;
   } catch (error: unknown) {
-    const err = error as Error;
-    console.error(`Error querying the database: ${err.message || error}`);
+    logger.error(error, 'Error querying the database');
     return null;
   }
 };
@@ -164,7 +169,7 @@ const askGptQueryWithContext = async (
     }
     return response;
   } catch (error) {
-    console.error(`Error generating GPT response: ${error}`);
+    logger.error({ err: error, query, user }, 'Error generating GPT response');
     return 'I’m currently unable to answer your query. Please try again later.';
   }
 };

@@ -11,6 +11,9 @@ import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
 import projectService from '../services/project.service';
 import courseService from '../services/course.service';
+import { getLogger } from '../logger/loggerProvider';
+
+const logger = getLogger();
 
 const TROFOS_SESSIONCOOKIE_NAME = 'trofos_sessioncookie';
 
@@ -135,7 +138,7 @@ const hasAuth =
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {
-      console.error(e);
+      logger.error({ err: e, route_action: routeAction, policy_name: policyName }, 'Error in basic role authorization');
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 
@@ -168,7 +171,10 @@ const hasAuthForProject =
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {
-      console.error(e);
+      logger.error(
+        { err: e, route_action: routeAction, policy_name: policyName, project_id: req.params.projectId },
+        'Error in project role authorization',
+      );
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 
@@ -200,7 +206,10 @@ const hasAuthForCourse =
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {
-      console.error(e);
+      logger.error(
+        { err: e, route_action: routeAction, policy_name: policyName, course_id: req.params.courseId },
+        'Error in course role authorization',
+      );
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 
@@ -235,7 +244,10 @@ const hasAuthForExternalApi =
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {
-      console.error(e);
+      logger.error(
+        { err: e, route_action: routeAction, policy_name: policyName },
+        'Error in external API role authorization',
+      );
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 
@@ -267,7 +279,10 @@ const hasAuthForProjectExternalApi =
         return res.status(StatusCodes.UNAUTHORIZED).send();
       }
     } catch (e) {
-      console.error(e);
+      logger.error(
+        { err: e, route_action: routeAction, policy_name: policyName, project_id: req.params.projectId },
+        'Error in project external API role authorization',
+      );
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 
