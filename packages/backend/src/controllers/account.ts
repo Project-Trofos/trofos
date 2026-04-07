@@ -10,7 +10,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { getCachedIdp, getCachedSp, getCachedIdpStaff, getCachedSpStaff, SSORoles } from '../helpers/ssoHelper';
 import { assertInputsAreNotAllEmpty, assertSSORoleIsValid } from '../helpers/error/assertions';
 import { UpdateUserData } from '../helpers/types/user.service.types';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 
@@ -150,9 +150,9 @@ async function register(req: express.Request, res: express.Response) {
 
     return res.status(StatusCodes.OK).json({ message: 'User successfully created' });
   } catch (error) {
-    logger.error(error, 'Error registering account');
     const err = error as PrismaClientKnownRequestError;
     if (err.code == 'P2002') return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Email already in use' });
+    logger.error(error, 'Error registering account');
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
   }
 }

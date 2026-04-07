@@ -4,7 +4,7 @@ import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
 import { UserGuideQueryResponse } from './types/ai.service.types';
 import { redis } from './aiInsight.service';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

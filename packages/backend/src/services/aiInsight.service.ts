@@ -6,7 +6,7 @@ import {
   TASK_COMPLETED_CHANNEL,
   Task,
 } from "@trofos-nus/common";
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

@@ -18,7 +18,7 @@ import { exclude } from '../helpers/common';
 import { emitToFrontendInsightChanged, publishTask, redis } from './aiInsight.service';
 import { SPRINT_PROCESSING_SET } from '@trofos-nus/common';
 import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

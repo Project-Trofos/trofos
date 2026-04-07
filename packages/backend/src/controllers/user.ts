@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { assertInputIsNotEmpty, getErrorMessage } from '../helpers/error';
 import userService from '../services/user.service';
 import { assertEmailIsValid } from '../helpers/error/assertions';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

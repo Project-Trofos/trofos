@@ -1,6 +1,6 @@
 import { inviteHTMLSubject, inviteHTMLTemplate, inviteTextTemplate } from '../templates/email';
 import sgMail from '@sendgrid/mail';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

@@ -1,7 +1,7 @@
 import { prisma } from '@prisma/client';
 import { Api, Bot, Context, RawApi } from 'grammy';
 import projectService from '../services/project.service';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

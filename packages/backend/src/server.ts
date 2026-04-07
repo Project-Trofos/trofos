@@ -21,7 +21,7 @@ import featureFlagRouter from './routes/featureFlag.route';
 import issueRouter from './routes/issue.route';
 import setUpSwagger from './swagger/swagger';
 import { trackApiUsage } from './middleware/api_usage_tracking.middleware';
-import requestLogger from './middleware/request_logger.middleware';
+import { requestLogger } from '@trofos-nus/common';
 
 // Prometheus metrics stuff
 const register = new promClient.Registry();

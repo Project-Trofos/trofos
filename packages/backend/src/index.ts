@@ -5,7 +5,7 @@ import app, { corsOptions, port } from './server';
 import { init } from './services/socket.service';
 import { init as initBot} from './notifications/NotificationHandler'
 import { initCompleteInsightSub } from './services/aiInsight.service';
-import { getLogger } from './logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

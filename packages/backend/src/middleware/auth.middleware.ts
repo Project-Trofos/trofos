@@ -11,7 +11,7 @@ import { ADMIN_ROLE_ID, STUDENT_ROLE_ID } from '../helpers/constants';
 import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
 import projectService from '../services/project.service';
 import courseService from '../services/course.service';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

@@ -3,7 +3,7 @@ import prisma from '../models/prismaClient';
 import sessionService from '../services/session.service';
 import { ApiMethodType } from '@prisma/client';
 import StatusCodes from 'http-status-codes';
-import { getLogger } from '../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 

@@ -2,7 +2,7 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import getErrorMessage from './errorMessage';
 import { BadRequestError } from './errorTypes';
-import { getLogger } from '../../logger/loggerProvider';
+import { getLogger } from '@trofos-nus/common';
 
 const logger = getLogger();
 
