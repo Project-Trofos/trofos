@@ -1,6 +1,9 @@
 import { Sprint } from "@prisma/client";
+import { getLogger } from '@trofos-nus/common';
 import { generateContributionInsights } from "../insights/contributionInsight";
 import prisma from "../models/prismaClient";
+
+const logger = getLogger();
 
 async function handleGenerateContributionInsight(sprint: Sprint, user: string): Promise<boolean> {
   const sprintId = sprint.id;
@@ -27,7 +30,7 @@ async function handleGenerateContributionInsight(sprint: Sprint, user: string): 
     });
     return true;
   } catch (error) {
-    console.error(error);
+    logger.error({ err: error, sprint_id: sprintId }, 'Error generating contribution insights');
     return false;
   }
 }
