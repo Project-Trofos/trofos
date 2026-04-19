@@ -114,7 +114,7 @@ services:
     command: -config.file=/etc/loki/config.yml
     volumes:
       - ./loki/config.yml:/etc/loki/config.yml:ro
-      - loki_data:/loki
+      - loki_data:/var/lib/loki
     ports:
       - 3100:3100
     expose:
