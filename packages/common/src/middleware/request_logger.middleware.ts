@@ -35,10 +35,10 @@ function requestLogger(): RequestHandler {
       return id;
     },
     customLogLevel: function (req, res, err) {
-      if (res.statusCode >= 500 || err) {
-        return 'error';
-      } else if (res.statusCode >= 400) {
+      if (res.statusCode >= 400 && res.statusCode < 500) {
         return 'warn';
+      } else if (res.statusCode >= 500 || err) {
+        return 'error';
       } else if (res.statusCode >= 300) {
         if (res.statusCode === 304) return 'debug'; // caching
         return 'info';
