@@ -4,6 +4,7 @@ import './EpicCreationModal.css';
 import { useParams } from 'react-router-dom';
 import { useAddEpicMutation } from '../../api/socket/backlogHooks';
 import { EpicFormFields } from '../../helpers/EpicModal.types';
+import AiFormAssist from '../ai/AiFormAssist';
 
 function EpicCreationModal({ disableClickEvent }: { disableClickEvent?: boolean }): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -56,6 +57,7 @@ function EpicCreationModal({ disableClickEvent }: { disableClickEvent?: boolean 
 
   const renderContent = (): JSX.Element => (
     <Form id="newEpic" form={form} onFinish={handleFormSubmit} layout="vertical">
+      <AiFormAssist itemType="epic" projectId={projectId} form={form} />
       <Form.Item name="name" rules={[{ required: true }]} label="Epic Name">
         <Input placeholder="An awesome epic name..." />
       </Form.Item>

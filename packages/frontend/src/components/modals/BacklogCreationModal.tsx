@@ -17,6 +17,8 @@ import { getErrorMessage } from '../../helpers/error';
 import SprintCreationModal from './SprintCreationModal';
 import { GENERIC_NEW_SPRINT, autoSuggestNewSprint } from '../../helpers/sprintCreationHelper';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
+import AiFormAssist from '../ai/AiFormAssist';
+import type { WorkItemContext } from '../../helpers/aiItemCreation.types';
 
 function BacklogCreationModal({
   fixedSprint,
@@ -212,8 +214,19 @@ function BacklogCreationModal({
     </Form.Item>
   );
 
+  // const aiContext: WorkItemContext = {
+  //   sprints: projectSprintData?.sprints?.map((s) => ({ id: s.id, name: s.name })),
+  //   epics: epicData?.map((e) => ({ id: e.epic_id, name: e.name })),
+  //   users: projectData?.users?.map((u) => ({
+  //     id: u.user_id,
+  //     displayName: u.user_display_name,
+  //     email: u.user.user_email,
+  //   })),
+  // };
+
   const renderContent = (): JSX.Element => (
     <Form id={`newBacklog${modalKey ? `-${modalKey}` : ''}`} form={form} onFinish={handleFormSubmit}>
+      {/* <AiFormAssist itemType="backlog" projectId={projectId} form={form} context={aiContext} /> */}
       <Form.Item name="summary" rules={[{ required: true }]} initialValue={defaultBacklog?.summary ?? ''}>
         <BacklogSummaryInput placeholder="* Type summary here..." defaultValue={defaultBacklog?.summary ?? ''} />
       </Form.Item>

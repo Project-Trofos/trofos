@@ -7,6 +7,7 @@ import type { Sprint } from '../../api/sprint';
 import type { SprintFormFields, SprintUpdatePayload, AutoSprintTypes } from '../../helpers/SprintModal.types';
 import './SprintCreationModal.css';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
+import AiFormAssist from '../ai/AiFormAssist';
 
 const DURATION = [
   { id: 1, name: '1 Week' },
@@ -157,6 +158,9 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   const renderContent = (): JSX.Element => (
     <Form id="newSprint" form={form} onFinish={sprint ? handleUpdateSprint : handleFormSubmit} layout="vertical">
+      {!sprint && (
+        <AiFormAssist itemType="sprint" projectId={Number(params.projectId)} form={form} />
+      )}
       <Form.Item name="name" rules={[{ required: true }]} label="Sprint Name">
         <Input />
       </Form.Item>
