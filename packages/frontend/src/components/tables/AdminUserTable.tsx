@@ -21,6 +21,7 @@ export default function UserTable(props: UserTableProps): JSX.Element {
 
   return (
     <Table
+      style={{ width: '100%' }}
       rowSelection={
         showSelect
           ? {
