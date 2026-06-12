@@ -53,6 +53,8 @@ describe('test UserTable', () => {
     // Ensure columns are present
     expect(screen.getByText('User ID')).toBeInTheDocument();
     expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(screen.getByText('Name')).toBeInTheDocument();
+    expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('Actions')).toBeInTheDocument();
 
     // Compare with snapshot to ensure structure remains the same

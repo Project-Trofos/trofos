@@ -17,7 +17,7 @@ type UserTableProps = {
 };
 
 export default function UserTable(props: UserTableProps): JSX.Element {
-  const { users, roles, isLoading, showSelect, onSelectChange, footer, pagination,} = props;
+  const { users, roles, isLoading, showSelect, onSelectChange, footer, pagination } = props;
 
   return (
     <Table
@@ -40,28 +40,32 @@ export default function UserTable(props: UserTableProps): JSX.Element {
       footer={footer ? () => footer : undefined}
       pagination={pagination}
     >
-      <Table.Column width='15%' title='User ID' dataIndex='user_id' />
-      <Table.Column width='30%' title='Email' dataIndex='user_email' />
+      <Table.Column width="10%" title="User ID" dataIndex="user_id" />
+      <Table.Column width="25%" title="Email" dataIndex="user_email" />
+      <Table.Column width="20%" title="Name" dataIndex="user_display_name" />
 
-      <Table.Column width='15%' 
-        title='Projects' 
+      <Table.Column
+        width="12%"
+        title="Projects"
         render={(_, record: any) => {
           const projectCount = record.projects?.length || 0;
           return `${projectCount} Project${projectCount !== 1 ? 's' : ''}`;
-        }} 
+        }}
       />
 
-      <Table.Column width='20%' 
-        title='Last Active' 
+      <Table.Column
+        width="20%"
+        title="Last Active"
         render={(_, record: any) => {
           const lastUsage = record.api_usages?.[0]?.timestamp;
           if (!lastUsage) return <span style={{ color: 'gray' }}>Never</span>;
-          
+
           return new Date(lastUsage).toLocaleDateString('en-GB');
-        }} 
+        }}
       />
 
-      <Table.Column width='20%' 
+      <Table.Column
+        width="20%"
         title="Actions"
         dataIndex="action"
         render={(_, record: User) => (
