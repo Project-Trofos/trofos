@@ -1,6 +1,6 @@
 # Base image
 FROM node:lts-alpine3.17 as base
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.4.1
 ENV CI=true
 
 # Expose port to access server

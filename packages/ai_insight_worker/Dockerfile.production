@@ -1,6 +1,6 @@
 FROM node:lts-alpine3.17 as base
 
-RUN npm i -g pnpm
+RUN npm i -g pnpm@10.4.1
 
 # Make folder to put our files in
 RUN mkdir -p /usr/src/app/ai_insight_worker
