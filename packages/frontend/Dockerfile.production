@@ -25,7 +25,7 @@ RUN pnpm run test
 ENTRYPOINT ["pnpm", "run", "start"]
 
 # Production stage
-FROM nginx:stable-alpine as prod
+FROM nginx:1.31.3-alpine as prod
 COPY --from=base /usr/src/app/frontend/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 CMD ["nginx", "-g", "daemon off;"]
