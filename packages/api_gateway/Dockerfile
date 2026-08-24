@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine as prod
+FROM nginx:1.31.3-alpine as prod
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
