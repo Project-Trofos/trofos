@@ -1,7 +1,7 @@
 # Base image
 FROM node:lts-alpine3.17 as base
 
-RUN npm i -g pnpm
+RUN npm i -g pnpm@10.4.1
 
 # Expose port to access server
 EXPOSE 3002
