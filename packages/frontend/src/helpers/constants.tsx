@@ -18,6 +18,9 @@ const UserPermissionActions = {
   ADMIN: 'admin',
   READ_API_KEY: 'read_api_key',
   SEND_INVITE: 'send_invite',
+  READ_GRADE: 'read_grade',
+  UPDATE_GRADE: 'update_grade',
+  PUBLISH_GRADE: 'publish_grade',
 } as const;
 
 type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof UserPermissionActions];
@@ -31,6 +34,13 @@ const MANAGE_API_KEY_ACTIONS: UserPermissionActionsType[] = [
   // if read AND write given to faculty. just check read
   UserPermissionActions.ADMIN,
   UserPermissionActions.READ_API_KEY,
+];
+
+const GRADING_ACCESS_ACTIONS: UserPermissionActionsType[] = [
+  // a pure global admin only ever carries the 'admin' action for a course
+  // (no per-course role row), so it must be included alongside read_grade
+  UserPermissionActions.ADMIN,
+  UserPermissionActions.READ_GRADE,
 ];
 
 const BACKLOG_PRIORITY_OPTIONS = [
@@ -77,5 +87,6 @@ export {
   COURSE_MANAGER_ACTIONS,
   BACKLOG_PRIORITY_OPTIONS,
   MANAGE_API_KEY_ACTIONS,
+  GRADING_ACCESS_ACTIONS,
   BACKLOG_TYPE_OPTIONS,
 };

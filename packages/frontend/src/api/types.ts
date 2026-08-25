@@ -27,6 +27,25 @@ export type Course = {
   is_archive: boolean | null;
 };
 
+export type ProjectGradeStatus = 'draft' | 'submitted' | 'published';
+
+export type ProjectGrade = {
+  id: number;
+  project_id: number;
+  assigned_ta_id: number | null;
+  marks: string | null;
+  comments: string | null;
+  status: ProjectGradeStatus;
+  updated_at: string;
+  created_at: string;
+  project: Project;
+  assignedTa: {
+    user_id: number;
+    user_email: string;
+    user_display_name: string;
+  } | null;
+};
+
 export type User = {
   user_email: string;
   user_display_name: string;

@@ -25,8 +25,9 @@ import ProjectPeople from '../pages/projectPages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/projectPages/ProjectFeedbacks';
 import CourseStatistics from '../pages/coursePages/CourseStatistics';
-import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
+import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected, GradingProtected } from '../helpers/ProtectedRoute';
 import CourseMilestones from '../pages/coursePages/CourseMilestones';
+import CourseGrading from '../pages/coursePages/CourseGrading';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
 import ThemeProvider from '../components/theming/ThemeProvider';
@@ -99,6 +100,14 @@ function App() {
                 <Route path="" element={<Navigate to="overview" />} />
                 <Route path="overview" element={<CourseOverview />} />
                 <Route path="users" element={<CoursePeople />} />
+                <Route
+                  path="grading"
+                  element={
+                    <GradingProtected>
+                      <CourseGrading />
+                    </GradingProtected>
+                  }
+                />
                 <Route
                   path="milestones"
                   element={

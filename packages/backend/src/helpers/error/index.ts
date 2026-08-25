@@ -1,4 +1,4 @@
-import { BadRequestError } from './errorTypes';
+import { BadRequestError, NotAuthorizedError } from './errorTypes';
 import getErrorMessage from './errorMessage';
 import {
   assertCourseIdIsValid,
@@ -14,11 +14,14 @@ import {
   assertCommentIsValid,
   assertFileIsCorrectType,
   assertEpicNameIsValid,
+  assertMarksIsValid,
+  assertGradeStatusIsValid,
 } from './assertions';
 import { getDefaultErrorRes } from './response';
 
 export {
   BadRequestError,
+  NotAuthorizedError,
   getErrorMessage,
   getDefaultErrorRes,
   assertCourseIdIsValid,
@@ -34,4 +37,6 @@ export {
   assertCommentIsValid,
   assertFileIsCorrectType,
   assertEpicNameIsValid,
+  assertMarksIsValid,
+  assertGradeStatusIsValid,
 };

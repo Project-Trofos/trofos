@@ -1,10 +1,12 @@
-import { Action } from '@prisma/client';
+import { Action, Feature } from '@prisma/client';
 import express from 'express';
 import multer from 'multer';
 import announcement from '../controllers/announcement';
 import course from '../controllers/course';
+import grading from '../controllers/grading';
 import milestone from '../controllers/milestone';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import coursePolicy from '../policies/course.policy';
 import projectPolicy from '../policies/project.policy';
 
@@ -37,6 +39,30 @@ router.put('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_c
 
 // Delete milestone
 router.delete('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_course, null), milestone.remove);
+
+// List grading matrix for a course
+router.get(
+  '/:courseId/grading',
+  checkFeatureFlag(Feature.grading_matrix),
+  hasAuthForCourse(Action.read_grade, null),
+  grading.list,
+);
+
+// Update a project's grade
+router.put(
+  '/:courseId/grading/:projectId',
+  checkFeatureFlag(Feature.grading_matrix),
+  hasAuthForCourse(Action.update_grade, null),
+  grading.update,
+);
+
+// Publish all grades for a course
+router.post(
+  '/:courseId/grading/publish',
+  checkFeatureFlag(Feature.grading_matrix),
+  hasAuthForCourse(Action.publish_grade, null),
+  grading.publishAll,
+);
 
 // Get announcement
 router.get('/:courseId/announcement/:announcementId', hasAuthForCourse(Action.read_course, null), announcement.get);

@@ -27,6 +27,7 @@ model User {
   api_usages         ApiUsage[]
   user_api_key       UserApiKey?
   comments           IssueComment[]
+  assignedGrades     ProjectGrade[] @relation("AssignedTA")
 }
 
 model UserSession {
@@ -99,6 +100,8 @@ model Project {
 
   /// All projects that are assigned to act upon this project.
   targetProjects ProjectAssignment[] @relation("TargetProject")
+
+  grade ProjectGrade?
 }
 
 /// Represents an assignment relationship between two projects, 
@@ -351,6 +354,19 @@ model UsersOnRolesOnCourses {
   @@unique([user_id, course_id])
 }
 
+model ProjectGrade {
+  id             Int                @id @default(autoincrement())
+  project_id     Int                @unique
+  project        Project            @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  assigned_ta_id Int?
+  assignedTa     User?              @relation("AssignedTA", fields: [assigned_ta_id], references: [user_id], onDelete: SetNull)
+  marks          Decimal?           @db.Decimal(5, 2)
+  comments       String?
+  status         ProjectGradeStatus @default(draft)
+  updated_at     DateTime           @updatedAt
+  created_at     DateTime           @default(now())
+}
+
 model Retrospective {
   id              Int                 @id @default(autoincrement())
   sprint          Sprint              @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
@@ -483,6 +499,7 @@ enum Feature {
   sso_login
   ai_insights
   user_guide_recommender
+  grading_matrix
 }
 
 enum Action {
@@ -513,6 +530,16 @@ enum Action {
   read_api_key
   // Invite actions
   send_invite
+  // Grading related actions
+  read_grade
+  update_grade
+  publish_grade
+}
+
+enum ProjectGradeStatus {
+  draft
+  submitted
+  published
 }
 
 enum BacklogType {

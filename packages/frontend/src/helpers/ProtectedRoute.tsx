@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import { useCourseActions } from '../api/hooks/roleHooks';
 import Container from '../components/layouts/Container';
 import { canDisplay } from './conditionalRender';
-import { COURSE_MANAGER_ACTIONS, UserPermissionActions, MANAGE_API_KEY_ACTIONS } from './constants';
+import { COURSE_MANAGER_ACTIONS, UserPermissionActions, MANAGE_API_KEY_ACTIONS, GRADING_ACCESS_ACTIONS } from './constants';
 import { useGetUserInfoQuery } from '../api/auth';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 import LoadingComponent from '../components/common/LoadingComponent';
 
 /**
@@ -24,6 +25,43 @@ export function CourseManagerProtected({ children }: { children: JSX.Element }):
   }
 
   if (!isCourseManager) {
+    return (
+      <Container>
+        <Empty description="You are not authorized to view this page!" />
+      </Container>
+    );
+  }
+
+  return children;
+}
+
+/**
+ * A react component that protects the grading matrix route against users
+ * who cannot read grades for the course (i.e. students).
+ * Course ID is derived from url parameter.
+ */
+export function GradingProtected({ children }: { children: JSX.Element }): JSX.Element {
+  const params = useParams();
+  const cid = Number(params.courseId);
+  const { actions, isLoading } = useCourseActions({ courseId: cid });
+  const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
+
+  const canSeeGrading = canDisplay(actions || [], GRADING_ACCESS_ACTIONS);
+  const isGradingMatrixEnabled = featureFlags?.some((flag) => flag.feature_name === 'grading_matrix' && flag.active);
+
+  if (isLoading || isFeatureFlagsLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (!isGradingMatrixEnabled) {
+    return (
+      <Container>
+        <Empty description="This feature is currently disabled." />
+      </Container>
+    );
+  }
+
+  if (!canSeeGrading) {
     return (
       <Container>
         <Empty description="You are not authorized to view this page!" />

@@ -185,6 +185,24 @@ export function assertDateIsValid(date: string | undefined): asserts date is str
   }
 }
 
+// Assert marks is a finite number within the 0-100 range
+export function assertMarksIsValid(marks: number | undefined): asserts marks is number {
+  if (marks === undefined) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('marks'));
+  }
+  if (!Number.isFinite(marks) || marks < 0 || marks > 100) {
+    throw new BadRequestError('Please provide a valid marks! marks must be a number between 0 and 100.');
+  }
+}
+
+export function assertGradeStatusIsValid(
+  status: string | undefined,
+): asserts status is 'draft' | 'submitted' | 'published' {
+  if (!status || !['draft', 'submitted', 'published'].includes(status)) {
+    throw new BadRequestError('Please provide a valid grade status! status must be one of draft, submitted, published.');
+  }
+}
+
 export function assertMilestoneIdIsValid(milestoneId: string | undefined): asserts milestoneId is string {
   if (!milestoneId) {
     throw new BadRequestError(getFieldUndefinedErrorMessage('milestoneId'));

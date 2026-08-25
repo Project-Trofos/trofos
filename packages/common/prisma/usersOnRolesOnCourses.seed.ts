@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { PrismaClient } from '@prisma/client';
 import {
+  ADMIN_ROLE_ID,
   BACKLOG_USER_1_ID,
   BACKLOG_USER_2_ID,
   COURSE_1_ID,
@@ -11,6 +12,7 @@ import {
   STUDENT_ROLE_ID,
   USER_1_ID,
   USER_2_ID,
+  USER_3_ID,
 } from './constants';
 
 async function createUsersOnRolesOnCoursesTableSeed(prisma: PrismaClient) {
@@ -45,6 +47,11 @@ async function createUsersOnRolesOnCoursesTableSeed(prisma: PrismaClient) {
         user_id: USER_2_ID,
         role_id: FACULTY_ROLE_ID,
         course_id: SHADOW_COURSE_2_ID,
+      },
+      {
+        user_id: USER_3_ID,
+        role_id: ADMIN_ROLE_ID,
+        course_id: COURSE_1_ID,
       },
     ],
   });

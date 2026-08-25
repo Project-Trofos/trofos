@@ -133,3 +133,13 @@ export function confirmInviteNonExistingUserToProject(onOk: () => Promise<void>)
 export function confirmDeleteIssue(onOk: () => Promise<void>) {
   return confirm('Are you sure you want to delete this issue?', onOk);
 }
+
+/**
+ * Shows a modal with prompt for publishing all grades in a course.
+ */
+export function confirmPublishGrades(onOk: () => Promise<void>) {
+  return confirm(
+    'Are you sure you want to publish all marks for this course? This will make them visible to students.',
+    onOk,
+  );
+}

@@ -103,6 +103,22 @@ async function createActionsOnRolesTableSeed(prisma: PrismaClient) {
       (${FACULTY_ROLE_ID}, ${Action.send_invite}::"Action")
     ON CONFLICT (role_id, action) DO NOTHING;`;
   console.log('created update project users action %s', updateProjectUserRow);
+
+  // This is inserted in a migration (to cater for insert to prod db)
+  // Putting this here for understandability
+  // Also when seed is run on fresh db, this can ignore the conflict made
+  // in the migration.sql previously, so it is not included above
+  const gradingActionsRow = await prisma.$executeRaw`
+    INSERT INTO "ActionsOnRoles" (role_id, action)
+    VALUES
+      (${FACULTY_ROLE_ID}, ${Action.read_grade}::"Action"),
+      (${FACULTY_ROLE_ID}, ${Action.update_grade}::"Action"),
+      (${FACULTY_ROLE_ID}, ${Action.publish_grade}::"Action"),
+      (${ADMIN_ROLE_ID}, ${Action.read_grade}::"Action"),
+      (${ADMIN_ROLE_ID}, ${Action.update_grade}::"Action"),
+      (${ADMIN_ROLE_ID}, ${Action.publish_grade}::"Action")
+    ON CONFLICT (role_id, action) DO NOTHING;`;
+  console.log('created grading actions %s', gradingActionsRow);
 }
 
 export { createActionsOnRolesTableSeed };

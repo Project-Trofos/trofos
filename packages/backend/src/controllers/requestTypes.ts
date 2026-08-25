@@ -73,6 +73,13 @@ export type AnnouncementRequestBody = {
   announcementContent?: string;
 };
 
+export type GradingRequestBody = {
+  assignedTaId?: number | null;
+  marks?: number;
+  comments?: string;
+  status?: string;
+};
+
 export type ToggleFeatureFlagRequestBody = {
   featureName: String;
   active: boolean;
