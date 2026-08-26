@@ -37,8 +37,6 @@ const MANAGE_API_KEY_ACTIONS: UserPermissionActionsType[] = [
 ];
 
 const GRADING_ACCESS_ACTIONS: UserPermissionActionsType[] = [
-  // a pure global admin only ever carries the 'admin' action for a course
-  // (no per-course role row), so it must be included alongside read_grade
   UserPermissionActions.ADMIN,
   UserPermissionActions.READ_GRADE,
 ];

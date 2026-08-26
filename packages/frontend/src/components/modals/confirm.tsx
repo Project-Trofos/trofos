@@ -139,7 +139,7 @@ export function confirmDeleteIssue(onOk: () => Promise<void>) {
  */
 export function confirmPublishGrades(onOk: () => Promise<void>) {
   return confirm(
-    'Are you sure you want to publish all marks for this course? This will make them visible to students.',
+    'Are you sure you want to publish all marks for this course? This cannot be undone.',
     onOk,
   );
 }

@@ -11,10 +11,7 @@ type GradingUpdateFields = {
   status?: ProjectGradeStatus;
 };
 
-// A course admin/instructor is anyone who is a global admin, or holds the
-// update_course action for the course. Everyone else with course access
-// (i.e. a course FACULTY member) is treated as a TA, scoped to projects
-// they are explicitly assigned to via ProjectGrade.assigned_ta_id.
+// User with admin role or assigned pdate_course action for the course
 async function isCourseGradingAdmin(userSession: UserSession, courseId: number): Promise<boolean> {
   if (userSession.user_role_id === ADMIN_ROLE_ID) {
     return true;
@@ -24,9 +21,8 @@ async function isCourseGradingAdmin(userSession: UserSession, courseId: number):
   return userRoleForCourse.role.actions.some((roleAction) => roleAction.action === Action.update_course);
 }
 
-// Every project in the course needs a ProjectGrade row before it can show up
-// in the matrix. Projects created before this feature (or newly attached to
-// the course) won't have one yet, so lazily backfill on read.
+// Every project in the course needs a ProjectGrade row
+// Create manually for legacy data
 async function ensureGradeRowsExist(courseId: number): Promise<void> {
   const projects = await prisma.project.findMany({
     where: { course_id: courseId },
@@ -59,17 +55,12 @@ async function update(
     where: { project_id: projectId, project: { course_id: courseId } },
   });
 
-  // Once published, a grade is locked for everyone through this endpoint -
-  // there is no override, by TA or admin. Amending a published grade would
-  // require a separate unpublish action, which doesn't exist yet.
   if (grade.status === ProjectGradeStatus.published) {
     throw new NotAuthorizedError('This grade has been published and can no longer be edited!');
   }
 
   const isAssignedTa = grade.assigned_ta_id === userSession.user_id;
 
-  // Only hit the DB for admin status when it can actually change the outcome:
-  // an assigned TA editing their own fields never needs it.
   const needsAdminCheck = !isAssignedTa || data.assignedTaId !== undefined;
   const isAdmin = needsAdminCheck ? await isCourseGradingAdmin(userSession, courseId) : false;
 
@@ -78,11 +69,10 @@ async function update(
   }
 
   if (data.assignedTaId !== undefined && !isAdmin) {
-    throw new NotAuthorizedError('Only course admins/instructors can reassign the grader for a project!');
+    throw new NotAuthorizedError('Only course admins can reassign the grades for a project!');
   }
 
-  // Grades can only move draft <-> submitted here (grade.status is guaranteed
-  // not published at this point). published is only reachable via publishAll.
+  //publish with publishAll endpoint
   if (data.status === ProjectGradeStatus.published) {
     throw new BadRequestError(`Invalid status transition: ${grade.status} -> ${data.status}`);
   }
@@ -103,7 +93,7 @@ async function publishAll(courseId: number, userSession: UserSession): Promise<P
   const isAdmin = await isCourseGradingAdmin(userSession, courseId);
 
   if (!isAdmin) {
-    throw new NotAuthorizedError('Only course admins/instructors can publish grades!');
+    throw new NotAuthorizedError('Only course admins can publish grades!');
   }
 
   return prisma.projectGrade.updateMany({

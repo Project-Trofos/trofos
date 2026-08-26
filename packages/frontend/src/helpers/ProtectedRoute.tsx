@@ -37,7 +37,7 @@ export function CourseManagerProtected({ children }: { children: JSX.Element }):
 
 /**
  * A react component that protects the grading matrix route against users
- * who cannot read grades for the course (i.e. students).
+ * who cannot read grades for the course.
  * Course ID is derived from url parameter.
  */
 export function GradingProtected({ children }: { children: JSX.Element }): JSX.Element {
