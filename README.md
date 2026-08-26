@@ -62,4 +62,4 @@ AI_DATABASE_URL="postgresql://admin:admin@postgres:5432/pgvector?schema=public"
 
 At project root:
 
-3. `docker compose -f .\docker-compose-production.yml --env-file ./.env.docker up`
+3. `docker compose -f ./docker-compose-production.yml --env-file ./.env.docker up`

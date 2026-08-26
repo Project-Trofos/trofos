@@ -49,6 +49,7 @@ services:
       - AI_DATABASE_URL=${E2E_AI_DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=${E2E_REDIS_URL}
+      - SSO_ENABLED=${SSO_ENABLED}
     links:
       - postgres
     networks:
