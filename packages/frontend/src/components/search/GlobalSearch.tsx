@@ -25,7 +25,7 @@ export default function GlobalSearch(): JSX.Element {
   });
 
   const courseOptions = useMemo(() => {
-    if (!courses || searchString.length === 0) {
+    if (!courses) {
       return undefined;
     }
 
@@ -44,7 +44,7 @@ export default function GlobalSearch(): JSX.Element {
 
   // Filter projects by search string
   const projectOptions = useMemo(() => {
-    if (!projects || searchString.length === 0) {
+    if (!projects) {
       return undefined;
     }
     const filteredProjects = projects.data
