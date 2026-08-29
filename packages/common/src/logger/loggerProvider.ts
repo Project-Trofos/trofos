@@ -3,15 +3,7 @@ import defaultConfig from './config';
 import { ENVIRONMENTS } from './constants';
 
 class LoggerProvider {
-  private static instance: LoggerProvider | null = null;
   private logger: Logger | null = null;
-
-  constructor() {
-    if (LoggerProvider.instance) {
-      return LoggerProvider.instance;
-    }
-    LoggerProvider.instance = this;
-  }
 
   initialize(options: LoggerOptions = {}): Logger {
     const env = (process.env.NODE_ENV || ENVIRONMENTS.DEVELOPMENT) as keyof typeof defaultConfig;
@@ -23,15 +15,15 @@ class LoggerProvider {
         ...options,
       });
 
-      // Log initialization success
       this.logger.info('Logger initialized successfully');
     } catch (error: unknown) {
-      // Fallback to basic configuration if there's an error
       console.error('Error initializing logger:', error);
+
       this.logger = pino({
         level: 'info',
         timestamp: true,
       });
+      this.logger.info('Logger initialized using fallback basic configuration');
     }
 
     return this.logger!;
