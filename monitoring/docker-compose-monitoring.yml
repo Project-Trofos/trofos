@@ -98,6 +98,13 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=trofosmonitoring@gmail.com
+      - GF_SMTP_PASSWORD=ykfjqyzjksgbpguq
+      - GF_SMTP_FROM_ADDRESS=trofosmonitoring@gmail.com
+      - GF_SMTP_FROM_NAME=TROFOS Grafana Alert
+      - GF_ALERT_EMAILS=${GF_ALERT_EMAILS}
       - GF_TELEGRAM_BOT_TOKEN=${GF_TELEGRAM_BOT_TOKEN}
       - GF_TELEGRAM_CHAT_ID=${GF_TELEGRAM_CHAT_ID}
     ports:

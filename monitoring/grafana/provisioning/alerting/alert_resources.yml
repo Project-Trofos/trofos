@@ -1,6 +1,17 @@
 apiVersion: 1
 contactPoints:
     - orgId: 1
+      name: default_email
+      receivers:
+        - uid: ffx9m0za8bxtsc
+          type: email
+          settings:
+            addresses: $GF_ALERT_EMAILS
+            message: '{{ template "Generic alert template" . }}'
+            subject: '{{ template "default.title" . }}'
+            singleEmail: true
+          disableResolveMessage: true
+    - orgId: 1
       name: telegram_bot_backend_restart
       receivers:
         - uid: de10c7jprtla9c
@@ -27,7 +38,6 @@ contactPoints:
             message: '{{ template "Generic alert template" . }}'
             protect_content: false
           disableResolveMessage: false
-
     - orgId: 1
       name: telegram_bot_vm_metrics
       receivers:
@@ -42,7 +52,6 @@ contactPoints:
             message: '{{ template "Generic alert template" . }}'
             protect_content: false
           disableResolveMessage: false
-
 
 templates:
     - orgId: 1
@@ -61,6 +70,9 @@ policies:
         - grafana_folder
         - alertname
       routes:
+        - receiver: default_email
+          continue: true
+
         - receiver: telegram_bot_backend_restart
           object_matchers:
             - - policy
