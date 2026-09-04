@@ -389,8 +389,7 @@ async function addUser(projectId: number, userEmail: string): Promise<UsersOnPro
   });
 }
 
-// Special addUser method that avoids shadow_course check
-// This is to be called after invite has added user to course
+// Add an invited user to the course and project in one idempotent transaction.
 async function addUserByInvite(projectId: number, userEmail: string): Promise<UsersOnProjects> {
   return prisma.$transaction<UsersOnProjects>(async (tx: Prisma.TransactionClient) => {
     const userInfo = await tx.user.findUniqueOrThrow({
@@ -403,33 +402,51 @@ async function addUserByInvite(projectId: number, userEmail: string): Promise<Us
       where: {
         id: projectId,
       },
-      include: {
-        course: true,
-      },
     });
 
-    // A user can only be added if they are already part of the parent course
-    await tx.usersOnRolesOnCourses.findUniqueOrThrow({
+    // Create course membership only when it does not already exist.
+    await tx.usersOnRolesOnCourses.upsert({
       where: {
         user_id_course_id: {
+          user_id: userInfo.user_id,
           course_id: projectInfo.course_id,
+        },
+      },
+      create: {
+        course_id: projectInfo.course_id,
+        user_id: userInfo.user_id,
+        role_id: STUDENT_ROLE_ID,
+      },
+      update: {},
+    });
+
+    // Create project membership only when it does not already exist.
+    const userOnProjects = await tx.usersOnProjects.upsert({
+      where: {
+        project_id_user_id: {
+          project_id: projectId,
           user_id: userInfo.user_id,
         },
       },
-    });
-
-    const userOnProjects = await tx.usersOnProjects.create({
-      data: {
+      create: {
         project_id: projectId,
         user_id: userInfo.user_id,
       },
+      update: {},
     });
 
-    await tx.usersOnProjectOnSettings.create({
-      data: {
+    await tx.usersOnProjectOnSettings.upsert({
+      where: {
+        project_id_user_id: {
+          project_id: projectId,
+          user_id: userInfo.user_id,
+        },
+      },
+      create: {
         project_id: projectId,
         user_id: userInfo.user_id,
       },
+      update: {},
     });
 
     return userOnProjects;

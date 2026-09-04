@@ -1,55 +1,60 @@
-import ses from '../aws/ses';
+import { randomUUID } from 'crypto';
 import express from 'express';
 import { Invite } from '@prisma/client';
-import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
 import { StatusCodes } from 'http-status-codes';
+import { BadRequestError, getDefaultErrorRes } from '../helpers/error';
+import ses from '../aws/ses';
 import invite from '../services/invite.service';
-import user from '../services/user.service';
 import project from '../services/project.service';
-import course from '../services/course.service';
-import { assertProjectIdIsValid, assertTokenIsValid, assertEmailIsValid } from '../helpers/error/assertions';
-import { randomUUID } from 'crypto';
+import { assertEmailIsValid, assertProjectIdIsValid, assertTokenIsValid } from '../helpers/error/assertions';
 
-async function createToken(projectId: number, email: string) {
-  const res = await invite.getInvite(projectId, email);
+function generateToken() {
+  return randomUUID();
+}
 
-  const token = generateToken();
+function isExpired(inviteDate: Date) {
+  const now = new Date(Date.now());
+  return now > inviteDate;
+}
 
-  if (res == null) {
-    return await invite.createInvite(projectId, email, token);
-  } else {
-    return await invite.updateInvite(projectId, email, token);
+function assertInviteIsValid(inviteObj: Invite | null): asserts inviteObj is Invite {
+  if (!inviteObj || isExpired(inviteObj.expiry_date)) {
+    throw new BadRequestError('Invalid invite');
   }
 }
 
-async function sendInvite(req: express.Request, res: express.Response) {
+async function createToken(projectId: number) {
+  const existingInvite = await invite.getInviteByProjectId(projectId);
+
+  if (existingInvite && !isExpired(existingInvite.expiry_date)) {
+    return existingInvite;
+  }
+
+  const token = generateToken();
+  return existingInvite ? invite.updateInvite(projectId, token) : invite.createInvite(projectId, token);
+}
+
+async function createOrGetInviteLink(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
-    const { destEmail } = req.body;
+    const { destEmail } = req.body ?? {};
     assertProjectIdIsValid(projectId);
-    assertEmailIsValid(destEmail);
 
-    if (!ses.isESPEnabled()) {
-      throw new BadRequestError('Email service not enabled');
+    if (destEmail !== undefined) {
+      assertEmailIsValid(destEmail);
+      if (!ses.isESPEnabled()) {
+        throw new BadRequestError('Email service not enabled');
+      }
     }
 
-    const token = await createToken(Number(projectId), destEmail);
+    const result = await createToken(Number(projectId));
 
-    const projectName = (await project.getById(Number(projectId))).pname;
-
-    try {
-      await ses.sendInviteEmail(destEmail, projectName, token.unique_token);
-    } catch (error) {
-      // Delete token if email sending fails
-      await invite.deleteInvite(Number(projectId), destEmail);
-      return getDefaultErrorRes(error, res);
+    if (destEmail !== undefined) {
+      const projectName = (await project.getById(Number(projectId))).pname;
+      await ses.sendInviteEmail(destEmail, projectName, result.unique_token);
     }
 
-    if (token) {
-      token.unique_token = '';
-    }
-
-    return res.status(StatusCodes.OK).json(token);
+    return res.status(StatusCodes.OK).json(result);
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -61,21 +66,13 @@ async function processInvite(req: express.Request, res: express.Response) {
     assertTokenIsValid(token);
 
     const inviteRes = await invite.getInviteByToken(token);
-    await checkIfExpired(inviteRes);
+    assertInviteIsValid(inviteRes);
 
-    const projectRes = await project.getById(inviteRes.project_id);
+    const userEmail = res.locals.userSession.user_email;
 
-    // Check if user is already in associated course
-    const courseUsers = await course.getUsers(projectRes.course_id);
-    const userRes = await user.getByEmail(inviteRes.email);
+    await project.addUserByInvite(inviteRes.project_id, userEmail);
 
-    if (!courseUsers.some((user) => user.user_id == userRes.user_id)) {
-      await course.addUser(projectRes.course_id, inviteRes.email);
-    }
-    await project.addUserByInvite(inviteRes.project_id, inviteRes.email);
-
-    const result = await invite.deleteInvite(inviteRes.project_id, inviteRes.email);
-    return res.status(StatusCodes.OK).json(result);
+    return res.status(StatusCodes.OK).json({ projectId: inviteRes.project_id });
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -87,8 +84,14 @@ async function getInfoFromInvite(req: express.Request, res: express.Response) {
     assertTokenIsValid(token);
 
     const inviteRes = await invite.getInviteByToken(token);
-    const userRes = await user.findByEmail(inviteRes.email);
-    return res.status(StatusCodes.OK).json({ exists: userRes != null, email: inviteRes.email });
+    assertInviteIsValid(inviteRes);
+    const projectRes = await project.getById(inviteRes.project_id);
+
+    return res.status(StatusCodes.OK).json({
+      projectId: inviteRes.project_id,
+      projectName: projectRes.pname,
+      expiresAt: inviteRes.expiry_date,
+    });
   } catch (error) {
     return getDefaultErrorRes(error, res);
   }
@@ -106,23 +109,8 @@ async function getInfoFromProjectId(req: express.Request, res: express.Response)
   }
 }
 
-function generateToken() {
-  return randomUUID();
-}
-
-async function checkIfExpired(inviteObj: Invite) {
-  if (isExpired(inviteObj.expiry_date)) {
-    throw new BadRequestError('Invalid invite');
-  }
-}
-
-function isExpired(inviteDate: Date) {
-  const now = new Date(Date.now());
-  return now > inviteDate;
-}
-
 export default {
-  sendInvite,
+  createOrGetInviteLink,
   processInvite,
   getInfoFromInvite,
   getInfoFromProjectId,

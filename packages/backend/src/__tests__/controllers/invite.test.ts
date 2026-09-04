@@ -1,11 +1,10 @@
 import { createRequest, createResponse } from 'node-mocks-http';
+import { UsersOnProjects } from '@prisma/client';
+import StatusCodes from 'http-status-codes';
+import ses from '../../aws/ses';
 import invite from '../../services/invite.service';
 import project from '../../services/project.service';
-import course from '../../services/course.service';
-import user from '../../services/user.service';
 import inviteController from '../../controllers/invite';
-import { UsersOnRolesOnCourses, UsersOnProjects } from '@prisma/client';
-import { STUDENT_ROLE_ID } from '../../helpers/constants';
 import {
   expiredInviteData,
   mockInviteInfoFromProjId,
@@ -14,24 +13,14 @@ import {
   validInviteProject,
   validUser,
 } from '../mocks/inviteData';
-import ses from '../../aws/ses';
-import StatusCodes from 'http-status-codes';
 
 const spies = {
-  getInvite: jest.spyOn(invite, 'getInvite'),
   getInviteByToken: jest.spyOn(invite, 'getInviteByToken'),
   getInviteByProjectId: jest.spyOn(invite, 'getInviteByProjectId'),
   createInvite: jest.spyOn(invite, 'createInvite'),
   updateInvite: jest.spyOn(invite, 'updateInvite'),
-  deleteInvite: jest.spyOn(invite, 'deleteInvite'),
-
   getById: jest.spyOn(project, 'getById'),
-  addUserToProj: jest.spyOn(project, 'addUserByInvite'),
-  addUserToCourse: jest.spyOn(course, 'addUser'),
-  getCourseUsers: jest.spyOn(course, 'getUsers'),
-  getByEmail: jest.spyOn(user, 'getByEmail'),
-  findByEmail: jest.spyOn(user, 'findByEmail'),
-
+  addUserToProject: jest.spyOn(project, 'addUserByInvite'),
   isESPEnabled: jest.spyOn(ses, 'isESPEnabled'),
   sendInviteEmail: jest.spyOn(ses, 'sendInviteEmail'),
 };
@@ -41,199 +30,177 @@ describe('invite controller tests', () => {
     jest.clearAllMocks();
   });
 
-  const senderData = {
-    senderName: 'senderMock',
-    senderEmail: 'mockSender@test.com',
+  const usersProjectData: UsersOnProjects = {
+    project_id: 1,
+    user_id: 1,
+    created_at: new Date(Date.now()),
   };
 
-  // Mock data for users on courses
-  const usersCourseData: UsersOnRolesOnCourses = { id: 1, course_id: 1, user_id: 1, role_id: STUDENT_ROLE_ID };
-
-  // Mock data for users on projects
-  const usersProjectData: UsersOnProjects = { project_id: 1, user_id: 1, created_at: new Date(Date.now()) };
-
-  describe('sendInvite', () => {
-    it('should create invite', async () => {
-      spies.getInvite.mockResolvedValue(null);
-      spies.getById.mockResolvedValue(validInviteProject);
+  describe('createOrGetInviteLink', () => {
+    it('creates an invite link when none exists', async () => {
+      spies.getInviteByProjectId.mockResolvedValue(null);
       spies.createInvite.mockResolvedValue(validInviteData);
+      const req = createRequest({ params: { projectId: validInviteData.project_id } });
+      const res = createResponse();
 
-      // Pretend send email
-      spies.isESPEnabled.mockReturnValue('key');
-      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
+      await inviteController.createOrGetInviteLink(req, res);
 
-      const mockReq = createRequest({
-        params: {
-          projectId: validInviteData.project_id,
-        },
-        body: {
-          senderName: senderData.senderName,
-          senderEmail: senderData.senderEmail,
-          destEmail: validInviteData.email,
-        },
-      });
-      const mockRes = createResponse();
-
-      await inviteController.sendInvite(mockReq, mockRes);
-
-      expect(spies.createInvite).toHaveBeenCalled();
+      expect(spies.createInvite).toHaveBeenCalledWith(validInviteData.project_id, expect.any(String));
       expect(spies.updateInvite).not.toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(validInviteData));
+      expect(spies.sendInviteEmail).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(JSON.stringify(validInviteData));
     });
 
-    it('should update invite', async () => {
-      spies.getInvite.mockResolvedValue(expiredInviteData);
+    it('emails the reusable project link when a destination email is supplied', async () => {
+      spies.getInviteByProjectId.mockResolvedValue(null);
+      spies.createInvite.mockResolvedValue(validInviteData);
       spies.getById.mockResolvedValue(validInviteProject);
-      spies.updateInvite.mockResolvedValue(updatedInviteData);
-
-      // Pretend send email
-      spies.isESPEnabled.mockReturnValue('key');
-      spies.sendInviteEmail.mockImplementation(async (email, pname, token) => {});
-
-      const mockReq = createRequest({
-        params: {
-          projectId: validInviteData.project_id,
-        },
-        body: {
-          senderName: senderData.senderName,
-          senderEmail: senderData.senderEmail,
-          destEmail: validInviteData.email,
-        },
+      spies.isESPEnabled.mockReturnValueOnce('email-key');
+      spies.sendInviteEmail.mockResolvedValueOnce();
+      const destEmail = validUser.user_email;
+      const req = createRequest({
+        params: { projectId: validInviteData.project_id },
+        body: { destEmail },
       });
-      const mockRes = createResponse();
+      const res = createResponse();
 
-      await inviteController.sendInvite(mockReq, mockRes);
+      await inviteController.createOrGetInviteLink(req, res);
 
-      expect(spies.updateInvite).toHaveBeenCalled();
+      expect(spies.sendInviteEmail).toHaveBeenCalledWith(
+        destEmail,
+        validInviteProject.pname,
+        validInviteData.unique_token,
+      );
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(JSON.stringify(validInviteData));
+    });
+
+    it('rejects legacy email delivery when the email service is disabled', async () => {
+      spies.isESPEnabled.mockReturnValueOnce(false);
+      const req = createRequest({
+        params: { projectId: validInviteData.project_id },
+        body: { destEmail: validUser.user_email },
+      });
+      const res = createResponse();
+
+      await inviteController.createOrGetInviteLink(req, res);
+
       expect(spies.createInvite).not.toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(updatedInviteData));
+      expect(spies.sendInviteEmail).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(res._getData()).toEqual(JSON.stringify({ error: 'Email service not enabled' }));
+    });
 
-      // New token generated
-      expect(mockRes._getData().unique_token).not.toEqual(expiredInviteData.unique_token);
+    it('reuses an unexpired invite link', async () => {
+      spies.getInviteByProjectId.mockResolvedValue(validInviteData);
+      const req = createRequest({ params: { projectId: validInviteData.project_id } });
+      const res = createResponse();
+
+      await inviteController.createOrGetInviteLink(req, res);
+
+      expect(spies.createInvite).not.toHaveBeenCalled();
+      expect(spies.updateInvite).not.toHaveBeenCalled();
+      expect(res._getData()).toEqual(JSON.stringify(validInviteData));
+    });
+
+    it('replaces an expired invite link', async () => {
+      spies.getInviteByProjectId.mockResolvedValue(expiredInviteData);
+      spies.updateInvite.mockResolvedValue(updatedInviteData);
+      const req = createRequest({ params: { projectId: expiredInviteData.project_id } });
+      const res = createResponse();
+
+      await inviteController.createOrGetInviteLink(req, res);
+
+      expect(spies.updateInvite).toHaveBeenCalledWith(expiredInviteData.project_id, expect.any(String));
+      expect(spies.createInvite).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(JSON.stringify(updatedInviteData));
     });
   });
 
   describe('processInvite', () => {
-    it('should add user to course and project', async () => {
+    it('delegates atomic membership creation to the project service', async () => {
       spies.getInviteByToken.mockResolvedValue(validInviteData);
-      spies.getById.mockResolvedValue(validInviteProject);
-      spies.getCourseUsers.mockResolvedValue(Array.of());
-      spies.getByEmail.mockResolvedValue(validUser);
-      spies.addUserToCourse.mockResolvedValue(usersCourseData);
-      spies.addUserToProj.mockResolvedValue(usersProjectData);
-      spies.deleteInvite.mockResolvedValue(validInviteData);
+      spies.addUserToProject.mockResolvedValue(usersProjectData);
+      const req = createRequest({ params: { token: validInviteData.unique_token } });
+      const res = createResponse();
+      res.locals.userSession = { user_email: validUser.user_email };
 
-      const mockReq = createRequest({
-        params: {
-          token: validInviteData.unique_token,
-        },
-      });
-      const mockRes = createResponse();
+      await inviteController.processInvite(req, res);
 
-      await inviteController.processInvite(mockReq, mockRes);
-
-      expect(spies.addUserToCourse).toHaveBeenCalled();
-      expect(spies.addUserToProj).toHaveBeenCalled();
-      expect(spies.deleteInvite).toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(validInviteData));
+      expect(spies.addUserToProject).toHaveBeenCalledWith(validInviteData.project_id, validUser.user_email);
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(JSON.stringify({ projectId: validInviteData.project_id }));
     });
 
-    it('should reject expired invite', async () => {
+    it('rejects an expired invite link', async () => {
       spies.getInviteByToken.mockResolvedValue(expiredInviteData);
+      const req = createRequest({ params: { token: expiredInviteData.unique_token } });
+      const res = createResponse();
 
-      // Mock delete invite
-      const mockReq = createRequest({
-        params: {
-          token: expiredInviteData.unique_token,
-        },
-      });
-      const mockRes = createResponse();
+      await inviteController.processInvite(req, res);
 
-      await inviteController.processInvite(mockReq, mockRes);
-
-      expect(spies.addUserToCourse).not.toHaveBeenCalled();
-      expect(spies.addUserToProj).not.toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(spies.addUserToProject).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should return error if no token provided', async () => {
-      const mockReq = createRequest({
-        params: {},
-      });
-      const mockRes = createResponse();
+    it('rejects an unknown invite link with a bad request response', async () => {
+      spies.getInviteByToken.mockResolvedValue(null);
+      const req = createRequest({ params: { token: 'unknown-token' } });
+      const res = createResponse();
 
-      await inviteController.processInvite(mockReq, mockRes);
+      await inviteController.processInvite(req, res);
 
-      expect(spies.addUserToCourse).not.toHaveBeenCalled();
-      expect(spies.addUserToProj).not.toHaveBeenCalled();
-      expect(spies.deleteInvite).not.toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(spies.addUserToProject).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(res._getData()).toEqual(JSON.stringify({ error: 'Invalid invite' }));
     });
   });
 
   describe('getInfoFromInvite', () => {
-    it('should return existing info', async () => {
+    it('returns project information for a valid invite link', async () => {
       spies.getInviteByToken.mockResolvedValue(validInviteData);
-      spies.findByEmail.mockResolvedValue(validUser);
-      const mockReq = createRequest({
-        params: {
-          token: validInviteData.unique_token,
-        },
-      });
-      const mockRes = createResponse();
+      spies.getById.mockResolvedValue(validInviteProject);
+      const req = createRequest({ params: { token: validInviteData.unique_token } });
+      const res = createResponse();
 
-      await inviteController.getInfoFromInvite(mockReq, mockRes);
+      await inviteController.getInfoFromInvite(req, res);
 
-      const expected = {
-        exists: true,
-        email: validInviteData.email,
-      };
-
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(expected));
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(
+        JSON.stringify({
+          projectId: validInviteData.project_id,
+          projectName: validInviteProject.pname,
+          expiresAt: validInviteData.expiry_date,
+        }),
+      );
     });
 
-    it('should return non existing info', async () => {
-      spies.getInviteByToken.mockResolvedValue(validInviteData);
-      spies.findByEmail.mockResolvedValue(null);
-      const mockReq = createRequest({
-        params: {
-          token: validInviteData.unique_token,
-        },
-      });
-      const mockRes = createResponse();
+    it('rejects an unknown invite link with a bad request response', async () => {
+      spies.getInviteByToken.mockResolvedValue(null);
+      const req = createRequest({ params: { token: 'unknown-token' } });
+      const res = createResponse();
 
-      await inviteController.getInfoFromInvite(mockReq, mockRes);
+      await inviteController.getInfoFromInvite(req, res);
 
-      const expected = {
-        exists: false,
-        email: validInviteData.email,
-      };
-
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(expected));
+      expect(spies.getById).not.toHaveBeenCalled();
+      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(res._getData()).toEqual(JSON.stringify({ error: 'Invalid invite' }));
     });
   });
 
   describe('getInfoFromProjectId', () => {
-    it('should return all invites of a project', async () => {
+    it('returns the project invite link', async () => {
       spies.getInviteByProjectId.mockResolvedValue(mockInviteInfoFromProjId);
+      const req = createRequest({ params: { projectId: mockInviteInfoFromProjId.project_id } });
+      const res = createResponse();
 
-      const mockReq = createRequest({
-        params: {
-          projectId: mockInviteInfoFromProjId[0].project_id,
-        },
-      });
-      const mockRes = createResponse();
+      await inviteController.getInfoFromProjectId(req, res);
 
-      await inviteController.getInfoFromProjectId(mockReq, mockRes);
-
-      expect(spies.getInviteByProjectId).toHaveBeenCalled();
-      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
-      expect(mockRes._getData()).toEqual(JSON.stringify(mockInviteInfoFromProjId));
+      expect(spies.getInviteByProjectId).toHaveBeenCalledWith(mockInviteInfoFromProjId.project_id);
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(JSON.stringify(mockInviteInfoFromProjId));
     });
   });
 });

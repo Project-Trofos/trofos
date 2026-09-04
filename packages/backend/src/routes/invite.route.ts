@@ -1,21 +1,28 @@
 import express from 'express';
-import { hasAuthForProject } from '../middleware/auth.middleware';
-import { Action } from '@prisma/client';
-import projectPolicy from '../policies/project.policy';
+import { Feature } from '@prisma/client';
+import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import invite from '../controllers/invite';
+import projectOwnerPolicy from '../policies/projectOwner.policy';
 
 const router = express.Router();
 
-// Send project invitation to destination email
-router.post(`/project/:projectId`, hasAuthForProject(Action.send_invite, projectPolicy.POLICY_NAME), invite.sendInvite);
+// Create or retrieve a reusable project invitation link
+router.post(
+  `/project/:projectId`,
+  checkFeatureFlag(Feature.project_invite_links),
+  hasAuthForProject(null, projectOwnerPolicy.POLICY_NAME),
+  invite.createOrGetInviteLink,
+);
 
 router.get(
   `/project/:projectId`,
-  hasAuthForProject(Action.send_invite, projectPolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.project_invite_links),
+  hasAuthForProject(null, projectOwnerPolicy.POLICY_NAME),
   invite.getInfoFromProjectId,
 );
 
-router.post(`/:token`, invite.processInvite);
-router.get(`/:token`, invite.getInfoFromInvite);
+router.post(`/:token`, checkFeatureFlag(Feature.project_invite_links), hasAuth(null, null), invite.processInvite);
+router.get(`/:token`, checkFeatureFlag(Feature.project_invite_links), invite.getInfoFromInvite);
 
 export default router;
