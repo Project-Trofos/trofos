@@ -1,28 +1,37 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { message } from 'antd';
-import { useGetInfoFromInviteMutation, useProcessProjectInvitationMutation } from '../api/invite';
+import { message, Result } from 'antd';
+import { useLazyGetInfoFromInviteQuery, useProcessProjectInvitationMutation } from '../api/invite';
 import { getErrorMessage } from '../helpers/error';
 
 export default function InvitePage() {
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [processInvite] = useProcessProjectInvitationMutation();
-  const [getInfoFromToken] = useGetInfoFromInviteMutation();
+  const [getInfoFromToken] = useLazyGetInfoFromInviteQuery();
   const isFirstRender = useRef(true);
+  const [projectName, setProjectName] = useState<string>();
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleInvite = useCallback(
     async (token: string) => {
       try {
-        await processInvite(token).unwrap();
-        message.success('Invited');
-      } catch (err) {
-        throw err;
-      } finally {
-        navigate('/');
+        const result = await processInvite(token).unwrap();
+        message.success('You have joined the project');
+        navigate(`/project/${result.projectId}`);
+      } catch (error) {
+        const apiError = error as { status?: number };
+        if (apiError.status === 401) {
+          const returnPath = `/join?token=${encodeURIComponent(token)}`;
+          navigate(`/login?redirect=${encodeURIComponent(returnPath)}`);
+          message.info('Sign in to accept this invitation.');
+          return;
+        }
+
+        throw error;
       }
     },
-    [processInvite],
+    [navigate, processInvite],
   );
 
   const processToken = useCallback(async () => {
@@ -31,30 +40,31 @@ export default function InvitePage() {
     }
 
     const token = searchParams.get('token')!;
-    const user = await getInfoFromToken(token).unwrap();
-
-    // Email is already registered
-    if (user.exists) {
-      await handleInvite(token);
-      return;
-    }
-
-    navigate('/login');
-    message.error('Register or login using SSO first, then try again.');
-  }, [searchParams, handleInvite]);
+    const inviteMetadata = await getInfoFromToken(token).unwrap();
+    setProjectName(inviteMetadata.projectName);
+    await handleInvite(token);
+  }, [getInfoFromToken, handleInvite, searchParams]);
 
   useEffect(() => {
     // Process token once only
     if (isFirstRender.current) {
       isFirstRender.current = false;
 
-      processToken().catch((err) => message.error(getErrorMessage(err)));
+      processToken().catch((err) => {
+        const error = getErrorMessage(err);
+        setErrorMessage(error);
+        message.error(error);
+      });
     }
   }, [searchParams, processToken]);
 
-  return (
-    <main style={{ padding: '1rem' }}>
-      <p>processing invite...</p>
-    </main>
+  return errorMessage ? (
+    <Result status="error" title="Unable to join project" subTitle={errorMessage} />
+  ) : (
+    <Result
+      status="info"
+      title={projectName ? `Joining ${projectName}` : 'Processing invitation'}
+      subTitle="Please wait while we validate your project invitation."
+    />
   );
 }

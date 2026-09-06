@@ -381,8 +381,18 @@ export type OAuth2Payload = {
 
 export type Invite = {
   project_id: number;
-  email: string;
-  expiry_date: Date;
+  unique_token: string;
+  expiry_date: string;
+};
+
+export type InviteMetadata = {
+  projectId: number;
+  projectName: string;
+  expiresAt: string;
+};
+
+export type ProcessInviteResponse = {
+  projectId: number;
 };
 
 export type UserApiKey = {

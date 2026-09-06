@@ -3,7 +3,7 @@ import { Feature } from '@prisma/client';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
 import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import invite from '../controllers/invite';
-import projectOwnerPolicy from '../policies/projectOwner.policy';
+import projectPolicy from '../policies/project.policy';
 
 const router = express.Router();
 
@@ -11,14 +11,14 @@ const router = express.Router();
 router.post(
   `/project/:projectId`,
   checkFeatureFlag(Feature.project_invite_links),
-  hasAuthForProject(null, projectOwnerPolicy.POLICY_NAME),
+  hasAuthForProject(null, projectPolicy.POLICY_NAME),
   invite.createOrGetInviteLink,
 );
 
 router.get(
   `/project/:projectId`,
   checkFeatureFlag(Feature.project_invite_links),
-  hasAuthForProject(null, projectOwnerPolicy.POLICY_NAME),
+  hasAuthForProject(null, projectPolicy.POLICY_NAME),
   invite.getInfoFromProjectId,
 );
 

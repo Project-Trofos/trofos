@@ -4,12 +4,15 @@ import { Heading } from '../components/typography';
 import { RegisterUser } from '../api/types';
 import { useRegisterMutation } from '../api/auth';
 import { FormProps } from 'antd/lib';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const Register = () => {
   const [registerUser] = useRegisterMutation();
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect');
+  const loginPath = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
   const onFinish = async (user: RegisterUser) => {
     try {
       messageApi.open({ key: 'key', type: 'loading', content: 'Registering...' });
@@ -17,7 +20,7 @@ const Register = () => {
       messageApi.info({ key: 'key', type: 'success', content: 'Successfully registered! Returning to login screen.' });
 
       setTimeout(() => {
-        navigate('/login');
+        navigate(loginPath);
       }, 1000);
     } catch (err: any) {
       messageApi.open({ key: 'key', type: 'error', content: err.data.error });

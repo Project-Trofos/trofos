@@ -20,7 +20,9 @@ export default function Callback(): JSX.Element {
       };
       try {
         await OAuth2Login(payload).unwrap();
-        return navigate('/');
+        const redirect = sessionStorage.getItem('postLoginRedirect');
+        sessionStorage.removeItem('postLoginRedirect');
+        return navigate(redirect || '/');
       } catch (err) {
         console.error(err);
       }

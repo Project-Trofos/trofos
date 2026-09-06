@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button, Col, Form, FormProps, Input, Layout, message, Row, Space, Typography } from 'antd';
 import './Login.css';
 import Title from 'antd/es/typography/Title';
@@ -13,11 +13,21 @@ export default function LoginPage(): JSX.Element {
   const { data: featureFlags, isLoading: isFeatureFlagsLoading } = useGetFeatureFlagsQuery();
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect');
+  const redirectPath = redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : '/projects';
+
+  useEffect(() => {
+    if (redirectPath !== '/projects') {
+      sessionStorage.setItem('postLoginRedirect', redirectPath);
+    }
+  }, [redirectPath]);
 
   const onFinish = async (userLoginInfo: UserLoginInfo) => {
     try {
       await loginUser(userLoginInfo).unwrap();
-      navigate('/projects');
+      sessionStorage.removeItem('postLoginRedirect');
+      navigate(redirectPath);
     } catch (err: any) {
       message.error(err.data);
     }
@@ -64,7 +74,13 @@ export default function LoginPage(): JSX.Element {
                   </Button>
                 </Col>
                 <Col span={12}>
-                  <Link to="/register">
+                  <Link
+                    to={
+                      redirectPath === '/projects'
+                        ? '/register'
+                        : `/register?redirect=${encodeURIComponent(redirectPath)}`
+                    }
+                  >
                     <Button type="default" style={{ width: '100%' }}>
                       Register
                     </Button>

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  CheckSquareOutlined,
-  BugOutlined,
-  WalletOutlined,
-} from '@ant-design/icons';
+import { CheckSquareOutlined, BugOutlined, WalletOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
 
 /* eslint-disable import/prefer-default-export */
@@ -17,7 +13,6 @@ const UserPermissionActions = {
   UPDATE_PROJECT_USERS: 'update_project_users',
   ADMIN: 'admin',
   READ_API_KEY: 'read_api_key',
-  SEND_INVITE: 'send_invite',
 } as const;
 
 type UserPermissionActionsType = (typeof UserPermissionActions)[keyof typeof UserPermissionActions];
@@ -50,7 +45,7 @@ const BACKLOG_TYPE_OPTIONS = [
         Story
       </Space>
     ),
-    icon: <WalletOutlined />
+    icon: <WalletOutlined />,
   },
   {
     value: 'task',
@@ -60,8 +55,9 @@ const BACKLOG_TYPE_OPTIONS = [
         Task
       </Space>
     ),
-    icon: <CheckSquareOutlined /> },
-  { 
+    icon: <CheckSquareOutlined />,
+  },
+  {
     value: 'bug',
     label: (
       <Space>
@@ -69,7 +65,8 @@ const BACKLOG_TYPE_OPTIONS = [
         Bug
       </Space>
     ),
-    icon: <BugOutlined /> },
+    icon: <BugOutlined />,
+  },
 ];
 
 export {

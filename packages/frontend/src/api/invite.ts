@@ -1,37 +1,34 @@
 import trofosApiSlice from '.';
-import { Invite } from './types';
+import { Invite, InviteMetadata, ProcessInviteResponse } from './types';
 
 // Invite management APIs
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    sendProjectInvitation: builder.mutation<void, { projectId: number; destEmail: string }>({
+    createOrGetProjectInviteLink: builder.mutation<Invite, { projectId: number; destEmail?: string }>({
       query: ({ projectId, destEmail }) => ({
         url: `invite/project/${projectId}`,
         method: 'POST',
-        body: {
-          destEmail,
-        },
+        body: destEmail === undefined ? undefined : { destEmail },
         credentials: 'include',
       }),
       invalidatesTags: ['Invite'],
     }),
-    getInfoFromProjectId: builder.query<Invite[], number>({
+    getProjectInviteLink: builder.query<Invite | null, number>({
       query: (projectId: number) => ({
         url: `invite/project/${projectId}`,
         method: 'GET',
         credentials: 'include',
       }),
-      providesTags: (result, error, arg) =>
-        result ? [...result.map(({ email }) => ({ type: 'Invite' as const, email })), 'Invite'] : ['Invite'],
+      providesTags: ['Invite'],
     }),
-    processProjectInvitation: builder.mutation<void, string>({
+    processProjectInvitation: builder.mutation<ProcessInviteResponse, string>({
       query: (token) => ({
         url: `invite/${token}`,
         method: 'POST',
         credentials: 'include',
       }),
     }),
-    getInfoFromInvite: builder.mutation<{ exists: boolean; email: string }, string>({
+    getInfoFromInvite: builder.query<InviteMetadata, string>({
       query: (token) => ({
         url: `invite/${token}`,
         method: 'GET',
@@ -43,8 +40,8 @@ const extendedApi = trofosApiSlice.injectEndpoints({
 });
 
 export const {
-  useSendProjectInvitationMutation,
-  useGetInfoFromProjectIdQuery,
+  useCreateOrGetProjectInviteLinkMutation,
+  useGetProjectInviteLinkQuery,
   useProcessProjectInvitationMutation,
-  useGetInfoFromInviteMutation,
+  useLazyGetInfoFromInviteQuery,
 } = extendedApi;
