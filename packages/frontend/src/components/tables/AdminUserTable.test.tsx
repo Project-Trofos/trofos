@@ -52,6 +52,7 @@ describe('test UserTable', () => {
 
     // Ensure columns are present
     expect(screen.getByText('User ID')).toBeInTheDocument();
+    expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Email')).toBeInTheDocument();
     expect(screen.getByText('Actions')).toBeInTheDocument();
 
