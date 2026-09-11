@@ -1,0 +1,61 @@
+discovery.docker "trofos_containers" {
+  host = "unix:///var/run/docker.sock"
+  filter {
+    name = "label"
+    values = ["com.docker.compose.project=trofos"]
+  }
+}
+
+discovery.relabel "container_labels" {
+  targets = discovery.docker.trofos_containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex = "/(.*)"
+    target_label = "service_name"
+  }
+}
+
+loki.source.docker "container_logs" {
+  host = "unix:///var/run/docker.sock"
+  targets = discovery.relabel.container_labels.output
+  forward_to = [loki.process.pino_logs.receiver]
+}
+
+loki.process "pino_logs" {
+  stage.json {
+    expressions = {
+      level = "",
+      timestamp = "",
+      env = "",
+      request_method = "",
+      request_url = "",
+      response_status_code = "",
+    }
+    drop_malformed = true
+  }
+  stage.drop {
+    source = "level, timestamp"
+    expression = "^$"
+  }
+  stage.labels {
+    values = {
+      level = "",
+      env  = "",
+    }
+  }
+  stage.structured_metadata {
+    values = {
+      request_method  = "",
+      request_url = "",
+      response_status_code = "",
+    }
+  }
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+loki.write "grafana_loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

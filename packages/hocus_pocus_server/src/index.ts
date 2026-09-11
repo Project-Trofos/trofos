@@ -4,10 +4,12 @@ import { Logger } from "@hocuspocus/extension-logger";
 import { Database } from "@hocuspocus/extension-database";
 import expressWebsockets from "express-ws";
 import { PrismaClient } from '@prisma/client';
+import { getLogger } from '@trofos-nus/common';
 
 const app = expressWebsockets(express());
 
 const prisma = new PrismaClient();
+const logger = getLogger();
 
 const server = Server.configure({
   port: 3002,
@@ -72,10 +74,10 @@ const server = Server.configure({
 })
 
 app.app.ws("/api/ws/collaboration", (ws, req) => {
-  console.log("Hocus Pocus connection")
+  logger.info('Hocus Pocus connection');
   server.handleConnection(ws, req);
 });
 
 app.app.listen(3002, () => {
-  console.log("Hocus Pocus server listening on port 3002");
+  logger.info('Hocus Pocus server listening on port 3002');
 });
