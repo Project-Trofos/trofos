@@ -117,6 +117,7 @@ services:
   loki:
     image: grafana/loki:latest
     container_name: loki
+    user: "root"
     restart: unless-stopped
     command: -config.file=/etc/loki/config.yml
     volumes:
