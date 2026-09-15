@@ -9,6 +9,7 @@ volumes:
   prometheus_data: {}
   grafana_data: {}
   loki_data: {}
+  tempo_data: {}
 
 services:
   # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
@@ -130,6 +131,22 @@ services:
     networks:
       - application
 
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    user: "root"
+    restart: unless-stopped
+    command: -config.file=/etc/tempo/tempo.yml
+    volumes:
+      - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo_data:/var/lib/tempo
+    ports:
+      - 3200:3200
+    expose:
+      - 3200
+    networks:
+      - application
+
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
@@ -144,9 +161,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 12345:12345
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP HTTP receiver
     expose:
       - 12345
+      - 4317
+      - 4318
     networks:
       - application
     depends_on:
       - loki
+      - tempo

@@ -19,3 +19,23 @@ datasources:
     basicAuth: false
     editable: true
     uid: ds-loki
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    editable: true
+    uid: ds-tempo
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: ds-loki
+        filterByTraceID: true
+        filterBySpanID: false
+      tracesToMetrics:
+        datasourceUid: ds-prometheus
+      nodeGraph:
+        enabled: true
+      serviceMap:
+        datasourceUid: ds-prometheus
