@@ -27,6 +27,7 @@ model User {
   api_usages         ApiUsage[]
   user_api_key       UserApiKey?
   comments           IssueComment[]
+  createdInvites     Invite[]                @relation("InviteCreator")
 }
 
 model UserSession {
@@ -421,10 +422,12 @@ model Issue {
 
 model Invite {
   project_id   Int      @id
+  inviter_id   Int
   unique_token String   @unique
   expiry_date  DateTime @default(dbgenerated("NOW() + interval '1 week'"))
 
   project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  inviter User    @relation("InviteCreator", fields: [inviter_id], references: [user_id], onDelete: Restrict)
 }
 
 model UserApiKey {

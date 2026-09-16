@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { message, Result } from 'antd';
+import { Button, message, Modal, Result, Space, Typography } from 'antd';
 import { useLazyGetInfoFromInviteQuery, useProcessProjectInvitationMutation } from '../api/invite';
+import { InviteMetadata } from '../api/types';
 import { getErrorMessage } from '../helpers/error';
 
 export default function InvitePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [processInvite] = useProcessProjectInvitationMutation();
+  const [processInvite, { isLoading: isJoining }] = useProcessProjectInvitationMutation();
   const [getInfoFromToken] = useLazyGetInfoFromInviteQuery();
   const isFirstRender = useRef(true);
-  const [projectName, setProjectName] = useState<string>();
+  const [inviteMetadata, setInviteMetadata] = useState<InviteMetadata>();
   const [errorMessage, setErrorMessage] = useState<string>();
 
   const handleInvite = useCallback(
@@ -40,10 +41,9 @@ export default function InvitePage() {
     }
 
     const token = searchParams.get('token')!;
-    const inviteMetadata = await getInfoFromToken(token).unwrap();
-    setProjectName(inviteMetadata.projectName);
-    await handleInvite(token);
-  }, [getInfoFromToken, handleInvite, searchParams]);
+    const metadata = await getInfoFromToken(token).unwrap();
+    setInviteMetadata(metadata);
+  }, [getInfoFromToken, searchParams]);
 
   useEffect(() => {
     // Process token once only
@@ -58,13 +58,51 @@ export default function InvitePage() {
     }
   }, [searchParams, processToken]);
 
-  return errorMessage ? (
-    <Result status="error" title="Unable to join project" subTitle={errorMessage} />
-  ) : (
-    <Result
-      status="info"
-      title={projectName ? `Joining ${projectName}` : 'Processing invitation'}
-      subTitle="Please wait while we validate your project invitation."
-    />
+  if (errorMessage) {
+    return <Result status="error" title="Unable to join project" subTitle={errorMessage} />;
+  }
+
+  return (
+    <>
+      <Result
+        status="info"
+        title={inviteMetadata ? `Invitation to ${inviteMetadata.projectName}` : 'Loading invitation'}
+        subTitle="Review the invitation before joining the project."
+      />
+      <Modal
+        title="Project invitation"
+        open={inviteMetadata !== undefined}
+        onCancel={() => navigate('/projects')}
+        footer={[
+          <Button key="cancel" onClick={() => navigate('/projects')}>
+            Cancel
+          </Button>,
+          <Button
+            key="join"
+            type="primary"
+            loading={isJoining}
+            onClick={() => handleInvite(searchParams.get('token')!)}
+          >
+            Join project
+          </Button>,
+        ]}
+      >
+        {inviteMetadata && (
+          <Space direction="vertical" size="small">
+            <Typography.Paragraph>
+              <strong>{inviteMetadata.inviterName}</strong> is inviting you to join the following project:
+            </Typography.Paragraph>
+            <Typography.Text>
+              <strong>Name:</strong> {inviteMetadata.projectName}
+            </Typography.Text>
+            {inviteMetadata.courseName && (
+              <Typography.Text>
+                <strong>Course:</strong> {inviteMetadata.courseName}
+              </Typography.Text>
+            )}
+          </Space>
+        )}
+      </Modal>
+    </>
   );
 }

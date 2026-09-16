@@ -387,7 +387,9 @@ export type Invite = {
 
 export type InviteMetadata = {
   projectId: number;
+  inviterName: string;
   projectName: string;
+  courseName?: string;
   expiresAt: string;
 };
 

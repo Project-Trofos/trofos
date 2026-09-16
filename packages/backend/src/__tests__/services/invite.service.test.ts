@@ -35,12 +35,42 @@ describe('invite.service tests', () => {
     });
   });
 
+  describe('getInviteMetadataByToken', () => {
+    it('should return the inviter, project and course metadata', async () => {
+      const metadata = {
+        ...validInviteData,
+        inviter: { user_display_name: 'Alex Tan' },
+        project: {
+          pname: 'Test project',
+          course: { cname: 'Test course', shadow_course: false },
+        },
+      };
+      prismaMock.invite.findUnique.mockResolvedValueOnce(metadata);
+
+      const result = await invite.getInviteMetadataByToken(validInviteData.unique_token);
+
+      expect(prismaMock.invite.findUnique).toHaveBeenCalledWith({
+        where: { unique_token: validInviteData.unique_token },
+        include: {
+          inviter: { select: { user_display_name: true } },
+          project: {
+            include: {
+              course: { select: { cname: true, shadow_course: true } },
+            },
+          },
+        },
+      });
+      expect(result).toEqual(metadata);
+    });
+  });
+
   describe('createInvite', () => {
     it('should create an invite without conflicting with an existing project link', async () => {
       prismaMock.invite.upsert.mockResolvedValueOnce(validInviteData);
       const result = await invite.createInvite(
         validInviteData.project_id,
         validInviteData.unique_token,
+        validInviteData.inviter_id,
       );
 
       expect(prismaMock.invite.upsert).toHaveBeenCalledWith({
@@ -50,6 +80,7 @@ describe('invite.service tests', () => {
         create: {
           project_id: validInviteData.project_id,
           unique_token: validInviteData.unique_token,
+          inviter_id: validInviteData.inviter_id,
         },
         update: {},
       });
@@ -63,9 +94,9 @@ describe('invite.service tests', () => {
       const result = await invite.updateInvite(
         validInviteData.project_id,
         updatedInviteData.unique_token,
+        updatedInviteData.inviter_id,
       );
       expect(result).toEqual(updatedInviteData);
     });
   });
-
 });

@@ -16,6 +16,7 @@ import {
 
 const spies = {
   getInviteByToken: jest.spyOn(invite, 'getInviteByToken'),
+  getInviteMetadataByToken: jest.spyOn(invite, 'getInviteMetadataByToken'),
   getInviteByProjectId: jest.spyOn(invite, 'getInviteByProjectId'),
   createInvite: jest.spyOn(invite, 'createInvite'),
   updateInvite: jest.spyOn(invite, 'updateInvite'),
@@ -42,10 +43,15 @@ describe('invite controller tests', () => {
       spies.createInvite.mockResolvedValue(validInviteData);
       const req = createRequest({ params: { projectId: validInviteData.project_id } });
       const res = createResponse();
+      res.locals.userSession = { user_id: validUser.user_id };
 
       await inviteController.createOrGetInviteLink(req, res);
 
-      expect(spies.createInvite).toHaveBeenCalledWith(validInviteData.project_id, expect.any(String));
+      expect(spies.createInvite).toHaveBeenCalledWith(
+        validInviteData.project_id,
+        expect.any(String),
+        validUser.user_id,
+      );
       expect(spies.updateInvite).not.toHaveBeenCalled();
       expect(spies.sendInviteEmail).not.toHaveBeenCalled();
       expect(res.statusCode).toEqual(StatusCodes.OK);
@@ -64,6 +70,7 @@ describe('invite controller tests', () => {
         body: { destEmail },
       });
       const res = createResponse();
+      res.locals.userSession = { user_id: validUser.user_id };
 
       await inviteController.createOrGetInviteLink(req, res);
 
@@ -96,6 +103,7 @@ describe('invite controller tests', () => {
       spies.getInviteByProjectId.mockResolvedValue(validInviteData);
       const req = createRequest({ params: { projectId: validInviteData.project_id } });
       const res = createResponse();
+      res.locals.userSession = { user_id: validUser.user_id };
 
       await inviteController.createOrGetInviteLink(req, res);
 
@@ -109,10 +117,15 @@ describe('invite controller tests', () => {
       spies.updateInvite.mockResolvedValue(updatedInviteData);
       const req = createRequest({ params: { projectId: expiredInviteData.project_id } });
       const res = createResponse();
+      res.locals.userSession = { user_id: validUser.user_id };
 
       await inviteController.createOrGetInviteLink(req, res);
 
-      expect(spies.updateInvite).toHaveBeenCalledWith(expiredInviteData.project_id, expect.any(String));
+      expect(spies.updateInvite).toHaveBeenCalledWith(
+        expiredInviteData.project_id,
+        expect.any(String),
+        validUser.user_id,
+      );
       expect(spies.createInvite).not.toHaveBeenCalled();
       expect(res.statusCode).toEqual(StatusCodes.OK);
       expect(res._getData()).toEqual(JSON.stringify(updatedInviteData));
@@ -160,8 +173,14 @@ describe('invite controller tests', () => {
 
   describe('getInfoFromInvite', () => {
     it('returns project information for a valid invite link', async () => {
-      spies.getInviteByToken.mockResolvedValue(validInviteData);
-      spies.getById.mockResolvedValue(validInviteProject);
+      spies.getInviteMetadataByToken.mockResolvedValue({
+        ...validInviteData,
+        inviter: { user_display_name: validUser.user_display_name },
+        project: {
+          ...validInviteProject,
+          course: { cname: 'Test course', shadow_course: false },
+        },
+      });
       const req = createRequest({ params: { token: validInviteData.unique_token } });
       const res = createResponse();
 
@@ -171,6 +190,33 @@ describe('invite controller tests', () => {
       expect(res._getData()).toEqual(
         JSON.stringify({
           projectId: validInviteData.project_id,
+          inviterName: validUser.user_display_name,
+          projectName: validInviteProject.pname,
+          courseName: 'Test course',
+          expiresAt: validInviteData.expiry_date,
+        }),
+      );
+    });
+
+    it('omits the course name for an independent project', async () => {
+      spies.getInviteMetadataByToken.mockResolvedValue({
+        ...validInviteData,
+        inviter: { user_display_name: validUser.user_display_name },
+        project: {
+          ...validInviteProject,
+          course: { cname: 'Shadow course', shadow_course: true },
+        },
+      });
+      const req = createRequest({ params: { token: validInviteData.unique_token } });
+      const res = createResponse();
+
+      await inviteController.getInfoFromInvite(req, res);
+
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res._getData()).toEqual(
+        JSON.stringify({
+          projectId: validInviteData.project_id,
+          inviterName: validUser.user_display_name,
           projectName: validInviteProject.pname,
           expiresAt: validInviteData.expiry_date,
         }),
@@ -178,13 +224,13 @@ describe('invite controller tests', () => {
     });
 
     it('rejects an unknown invite link with a bad request response', async () => {
-      spies.getInviteByToken.mockResolvedValue(null);
+      spies.getInviteMetadataByToken.mockResolvedValue(null);
       const req = createRequest({ params: { token: 'unknown-token' } });
       const res = createResponse();
 
       await inviteController.getInfoFromInvite(req, res);
 
-      expect(spies.getById).not.toHaveBeenCalled();
+      expect(spies.getInviteMetadataByToken).toHaveBeenCalledWith('unknown-token');
       expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(res._getData()).toEqual(JSON.stringify({ error: 'Invalid invite' }));
     });

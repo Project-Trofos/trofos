@@ -5,6 +5,7 @@ validExpiry.setDate(validExpiry.getDate() + 7);
 
 export const validInviteData: Invite = {
   project_id: 1,
+  inviter_id: 1,
   unique_token: '2c883054-0d4c-43b7-9c91-a0acf6096c56',
   expiry_date: validExpiry,
 };
@@ -25,6 +26,7 @@ export const validInviteProject: Project = {
 
 export const updatedInviteData: Invite = {
   project_id: 1,
+  inviter_id: 1,
   unique_token: '011fc2df-7e13-483b-8cf3-3fa38aa27140',
   expiry_date: validExpiry,
 };
@@ -42,12 +44,14 @@ expired.setDate(expired.getDate() - 10);
 
 export const expiredInviteData: Invite = {
   project_id: 900,
+  inviter_id: 1,
   unique_token: 'eb95d491-7918-445c-b82c-7305d392fac4',
   expiry_date: expired,
 };
 
 export const mockInviteInfoFromProjId: Invite = {
   project_id: 900,
+  inviter_id: 1,
   unique_token: '3c883054-0d4c-43b7-9c91-a0acf6096c57',
   expiry_date: validExpiry,
 };

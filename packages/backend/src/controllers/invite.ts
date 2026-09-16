@@ -23,7 +23,7 @@ function assertInviteIsValid(inviteObj: Invite | null): asserts inviteObj is Inv
   }
 }
 
-async function createToken(projectId: number) {
+async function createToken(projectId: number, inviterId: number) {
   const existingInvite = await invite.getInviteByProjectId(projectId);
 
   if (existingInvite && !isExpired(existingInvite.expiry_date)) {
@@ -31,7 +31,9 @@ async function createToken(projectId: number) {
   }
 
   const token = generateToken();
-  return existingInvite ? invite.updateInvite(projectId, token) : invite.createInvite(projectId, token);
+  return existingInvite
+    ? invite.updateInvite(projectId, token, inviterId)
+    : invite.createInvite(projectId, token, inviterId);
 }
 
 async function createOrGetInviteLink(req: express.Request, res: express.Response) {
@@ -47,7 +49,7 @@ async function createOrGetInviteLink(req: express.Request, res: express.Response
       }
     }
 
-    const result = await createToken(Number(projectId));
+    const result = await createToken(Number(projectId), res.locals.userSession.user_id);
 
     if (destEmail !== undefined) {
       const projectName = (await project.getById(Number(projectId))).pname;
@@ -83,13 +85,14 @@ async function getInfoFromInvite(req: express.Request, res: express.Response) {
     const { token } = req.params;
     assertTokenIsValid(token);
 
-    const inviteRes = await invite.getInviteByToken(token);
+    const inviteRes = await invite.getInviteMetadataByToken(token);
     assertInviteIsValid(inviteRes);
-    const projectRes = await project.getById(inviteRes.project_id);
 
     return res.status(StatusCodes.OK).json({
       projectId: inviteRes.project_id,
-      projectName: projectRes.pname,
+      inviterName: inviteRes.inviter.user_display_name,
+      projectName: inviteRes.project.pname,
+      courseName: inviteRes.project.course.shadow_course ? undefined : inviteRes.project.course.cname,
       expiresAt: inviteRes.expiry_date,
     });
   } catch (error) {
