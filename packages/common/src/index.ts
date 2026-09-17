@@ -14,3 +14,5 @@ export type {
 export * from './logger/loggerProvider';
 export { default as loggerProvider } from './logger/loggerProvider';
 export { default as requestLogger } from './middleware/request_logger.middleware';
+
+export * from './telemetry';
