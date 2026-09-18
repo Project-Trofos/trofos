@@ -1,3 +1,4 @@
+import './tracing';
 import { createClient } from 'redis';
 import {
   TASK_QUEUE_KEY,

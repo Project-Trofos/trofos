@@ -1,3 +1,4 @@
+import './tracing';
 import process from 'node:process';
 import cookieParser from 'cookie-parser';
 import { Server, Socket } from 'socket.io';

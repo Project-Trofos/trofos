@@ -1,3 +1,4 @@
+import './tracing';
 import express from 'express';
 import { Server, onListenPayload } from "@hocuspocus/server";
 import { Logger } from "@hocuspocus/extension-logger";
