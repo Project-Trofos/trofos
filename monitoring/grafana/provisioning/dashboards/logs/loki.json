@@ -110,7 +110,7 @@
                     "mode": "absolute",
                     "steps": [
                       {
-                        "color": "orange",
+                        "color": "grey",
                         "value": 0
                       }
                     ]

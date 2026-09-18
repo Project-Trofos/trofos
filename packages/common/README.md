@@ -22,7 +22,7 @@ import { PrismaClient as VectorClient } from '@trofos-nus/common/src/generated/p
 
 1. Run `pnpm run prisma-generate`. This ensures that all generated Prisma clients are up to date.
 2. Run `pnpm run build`. This compiles the relevant files to `dist/`
-3. Run `cp dist/src/* dist/`.
+3. Run `cp -r dist/src/* dist/`.
 4. Bump the package version in `package.json`.
 5. Run `npm publish --dry-run` to simulate a publish and verify that the relevant files are included in the bundle.
 6. Run `npm login` using the credentials in TROFOS playbook.
