@@ -1,7 +1,10 @@
 
 import { BacklogHistory, Retrospective, Sprint, StandUp, StandUpNote } from "@prisma/client";
+import { getLogger } from '@trofos-nus/common';
 import prisma from "../models/prismaClient";
 import openAiClient from "../models/openAiClient";
+
+const logger = getLogger();
 
 const mapStandUpColIdToColName = (id: number): string => {
   switch (id) {
@@ -161,7 +164,7 @@ ${retrospectiveString}
     model: "gpt-4o-mini",
     user: user
   });
-  console.log( res.choices[0].message.content)
+  logger.info(`Scrum ceremonies res: ${res.choices[0].message.content}`);
   return res.choices[0].message.content ?? "No response from AI model"; 
 }
 

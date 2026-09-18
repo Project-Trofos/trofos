@@ -1,6 +1,9 @@
 import { Sprint } from "@prisma/client";
+import { getLogger } from '@trofos-nus/common';
 import { generateBacklogInsights } from "../insights/backlogInsights";
 import prisma from "../models/prismaClient";
+
+const logger = getLogger();
 
 async function handleGenerateBacklogInsights(sprint: Sprint, user: string): Promise<boolean> {
   const sprintId = sprint.id;
@@ -27,7 +30,7 @@ async function handleGenerateBacklogInsights(sprint: Sprint, user: string): Prom
     });
     return true;
   } catch (error) {
-    console.error(error);
+    logger.error({ err: error, sprint_id: sprintId }, 'Error generating backlog insights');
     return false;
   }
 }

@@ -1,6 +1,9 @@
 import { Backlog, BacklogHistory, Sprint } from "@prisma/client";
+import { getLogger } from '@trofos-nus/common';
 import prisma from "../models/prismaClient";
 import openAiClient from "../models/openAiClient";
+
+const logger = getLogger();
 
 async function generateBacklogInsights(curSprint: Sprint, user: string): Promise<string> {
   const sprintId = curSprint.id;
@@ -142,7 +145,7 @@ ${rolledOverBacklogsStr}
 
 Please analyze this sprint and provide insights on what went well, what could be improved, and how the team can collaborate better in the next sprint.
 `;
-  console.log(userPrompt);
+  logger.info(`Backlog userPrompt: ${userPrompt}`);
 
   const res = await openAiClient.chat.completions.create({
     messages: [
@@ -168,7 +171,7 @@ Please analyze this sprint and provide insights on what went well, what could be
     model: "gpt-4o-mini",
     user: user
   });
-  console.log( res.choices[0].message.content)
+  logger.info(`Backlog res: ${res.choices[0].message.content}`);
   return res.choices[0].message.content ?? "No response from AI model"; 
 }
 

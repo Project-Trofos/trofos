@@ -1,6 +1,9 @@
 import { Backlog, Sprint, User, UsersOnProjects } from '@prisma/client';
+import { getLogger } from '@trofos-nus/common';
 import prisma from '../models/prismaClient';
 import openAiClient from '../models/openAiClient';
+
+const logger = getLogger();
 
 type BacklogWithAssignee = (Backlog & {
   assignee: (UsersOnProjects & {
@@ -85,7 +88,7 @@ Incomplete backlogs:\n${incompleteBacklogsStr}
 User story point contributions:\n${userStoryPointContributionsStr}
 `;
 
-  console.log(`Contributions Prompt: ${prompt}`)
+  logger.info(`Contributions Prompt: ${prompt}`)
 
   const res = await openAiClient.chat.completions.create({
     messages: [

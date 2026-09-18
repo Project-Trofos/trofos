@@ -65,6 +65,7 @@ services:
     environment:
       - DATABASE_URL=${E2E_DATABASE_URL}
       - BACKEND_URL=${BACKEND_URL}
+      - NODE_ENV=${NODE_ENV}
     networks:
       - application
   ai_insight_worker:
@@ -78,6 +79,7 @@ services:
       - DATABASE_URL=${E2E_DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=${E2E_REDIS_URL}
+      - NODE_ENV=${NODE_ENV}
     networks:
       - application
   postgres:
