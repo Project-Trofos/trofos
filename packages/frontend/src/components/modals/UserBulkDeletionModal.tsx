@@ -17,14 +17,25 @@ export default function UserBulkDeletionModal({ userIds, onDeleted }: UserBulkDe
   const handleCancel = () => setIsModalOpen(false);
 
   const handleDelete = async () => {
-    try {
-      await Promise.all(userIds.map((userId) => deleteUser(userId).unwrap()));
-      message.success(`${userIds.length} user${userIds.length !== 1 ? 's' : ''} deleted successfully`);
-      setIsModalOpen(false);
-      onDeleted();
-    } catch (error) {
-      message.error(getErrorMessage(error));
+    const results = await Promise.allSettled(userIds.map((userId) => deleteUser(userId).unwrap()));
+    const failures = results.filter((result) => result.status === 'rejected');
+    const succeededCount = results.length - failures.length;
+
+    if (succeededCount > 0) {
+      message.success(`${succeededCount} user${succeededCount !== 1 ? 's' : ''} deleted successfully`);
     }
+    if (failures.length > 0) {
+      const firstFailure = failures[0] as PromiseRejectedResult;
+      message.error(
+        `Failed to delete ${failures.length} user${failures.length !== 1 ? 's' : ''}: ${getErrorMessage(firstFailure.reason)}`,
+      );
+    }
+
+    setIsModalOpen(false);
+    // Always clear the selection: users who were actually deleted are already gone
+    // from the refetched table, and keeping the rest selected risks a retry
+    // re-targeting ids that may no longer be valid.
+    onDeleted();
   };
 
   return (

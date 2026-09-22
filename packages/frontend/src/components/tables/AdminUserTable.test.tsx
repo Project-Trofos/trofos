@@ -35,16 +35,21 @@ describe('test UserTable', () => {
       user_email: 'secondEmail@test.com',
       user_display_name: 'Second User',
       user_id: 2,
+      // Matches the real GET /user/ shape: a UsersOnProjects join row with a
+      // nested `project`, not a bare Project (see packages/backend/src/services/user.service.ts).
       projects: [
         {
-          id: 1,
-          pname: 'Sample Project',
-          pkey: null,
-          description: null,
-          course_id: null,
-          public: false,
-          created_at: '2026-01-01T00:00:00.000Z',
-          is_archive: false,
+          project_id: 1,
+          project: {
+            id: 1,
+            pname: 'Sample Project',
+            pkey: null,
+            description: null,
+            course_id: null,
+            public: false,
+            created_at: '2026-01-01T00:00:00.000Z',
+            is_archive: false,
+          },
         },
       ],
       basicRoles: [
@@ -454,7 +459,7 @@ describe('test UserTable', () => {
         user_email: 'groupAEmail@test.com',
         user_display_name: 'Group A Student',
         user_id: 1,
-        projects: [projectA],
+        projects: [{ project_id: projectA.id, project: projectA }],
         basicRoles: [{ user_email: 'groupAEmail@test.com', role_id: 2 }],
         courses: [],
       },
@@ -462,7 +467,7 @@ describe('test UserTable', () => {
         user_email: 'groupBEmail@test.com',
         user_display_name: 'Group B Student',
         user_id: 2,
-        projects: [projectB],
+        projects: [{ project_id: projectB.id, project: projectB }],
         basicRoles: [{ user_email: 'groupBEmail@test.com', role_id: 2 }],
         courses: [],
       },
@@ -608,5 +613,27 @@ describe('test UserTable', () => {
 
     expect(screen.queryByText('Role: Admin')).not.toBeInTheDocument();
     expect(screen.getByText('Second User')).toBeInTheDocument();
+  });
+
+  it('clearing the Last Active filter via its chip also clears the date shown when the dropdown is reopened', async () => {
+    const { container } = setup();
+    const header = headerFor(container, 'Last Active') as Element;
+
+    // Apply a date filter.
+    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
+    const dateInput = await screen.findByPlaceholderText('Select date');
+    fireEvent.change(dateInput, { target: { value: '2026-05-31' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    expect(screen.getByText('Last Active: on or before 31/05/2026')).toBeInTheDocument();
+
+    // Clear it via the chip's ×, without touching the dropdown.
+    const chip = screen.getByText(/Last Active: on or before/).closest('.ant-tag') as HTMLElement;
+    fireEvent.click(chip.querySelector('.anticon-close') as Element);
+    expect(screen.queryByText(/Last Active: on or before/)).not.toBeInTheDocument();
+
+    // Reopen the dropdown: the date picker must not still show the cleared date.
+    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
+    const reopenedDateInput = (await screen.findByPlaceholderText('Select date')) as HTMLInputElement;
+    expect(reopenedDateInput.value).toBe('');
   });
 });

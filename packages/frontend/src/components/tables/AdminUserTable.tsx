@@ -33,10 +33,12 @@ export default function UserTable(props: UserTableProps): JSX.Element {
   const projectFilterOptions = useMemo(() => {
     const byId = new Map<number, { label: string; courseLabel: string; name: string }>();
     users?.forEach((user) => {
-      user.projects?.forEach((project) => {
-        if (byId.has(project.id)) return;
-        const courseLabel = project.course?.code || project.course?.cname || 'Independent';
-        byId.set(project.id, { label: `${project.pname} — ${courseLabel}`, courseLabel, name: project.pname });
+      user.projects?.forEach((userProject) => {
+        if (byId.has(userProject.project_id)) return;
+        const project = userProject.project;
+        const courseLabel = project?.course?.code || project?.course?.cname || 'Independent';
+        const label = project ? `${project.pname} — ${courseLabel}` : `Project ID: ${userProject.project_id}`;
+        byId.set(userProject.project_id, { label, courseLabel, name: project?.pname || label });
       });
     });
     return Array.from(byId.entries())
@@ -150,7 +152,7 @@ export default function UserTable(props: UserTableProps): JSX.Element {
         filters={projectFilterOptions}
         filterSearch
         filteredValue={columnFilters.projects ?? null}
-        onFilter={(value, record: User) => record.projects?.some((project) => project.id === value) ?? false}
+        onFilter={(value, record: User) => record.projects?.some((userProject) => userProject.project_id === value) ?? false}
         render={(_, record: any) => {
           const projectCount = record.projects?.length || 0;
           return `${projectCount} Project${projectCount !== 1 ? 's' : ''}`;
@@ -200,7 +202,7 @@ export default function UserTable(props: UserTableProps): JSX.Element {
                 style={{ width: '100%', marginBottom: 8 }}
                 disabled={isNever}
                 placeholder='Select date'
-                defaultValue={dateValue ? dayjs(dateValue) : undefined}
+                value={dateValue ? dayjs(dateValue) : null}
                 onChange={(date) => applyDate(date ? date.format('YYYY-MM-DD') : undefined)}
               />
               <Space wrap style={{ marginBottom: 8 }}>
