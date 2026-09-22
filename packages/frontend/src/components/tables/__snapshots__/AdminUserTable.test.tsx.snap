@@ -38,6 +38,9 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                       style="width: 10%;"
                     />
                     <col
+                      style="width: 10%;"
+                    />
+                    <col
                       style="width: 15%;"
                     />
                     <col
@@ -238,70 +241,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         </div>
                       </th>
                       <th
-                        aria-label="Projects"
-                        class="ant-table-cell ant-table-column-has-sorters"
-                        scope="col"
-                        tabindex="0"
-                      >
-                        <div
-                          class="ant-table-column-sorters"
-                        >
-                          <span
-                            class="ant-table-column-title"
-                          >
-                            Projects
-                          </span>
-                          <span
-                            class="ant-table-column-sorter ant-table-column-sorter-full"
-                          >
-                            <span
-                              aria-hidden="true"
-                              class="ant-table-column-sorter-inner"
-                            >
-                              <span
-                                aria-label="caret-up"
-                                class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="caret-up"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="0 0 1024 1024"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                  />
-                                </svg>
-                              </span>
-                              <span
-                                aria-label="caret-down"
-                                class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="caret-down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="0 0 1024 1024"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
-                          </span>
-                        </div>
-                      </th>
-                      <th
-                        aria-label="Last Active"
+                        aria-label="Role"
                         class="ant-table-cell ant-table-column-has-sorters"
                         scope="col"
                         tabindex="0"
@@ -318,7 +258,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                               <span
                                 class="ant-table-column-title"
                               >
-                                Last Active
+                                Role
                               </span>
                               <span
                                 class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -397,6 +337,198 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         </div>
                       </th>
                       <th
+                        aria-label="Projects"
+                        class="ant-table-cell ant-table-column-has-sorters"
+                        scope="col"
+                        tabindex="0"
+                      >
+                        <div
+                          class="ant-table-filter-column"
+                        >
+                          <span
+                            class="ant-table-column-title"
+                          >
+                            <div
+                              class="ant-table-column-sorters"
+                            >
+                              <span
+                                class="ant-table-column-title"
+                              >
+                                Projects
+                              </span>
+                              <span
+                                class="ant-table-column-sorter ant-table-column-sorter-full"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  class="ant-table-column-sorter-inner"
+                                >
+                                  <span
+                                    aria-label="caret-up"
+                                    class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="caret-up"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span
+                                    aria-label="caret-down"
+                                    class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="caret-down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </span>
+                            </div>
+                          </span>
+                          <span
+                            class="ant-dropdown-trigger ant-table-filter-trigger"
+                            role="button"
+                            tabindex="-1"
+                          >
+                            <span
+                              aria-label="filter"
+                              class="anticon anticon-filter"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="filter"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M349 838c0 17.7 14.2 32 31.8 32h262.4c17.6 0 31.8-14.3 31.8-32V642H349v196zm531.1-684H143.9c-24.5 0-39.8 26.7-27.5 48l221.3 376h348.8l221.3-376c12.1-21.3-3.2-48-27.7-48z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        aria-sort="descending"
+                        class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                        scope="col"
+                        tabindex="0"
+                      >
+                        <div
+                          class="ant-table-filter-column"
+                        >
+                          <span
+                            class="ant-table-column-title"
+                          >
+                            <div
+                              class="ant-table-column-sorters"
+                            >
+                              <span
+                                class="ant-table-column-title"
+                              >
+                                Last Active
+                              </span>
+                              <span
+                                class="ant-table-column-sorter ant-table-column-sorter-full"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  class="ant-table-column-sorter-inner"
+                                >
+                                  <span
+                                    aria-label="caret-up"
+                                    class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="caret-up"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                      />
+                                    </svg>
+                                  </span>
+                                  <span
+                                    aria-label="caret-down"
+                                    class="anticon anticon-caret-down ant-table-column-sorter-down active"
+                                    role="img"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="caret-down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="0 0 1024 1024"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                      />
+                                    </svg>
+                                  </span>
+                                </span>
+                              </span>
+                            </div>
+                          </span>
+                          <span
+                            class="ant-dropdown-trigger ant-table-filter-trigger"
+                            role="button"
+                            tabindex="-1"
+                          >
+                            <span
+                              aria-label="filter"
+                              class="anticon anticon-filter"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="filter"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M349 838c0 17.7 14.2 32 31.8 32h262.4c17.6 0 31.8-14.3 31.8-32V642H349v196zm531.1-684H143.9c-24.5 0-39.8 26.7-27.5 48l221.3 376h348.8l221.3-376c12.1-21.3-3.2-48-27.7-48z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                      </th>
+                      <th
                         class="ant-table-cell"
                         scope="col"
                       >
@@ -409,36 +541,37 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                   >
                     <tr
                       class="ant-table-row ant-table-row-level-0"
-                      data-row-key="1"
+                      data-row-key="2"
                     >
                       <td
                         class="ant-table-cell"
                       >
-                        1
+                        2
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        Test User
+                        Second User
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        testEmail@test.com
+                        secondEmail@test.com
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        0 Projects
+                        Student
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        <span
-                          style="color: gray;"
-                        >
-                          Never
-                        </span>
+                        1 Project
+                      </td>
+                      <td
+                        class="ant-table-cell ant-table-column-sort"
+                      >
+                        03/02/2026
                       </td>
                       <td
                         class="ant-table-cell"
@@ -550,32 +683,41 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                     </tr>
                     <tr
                       class="ant-table-row ant-table-row-level-0"
-                      data-row-key="2"
+                      data-row-key="1"
                     >
                       <td
                         class="ant-table-cell"
                       >
-                        2
+                        1
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        Second User
+                        Test User
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        secondEmail@test.com
+                        testEmail@test.com
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        1 Project
+                        Admin
                       </td>
                       <td
                         class="ant-table-cell"
                       >
-                        03/02/2026
+                        0 Projects
+                      </td>
+                      <td
+                        class="ant-table-cell ant-table-column-sort"
+                      >
+                        <span
+                          style="color: gray;"
+                        >
+                          Never
+                        </span>
                       </td>
                       <td
                         class="ant-table-cell"
