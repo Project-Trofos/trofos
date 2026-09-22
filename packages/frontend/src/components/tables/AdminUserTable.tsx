@@ -36,7 +36,13 @@ export default function UserTable(props: UserTableProps): JSX.Element {
       user.projects?.forEach((userProject) => {
         if (byId.has(userProject.project_id)) return;
         const project = userProject.project;
-        const courseLabel = project?.course?.code || project?.course?.cname || 'Independent';
+        // "Independent" projects still have a course row under the hood (an
+        // auto-generated shadow course with a random-UUID code) - treat those
+        // the same as having no course at all.
+        const courseLabel =
+          project?.course && !project.course.shadow_course
+            ? project.course.code || project.course.cname
+            : 'Independent';
         const label = project ? `${project.pname} — ${courseLabel}` : `Project ID: ${userProject.project_id}`;
         byId.set(userProject.project_id, { label, courseLabel, name: project?.pname || label });
       });

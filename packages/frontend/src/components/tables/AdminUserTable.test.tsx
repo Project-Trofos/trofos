@@ -404,6 +404,60 @@ describe('test UserTable', () => {
     expect(screen.queryByText('Test User')).not.toBeInTheDocument();
   });
 
+  it('labels a project under a shadow (auto-generated) course as "Independent", not the shadow course\'s generated code', async () => {
+    // Independent projects still get a course row under the hood (a "shadow
+    // course" with a random-UUID `code`), confirmed against the real dev DB.
+    const shadowCourseProject = {
+      id: 20,
+      pname: 'Solo Project',
+      pkey: null,
+      description: null,
+      course_id: 300,
+      public: false,
+      created_at: '2026-01-01T00:00:00.000Z',
+      is_archive: false,
+      course: {
+        id: 300,
+        code: '44f8917b-2924-44a3-a020-403904705507',
+        startYear: 2026,
+        startSem: 1,
+        endYear: 2026,
+        endSem: 1,
+        cname: 'Independent course',
+        description: null,
+        public: false,
+        created_at: '2026-01-01T00:00:00.000Z',
+        shadow_course: true,
+        is_archive: false,
+      },
+    };
+    const soloUser: UserWithUsage[] = [
+      {
+        user_email: 'solo@test.com',
+        user_display_name: 'Solo User',
+        user_id: 1,
+        projects: [{ project_id: shadowCourseProject.id, project: shadowCourseProject }],
+        basicRoles: [{ user_email: 'solo@test.com', role_id: 2 }],
+        courses: [],
+      },
+    ];
+
+    const { container } = render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <AdminUserTable users={soloUser} roles={roles} />
+        </Provider>
+      </BrowserRouter>,
+    );
+
+    const header = headerFor(container, 'Projects') as Element;
+    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
+
+    const dropdown = await screen.findByRole('menu');
+    expect(within(dropdown).getByText('Solo Project — Independent')).toBeInTheDocument();
+    expect(within(dropdown).queryByText(/44f8917b/)).not.toBeInTheDocument();
+  });
+
   it('disambiguates same-named projects from different courses in the Projects filter', async () => {
     const projectA = {
       id: 10,
