@@ -655,6 +655,19 @@ describe('test UserTable', () => {
     expect(actionsHeader).toBeInTheDocument();
   });
 
+  it('renders the Projects count as a visibly clickable link, not plain text', () => {
+    setup();
+    // antd's Typography.Link renders as a real <a> tag styled with the
+    // brand link color, so it visibly reads as clickable (unlike a bare
+    // <a> with no href, which gets no link styling at all).
+    const link = screen.getByText('1 Project').closest('a');
+    expect(link).toHaveClass('ant-typography');
+    // Underlined always (antd's `underline` prop wraps the text in a real
+    // <u>), not just on hover, so it doesn't blend in with other
+    // colored-but-non-clickable text in the row (e.g. the Role tag).
+    expect(link?.querySelector('u')).toBeInTheDocument();
+  });
+
   it('renders each role as a distinctly colored tag', () => {
     setup();
 

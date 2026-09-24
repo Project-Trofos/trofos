@@ -202,7 +202,7 @@ export default function UserTable(props: UserTableProps): JSX.Element {
         render={(_, record: User) => {
           const projectCount = record.projects?.length || 0;
           const label = `${projectCount} Project${projectCount !== 1 ? 's' : ''}`;
-          return <UserProjectsModal user={record} trigger={<a>{label}</a>} />;
+          return <UserProjectsModal user={record} trigger={<Typography.Link underline>{label}</Typography.Link>} />;
         }}
       />
 

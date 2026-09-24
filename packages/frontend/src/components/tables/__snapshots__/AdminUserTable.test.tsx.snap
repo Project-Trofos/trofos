@@ -14,7 +14,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
           class="ant-badge"
         >
           <button
-            class="ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-outlined"
+            class="ant-btn ant-btn-primary ant-btn-color-primary ant-btn-variant-solid"
             type="button"
           >
             <span>
@@ -495,8 +495,12 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         <span
                           style="cursor: pointer;"
                         >
-                          <a>
-                            1 Project
+                          <a
+                            class="ant-typography"
+                          >
+                            <u>
+                              1 Project
+                            </u>
                           </a>
                         </span>
                       </td>
@@ -614,8 +618,12 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         <span
                           style="cursor: pointer;"
                         >
-                          <a>
-                            0 Projects
+                          <a
+                            class="ant-typography"
+                          >
+                            <u>
+                              0 Projects
+                            </u>
                           </a>
                         </span>
                       </td>

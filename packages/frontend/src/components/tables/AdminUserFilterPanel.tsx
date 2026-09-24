@@ -115,7 +115,7 @@ export default function AdminUserFilterPanel({
   return (
     <Popover trigger='click' placement='bottomLeft' content={content} open={isOpen} onOpenChange={setIsOpen}>
       <Badge count={activeCount} size='small' offset={[-4, 4]}>
-        <Button>Filters</Button>
+        <Button type='primary'>Filters</Button>
       </Badge>
     </Popover>
   );

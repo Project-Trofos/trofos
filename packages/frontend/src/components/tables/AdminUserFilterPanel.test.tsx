@@ -30,6 +30,11 @@ describe('test AdminUserFilterPanel', () => {
     expect(screen.getByRole('button', { name: /filters/i })).toBeInTheDocument();
   });
 
+  it('styles the Filters button as a primary (brand-colored) button, not a plain default one', () => {
+    setup();
+    expect(screen.getByRole('button', { name: /filters/i })).toHaveClass('ant-btn-primary');
+  });
+
   it('opening the panel shows the Role, Projects and Last Active sections', async () => {
     setup();
     fireEvent.click(screen.getByRole('button', { name: /filters/i }));
