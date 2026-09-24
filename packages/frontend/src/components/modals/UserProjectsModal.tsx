@@ -5,9 +5,10 @@ import { User } from '../../api/types';
 
 type UserProjects = {
   user: User;
+  trigger?: React.ReactNode;
 };
 
-export default function UserProjectsModal({ user }: UserProjects): JSX.Element {
+export default function UserProjectsModal({ user, trigger }: UserProjects): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => setIsModalOpen(true);
@@ -16,7 +17,13 @@ export default function UserProjectsModal({ user }: UserProjects): JSX.Element {
 
   return (
     <>
-      <Button type="text" icon={<EyeOutlined />} onClick={showModal} title="View Assigned Projects"/>
+      {trigger ? (
+        <span onClick={showModal} style={{ cursor: 'pointer' }}>
+          {trigger}
+        </span>
+      ) : (
+        <Button type="text" icon={<EyeOutlined />} onClick={showModal} title="View Assigned Projects"/>
+      )}
       <Modal title={`Assigned Projects`} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         {user.projects && user.projects.length > 0 ? (
           <List

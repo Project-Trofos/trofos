@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import user from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 
 import { BrowserRouter } from 'react-router-dom';
@@ -88,6 +89,14 @@ describe('test UserTable', () => {
   const rowTexts = (container: HTMLElement) =>
     Array.from(container.querySelectorAll('.ant-table-tbody tr')).map((tr) => tr.textContent || '');
 
+  // Opens the single Filters popover and returns its content, scoped so
+  // queries inside it don't collide with identical text in the table itself
+  // (e.g. a "Admin" role tag in a row vs. the "Admin" checkbox in the panel).
+  const openFilters = async () => {
+    fireEvent.click(screen.getByRole('button', { name: /filters/i }));
+    return screen.findByTestId('admin-user-filter-panel');
+  };
+
   it('should render table with correct fields', () => {
     const { baseElement } = setup();
 
@@ -102,7 +111,7 @@ describe('test UserTable', () => {
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('Second User')).toBeInTheDocument();
 
-    // Role names render per-user
+    // Role names render per-user, as colored tags
     expect(screen.getByText('Admin')).toBeInTheDocument();
     expect(screen.getByText('Student')).toBeInTheDocument();
 
@@ -122,16 +131,18 @@ describe('test UserTable', () => {
     expect(headerFor(container, 'Actions')?.classList.contains('ant-table-column-has-sorters')).toBe(false);
   });
 
-  it('Role and Last Active have a filter trigger; other columns do not', () => {
+  it('no column has its own filter trigger; filtering is done through a single Filters button', () => {
     const { container } = setup();
 
     expect(headerFor(container, 'User ID')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
     expect(headerFor(container, 'Name')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
     expect(headerFor(container, 'Email')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
-    expect(headerFor(container, 'Role')?.querySelector('.ant-table-filter-trigger')).toBeInTheDocument();
-    expect(headerFor(container, 'Projects')?.querySelector('.ant-table-filter-trigger')).toBeInTheDocument();
-    expect(headerFor(container, 'Last Active')?.querySelector('.ant-table-filter-trigger')).toBeInTheDocument();
+    expect(headerFor(container, 'Role')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
+    expect(headerFor(container, 'Projects')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
+    expect(headerFor(container, 'Last Active')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
     expect(headerFor(container, 'Actions')?.querySelector('.ant-table-filter-trigger')).not.toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: /filters/i })).toBeInTheDocument();
   });
 
   it('clicking the Role header sorts rows alphabetically by role name', () => {
@@ -148,20 +159,12 @@ describe('test UserTable', () => {
     expect(rowTexts(container)[0]).toContain('Second User');
   });
 
-  it('filtering Role by Admin via the checkbox filter narrows the table', async () => {
-    const { container } = setup();
+  it('checking Admin in the Filters panel narrows the table to admins', async () => {
+    setup();
 
-    const header = headerFor(container, 'Role') as Element;
-    const filterTrigger = header.querySelector('.ant-table-filter-trigger');
-    fireEvent.click(filterTrigger as Element);
-
-    const dropdown = await screen.findByRole('menu');
-    const adminOption = await within(dropdown).findByText('Admin');
-    const checkbox = adminOption.closest('li')?.querySelector('input[type="checkbox"]');
-    fireEvent.click(checkbox as Element);
-
-    const okButton = screen.getByRole('button', { name: 'OK' });
-    fireEvent.click(okButton);
+    const panel = await openFilters();
+    const adminCheckbox = within(panel).getByText('Admin').closest('label')?.querySelector('input');
+    fireEvent.click(adminCheckbox as Element);
 
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.queryByText('Second User')).not.toBeInTheDocument();
@@ -259,28 +262,18 @@ describe('test UserTable', () => {
     expect(rowTexts(container)[1]).toContain('Test User');
   });
 
-  it('filtering Last Active by "Never Logged In" narrows the table to users with no activity', async () => {
-    const { container } = setup();
+  it('checking "Never Logged In" in the Filters panel narrows the table to users with no activity', async () => {
+    setup();
 
-    const header = headerFor(container, 'Last Active') as Element;
-    const filterTrigger = header.querySelector('.ant-table-filter-trigger');
-    expect(filterTrigger).toBeInTheDocument();
-
-    fireEvent.click(filterTrigger as Element);
-
-    const neverOption = await screen.findByText('Never Logged In');
-    const checkbox = neverOption.closest('label')?.querySelector('input[type="checkbox"]');
-    expect(checkbox).toBeInTheDocument();
-    fireEvent.click(checkbox as Element);
-
-    const okButton = screen.getByRole('button', { name: 'OK' });
-    fireEvent.click(okButton);
+    const panel = await openFilters();
+    const neverCheckbox = within(panel).getByText('Never Logged In').closest('label')?.querySelector('input');
+    fireEvent.click(neverCheckbox as Element);
 
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.queryByText('Second User')).not.toBeInTheDocument();
   });
 
-  it('filtering Last Active by an exact "on or before" date includes users active on that date and excludes later ones', async () => {
+  it('picking an exact "on or before" date in the Filters panel includes users active on that date and excludes later ones', async () => {
     const threeUsers: UserWithUsage[] = [
       { ...users[0] }, // Test User: never logged in
       {
@@ -320,13 +313,9 @@ describe('test UserTable', () => {
       </BrowserRouter>,
     );
 
-    const header = headerFor(container, 'Last Active') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-
-    const dateInput = (await screen.findByPlaceholderText('Select date')) as HTMLInputElement;
+    const panel = await openFilters();
+    const dateInput = within(panel).getByPlaceholderText('Select date') as HTMLInputElement;
     fireEvent.change(dateInput, { target: { value: '2026-05-31' } });
-
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
     // On-or-before 31 May: Test User (never active), Second User (Feb) and Third User (31 May exactly) included.
     expect(screen.getByText('Test User')).toBeInTheDocument();
@@ -366,7 +355,7 @@ describe('test UserTable', () => {
       },
     ];
 
-    const { container } = render(
+    render(
       <BrowserRouter>
         <Provider store={store}>
           <AdminUserTable users={threeUsers} roles={roles} />
@@ -374,11 +363,8 @@ describe('test UserTable', () => {
       </BrowserRouter>,
     );
 
-    const header = headerFor(container, 'Last Active') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-
-    fireEvent.click(await screen.findByRole('button', { name: '3 Months Ago' }));
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    const panel = await openFilters();
+    fireEvent.click(within(panel).getByRole('button', { name: '3 Months Ago' }));
 
     expect(screen.getByText('Stale User')).toBeInTheDocument();
     expect(screen.queryByText('Recent User')).not.toBeInTheDocument();
@@ -386,19 +372,15 @@ describe('test UserTable', () => {
     vi.useRealTimers();
   });
 
-  it('filtering Projects by a specific project narrows the table', async () => {
-    const { container } = setup();
+  it('selecting a project in the Filters panel narrows the table to users on that project', async () => {
+    setup();
 
-    const header = headerFor(container, 'Projects') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-
-    const dropdown = await screen.findByRole('menu');
+    const panel = await openFilters();
     // Second User's only project has no course, so it's labelled "Independent".
-    const option = await within(dropdown).findByText('Sample Project — Independent');
-    const checkbox = option.closest('li')?.querySelector('input[type="checkbox"]');
-    fireEvent.click(checkbox as Element);
-
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    const select = (within(panel).getByText('Sample Project [Independent]') as HTMLElement).closest(
+      'select',
+    ) as HTMLElement;
+    await user.selectOptions(select, ['1']);
 
     expect(screen.getByText('Second User')).toBeInTheDocument();
     expect(screen.queryByText('Test User')).not.toBeInTheDocument();
@@ -442,7 +424,7 @@ describe('test UserTable', () => {
       },
     ];
 
-    const { container } = render(
+    render(
       <BrowserRouter>
         <Provider store={store}>
           <AdminUserTable users={soloUser} roles={roles} />
@@ -450,12 +432,9 @@ describe('test UserTable', () => {
       </BrowserRouter>,
     );
 
-    const header = headerFor(container, 'Projects') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-
-    const dropdown = await screen.findByRole('menu');
-    expect(within(dropdown).getByText('Solo Project — Independent')).toBeInTheDocument();
-    expect(within(dropdown).queryByText(/44f8917b/)).not.toBeInTheDocument();
+    const panel = await openFilters();
+    expect(within(panel).getByText('Solo Project [Independent]')).toBeInTheDocument();
+    expect(within(panel).queryByText(/44f8917b/)).not.toBeInTheDocument();
   });
 
   it('disambiguates same-named projects from different courses in the Projects filter', async () => {
@@ -527,7 +506,7 @@ describe('test UserTable', () => {
       },
     ];
 
-    const { container } = render(
+    render(
       <BrowserRouter>
         <Provider store={store}>
           <AdminUserTable users={twoUsers} roles={roles} />
@@ -535,25 +514,18 @@ describe('test UserTable', () => {
       </BrowserRouter>,
     );
 
-    const header = headerFor(container, 'Projects') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
+    const panel = await openFilters();
+    expect(within(panel).getByText('Group 1 [CS2103T]')).toBeInTheDocument();
+    expect(within(panel).getByText('Group 1 [CS3213]')).toBeInTheDocument();
 
-    const dropdown = await screen.findByRole('menu');
-    expect(within(dropdown).getByText('Group 1 — CS2103T')).toBeInTheDocument();
-    expect(within(dropdown).getByText('Group 1 — CS3213')).toBeInTheDocument();
-
-    const option = within(dropdown).getByText('Group 1 — CS2103T');
-    const checkbox = option.closest('li')?.querySelector('input[type="checkbox"]');
-    fireEvent.click(checkbox as Element);
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    const select = (within(panel).getByText('Group 1 [CS2103T]') as HTMLElement).closest('select') as HTMLElement;
+    await user.selectOptions(select, ['10']);
 
     expect(screen.getByText('Group A Student')).toBeInTheDocument();
     expect(screen.queryByText('Group B Student')).not.toBeInTheDocument();
   });
 
   it('combines a Role filter and a Last Active filter with AND, not OR', async () => {
-    // This test opens two dropdowns and applies two filters sequentially, which
-    // legitimately takes longer than the default 5s timeout under load.
     const fourUsers: UserWithUsage[] = [
       {
         // Matches both filters: Admin, inactive since before the cutoff.
@@ -587,7 +559,7 @@ describe('test UserTable', () => {
       },
     ];
 
-    const { container } = render(
+    render(
       <BrowserRouter>
         <Provider store={store}>
           <AdminUserTable users={fourUsers} roles={roles} />
@@ -595,20 +567,13 @@ describe('test UserTable', () => {
       </BrowserRouter>,
     );
 
-    // Filter Role = Admin.
-    const roleHeader = headerFor(container, 'Role') as Element;
-    fireEvent.click(roleHeader.querySelector('.ant-table-filter-trigger') as Element);
-    const roleDropdown = await screen.findByRole('menu');
-    const adminOption = await within(roleDropdown).findByText('Admin');
-    fireEvent.click(adminOption.closest('li')?.querySelector('input[type="checkbox"]') as Element);
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    // Both filters live in the same panel; it stays open across both interactions.
+    const panel = await openFilters();
+    const adminCheckbox = within(panel).getByText('Admin').closest('label')?.querySelector('input');
+    fireEvent.click(adminCheckbox as Element);
 
-    // Filter Last Active on or before 1 March 2026.
-    const lastActiveHeader = headerFor(container, 'Last Active') as Element;
-    fireEvent.click(lastActiveHeader.querySelector('.ant-table-filter-trigger') as Element);
-    const dateInput = await screen.findByPlaceholderText('Select date');
+    const dateInput = within(panel).getByPlaceholderText('Select date');
     fireEvent.change(dateInput, { target: { value: '2026-03-01' } });
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
     expect(screen.getByText('Stale Admin')).toBeInTheDocument();
     expect(screen.queryByText('Active Admin')).not.toBeInTheDocument();
@@ -620,42 +585,33 @@ describe('test UserTable', () => {
     expect(screen.queryByText('Active filters:')).not.toBeInTheDocument();
   });
 
-  it('shows a filter chip after applying a Role filter, labelled with the role name', async () => {
-    const { container } = setup();
+  it('shows a filter chip after checking a role in the Filters panel, labelled with the role name', async () => {
+    setup();
 
-    const header = headerFor(container, 'Role') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-    const dropdown = await screen.findByRole('menu');
-    const adminOption = await within(dropdown).findByText('Admin');
-    fireEvent.click(adminOption.closest('li')?.querySelector('input[type="checkbox"]') as Element);
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    const panel = await openFilters();
+    const adminCheckbox = within(panel).getByText('Admin').closest('label')?.querySelector('input');
+    fireEvent.click(adminCheckbox as Element);
 
     expect(screen.getByText('Active filters:')).toBeInTheDocument();
     expect(screen.getByText('Role: Admin')).toBeInTheDocument();
   });
 
-  it('shows a filter chip after applying a Last Active date filter, labelled with the formatted date', async () => {
-    const { container } = setup();
+  it('shows a filter chip after picking a Last Active date, labelled with the formatted date', async () => {
+    setup();
 
-    const header = headerFor(container, 'Last Active') as Element;
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-    const dateInput = await screen.findByPlaceholderText('Select date');
+    const panel = await openFilters();
+    const dateInput = within(panel).getByPlaceholderText('Select date');
     fireEvent.change(dateInput, { target: { value: '2026-05-31' } });
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
     expect(screen.getByText('Last Active: on or before 31/05/2026')).toBeInTheDocument();
   });
 
-  it('clicking a chip\'s × clears only that column\'s filter', async () => {
-    const { container } = setup();
+  it("clicking a chip's × clears only that column's filter", async () => {
+    setup();
 
-    // Apply a Role filter.
-    const roleHeader = headerFor(container, 'Role') as Element;
-    fireEvent.click(roleHeader.querySelector('.ant-table-filter-trigger') as Element);
-    const roleDropdown = await screen.findByRole('menu');
-    const adminOption = await within(roleDropdown).findByText('Admin');
-    fireEvent.click(adminOption.closest('li')?.querySelector('input[type="checkbox"]') as Element);
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+    const panel = await openFilters();
+    const adminCheckbox = within(panel).getByText('Admin').closest('label')?.querySelector('input');
+    fireEvent.click(adminCheckbox as Element);
 
     expect(screen.queryByText('Second User')).not.toBeInTheDocument();
     expect(screen.getByText('Role: Admin')).toBeInTheDocument();
@@ -669,25 +625,42 @@ describe('test UserTable', () => {
     expect(screen.getByText('Second User')).toBeInTheDocument();
   });
 
-  it('clearing the Last Active filter via its chip also clears the date shown when the dropdown is reopened', async () => {
-    const { container } = setup();
-    const header = headerFor(container, 'Last Active') as Element;
+  it("clearing the Last Active filter via its chip also clears the date shown in the still-open panel", async () => {
+    setup();
 
-    // Apply a date filter.
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-    const dateInput = await screen.findByPlaceholderText('Select date');
+    const panel = await openFilters();
+    const dateInput = within(panel).getByPlaceholderText('Select date') as HTMLInputElement;
     fireEvent.change(dateInput, { target: { value: '2026-05-31' } });
-    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
     expect(screen.getByText('Last Active: on or before 31/05/2026')).toBeInTheDocument();
 
-    // Clear it via the chip's ×, without touching the dropdown.
+    // Clear it via the chip's ×, without closing the panel.
     const chip = screen.getByText(/Last Active: on or before/).closest('.ant-tag') as HTMLElement;
     fireEvent.click(chip.querySelector('.anticon-close') as Element);
     expect(screen.queryByText(/Last Active: on or before/)).not.toBeInTheDocument();
 
-    // Reopen the dropdown: the date picker must not still show the cleared date.
-    fireEvent.click(header.querySelector('.ant-table-filter-trigger') as Element);
-    const reopenedDateInput = (await screen.findByPlaceholderText('Select date')) as HTMLInputElement;
-    expect(reopenedDateInput.value).toBe('');
+    // The date input, still visible in the open panel, must reflect the clear immediately.
+    expect((within(panel).getByPlaceholderText('Select date') as HTMLInputElement).value).toBe('');
+  });
+
+  it("clicking a user's Projects count opens a modal listing their projects, and there is no separate Actions icon for it", async () => {
+    const { container } = setup();
+
+    fireEvent.click(screen.getByText('1 Project'));
+    expect(await screen.findByText('Sample Project')).toBeInTheDocument();
+
+    // No leftover eye-icon action for viewing projects.
+    expect(screen.queryByTitle('View Assigned Projects')).not.toBeInTheDocument();
+    // Still only two other actions (role management + delete) per row.
+    const actionsHeader = headerFor(container, 'Actions') as Element;
+    expect(actionsHeader).toBeInTheDocument();
+  });
+
+  it('renders each role as a distinctly colored tag', () => {
+    setup();
+
+    const adminTag = screen.getByText('Admin').closest('.ant-tag');
+    const studentTag = screen.getByText('Student').closest('.ant-tag');
+    expect(adminTag).toHaveClass('ant-tag-gold');
+    expect(studentTag).toHaveClass('ant-tag-green');
   });
 });
