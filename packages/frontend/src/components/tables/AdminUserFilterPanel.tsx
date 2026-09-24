@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Popover, Checkbox, Select, DatePicker, Space, Typography, Divider, Badge } from 'antd';
 import type { FilterValue } from 'antd/es/table/interface';
 import dayjs from 'dayjs';
@@ -24,6 +24,14 @@ export default function AdminUserFilterPanel({
   filters,
   onChange,
 }: AdminUserFilterPanelProps): JSX.Element {
+  const [isOpen, setIsOpen] = useState(false);
+  // Select/DatePicker render their dropdown into a document.body portal by
+  // default, so a click inside that dropdown looks like an "outside click" to
+  // the parent Popover and closes it. Rendering their popups inside the
+  // panel's own container fixes that.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const getPopupContainer = () => containerRef.current || document.body;
+
   const activeCount = FILTER_KEYS.filter((key) => filters[key] && filters[key]!.length > 0).length;
 
   const lastActiveValue = filters.last_active?.[0]?.toString();
@@ -38,7 +46,7 @@ export default function AdminUserFilterPanel({
   const applyPreset = (monthsAgo: number) => applyDate(dayjs().subtract(monthsAgo, 'month').format('YYYY-MM-DD'));
 
   const content = (
-    <div data-testid='admin-user-filter-panel' style={{ width: 300 }}>
+    <div data-testid='admin-user-filter-panel' style={{ width: 300, position: 'relative' }} ref={containerRef}>
       <Typography.Text strong>Role</Typography.Text>
       <div style={{ margin: '4px 0 12px' }}>
         <Checkbox.Group
@@ -56,6 +64,7 @@ export default function AdminUserFilterPanel({
           mode='multiple'
           showSearch
           allowClear
+          getPopupContainer={getPopupContainer}
           style={{ width: '100%' }}
           placeholder='Search projects...'
           value={filters.projects ?? []}
@@ -81,6 +90,7 @@ export default function AdminUserFilterPanel({
         <Divider style={{ margin: '8px 0' }} />
         <Typography.Text style={{ display: 'block', marginBottom: 4 }}>Last active on or before:</Typography.Text>
         <DatePicker
+          getPopupContainer={getPopupContainer}
           style={{ width: '100%', marginBottom: 8 }}
           disabled={isNever}
           placeholder='Select date'
@@ -103,7 +113,7 @@ export default function AdminUserFilterPanel({
   );
 
   return (
-    <Popover trigger='click' placement='bottomLeft' content={content}>
+    <Popover trigger='click' placement='bottomLeft' content={content} open={isOpen} onOpenChange={setIsOpen}>
       <Badge count={activeCount} size='small' offset={[-4, 4]}>
         <Button>Filters</Button>
       </Badge>
