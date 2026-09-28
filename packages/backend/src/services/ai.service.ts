@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { UserGuideEmbedding } from '@trofos-nus/common/src/generated/pgvector_client';
 import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
-import { UserGuideQueryResponse } from './types/ai.service.types';
+import { CourseAutofillResponse, UserGuideQueryResponse } from './types/ai.service.types';
 import { redis } from './aiInsight.service';
 
 const COPILOT_CHAT_HISTORY_KEY_PREFIX = 'copilot_chat_history_';
@@ -169,4 +169,59 @@ const askGptQueryWithContext = async (
   }
 };
 
-export { processUserGuideQuery };
+const COURSE_NAME_PATTERN = /^[a-zA-Z0-9-\s]*$/;
+const COURSE_NAME_MAX_LENGTH = 64;
+const MIN_COURSE_YEAR = 1900;
+const MAX_COURSE_YEAR = 2200;
+
+// Keeps only the values that pass the same rules as the course creation form; anything else is left blank
+const sanitizeCourseAutofill = (raw: unknown): CourseAutofillResponse => {
+  const data = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const result: CourseAutofillResponse = {};
+
+  if (typeof data.courseName === 'string') {
+    const name = data.courseName.trim();
+    if (name.length > 0 && name.length <= COURSE_NAME_MAX_LENGTH && COURSE_NAME_PATTERN.test(name)) {
+      result.courseName = name;
+    }
+  }
+  if (typeof data.courseCode === 'string' && data.courseCode.trim().length > 0) {
+    result.courseCode = data.courseCode.trim();
+  }
+  const year = Number(data.courseYear);
+  if (data.courseYear !== null && Number.isInteger(year) && year >= MIN_COURSE_YEAR && year <= MAX_COURSE_YEAR) {
+    result.courseYear = year;
+  }
+  const sem = Number(data.courseSem);
+  if (data.courseSem !== null && (sem === 1 || sem === 2)) {
+    result.courseSem = sem;
+  }
+  return result;
+};
+
+const extractCourseDetails = async (text: string, user: string): Promise<CourseAutofillResponse> => {
+  const openai = getOpenAiClient();
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'developer',
+        content: `
+          You extract course details from user text for a course creation form. Respond with a JSON object with exactly these keys:
+          "courseName" (string), "courseCode" (string), "courseYear" (integer, the academic year's starting year, e.g. 2025 for AY2025/2026),
+          "courseSem" (integer, 1 or 2). Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
+        `,
+      },
+      { role: 'user', content: text },
+    ],
+    model: 'gpt-4o-mini',
+    response_format: { type: 'json_object' },
+    user: user,
+  });
+  const content = chatCompletion.choices[0].message.content;
+  if (!content) {
+    throw new Error('No response from AI');
+  }
+  return sanitizeCourseAutofill(JSON.parse(content));
+};
+
+export { processUserGuideQuery, extractCourseDetails, sanitizeCourseAutofill };
