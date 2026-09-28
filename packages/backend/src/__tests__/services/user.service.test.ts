@@ -25,6 +25,30 @@ describe('user.service tests', () => {
       prismaMock.user.findMany.mockResolvedValueOnce(prismaResponseObject);
       await expect(userService.getAll()).resolves.toEqual(prismaResponseObject);
     });
+
+    it('should also load each project\'s course, not just the project row itself', async () => {
+      // The admin user table labels a user's projects by course (e.g. "Group 1
+      // [CS2103T]") to disambiguate identically-named projects across
+      // different courses. That only works if the course is actually loaded -
+      // `include: { project: true }` alone loads the Project row but not its
+      // own `course` relation.
+      prismaMock.user.findMany.mockResolvedValueOnce([]);
+      await userService.getAll();
+
+      expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.objectContaining({
+            projects: expect.objectContaining({
+              include: expect.objectContaining({
+                project: expect.objectContaining({
+                  include: expect.objectContaining({ course: true }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      );
+    });
   });
 
   describe('create', () => {

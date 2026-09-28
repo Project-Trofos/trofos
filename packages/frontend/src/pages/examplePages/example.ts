@@ -60,7 +60,7 @@ export const exampleUsers: User[] = [
     user_email: 'student1@example.edu',
     user_display_name: 'Alice Johnson',
     user_id: 101,
-    projects: [exampleProject],
+    projects: [{ project_id: exampleProject.id, project: exampleProject }],
     courses: [],
     basicRoles: [],
   },

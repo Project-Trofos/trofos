@@ -1,4 +1,4 @@
-import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses, Project } from '@prisma/client';
+import { User, UsersOnProjects, UsersOnRoles, UsersOnRolesOnCourses, Project, Course } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import prisma from '../models/prismaClient';
 import { STUDENT_ROLE_ID } from '../helpers/constants';
@@ -9,7 +9,7 @@ const USER_DISPLAY_NAME_MAX_LENGTH = 50;
 export type Users = {
   user_email: string;
   user_id: number;
-  projects: (UsersOnProjects & { project?: Project })[];
+  projects: (UsersOnProjects & { project?: Project & { course?: Course } })[];
   basicRoles: UsersOnRoles[];
   courses: UsersOnRolesOnCourses[];
   api_usages?: { timestamp: Date }[];
@@ -57,7 +57,14 @@ async function getAll(): Promise<Users[]> {
     include: {
       projects: {
         include: {
-          project: true, // Load the actual project details
+          // Load the project details, including its course - the admin user
+          // table labels projects by course to disambiguate identically
+          // named projects across different courses.
+          project: {
+            include: {
+              course: true,
+            },
+          },
         },
       },
       basicRoles: true,

@@ -3,6 +3,7 @@ import { Row, Col, Divider, Input, Space } from 'antd';
 import AdminUserTable from '../tables/AdminUserTable';
 import { useGetUsersQuery } from '../../api/user';
 import AddUserModal from '../modals/AddUserModal';
+import UserBulkDeletionModal from '../modals/UserBulkDeletionModal';
 import { useGetRolesQuery } from '../../api/role';
 
 /**
@@ -10,6 +11,7 @@ import { useGetRolesQuery } from '../../api/role';
  */
 export default function UserManagement(): JSX.Element {
   const [searchText, setSearchText] = useState('');
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
   const { data: getUsers } = useGetUsersQuery();
   const { data: getRoles } = useGetRolesQuery();
@@ -31,7 +33,10 @@ export default function UserManagement(): JSX.Element {
     <Row>
       <Col offset={4} span={16}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <AddUserModal />
+          <Space>
+            <AddUserModal />
+            <UserBulkDeletionModal userIds={selectedUserIds} onDeleted={() => setSelectedUserIds([])} />
+          </Space>
           <Input
             placeholder='Search User by ID, Name, Email'
             onChange={(e) => setSearchText(e.target.value)}
@@ -39,7 +44,12 @@ export default function UserManagement(): JSX.Element {
           />
         </div>
         <Divider />
-        <AdminUserTable users={filteredUsers} roles={getRoles} />
+        <AdminUserTable
+          users={filteredUsers}
+          roles={getRoles}
+          showSelect
+          onSelectChange={(keys) => setSelectedUserIds(keys.map(Number))}
+        />
       </Col>
     </Row>
   );

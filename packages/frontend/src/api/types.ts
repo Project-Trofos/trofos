@@ -31,9 +31,16 @@ export type User = {
   user_email: string;
   user_display_name: string;
   user_id: number;
-  projects: Project[];
+  projects: UserProject[];
   courses: CourseRoles[];
   basicRoles: BasicRoles[];
+};
+
+// A row from the UsersOnProjects join table, as actually returned by GET /user/
+// (see packages/backend/src/services/user.service.ts). Not a bare Project.
+export type UserProject = {
+  project_id: number;
+  project?: Project;
 };
 
 export type BasicRoles = {

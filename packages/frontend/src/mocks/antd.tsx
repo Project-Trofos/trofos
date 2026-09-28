@@ -8,11 +8,16 @@ vi.mock('antd', async () => {
   antd.theme.defaultConfig.hashed = false;
 
   function DatePicker(props: React.ComponentProps<typeof AntdDatePicker>) {
-    const { defaultValue, placeholder, disabled, id, onChange } = props;
+    const { value, defaultValue, placeholder, disabled, id, onChange } = props;
+    // When `value` is passed (controlled usage), mirror it exactly like the Select
+    // mock below does, so a cleared/changed value is reflected on every render
+    // instead of only at mount (which `defaultValue` alone cannot do).
+    const controlledProps =
+      value !== undefined ? { value: value ? (value as any).format('YYYY-MM-DD') : '' } : { defaultValue };
     return (
       <input
         id={id}
-        defaultValue={defaultValue as React.SelectHTMLAttributes<HTMLInputElement>['defaultValue']}
+        {...(controlledProps as React.SelectHTMLAttributes<HTMLInputElement>)}
         placeholder={placeholder}
         disabled={disabled}
         onChange={(e) => {
