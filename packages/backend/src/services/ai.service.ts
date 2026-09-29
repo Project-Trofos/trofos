@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { UserGuideEmbedding } from '@trofos-nus/common/src/generated/pgvector_client';
 import prismaPgvector from '../models/prismaPgvectorClient';
 import pgvector from 'pgvector';
-import { CourseAutofillResponse, UserGuideQueryResponse } from './types/ai.service.types';
+import { CourseAutofillResponse, SprintAutofillResponse, UserGuideQueryResponse } from './types/ai.service.types';
 import { redis } from './aiInsight.service';
 
 const COPILOT_CHAT_HISTORY_KEY_PREFIX = 'copilot_chat_history_';
@@ -224,4 +224,72 @@ const extractCourseDetails = async (text: string, user: string): Promise<CourseA
   return sanitizeCourseAutofill(JSON.parse(content));
 };
 
-export { processUserGuideQuery, extractCourseDetails, sanitizeCourseAutofill };
+const SPRINT_NAME_MAX_LENGTH = 128;
+const SPRINT_GOALS_MAX_LENGTH = 2000;
+const MIN_SPRINT_DURATION_WEEKS = 1;
+const MAX_SPRINT_DURATION_WEEKS = 4;
+
+// Keeps only the values that pass the same rules as the sprint creation form; anything else is left blank
+const sanitizeSprintAutofill = (raw: unknown): SprintAutofillResponse => {
+  const data = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const result: SprintAutofillResponse = {};
+
+  if (typeof data.name === 'string') {
+    const name = data.name.trim();
+    if (name.length > 0 && name.length <= SPRINT_NAME_MAX_LENGTH) {
+      result.name = name;
+    }
+  }
+  const duration = Number(data.duration);
+  if (
+    data.duration !== null &&
+    Number.isInteger(duration) &&
+    duration >= MIN_SPRINT_DURATION_WEEKS &&
+    duration <= MAX_SPRINT_DURATION_WEEKS
+  ) {
+    result.duration = duration;
+  }
+  if (typeof data.startDate === 'string' && data.startDate.trim().length > 0) {
+    const parsed = new Date(data.startDate);
+    if (!Number.isNaN(parsed.getTime())) {
+      result.startDate = parsed.toISOString();
+    }
+  }
+  if (typeof data.goals === 'string') {
+    const goals = data.goals.trim();
+    if (goals.length > 0 && goals.length <= SPRINT_GOALS_MAX_LENGTH) {
+      result.goals = goals;
+    }
+  }
+  return result;
+};
+
+const extractSprintDetails = async (text: string, user: string): Promise<SprintAutofillResponse> => {
+  const openai = getOpenAiClient();
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'developer',
+        content: `
+          You extract sprint details from user text for a sprint creation form. Respond with a JSON object with exactly these keys:
+          "name" (string, the sprint's name or title), "duration" (integer, 1 to 4, the sprint length in whole weeks;
+          only set this if a whole number of weeks from 1 to 4 is explicitly stated or clearly implied - if the text
+          describes a custom or irregular date range instead, use null), "startDate" (string, an ISO 8601 date, the
+          sprint's start date), "goals" (string, a short free-text description of the sprint's goals).
+          Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
+        `,
+      },
+      { role: 'user', content: text },
+    ],
+    model: 'gpt-4o-mini',
+    response_format: { type: 'json_object' },
+    user: user,
+  });
+  const content = chatCompletion.choices[0].message.content;
+  if (!content) {
+    throw new Error('No response from AI');
+  }
+  return sanitizeSprintAutofill(JSON.parse(content));
+};
+
+export { processUserGuideQuery, extractCourseDetails, sanitizeCourseAutofill, extractSprintDetails, sanitizeSprintAutofill };

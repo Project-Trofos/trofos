@@ -104,7 +104,7 @@ describe('test course creation modal', () => {
 
   describe('AI assist', () => {
     beforeEach(() => {
-      mocks.featureFlags = [{ feature_name: 'ai_course_autofill', active: true }];
+      mocks.featureFlags = [{ feature_name: 'ai_autofill', active: true }];
       mocks.autofillCourse.mockReset();
     });
 
@@ -120,7 +120,7 @@ describe('test course creation modal', () => {
     };
 
     it('should not show AI assist when the feature flag is off', async () => {
-      mocks.featureFlags = [{ feature_name: 'ai_course_autofill', active: false }];
+      mocks.featureFlags = [{ feature_name: 'ai_autofill', active: false }];
       setup();
       fireEvent.click(screen.getByText(/create course/i));
 

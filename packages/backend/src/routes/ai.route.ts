@@ -20,11 +20,8 @@ router.post(
   ai.getUserGuideRecommendations,
 );
 
-router.post(
-  '/courseAutofill',
-  hasAuth(null, null),
-  checkFeatureFlag(Feature.ai_course_autofill),
-  ai.autofillCourse,
-);
+router.post('/courseAutofill', hasAuth(null, null), checkFeatureFlag(Feature.ai_autofill), ai.autofillCourse);
+
+router.post('/sprintAutofill', hasAuth(null, null), checkFeatureFlag(Feature.ai_autofill), ai.autofillSprint);
 
 export default router;

@@ -406,6 +406,13 @@ export type CourseAutofillResponse = {
   courseSem?: number;
 };
 
+export type SprintAutofillResponse = {
+  name?: string;
+  duration?: number;
+  startDate?: string;
+  goals?: string;
+};
+
 export type UserGuideRecommendation = {
   section_title: string;
   endpoint: string;

@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { CourseAutofillResponse, UserGuideQueryResponse, UserGuideRecommendation } from './types';
+import { CourseAutofillResponse, SprintAutofillResponse, UserGuideQueryResponse, UserGuideRecommendation } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,8 +26,20 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    autofillSprint: builder.mutation<SprintAutofillResponse, { text: string }>({
+      query: ({ text }) => ({
+        url: `ai/sprintAutofill`,
+        credentials: 'include',
+        method: 'POST',
+        body: { text },
+      }),
+    }),
   }),
 });
 
-export const { useAnswerUserGuideQueryMutation, useRecommendUserGuideSectionsMutation, useAutofillCourseMutation } =
-  extendedApi;
+export const {
+  useAnswerUserGuideQueryMutation,
+  useRecommendUserGuideSectionsMutation,
+  useAutofillCourseMutation,
+  useAutofillSprintMutation,
+} = extendedApi;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { extractCourseDetails, processUserGuideQuery } from '../services/ai.service';
+import { extractCourseDetails, extractSprintDetails, processUserGuideQuery } from '../services/ai.service';
 import { assertUserIdIsValid, BadRequestError, getDefaultErrorRes } from '../helpers/error';
 import { StatusCodes } from 'http-status-codes';
 import recommenderService from '../services/recommender.service';
@@ -51,8 +51,26 @@ const autofillCourse = async (req: express.Request, res: express.Response) => {
   }
 };
 
+const autofillSprint = async (req: express.Request, res: express.Response) => {
+  try {
+    const { text } = req.body;
+    if (typeof text !== 'string' || text.trim().length === 0) {
+      throw new BadRequestError('text cannot be empty');
+    }
+    if (text.length > MAX_AUTOFILL_TEXT_LENGTH) {
+      throw new BadRequestError(`text must be at most ${MAX_AUTOFILL_TEXT_LENGTH} characters long`);
+    }
+    const user = res.locals.userSession.user_email;
+    const response = await extractSprintDetails(text, user);
+    return res.status(StatusCodes.OK).json(response);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
 export default {
   answerUserGuideQuery,
   autofillCourse,
+  autofillSprint,
   getUserGuideRecommendations,
 };

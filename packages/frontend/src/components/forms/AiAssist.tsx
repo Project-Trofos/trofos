@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
 import { RobotOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Space, Tooltip, Typography, message } from 'antd';
-import dayjs from 'dayjs';
-import { useAutofillCourseMutation } from '../../api/ai';
 import { getErrorMessage } from '../../helpers/error';
 
 const MAX_TEXT_LENGTH = 5000;
 
 const { Text } = Typography;
 
+type AiAssistProps = {
+  // Returns the form values to set; fields the AI could not determine should be omitted
+  autofill: (text: string) => Promise<Record<string, unknown>>;
+  subject: string;
+  placeholder: string;
+  children?: React.ReactNode;
+};
+
 /**
- * Toggleable panel that fills the surrounding course form from free text.
+ * Toggleable panel that fills the surrounding form from free text.
  * Renders `children` (the form's intro text) inline with the AI toggle.
  * Must be rendered inside an Antd Form.
  */
-export default function CourseAiAssist({ children }: { children?: React.ReactNode }): JSX.Element {
+export default function AiAssist({ autofill, subject, placeholder, children }: AiAssistProps): JSX.Element {
   const form = Form.useFormInstance();
-  const [autofillCourse, { isLoading }] = useAutofillCourseMutation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState('');
 
   const onFill = async () => {
+    setIsLoading(true);
     try {
-      const { courseName, courseCode, courseYear, courseSem } = await autofillCourse({ text }).unwrap();
-
-      // Only set fields the AI could determine, the rest are left untouched
-      const values: Record<string, unknown> = {};
-      if (courseName !== undefined) values.courseName = courseName;
-      if (courseCode !== undefined) values.courseCode = courseCode;
-      if (courseYear !== undefined) values.courseYear = dayjs().year(courseYear);
-      if (courseSem !== undefined) values.courseSem = String(courseSem);
-
+      const values = await autofill(text);
       if (Object.keys(values).length === 0) {
-        message.warning('Could not find any course details in the text.');
+        message.warning(`Could not find any ${subject} details in the text.`);
         return;
       }
       form.setFieldsValue(values);
       message.info('Fields filled. Please verify the details before submitting.');
     } catch (err) {
       message.error(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,7 +64,7 @@ export default function CourseAiAssist({ children }: { children?: React.ReactNod
             aria-label="AI assist input"
             rows={4}
             maxLength={MAX_TEXT_LENGTH}
-            placeholder="Describe your course, e.g. CS3203 Software Engineering, Academic Year 2025, Semester 2"
+            placeholder={placeholder}
             value={text}
             onChange={(e) => setText(e.target.value)}
           />

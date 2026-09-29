@@ -9,3 +9,10 @@ export type CourseAutofillResponse = {
   courseYear?: number;
   courseSem?: number;
 };
+
+export type SprintAutofillResponse = {
+  name?: string;
+  duration?: number;
+  startDate?: string;
+  goals?: string;
+};

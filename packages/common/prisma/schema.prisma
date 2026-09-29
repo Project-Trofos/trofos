@@ -483,7 +483,7 @@ enum Feature {
   sso_login
   ai_insights
   user_guide_recommender
-  ai_course_autofill
+  ai_autofill
 }
 
 enum Action {
