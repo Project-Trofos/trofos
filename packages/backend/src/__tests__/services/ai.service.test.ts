@@ -117,6 +117,20 @@ describe('extractSprintDetails', () => {
     expect(result).toEqual({ startDate: '2026-10-05', duration: 2 });
   });
 
+  it('should give the model a weekday calendar so it looks dates up instead of calculating them', async () => {
+    mockCreate.mockResolvedValue(mockCompletion('{}'));
+
+    await extractSprintDetails('starting next Monday', '42', new Date(2026, 8, 30));
+
+    const prompt: string = mockCreate.mock.calls[0][0].messages[0].content;
+    expect(prompt).toContain('Wednesday, 2026-09-30');
+    expect(prompt).toContain('Monday 2026-10-05');
+    expect(prompt).toContain('Saturday 2026-10-03');
+    // Covers four weeks ahead, across the month boundary
+    expect(prompt).toContain('Wednesday 2026-10-28');
+    expect(prompt).not.toContain('2026-10-29');
+  });
+
   it('should throw a generic error when the AI call fails', async () => {
     mockCreate.mockRejectedValue(new Error('401 Incorrect API key provided: sk-...'));
     await expect(extractSprintDetails('text', '42')).rejects.toThrow(AI_UNAVAILABLE_MESSAGE);

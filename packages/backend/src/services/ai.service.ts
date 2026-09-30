@@ -225,6 +225,16 @@ const toDateOnly = (value: unknown): string | undefined => {
 const formatDateOnly = (date: Date): string =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const CALENDAR_DAYS_AHEAD = 28;
+
+// The model is unreliable at weekday arithmetic, so it is given a lookup table of upcoming dates instead
+const buildUpcomingCalendar = (today: Date): string =>
+  Array.from({ length: CALENDAR_DAYS_AHEAD + 1 }, (_, offset) => {
+    const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + offset);
+    return `${WEEKDAYS[date.getDay()]} ${formatDateOnly(date)}${offset === 0 ? ' (today)' : ''}`;
+  }).join('\n');
+
 const COURSE_NAME_PATTERN = /^[a-zA-Z0-9-\s]*$/;
 const COURSE_NAME_MAX_LENGTH = 64;
 const MIN_COURSE_YEAR = 1900;
@@ -297,15 +307,21 @@ const extractSprintDetails = async (
   today: Date = new Date(),
 ): Promise<SprintAutofillResponse> => {
   const instructions = `
-    You extract sprint details from user text for a sprint creation form. Today's date is ${formatDateOnly(today)}.
+    You extract sprint details from user text for a sprint creation form. Today is ${WEEKDAYS[today.getDay()]}, ${formatDateOnly(today)}.
     Respond with a JSON object with exactly these keys:
     "name" (string, the sprint's name or title), "duration" (integer, 1 to 4, the sprint length in whole weeks;
     only set this if a whole number of weeks from 1 to 4 is explicitly stated or clearly implied - if the text
     describes a custom or irregular date range instead, use null), "startDate" (string in YYYY-MM-DD format, the
-    sprint's start date; resolve relative dates such as "next Monday" and dates without a year against today's date,
-    choosing the nearest such date that is not in the past; use null if the start date cannot be determined),
+    sprint's start date; use null if the start date cannot be determined),
     "goals" (string, a short free-text description of the sprint's goals).
     Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
+
+    Calendar of upcoming dates:
+    ${buildUpcomingCalendar(today)}
+
+    For a relative start date (such as "tomorrow", "next Monday" or "this Friday") or a date without a year,
+    copy the matching date from the calendar above instead of calculating it. "Next <weekday>" means the first
+    such weekday after today. Only calculate a date yourself if it falls outside the calendar.
   `;
   return sanitizeSprintAutofill(await extractJson(instructions, text, user));
 };
