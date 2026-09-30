@@ -169,6 +169,62 @@ const askGptQueryWithContext = async (
   }
 };
 
+const AI_UNAVAILABLE_MESSAGE = 'AI assist is currently unavailable. Please fill in the form manually.';
+
+// Calls the model in JSON mode; any failure is logged and replaced with a generic message so internals never reach the user
+const extractJson = async (instructions: string, text: string, user: string): Promise<unknown> => {
+  try {
+    const openai = getOpenAiClient();
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [
+        { role: 'developer', content: instructions },
+        { role: 'user', content: text },
+      ],
+      model: 'gpt-4o-mini',
+      response_format: { type: 'json_object' },
+      user: user,
+    });
+    const content = chatCompletion.choices[0].message.content;
+    if (!content) {
+      throw new Error('No response from AI');
+    }
+    return JSON.parse(content);
+  } catch (error) {
+    console.error(`AI autofill failed: ${error}`);
+    throw new Error(AI_UNAVAILABLE_MESSAGE);
+  }
+};
+
+// Accepts real numbers and digit-only strings; rejects values like `true` or `[2]` that Number() would coerce
+const toInteger = (value: unknown): number | undefined => {
+  if (typeof value === 'number' && Number.isInteger(value)) return value;
+  if (typeof value === 'string' && /^\d+$/.test(value.trim())) return Number(value.trim());
+  return undefined;
+};
+
+const toTrimmedString = (value: unknown, maxLength: number): string | undefined => {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 && trimmed.length <= maxLength ? trimmed : undefined;
+};
+
+const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+// Returns the date unchanged as YYYY-MM-DD so the client can read it as a local date without timezone shifts
+const toDateOnly = (value: unknown): string | undefined => {
+  if (typeof value !== 'string') return undefined;
+  const match = DATE_ONLY_PATTERN.exec(value);
+  if (!match) return undefined;
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  const isRealDate =
+    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+  return isRealDate ? value : undefined;
+};
+
+const formatDateOnly = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
 const COURSE_NAME_PATTERN = /^[a-zA-Z0-9-\s]*$/;
 const COURSE_NAME_MAX_LENGTH = 64;
 const MIN_COURSE_YEAR = 1900;
@@ -179,49 +235,31 @@ const sanitizeCourseAutofill = (raw: unknown): CourseAutofillResponse => {
   const data = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const result: CourseAutofillResponse = {};
 
-  if (typeof data.courseName === 'string') {
-    const name = data.courseName.trim();
-    if (name.length > 0 && name.length <= COURSE_NAME_MAX_LENGTH && COURSE_NAME_PATTERN.test(name)) {
-      result.courseName = name;
-    }
+  const name = toTrimmedString(data.courseName, COURSE_NAME_MAX_LENGTH);
+  if (name !== undefined && COURSE_NAME_PATTERN.test(name)) {
+    result.courseName = name;
   }
   if (typeof data.courseCode === 'string' && data.courseCode.trim().length > 0) {
     result.courseCode = data.courseCode.trim();
   }
-  const year = Number(data.courseYear);
-  if (data.courseYear !== null && Number.isInteger(year) && year >= MIN_COURSE_YEAR && year <= MAX_COURSE_YEAR) {
+  const year = toInteger(data.courseYear);
+  if (year !== undefined && year >= MIN_COURSE_YEAR && year <= MAX_COURSE_YEAR) {
     result.courseYear = year;
   }
-  const sem = Number(data.courseSem);
-  if (data.courseSem !== null && (sem === 1 || sem === 2)) {
+  const sem = toInteger(data.courseSem);
+  if (sem === 1 || sem === 2) {
     result.courseSem = sem;
   }
   return result;
 };
 
 const extractCourseDetails = async (text: string, user: string): Promise<CourseAutofillResponse> => {
-  const openai = getOpenAiClient();
-  const chatCompletion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: 'developer',
-        content: `
-          You extract course details from user text for a course creation form. Respond with a JSON object with exactly these keys:
-          "courseName" (string), "courseCode" (string), "courseYear" (integer, the academic year's starting year, e.g. 2025 for AY2025/2026),
-          "courseSem" (integer, 1 or 2). Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
-        `,
-      },
-      { role: 'user', content: text },
-    ],
-    model: 'gpt-4o-mini',
-    response_format: { type: 'json_object' },
-    user: user,
-  });
-  const content = chatCompletion.choices[0].message.content;
-  if (!content) {
-    throw new Error('No response from AI');
-  }
-  return sanitizeCourseAutofill(JSON.parse(content));
+  const instructions = `
+    You extract course details from user text for a course creation form. Respond with a JSON object with exactly these keys:
+    "courseName" (string), "courseCode" (string), "courseYear" (integer, the academic year's starting year, e.g. 2025 for AY2025/2026),
+    "courseSem" (integer, 1 or 2). Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
+  `;
+  return sanitizeCourseAutofill(await extractJson(instructions, text, user));
 };
 
 const SPRINT_NAME_MAX_LENGTH = 128;
@@ -234,62 +272,49 @@ const sanitizeSprintAutofill = (raw: unknown): SprintAutofillResponse => {
   const data = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const result: SprintAutofillResponse = {};
 
-  if (typeof data.name === 'string') {
-    const name = data.name.trim();
-    if (name.length > 0 && name.length <= SPRINT_NAME_MAX_LENGTH) {
-      result.name = name;
-    }
+  const name = toTrimmedString(data.name, SPRINT_NAME_MAX_LENGTH);
+  if (name !== undefined) {
+    result.name = name;
   }
-  const duration = Number(data.duration);
-  if (
-    data.duration !== null &&
-    Number.isInteger(duration) &&
-    duration >= MIN_SPRINT_DURATION_WEEKS &&
-    duration <= MAX_SPRINT_DURATION_WEEKS
-  ) {
+  const duration = toInteger(data.duration);
+  if (duration !== undefined && duration >= MIN_SPRINT_DURATION_WEEKS && duration <= MAX_SPRINT_DURATION_WEEKS) {
     result.duration = duration;
   }
-  if (typeof data.startDate === 'string' && data.startDate.trim().length > 0) {
-    const parsed = new Date(data.startDate);
-    if (!Number.isNaN(parsed.getTime())) {
-      result.startDate = parsed.toISOString();
-    }
+  const startDate = toDateOnly(data.startDate);
+  if (startDate !== undefined) {
+    result.startDate = startDate;
   }
-  if (typeof data.goals === 'string') {
-    const goals = data.goals.trim();
-    if (goals.length > 0 && goals.length <= SPRINT_GOALS_MAX_LENGTH) {
-      result.goals = goals;
-    }
+  const goals = toTrimmedString(data.goals, SPRINT_GOALS_MAX_LENGTH);
+  if (goals !== undefined) {
+    result.goals = goals;
   }
   return result;
 };
 
-const extractSprintDetails = async (text: string, user: string): Promise<SprintAutofillResponse> => {
-  const openai = getOpenAiClient();
-  const chatCompletion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: 'developer',
-        content: `
-          You extract sprint details from user text for a sprint creation form. Respond with a JSON object with exactly these keys:
-          "name" (string, the sprint's name or title), "duration" (integer, 1 to 4, the sprint length in whole weeks;
-          only set this if a whole number of weeks from 1 to 4 is explicitly stated or clearly implied - if the text
-          describes a custom or irregular date range instead, use null), "startDate" (string, an ISO 8601 date, the
-          sprint's start date), "goals" (string, a short free-text description of the sprint's goals).
-          Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
-        `,
-      },
-      { role: 'user', content: text },
-    ],
-    model: 'gpt-4o-mini',
-    response_format: { type: 'json_object' },
-    user: user,
-  });
-  const content = chatCompletion.choices[0].message.content;
-  if (!content) {
-    throw new Error('No response from AI');
-  }
-  return sanitizeSprintAutofill(JSON.parse(content));
+const extractSprintDetails = async (
+  text: string,
+  user: string,
+  today: Date = new Date(),
+): Promise<SprintAutofillResponse> => {
+  const instructions = `
+    You extract sprint details from user text for a sprint creation form. Today's date is ${formatDateOnly(today)}.
+    Respond with a JSON object with exactly these keys:
+    "name" (string, the sprint's name or title), "duration" (integer, 1 to 4, the sprint length in whole weeks;
+    only set this if a whole number of weeks from 1 to 4 is explicitly stated or clearly implied - if the text
+    describes a custom or irregular date range instead, use null), "startDate" (string in YYYY-MM-DD format, the
+    sprint's start date; resolve relative dates such as "next Monday" and dates without a year against today's date,
+    choosing the nearest such date that is not in the past; use null if the start date cannot be determined),
+    "goals" (string, a short free-text description of the sprint's goals).
+    Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
+  `;
+  return sanitizeSprintAutofill(await extractJson(instructions, text, user));
 };
 
-export { processUserGuideQuery, extractCourseDetails, sanitizeCourseAutofill, extractSprintDetails, sanitizeSprintAutofill };
+export {
+  AI_UNAVAILABLE_MESSAGE,
+  processUserGuideQuery,
+  extractCourseDetails,
+  sanitizeCourseAutofill,
+  extractSprintDetails,
+  sanitizeSprintAutofill,
+};

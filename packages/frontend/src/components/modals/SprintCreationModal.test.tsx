@@ -111,7 +111,7 @@ describe('SprintModal AI assist', () => {
   it('should fill name, duration, start date and goals returned by the AI', async () => {
     mocks.autofillSprint.mockReturnValue({
       unwrap: () =>
-        Promise.resolve({ name: 'Sprint 3', duration: 2, startDate: '2025-01-06T00:00:00.000Z', goals: 'Ship it' }),
+        Promise.resolve({ name: 'Sprint 3', duration: 2, startDate: '2025-01-06', goals: 'Ship it' }),
     });
     renderModal();
 
@@ -127,7 +127,7 @@ describe('SprintModal AI assist', () => {
 
   it('should not set start date when duration is missing', async () => {
     mocks.autofillSprint.mockReturnValue({
-      unwrap: () => Promise.resolve({ startDate: '2025-01-06T00:00:00.000Z' }),
+      unwrap: () => Promise.resolve({ startDate: '2025-01-06' }),
     });
     renderModal();
 

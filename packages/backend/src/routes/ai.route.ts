@@ -2,7 +2,7 @@ import express from 'express';
 import { hasAuth } from '../middleware/auth.middleware';
 import ai from '../controllers/ai';
 import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
-import { Feature } from '@prisma/client';
+import { Action, Feature } from '@prisma/client';
 
 const router = express.Router();
 
@@ -20,8 +20,19 @@ router.post(
   ai.getUserGuideRecommendations,
 );
 
-router.post('/courseAutofill', hasAuth(null, null), checkFeatureFlag(Feature.ai_autofill), ai.autofillCourse);
+// Gated by the same permission as the form each one fills, so only users who can create the entity spend AI calls
+router.post(
+  '/courseAutofill',
+  hasAuth(Action.create_course, null),
+  checkFeatureFlag(Feature.ai_autofill),
+  ai.autofillCourse,
+);
 
-router.post('/sprintAutofill', hasAuth(null, null), checkFeatureFlag(Feature.ai_autofill), ai.autofillSprint);
+router.post(
+  '/sprintAutofill',
+  hasAuth(Action.update_project, null),
+  checkFeatureFlag(Feature.ai_autofill),
+  ai.autofillSprint,
+);
 
 export default router;

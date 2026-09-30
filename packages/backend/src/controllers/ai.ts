@@ -34,39 +34,29 @@ const getUserGuideRecommendations = async (req: express.Request, res: express.Re
   }
 };
 
-const autofillCourse = async (req: express.Request, res: express.Response) => {
-  try {
-    const { text } = req.body;
-    if (typeof text !== 'string' || text.trim().length === 0) {
-      throw new BadRequestError('text cannot be empty');
+const createAutofillHandler =
+  (extract: (text: string, user: string) => Promise<object>) =>
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { text } = req.body;
+      if (typeof text !== 'string' || text.trim().length === 0) {
+        throw new BadRequestError('text cannot be empty');
+      }
+      if (text.length > MAX_AUTOFILL_TEXT_LENGTH) {
+        throw new BadRequestError(`text must be at most ${MAX_AUTOFILL_TEXT_LENGTH} characters long`);
+      }
+      // An internal id is enough for OpenAI's abuse tracing and avoids sharing the user's email
+      const user = String(res.locals.userSession.user_id);
+      const response = await extract(text, user);
+      return res.status(StatusCodes.OK).json(response);
+    } catch (error) {
+      return getDefaultErrorRes(error, res);
     }
-    if (text.length > MAX_AUTOFILL_TEXT_LENGTH) {
-      throw new BadRequestError(`text must be at most ${MAX_AUTOFILL_TEXT_LENGTH} characters long`);
-    }
-    const user = res.locals.userSession.user_email;
-    const response = await extractCourseDetails(text, user);
-    return res.status(StatusCodes.OK).json(response);
-  } catch (error) {
-    return getDefaultErrorRes(error, res);
-  }
-};
+  };
 
-const autofillSprint = async (req: express.Request, res: express.Response) => {
-  try {
-    const { text } = req.body;
-    if (typeof text !== 'string' || text.trim().length === 0) {
-      throw new BadRequestError('text cannot be empty');
-    }
-    if (text.length > MAX_AUTOFILL_TEXT_LENGTH) {
-      throw new BadRequestError(`text must be at most ${MAX_AUTOFILL_TEXT_LENGTH} characters long`);
-    }
-    const user = res.locals.userSession.user_email;
-    const response = await extractSprintDetails(text, user);
-    return res.status(StatusCodes.OK).json(response);
-  } catch (error) {
-    return getDefaultErrorRes(error, res);
-  }
-};
+const autofillCourse = createAutofillHandler(extractCourseDetails);
+
+const autofillSprint = createAutofillHandler(extractSprintDetails);
 
 export default {
   answerUserGuideQuery,
