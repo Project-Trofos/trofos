@@ -410,6 +410,7 @@ export type SprintAutofillResponse = {
   name?: string;
   duration?: number;
   startDate?: string;
+  endDate?: string;
   goals?: string;
 };
 

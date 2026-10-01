@@ -35,11 +35,15 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   const autofill = useCallback(
     async (text: string) => {
-      const { name, duration, startDate, goals } = await autofillSprint({ text }).unwrap();
+      const { name, duration, startDate, endDate, goals } = await autofillSprint({ text }).unwrap();
       const values: Record<string, unknown> = {};
       if (name !== undefined) values.name = name;
-      // The start-date picker only applies once a whole-week duration is selected
-      if (duration !== undefined) {
+      if (duration === 0 && startDate !== undefined && endDate !== undefined) {
+        // A custom duration switches the form to the start-and-end date range picker
+        values.duration = 0;
+        values.dates = [dayjs(startDate), dayjs(endDate)];
+      } else if (duration !== undefined && duration > 0) {
+        // The start-date picker only applies once a whole-week duration is selected
         values.duration = duration;
         if (startDate !== undefined) values.startDate = dayjs(startDate);
       }
@@ -183,7 +187,7 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
         <AiAssist
           autofill={autofill}
           subject="sprint"
-          placeholder="Describe your sprint, e.g. Sprint 3, 2 weeks starting 6 Jan 2025, focus on checkout flow"
+          placeholder="Describe your sprint, e.g. Sprint 3, 2 weeks starting next Monday, or Sprint 7 from Monday to Friday, focus on checkout flow"
         >
           <Typography.Text>Please input the details for your sprint.</Typography.Text>
         </AiAssist>

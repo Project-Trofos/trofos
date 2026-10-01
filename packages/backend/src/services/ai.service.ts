@@ -222,6 +222,20 @@ const toDateOnly = (value: unknown): string | undefined => {
   return isRealDate ? value : undefined;
 };
 
+const toUtcDate = (dateOnly: string): Date => {
+  const [year, month, day] = dateOnly.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+};
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// Date-only arithmetic in UTC so daylight-saving changes and the server's timezone can't shift the result
+const addDays = (dateOnly: string, days: number): string =>
+  new Date(toUtcDate(dateOnly).getTime() + days * MS_PER_DAY).toISOString().slice(0, 10);
+
+const daysBetween = (from: string, to: string): number =>
+  Math.round((toUtcDate(to).getTime() - toUtcDate(from).getTime()) / MS_PER_DAY);
+
 const formatDateOnly = (date: Date): string =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
@@ -274,8 +288,40 @@ const extractCourseDetails = async (text: string, user: string): Promise<CourseA
 
 const SPRINT_NAME_MAX_LENGTH = 128;
 const SPRINT_GOALS_MAX_LENGTH = 2000;
-const MIN_SPRINT_DURATION_WEEKS = 1;
-const MAX_SPRINT_DURATION_WEEKS = 4;
+const MAX_PRESET_SPRINT_WEEKS = 4;
+const MAX_SPRINT_WEEKS = 12;
+const MAX_SPRINT_LENGTH_DAYS = 84;
+const CUSTOM_DURATION = 0;
+
+const toIntegerInRange = (value: unknown, min: number, max: number): number | undefined => {
+  const integer = toInteger(value);
+  return integer !== undefined && integer >= min && integer <= max ? integer : undefined;
+};
+
+type SprintLength = { duration: number; endDate?: string };
+
+// Resolves the sprint length from the text. A length given in days or weeks is always calculated here, even if the
+// model also returned an end date, because the model's own date arithmetic is unreliable. A named end date
+// ("to Friday") is only used when the text gives no length.
+const resolveSprintLength = (startDate: string, data: Record<string, unknown>): SprintLength | undefined => {
+  const lengthInDays = toIntegerInRange(data.lengthInDays, 1, MAX_SPRINT_LENGTH_DAYS);
+  if (lengthInDays !== undefined) {
+    // The start date counts as day one, so "5 days from 2 Oct" ends on 6 Oct
+    return { duration: CUSTOM_DURATION, endDate: addDays(startDate, lengthInDays - 1) };
+  }
+  const weeks = toIntegerInRange(data.weeks, 1, MAX_SPRINT_WEEKS);
+  if (weeks !== undefined) {
+    // More than 4 weeks becomes a custom range with the same rule as the form's week options: start + 7 x weeks
+    return weeks <= MAX_PRESET_SPRINT_WEEKS
+      ? { duration: weeks }
+      : { duration: CUSTOM_DURATION, endDate: addDays(startDate, weeks * 7) };
+  }
+  const endDate = toDateOnly(data.endDate);
+  if (endDate !== undefined && daysBetween(startDate, endDate) >= 0) {
+    return { duration: CUSTOM_DURATION, endDate };
+  }
+  return undefined;
+};
 
 // Keeps only the values that pass the same rules as the sprint creation form; anything else is left blank
 const sanitizeSprintAutofill = (raw: unknown): SprintAutofillResponse => {
@@ -286,14 +332,22 @@ const sanitizeSprintAutofill = (raw: unknown): SprintAutofillResponse => {
   if (name !== undefined) {
     result.name = name;
   }
-  const duration = toInteger(data.duration);
-  if (duration !== undefined && duration >= MIN_SPRINT_DURATION_WEEKS && duration <= MAX_SPRINT_DURATION_WEEKS) {
-    result.duration = duration;
-  }
+
   const startDate = toDateOnly(data.startDate);
   if (startDate !== undefined) {
     result.startDate = startDate;
+    const length = resolveSprintLength(startDate, data);
+    if (length?.endDate === undefined) {
+      if (length !== undefined) result.duration = length.duration;
+    } else if (daysBetween(startDate, length.endDate) <= MAX_SPRINT_LENGTH_DAYS) {
+      result.duration = length.duration;
+      result.endDate = length.endDate;
+    }
+  } else {
+    const presetWeeks = toIntegerInRange(data.weeks, 1, MAX_PRESET_SPRINT_WEEKS);
+    if (presetWeeks !== undefined) result.duration = presetWeeks;
   }
+
   const goals = toTrimmedString(data.goals, SPRINT_GOALS_MAX_LENGTH);
   if (goals !== undefined) {
     result.goals = goals;
@@ -309,19 +363,23 @@ const extractSprintDetails = async (
   const instructions = `
     You extract sprint details from user text for a sprint creation form. Today is ${WEEKDAYS[today.getDay()]}, ${formatDateOnly(today)}.
     Respond with a JSON object with exactly these keys:
-    "name" (string, the sprint's name or title), "duration" (integer, 1 to 4, the sprint length in whole weeks;
-    only set this if a whole number of weeks from 1 to 4 is explicitly stated or clearly implied - if the text
-    describes a custom or irregular date range instead, use null), "startDate" (string in YYYY-MM-DD format, the
-    sprint's start date; use null if the start date cannot be determined),
-    "goals" (string, a short free-text description of the sprint's goals).
+    "name" (string, the sprint's name or title),
+    "weeks" (integer, the sprint length in whole weeks, only if the length is given in weeks),
+    "lengthInDays" (integer, the sprint length in days, only if the length is given in days),
+    "startDate" (string in YYYY-MM-DD format, the sprint's first day; use null if it cannot be determined),
+    "endDate" (string in YYYY-MM-DD format, only if the text names the sprint's last day, e.g. "to Friday" or "until 20 Oct";
+    a weekday such as "to Friday" means the first such weekday on or after the start date),
+    "goals" (string, only what the sprint aims to achieve).
+    Never put the sprint's name, length or dates in goals; use null for goals if none are stated.
     Use null for any value that is not explicitly stated in the text. Never guess or infer missing values.
 
     Calendar of upcoming dates:
     ${buildUpcomingCalendar(today)}
 
-    For a relative start date (such as "tomorrow", "next Monday" or "this Friday") or a date without a year,
+    For a relative date (such as "tomorrow", "next Monday", "this Friday" or "to Friday") or a date without a year,
     copy the matching date from the calendar above instead of calculating it. "Next <weekday>" means the first
     such weekday after today. Only calculate a date yourself if it falls outside the calendar.
+    Never calculate an end date from a length; return the length in "weeks" or "lengthInDays" instead.
   `;
   return sanitizeSprintAutofill(await extractJson(instructions, text, user));
 };

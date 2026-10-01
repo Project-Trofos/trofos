@@ -5,10 +5,17 @@ import '../../mocks/antd';
 import SprintCreationModal from './SprintCreationModal';
 import store from '../../app/store';
 import type { Sprint } from '../../api/sprint';
+import dayjs from 'dayjs';
 
 const mocks = vi.hoisted(() => ({
   featureFlags: undefined as { feature_name: string; active: boolean }[] | undefined,
   autofillSprint: vi.fn(),
+  addSprint: vi.fn(),
+}));
+
+vi.mock('../../api/socket/sprintHooks', () => ({
+  useAddSprintMutation: () => [mocks.addSprint],
+  useUpdateSprintMutation: () => [vi.fn()],
 }));
 
 vi.mock('../../api/featureFlag', () => ({
@@ -137,5 +144,32 @@ describe('SprintModal AI assist', () => {
 
     await waitFor(() => expect(mocks.autofillSprint).toHaveBeenCalled());
     await screen.findByText('Could not find any sprint details in the text.');
+  });
+
+  it('should switch to a custom duration and show the date range for a custom range', async () => {
+    mocks.autofillSprint.mockReturnValue({
+      unwrap: () =>
+        Promise.resolve({ name: 'Sprint 7', duration: 0, startDate: '2026-10-05', endDate: '2026-10-09' }),
+    });
+    renderModal();
+
+    fireEvent.click(screen.getByLabelText('AI assist'));
+    fireEvent.change(screen.getByLabelText('AI assist input'), {
+      target: { value: 'Sprint 7 from next Monday to Friday' },
+    });
+    fireEvent.click(screen.getByText('Fill with AI'));
+
+    await waitFor(() => expect(screen.getByLabelText('Duration')).toHaveValue('0'));
+    expect(screen.getByLabelText('Sprint Name')).toHaveValue('Sprint 7');
+    expect(screen.getByLabelText('Start and End Date')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Start Date')).not.toBeInTheDocument();
+
+    // The mocked range picker can't display its value, so check the dates that would be submitted
+    mocks.addSprint.mockReturnValue({ unwrap: () => Promise.resolve() });
+    fireEvent.click(screen.getByText('Create'));
+    await waitFor(() => expect(mocks.addSprint).toHaveBeenCalled());
+    const payload = mocks.addSprint.mock.calls[0][0];
+    expect(payload.duration).toBe(0);
+    expect(payload.dates.map((date: string) => dayjs(date).format('YYYY-MM-DD'))).toEqual(['2026-10-05', '2026-10-09']);
   });
 });

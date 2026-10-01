@@ -58,9 +58,9 @@ describe('sanitizeCourseAutofill', () => {
 });
 
 describe('sanitizeSprintAutofill', () => {
-  it('should keep valid values', () => {
+  it('should keep valid values for a preset 1-4 week sprint', () => {
     expect(
-      sanitizeSprintAutofill({ name: ' Sprint 1 ', duration: 2, startDate: '2025-01-06', goals: ' Ship the MVP ' }),
+      sanitizeSprintAutofill({ name: ' Sprint 1 ', weeks: 2, startDate: '2025-01-06', goals: ' Ship the MVP ' }),
     ).toEqual({
       name: 'Sprint 1',
       duration: 2,
@@ -69,15 +69,28 @@ describe('sanitizeSprintAutofill', () => {
     });
   });
 
+  it('should keep a preset duration even without a start date', () => {
+    expect(sanitizeSprintAutofill({ weeks: 3 })).toEqual({ duration: 3 });
+  });
+
   it('should leave nulls and missing values blank', () => {
-    expect(sanitizeSprintAutofill({ name: null, duration: null, startDate: null, goals: null })).toEqual({});
+    expect(
+      sanitizeSprintAutofill({
+        name: null,
+        weeks: null,
+        lengthInDays: null,
+        startDate: null,
+        endDate: null,
+        goals: null,
+      }),
+    ).toEqual({});
     expect(sanitizeSprintAutofill({})).toEqual({});
   });
 
-  it('should drop a duration outside 1-4, including the custom 0 duration', () => {
-    expect(sanitizeSprintAutofill({ duration: 0 })).toEqual({});
-    expect(sanitizeSprintAutofill({ duration: 5 })).toEqual({});
-    expect(sanitizeSprintAutofill({ duration: 2.5 })).toEqual({});
+  it('should drop week counts that are zero, fractional or above 12', () => {
+    expect(sanitizeSprintAutofill({ weeks: 0, startDate: '2026-10-05' })).toEqual({ startDate: '2026-10-05' });
+    expect(sanitizeSprintAutofill({ weeks: 2.5, startDate: '2026-10-05' })).toEqual({ startDate: '2026-10-05' });
+    expect(sanitizeSprintAutofill({ weeks: 13, startDate: '2026-10-05' })).toEqual({ startDate: '2026-10-05' });
   });
 
   it('should drop a start date that is not a real YYYY-MM-DD calendar date', () => {
@@ -86,9 +99,9 @@ describe('sanitizeSprintAutofill', () => {
     expect(sanitizeSprintAutofill({ startDate: '2025-01-06T00:00:00.000Z' })).toEqual({});
   });
 
-  it('should drop non-numeric durations that coerce to valid numbers', () => {
-    expect(sanitizeSprintAutofill({ duration: true })).toEqual({});
-    expect(sanitizeSprintAutofill({ duration: [2] })).toEqual({});
+  it('should drop non-numeric week counts that coerce to valid numbers', () => {
+    expect(sanitizeSprintAutofill({ weeks: true })).toEqual({});
+    expect(sanitizeSprintAutofill({ weeks: [2] })).toEqual({});
   });
 
   it('should drop an empty or overlong name or goals', () => {
@@ -101,13 +114,105 @@ describe('sanitizeSprintAutofill', () => {
     expect(sanitizeSprintAutofill(null)).toEqual({});
     expect(sanitizeSprintAutofill('text')).toEqual({});
   });
+
+  describe('custom date ranges', () => {
+    it('should use a named end date as a custom range', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', endDate: '2026-10-09' })).toEqual({
+        duration: 0,
+        startDate: '2026-10-05',
+        endDate: '2026-10-09',
+      });
+    });
+
+    it('should allow a one-day range', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', endDate: '2026-10-05' })).toEqual({
+        duration: 0,
+        startDate: '2026-10-05',
+        endDate: '2026-10-05',
+      });
+    });
+
+    it('should drop an end date before the start date', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', endDate: '2026-10-04' })).toEqual({
+        startDate: '2026-10-05',
+      });
+    });
+
+    it('should count the last day when the length is given in days', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-02', lengthInDays: 5 })).toEqual({
+        duration: 0,
+        startDate: '2026-10-02',
+        endDate: '2026-10-06',
+      });
+    });
+
+    it('should work across a year boundary', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-12-30', lengthInDays: 5 })).toEqual({
+        duration: 0,
+        startDate: '2026-12-30',
+        endDate: '2027-01-03',
+      });
+    });
+
+    it('should turn more than 4 weeks into a custom range of start + 7 x weeks', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', weeks: 6 })).toEqual({
+        duration: 0,
+        startDate: '2026-10-05',
+        endDate: '2026-11-16',
+      });
+    });
+
+    it('should calculate the end from a day count even if the model also returned an end date', () => {
+      // The model sometimes works out its own end date from a length and gets it wrong
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-02', lengthInDays: 5, endDate: '2026-10-07' })).toEqual({
+        duration: 0,
+        startDate: '2026-10-02',
+        endDate: '2026-10-06',
+      });
+    });
+
+    it('should calculate the end from a week count even if the model also returned an end date', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', weeks: 6, endDate: '2026-11-15' })).toEqual({
+        duration: 0,
+        startDate: '2026-10-05',
+        endDate: '2026-11-16',
+      });
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', weeks: 2, endDate: '2026-10-16' })).toEqual({
+        duration: 2,
+        startDate: '2026-10-05',
+      });
+    });
+
+    it('should drop range fields when there is no start date', () => {
+      expect(sanitizeSprintAutofill({ endDate: '2026-10-09' })).toEqual({});
+      expect(sanitizeSprintAutofill({ lengthInDays: 5 })).toEqual({});
+      expect(sanitizeSprintAutofill({ weeks: 6 })).toEqual({});
+    });
+
+    it('should allow a 12-week sprint but drop anything longer, and out-of-range day counts', () => {
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', weeks: 12 })).toEqual({
+        duration: 0,
+        startDate: '2026-10-05',
+        endDate: '2026-12-28',
+      });
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', endDate: '2026-12-29' })).toEqual({
+        startDate: '2026-10-05',
+      });
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', lengthInDays: 85 })).toEqual({
+        startDate: '2026-10-05',
+      });
+      expect(sanitizeSprintAutofill({ startDate: '2026-10-05', lengthInDays: 0 })).toEqual({
+        startDate: '2026-10-05',
+      });
+    });
+  });
 });
 
 describe('extractSprintDetails', () => {
   beforeEach(() => mockCreate.mockReset());
 
   it("should give the model today's date so relative dates resolve correctly", async () => {
-    mockCreate.mockResolvedValue(mockCompletion('{"startDate":"2026-10-05","duration":2}'));
+    mockCreate.mockResolvedValue(mockCompletion('{"startDate":"2026-10-05","weeks":2}'));
 
     const result = await extractSprintDetails('2 weeks starting next Monday', '42', new Date(2026, 8, 30));
 
@@ -129,6 +234,18 @@ describe('extractSprintDetails', () => {
     // Covers four weeks ahead, across the month boundary
     expect(prompt).toContain('Wednesday 2026-10-28');
     expect(prompt).not.toContain('2026-10-29');
+  });
+
+  it('should ask for custom ranges and keep length and dates out of goals', async () => {
+    mockCreate.mockResolvedValue(mockCompletion('{}'));
+
+    await extractSprintDetails('Sprint 7 from next Monday to Friday', '42', new Date(2026, 8, 30));
+
+    const prompt: string = mockCreate.mock.calls[0][0].messages[0].content;
+    expect(prompt).toContain('"endDate"');
+    expect(prompt).toContain('"lengthInDays"');
+    expect(prompt).toContain('"weeks"');
+    expect(prompt).toMatch(/never put the sprint's name, length or dates in goals/i);
   });
 
   it('should throw a generic error when the AI call fails', async () => {
