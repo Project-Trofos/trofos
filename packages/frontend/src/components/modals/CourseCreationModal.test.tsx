@@ -7,6 +7,19 @@ import CourseCreationModal from './CourseCreationModal';
 import store from '../../app/store';
 import server from '../../mocks/server';
 
+const mocks = vi.hoisted(() => ({
+  featureFlags: undefined as { feature_name: string; active: boolean }[] | undefined,
+  autofillCourse: vi.fn(),
+}));
+
+vi.mock('../../api/featureFlag', () => ({
+  useGetFeatureFlagsQuery: () => ({ data: mocks.featureFlags }),
+}));
+
+vi.mock('../../api/ai', () => ({
+  useAutofillCourseMutation: () => [mocks.autofillCourse, { isLoading: false }],
+}));
+
 describe('test course creation modal', () => {
   // Establish API mocking before all tests.
   beforeAll(() => server.listen());
@@ -87,5 +100,54 @@ describe('test course creation modal', () => {
 
     // Modal is closed
     await expectModalInvisible(baseElement);
+  });
+
+  describe('AI assist', () => {
+    beforeEach(() => {
+      mocks.featureFlags = [{ feature_name: 'ai_autofill', active: true }];
+      mocks.autofillCourse.mockReset();
+    });
+
+    afterAll(() => {
+      mocks.featureFlags = undefined;
+    });
+
+    const fillWithAi = async (text: string) => {
+      fireEvent.click(screen.getByText(/create course/i));
+      fireEvent.click(await screen.findByLabelText('AI assist'));
+      fireEvent.change(screen.getByLabelText('AI assist input'), { target: { value: text } });
+      fireEvent.click(screen.getByText('Fill with AI'));
+    };
+
+    it('should not show AI assist when the feature flag is off', async () => {
+      mocks.featureFlags = [{ feature_name: 'ai_autofill', active: false }];
+      setup();
+      fireEvent.click(screen.getByText(/create course/i));
+
+      await screen.findByLabelText(/course name/i);
+      expect(screen.queryByLabelText('AI assist')).not.toBeInTheDocument();
+    });
+
+    it('should fill only the fields returned by the AI', async () => {
+      mocks.autofillCourse.mockReturnValue({
+        unwrap: () => Promise.resolve({ courseName: 'Software Engineering', courseCode: 'CS3203' }),
+      });
+      setup();
+      await fillWithAi('CS3203 Software Engineering');
+
+      await waitFor(() => expect(screen.getByLabelText(/course name/i)).toHaveValue('Software Engineering'));
+      expect(screen.getByLabelText(/course code/i)).toHaveValue('CS3203');
+      expect(mocks.autofillCourse).toHaveBeenCalledWith({ text: 'CS3203 Software Engineering' });
+    });
+
+    it('should leave the form untouched when the request fails', async () => {
+      mocks.autofillCourse.mockReturnValue({ unwrap: () => Promise.reject(new Error('failed')) });
+      setup();
+      await fillWithAi('some course');
+
+      await waitFor(() => expect(mocks.autofillCourse).toHaveBeenCalled());
+      expect(screen.getByLabelText(/course name/i)).toHaveValue('');
+      expect(screen.getByLabelText(/course code/i)).toHaveValue('');
+    });
   });
 });

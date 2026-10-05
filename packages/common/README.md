@@ -1,10 +1,14 @@
 TROFOS common package, if different services have coupling, like redis keys/ channels
 
-Modifying this:
+Publishing a new version (from `packages/common`):
 
-1. `npm login` according to credentials in TROFOS playbook
-
-2. `npm publish --access public`
+1. `pnpm run prisma-generate` to make sure the generated Prisma clients are up to date
+2. `pnpm run build` to compile to `dist/`
+3. `cp dist/src/* dist/` (`tsc` emits to `dist/src/`, but `main` points at `dist/index.js`)
+4. Bump the version in `package.json`. It must be higher than `npm view @trofos-nus/common version`, not just the version in git
+5. `npm publish --dry-run --access public` and check the file list (`dist/index.js`, new migrations)
+6. `npm login` according to credentials in TROFOS playbook
+7. `npm publish --access public`
 
 **ENSURE YOU HAVE `.env` WITH DATABASE_URL AND AI_DATABASE_URL FOR ALL PACKAGES WHICH INSTALLS THIS - NEEDED FOR POSTINSTALL**
 

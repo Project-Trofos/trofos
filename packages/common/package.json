@@ -1,9 +1,17 @@
 {
   "name": "@trofos-nus/common",
-  "version": "1.0.19",
+  "version": "1.0.26",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "prisma",
+    "prisma_pgvector",
+    "src",
+    "README.md",
+    "tsconfig.json"
+  ],
   "scripts": {
     "build": "tsc",
     "prisma-generate": "dotenv -e ../../../.env.production.local -- pnpm exec prisma generate && dotenv -e ../../../.env.production.local -- pnpm exec prisma generate --schema prisma_pgvector/schema_ai.prisma",
