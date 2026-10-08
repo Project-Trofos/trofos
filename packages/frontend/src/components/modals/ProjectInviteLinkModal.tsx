@@ -1,5 +1,5 @@
 import { LinkOutlined } from '@ant-design/icons';
-import { Button, Input, message, Modal, Space, Spin, Typography } from 'antd';
+import { Button, Input, message, Modal, QRCode, Space, Spin, Typography } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { useCreateOrGetProjectInviteLinkMutation } from '../../api/invite';
 import { Invite } from '../../api/types';
@@ -68,6 +68,18 @@ export default function ProjectInviteLinkModal({ projectId }: ProjectInviteLinkM
                   <Input aria-label="Project invite link" readOnly value={inviteLink} />
                   <Button onClick={copyInviteLink}>Copy</Button>
                 </Space.Compact>
+                <Space direction="vertical" align="center" style={{ display: 'flex' }}>
+                  <QRCode
+                    type="svg"
+                    value={inviteLink}
+                    size={200}
+                    color="#000000"
+                    bgColor="#ffffff"
+                    role="img"
+                    aria-label="Project invite link QR code"
+                  />
+                  <Typography.Text type="secondary">Scan to open the project invitation</Typography.Text>
+                </Space>
                 <Typography.Text type="secondary">Expires {formatDbTimestamp(invite.expiry_date)}</Typography.Text>
               </>
             )}
