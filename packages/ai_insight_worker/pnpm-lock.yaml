@@ -12,8 +12,8 @@ importers:
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
       '@trofos-nus/common':
-        specifier: ^1.0.19
-        version: 1.0.19(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
+        specifier: ^1.0.26
+        version: 1.0.26(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -100,8 +100,8 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@trofos-nus/common@1.0.19':
-    resolution: {integrity: sha512-7ybQt3oUWMvg5AfpCCmPen8kP6mp2VhlNsDo9Vi3kKLIXm8nVbv8dCH36u/ZYBxnYyfgfvOLBEROBmE/65zTiQ==}
+  '@trofos-nus/common@1.0.26':
+    resolution: {integrity: sha512-lq3dQ3D3X0pDD0ShmfPndafkusEMCuVwirfoT6nkAwcFH+BRgNOC2DM00pEPMJBdKAJbKySF3B0gw2lp45MmhA==}
     peerDependencies:
       '@prisma/client': '>=4.8.1'
       '@types/bcryptjs': ^2.4.4
@@ -297,6 +297,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -443,7 +444,7 @@ snapshots:
     dependencies:
       '@redis/client': 1.6.0
 
-  '@trofos-nus/common@1.0.19(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+  '@trofos-nus/common@1.0.26(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
     dependencies:
       '@prisma/client': 4.8.1(prisma@4.8.1)
       '@types/bcryptjs': 2.4.6
