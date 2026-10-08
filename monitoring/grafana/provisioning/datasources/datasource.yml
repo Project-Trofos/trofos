@@ -19,6 +19,13 @@ datasources:
     basicAuth: false
     editable: true
     uid: ds-loki
+    jsonData:
+      derivedFields:
+        - datasourceUid: ds-tempo
+          matcherRegex: '"trace_id":"(\w+)"'
+          name: TraceID
+          url: '$${__value.raw}'
+          urlDisplayLabel: 'View Trace'
 
   - name: Tempo
     type: tempo
@@ -33,6 +40,8 @@ datasources:
         datasourceUid: ds-loki
         filterByTraceID: true
         filterBySpanID: false
+        spanStartTimeShift: '-1m'
+        spanEndTimeShift: '1m'
       tracesToMetrics:
         datasourceUid: ds-prometheus
       nodeGraph:

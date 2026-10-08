@@ -1,6 +1,20 @@
 import pino, { Logger, LoggerOptions, Bindings } from 'pino';
 import defaultConfig from './config';
 import { ENVIRONMENTS } from './constants';
+import { trace } from '@opentelemetry/api';
+
+// mixins
+const tracingMixin = () => {
+  const activeSpan = trace.getActiveSpan();
+  if (!activeSpan) return {};
+
+  const spanContext = activeSpan.spanContext();
+  return {
+    trace_id: spanContext.traceId,
+    span_id: spanContext.spanId,
+    trace_flags: `0${spanContext.traceFlags.toString(16)}`,
+  };
+};
 
 class LoggerProvider {
   private logger: Logger | null = null;
@@ -12,6 +26,7 @@ class LoggerProvider {
     try {
       this.logger = pino({
         ...baseConfig,
+        mixin: tracingMixin,
         ...options,
       });
 
