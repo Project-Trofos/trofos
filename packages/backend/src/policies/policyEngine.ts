@@ -3,6 +3,7 @@ import express from 'express';
 import { PolicyOutcome } from './policyTypes';
 import coursePolicy from './course.policy';
 import projectPolicy from './project.policy';
+import projectOwnerPolicy from './projectOwner.policy';
 import userPolicy from './user.policy';
 import feedbackPolicy from './feedback.policy';
 import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
@@ -10,6 +11,7 @@ import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
 const commandMap: { [policyName: string]: any } = {};
 commandMap[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicy;
 commandMap[projectPolicy.POLICY_NAME] = projectPolicy.applyProjectPolicy;
+commandMap[projectOwnerPolicy.POLICY_NAME] = projectOwnerPolicy.applyProjectOwnerPolicy;
 commandMap[userPolicy.POLICY_NAME] = userPolicy.applyUserPolicy;
 commandMap[feedbackPolicy.POLICY_NAME] = feedbackPolicy.applyFeedbackPolicy;
 

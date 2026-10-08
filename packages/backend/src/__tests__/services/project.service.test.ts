@@ -1,11 +1,13 @@
 import {
   BacklogStatus,
   BacklogStatusType,
+  Prisma,
   Project,
   ProjectGitLink,
   User,
   UsersOnProjects,
   UsersOnProjectOnSettings,
+  UsersOnRolesOnCourses,
 } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
 import project from '../../services/project.service';
@@ -19,6 +21,7 @@ import {
 import { settingsData } from '../mocks/settingsData';
 import projectPolicy from '../../policies/constraints/project.constraint';
 import { userData } from '../mocks/userData';
+import { STUDENT_ROLE_ID } from '../../helpers/constants';
 
 describe('project.service tests', () => {
   const projectPolicyConstraint = projectPolicy.projectPolicyConstraint(1, true);
@@ -150,6 +153,128 @@ describe('project.service tests', () => {
 
       const result = await project.addUser(PROJECT_ID, userData[INDEX].user_email);
       expect(result).toEqual<UsersOnProjects>(resultMock);
+    });
+  });
+
+  describe('addUserByInvite', () => {
+    it('upserts course membership, project membership, and project settings in one transaction', async () => {
+      const INDEX = 0;
+      const PROJECT_ID = projectsData[INDEX].id;
+      const COURSE_ID = projectsData[INDEX].course_id;
+      const user = userData[INDEX];
+      const courseMembership: UsersOnRolesOnCourses = {
+        id: 1,
+        course_id: COURSE_ID,
+        user_id: user.user_id,
+        role_id: STUDENT_ROLE_ID,
+      };
+      const projectMembership: UsersOnProjects = {
+        project_id: PROJECT_ID,
+        user_id: user.user_id,
+        created_at: new Date(),
+      };
+      const projectSettings: UsersOnProjectOnSettings = {
+        project_id: PROJECT_ID,
+        user_id: user.user_id,
+        email_notification: false,
+      };
+      const mockTransactionClient = {
+        user: {
+          findUniqueOrThrow: jest.fn().mockResolvedValue(user),
+        },
+        project: {
+          findFirstOrThrow: jest.fn().mockResolvedValue(projectsData[INDEX]),
+        },
+        usersOnRolesOnCourses: {
+          upsert: jest.fn().mockResolvedValue(courseMembership),
+        },
+        usersOnProjects: {
+          upsert: jest.fn().mockResolvedValue(projectMembership),
+        },
+        usersOnProjectOnSettings: {
+          upsert: jest.fn().mockResolvedValue(projectSettings),
+        },
+      };
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        return callback(mockTransactionClient as unknown as Prisma.TransactionClient);
+      });
+
+      await expect(project.addUserByInvite(PROJECT_ID, user.user_email)).resolves.toEqual(projectMembership);
+      expect(mockTransactionClient.project.findFirstOrThrow).toHaveBeenCalledWith({
+        where: {
+          id: PROJECT_ID,
+        },
+      });
+      expect(mockTransactionClient.usersOnRolesOnCourses.upsert).toHaveBeenCalledWith({
+        where: {
+          user_id_course_id: {
+            user_id: user.user_id,
+            course_id: COURSE_ID,
+          },
+        },
+        create: {
+          course_id: COURSE_ID,
+          user_id: user.user_id,
+          role_id: STUDENT_ROLE_ID,
+        },
+        update: {},
+      });
+      expect(mockTransactionClient.usersOnProjects.upsert).toHaveBeenCalledWith({
+        where: {
+          project_id_user_id: {
+            project_id: PROJECT_ID,
+            user_id: user.user_id,
+          },
+        },
+        create: {
+          project_id: PROJECT_ID,
+          user_id: user.user_id,
+        },
+        update: {},
+      });
+      expect(mockTransactionClient.usersOnProjectOnSettings.upsert).toHaveBeenCalledWith({
+        where: {
+          project_id_user_id: {
+            project_id: PROJECT_ID,
+            user_id: user.user_id,
+          },
+        },
+        create: {
+          project_id: PROJECT_ID,
+          user_id: user.user_id,
+        },
+        update: {},
+      });
+    });
+
+    it('rejects the transaction when a membership operation fails', async () => {
+      const user = userData[0];
+      const transactionError = new Error('Failed to add project membership');
+      const mockTransactionClient = {
+        user: {
+          findUniqueOrThrow: jest.fn().mockResolvedValue(user),
+        },
+        project: {
+          findFirstOrThrow: jest.fn().mockResolvedValue(projectsData[0]),
+        },
+        usersOnRolesOnCourses: {
+          upsert: jest.fn().mockResolvedValue({}),
+        },
+        usersOnProjects: {
+          upsert: jest.fn().mockRejectedValue(transactionError),
+        },
+        usersOnProjectOnSettings: {
+          upsert: jest.fn(),
+        },
+      };
+
+      prismaMock.$transaction.mockImplementation(async (callback) => {
+        return callback(mockTransactionClient as unknown as Prisma.TransactionClient);
+      });
+
+      await expect(project.addUserByInvite(projectsData[0].id, user.user_email)).rejects.toThrow(transactionError);
+      expect(mockTransactionClient.usersOnProjectOnSettings.upsert).not.toHaveBeenCalled();
     });
   });
 

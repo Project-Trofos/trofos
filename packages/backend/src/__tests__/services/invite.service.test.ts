@@ -1,62 +1,89 @@
 import { prismaMock } from '../../models/mock/mockPrismaClient';
-import { mockInviteInfoFromProjId, updatedInviteData, validInviteData } from '../mocks/inviteData';
+import { updatedInviteData, validInviteData } from '../mocks/inviteData';
 import invite from '../../services/invite.service';
 
 describe('invite.service tests', () => {
-  describe('getInvite', () => {
+  describe('getInviteByProjectId', () => {
     it('should return invite if exists', async () => {
       prismaMock.invite.findUnique.mockResolvedValueOnce(validInviteData);
 
-      const result = await invite.getInvite(validInviteData.project_id, validInviteData.email);
+      const result = await invite.getInviteByProjectId(validInviteData.project_id);
       expect(result).toEqual(validInviteData);
     });
 
     it('should return null if not exists', async () => {
       prismaMock.invite.findUnique.mockResolvedValueOnce(null);
 
-      const result = await invite.getInvite(validInviteData.project_id, validInviteData.email);
+      const result = await invite.getInviteByProjectId(validInviteData.project_id);
       expect(result).toEqual(null);
     });
   });
 
   describe('getInviteByToken', () => {
     it('should return invite if exists', async () => {
-      prismaMock.invite.findFirstOrThrow.mockResolvedValueOnce(validInviteData);
+      prismaMock.invite.findUnique.mockResolvedValueOnce(validInviteData);
 
       const result = await invite.getInviteByToken(validInviteData.unique_token);
       expect(result).toEqual(validInviteData);
     });
 
-    it('should throw if not exists', async () => {
+    it('should return null if not exists', async () => {
       const invalidToken = 'invalidToken';
-      prismaMock.invite.findFirstOrThrow.mockRejectedValue(Error());
+      prismaMock.invite.findUnique.mockResolvedValueOnce(null);
 
-      await expect(invite.getInviteByToken(invalidToken)).rejects.toThrow(Error);
+      await expect(invite.getInviteByToken(invalidToken)).resolves.toBeNull();
     });
   });
 
-  describe('getInviteByProjectId', () => {
-    it('should return all invites of a project', async () => {
-      const mockWithEmptyToken = mockInviteInfoFromProjId.map((x) => ({
-        ...x,
-        unique_token: '',
-      }));
+  describe('getInviteMetadataByToken', () => {
+    it('should return the inviter, project and course metadata', async () => {
+      const metadata = {
+        ...validInviteData,
+        inviter: { user_display_name: 'Alex Tan' },
+        project: {
+          pname: 'Test project',
+          course: { cname: 'Test course', shadow_course: false },
+        },
+      };
+      prismaMock.invite.findUnique.mockResolvedValueOnce(metadata);
 
-      prismaMock.invite.findMany.mockResolvedValueOnce(mockWithEmptyToken);
+      const result = await invite.getInviteMetadataByToken(validInviteData.unique_token);
 
-      const result = await invite.getInviteByProjectId(mockWithEmptyToken[0].project_id);
-      expect(result).toEqual(mockWithEmptyToken);
+      expect(prismaMock.invite.findUnique).toHaveBeenCalledWith({
+        where: { unique_token: validInviteData.unique_token },
+        include: {
+          inviter: { select: { user_display_name: true } },
+          project: {
+            include: {
+              course: { select: { cname: true, shadow_course: true } },
+            },
+          },
+        },
+      });
+      expect(result).toEqual(metadata);
     });
   });
 
   describe('createInvite', () => {
-    it('should return created invite', async () => {
-      prismaMock.invite.create.mockResolvedValueOnce(validInviteData);
+    it('should create an invite without conflicting with an existing project link', async () => {
+      prismaMock.invite.upsert.mockResolvedValueOnce(validInviteData);
       const result = await invite.createInvite(
         validInviteData.project_id,
-        validInviteData.email,
         validInviteData.unique_token,
+        validInviteData.inviter_id,
       );
+
+      expect(prismaMock.invite.upsert).toHaveBeenCalledWith({
+        where: {
+          project_id: validInviteData.project_id,
+        },
+        create: {
+          project_id: validInviteData.project_id,
+          unique_token: validInviteData.unique_token,
+          inviter_id: validInviteData.inviter_id,
+        },
+        update: {},
+      });
       expect(result).toEqual(validInviteData);
     });
   });
@@ -66,20 +93,10 @@ describe('invite.service tests', () => {
       prismaMock.invite.update.mockResolvedValueOnce(updatedInviteData);
       const result = await invite.updateInvite(
         validInviteData.project_id,
-        validInviteData.email,
         updatedInviteData.unique_token,
+        updatedInviteData.inviter_id,
       );
       expect(result).toEqual(updatedInviteData);
-    });
-  });
-
-  describe('deleteInvite', () => {
-    it('should return deleted invite', async () => {
-      const deletedInvite = validInviteData;
-
-      prismaMock.invite.delete.mockResolvedValueOnce(deletedInvite);
-      const result = await invite.deleteInvite(deletedInvite.project_id, deletedInvite.email);
-      expect(result).toEqual(deletedInvite);
     });
   });
 });

@@ -273,6 +273,45 @@ describe('auth.middleware tests', () => {
   });
 
   describe('when an api request is made for a particular project', () => {
+    it('should apply a project policy without requiring a role action', async () => {
+      const policyEngineResponseObject = {
+        isPolicyValid: true,
+      } as PolicyOutcome;
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
+      const testCookie = 'testCookie';
+      const mockRequest = createRequest();
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = testCookie;
+      mockRequest.params.projectId = '1';
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+
+      await hasAuthForProject(null, 'PROJECT_OWNER_POLICY')(mockRequest, mockResponse, mockNext);
+
+      expect(sessionServiceGetUserSessionSpy).toHaveBeenCalledWith(testCookie);
+      expect(roleServiceGetUserRoleActionsForProject).not.toHaveBeenCalled();
+      expect(policyEngineSpy).toHaveBeenCalledWith(mockRequest, sessionServiceResponseObject, 'PROJECT_OWNER_POLICY');
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('should reject a request when its project policy denies access', async () => {
+      const policyEngineResponseObject = {
+        isPolicyValid: false,
+      } as PolicyOutcome;
+      sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
+      policyEngineSpy.mockResolvedValueOnce(policyEngineResponseObject);
+      const mockRequest = createRequest();
+      mockRequest.cookies[TROFOS_SESSIONCOOKIE_NAME] = 'testCookie';
+      mockRequest.params.projectId = '1';
+      const mockResponse = createResponse();
+      const mockNext = jest.fn() as express.NextFunction;
+
+      await hasAuthForProject(null, 'PROJECT_OWNER_POLICY')(mockRequest, mockResponse, mockNext);
+
+      expect(mockResponse.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
     it('should reject the request if the user does not have permission to perform actions on this project', async () => {
       sessionServiceGetUserSessionSpy.mockResolvedValueOnce(sessionServiceResponseObject);
       roleServiceGetUserRoleActionsForProject.mockResolvedValueOnce(roleServiceUserRoleActionsForCourseObject);

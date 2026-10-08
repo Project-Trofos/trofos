@@ -1,7 +1,9 @@
-import { inviteHTMLSubject, inviteHTMLTemplate, inviteTextTemplate } from '../templates/email';
 import sgMail from '@sendgrid/mail';
+import { inviteHTMLSubject, inviteHTMLTemplate, inviteTextTemplate } from '../templates/email';
 
-sgMail.setApiKey(process.env.EMAIL_KEY || '');
+if (process.env.EMAIL_KEY) {
+  sgMail.setApiKey(process.env.EMAIL_KEY);
+}
 
 // Disable SES features if in test env or email service is not provided
 function isESPEnabled() {
@@ -12,7 +14,7 @@ async function sendEmail(emailDest: string, subject: string, body: string) {
   const msg = {
     to: emailDest,
     from: process.env.AWS_SES_FROM_EMAIL || '',
-    subject: subject,
+    subject,
     text: body,
   };
   sgMail.send(msg).then(() => {
@@ -28,9 +30,8 @@ async function sendInviteEmail(emailDest: string, projectName: string, uniqueTok
     html: inviteHTMLTemplate(uniqueToken),
     text: inviteTextTemplate(uniqueToken),
   };
-  sgMail.send(msg).then(() => {
-    console.log('Email sent');
-  });
+
+  await sgMail.send(msg);
 }
 
 export default {

@@ -27,6 +27,7 @@ model User {
   api_usages         ApiUsage[]
   user_api_key       UserApiKey?
   comments           IssueComment[]
+  createdInvites     Invite[]                @relation("InviteCreator")
 }
 
 model UserSession {
@@ -99,6 +100,9 @@ model Project {
 
   /// All projects that are assigned to act upon this project.
   targetProjects ProjectAssignment[] @relation("TargetProject")
+
+  // Optional Invite link that is unique to each project
+  invite Invite?
 }
 
 /// Represents an assignment relationship between two projects, 
@@ -417,12 +421,13 @@ model Issue {
 }
 
 model Invite {
-  project_id   Int
-  email        String
-  unique_token String
+  project_id   Int      @id
+  inviter_id   Int
+  unique_token String   @unique
   expiry_date  DateTime @default(dbgenerated("NOW() + interval '1 week'"))
 
-  @@id([project_id, email]) //limit one invite per project per email
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  inviter User    @relation("InviteCreator", fields: [inviter_id], references: [user_id], onDelete: Restrict)
 }
 
 model UserApiKey {
@@ -483,6 +488,7 @@ enum Feature {
   sso_login
   ai_insights
   user_guide_recommender
+  project_invite_links
   ai_autofill
 }
 
