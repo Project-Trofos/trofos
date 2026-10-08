@@ -52,6 +52,8 @@ export const corsOptions = {
   credentials: true,
 };
 
+// GitHub signatures must be checked against bytes before any JSON parsing.
+app.use('/api/github', githubRouter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -112,9 +114,6 @@ router.use('/feedback', feedbackRouter);
 
 // Routes for role
 router.use('/role', roleRouter);
-
-// Routes for github app
-router.use('/github', githubRouter);
 
 // Routes for settings
 router.use('/settings', settingsRouter);

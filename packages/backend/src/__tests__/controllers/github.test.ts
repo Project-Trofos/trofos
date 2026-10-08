@@ -22,6 +22,7 @@ describe('github controller tests', () => {
       spies.handleWebhook.mockResolvedValueOnce([mockBacklogData]);
 
       const mockReq = createRequest({
+        headers: { 'x-github-event': 'pull_request' },
         body: mockOpenedPRGithubPayload,
       });
       const mockRes = createResponse();
@@ -37,6 +38,7 @@ describe('github controller tests', () => {
       spies.handleWebhook.mockResolvedValueOnce([mockBacklogData]);
 
       const mockReq = createRequest({
+        headers: { 'x-github-event': 'pull_request' },
         body: {
           ...mockOpenedPRGithubPayload,
           pull_request: { title: 'No Backlog Id', merged: false },

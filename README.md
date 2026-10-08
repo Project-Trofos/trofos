@@ -1,5 +1,29 @@
 # TROFOS
 
+### GitHub webhook configuration
+
+Set `GITHUB_WEBHOOK_SECRET` in `packages/backend/.env.development.local` for local
+development, or in the environment file used by the deployment Docker Compose
+command. Configure the same randomly generated secret under **Webhook secret** in
+the existing GitHub App settings. Never commit the secret. The webhook URL remains
+`https://<trofos-host>/api/github`; subscribe to **Pull request** events.
+
+The receiver verifies `X-Hub-Signature-256` against the original request bytes before
+parsing JSON. Unsigned/invalid signatures return 401; a missing server secret returns
+503 (including locally). Requests must be uncompressed JSON and no larger than 1 MB.
+Malformed supported events return 400. Signed ping and unsupported events/actions
+are acknowledged without changing stories. Opening a PR marks its referenced story
+in progress; merging marks it done. The response waits for the database transaction.
+
+Deploy the backend secret and configure the matching App secret before sending
+deliveries. In the App's **Advanced / Recent deliveries** view, inspect failed
+responses and redeliver after correcting configuration or processing errors.
+Backend logs include event type and delivery ID, not payloads or signatures.
+Delivery IDs are diagnostic only: persistent deduplication, event ordering, and
+installation authorisation are not implemented. Existing repository URL mappings
+and project-prefix handling are unchanged; this does not verify ownership of a
+project's linked repository.
+
 TROFOS, is intended to be the academic counterpart of Jira, equipping students with a tool that mirrors Jira's capabilities to develop a grasp of agile methodologies, aligning with industry practices.
 
 ## Contributor guide

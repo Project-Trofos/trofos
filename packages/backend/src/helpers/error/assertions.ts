@@ -243,7 +243,14 @@ export function assertRepoLinkIsValid(repoLink: string | undefined): asserts rep
 export function assertGithubPayloadIsValid(
   payload: { [key: string]: any } | undefined,
 ): asserts payload is { [key: string]: any } {
-  if (!payload) {
+  if (
+    !payload ||
+    !['opened', 'closed'].includes(payload.action) ||
+    typeof payload.pull_request?.title !== 'string' ||
+    typeof payload.pull_request?.merged !== 'boolean' ||
+    typeof payload.repository?.clone_url !== 'string' ||
+    !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\.git$/.test(payload.repository.clone_url)
+  ) {
     throw new BadRequestError('Invalid payload in webhook');
   }
 }
