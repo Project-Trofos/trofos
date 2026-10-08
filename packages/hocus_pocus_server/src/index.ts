@@ -5,12 +5,14 @@ import { Logger } from "@hocuspocus/extension-logger";
 import { Database } from "@hocuspocus/extension-database";
 import expressWebsockets from "express-ws";
 import { PrismaClient } from '@prisma/client';
+import { trace, Span } from '@opentelemetry/api';
 import { getLogger } from '@trofos-nus/common';
 
 const app = expressWebsockets(express());
 
 const prisma = new PrismaClient();
 const logger = getLogger();
+const tracer = trace.getTracer('trofos-hocus-pocus');
 
 const server = Server.configure({
   port: 3002,
@@ -18,7 +20,9 @@ const server = Server.configure({
   address: '127.0.0.1',
   name: 'hocuspocus-trofos-01',
   extensions: [
-    new Logger(),
+    new Logger({
+      log: (message) => logger.debug(message),
+    }),
     new Database({
       fetch: async ({ documentName }) => {
         // Lets standardize document name to be sprint id
@@ -36,6 +40,7 @@ const server = Server.configure({
             return null;
           }
         } catch (error) {
+          logger.error({ error, sprint_id: documentName }, 'Error fetching collab_notes');
           throw error;
         }
       },
@@ -51,31 +56,50 @@ const server = Server.configure({
             }
           });
         } catch (error) {
+          logger.error({ error, sprint_id: documentName }, 'Error storing collab_notes');
           throw error;
         }
       },
     })
   ],
   async onAuthenticate(data) {
-    const url = `${process.env.BACKEND_URL}/api/sprint/${data.documentName}/live-notes/auth`;
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Cookie': data.requestHeaders.cookie || '',
-        'Content-Type': 'application/json',
+    return await tracer.startActiveSpan('hocuspocus.authenticate', async (span: Span) => {
+      try {
+        span.setAttribute('sprint_id', data.documentName);
+
+        const url = `${process.env.BACKEND_URL}/api/sprint/${data.documentName}/live-notes/auth`;
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Cookie': data.requestHeaders.cookie || '',
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!res.ok) {
+          logger.warn({ status: res.status, sprint_id: data.documentName }, 'Live-notes authentication failed');
+          throw new Error("Failed to authenticate");
+        }
+
+        logger.info({ sprint_id: data.documentName }, 'Live-notes authenticated successfully');
+        return data;
+      } catch (error) {
+        span.recordException(error as Error);
+        throw error;
+      } finally {
+        span.end();
       }
     });
-
-    if (!res.ok) {
-      throw new Error("Failed to authenticate");
-    }
-
-    return data;
   }
 })
 
 app.app.ws("/api/ws/collaboration", (ws, req) => {
-  logger.info('Hocus Pocus connection');
+  logger.info({ url: req.url, remote_addr: req.socket.remoteAddress }, 'Hocus Pocus WebSocket connection started');
+
+  ws.on('close', (code, reason) => {
+    logger.info({ code, reason: reason.toString() }, 'Hocus Pocus WebSocket connection closed');
+  });
+
   server.handleConnection(ws, req);
 });
 
