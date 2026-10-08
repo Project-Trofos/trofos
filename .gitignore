@@ -28,3 +28,8 @@ yarn-error.log*
 backup-script/logs
 
 pgvector_client/
+
+# Playwright
+playwright-report/
+test-results/
+auth-state-chromium.json
