@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Divider, Input, Select, Space } from 'antd';
+import { Divider, Input, Select } from 'antd';
 import AdminUserTable from '../tables/AdminUserTable';
 import { useGetUsersQuery } from '../../api/user';
 import AddUserModal from '../modals/AddUserModal';
@@ -92,28 +92,26 @@ export default function UserManagement(): JSX.Element {
   ];
 
   return (
-    <Row>
-      <Col offset={4} span={16}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <AddUserModal />
-          <div style={{ display: 'flex', gap: '12px', width: '60%' }}>
-            <Input
-              placeholder='Search User by ID, Name, Email'
-              onChange={(e) => setSearchText(e.target.value)}
-              style={{ width: '65%' }}
-            />
+    <>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
+        <AddUserModal />
+        <div style={{ display: 'flex', gap: '12px', flex: 1, maxWidth: 600 }}>
+          <Input
+            placeholder='Search User by ID, Name, Email'
+            onChange={(e) => setSearchText(e.target.value)}
+            style={{ flex: 2 }}
+          />
 
-            <Select
-              defaultValue='any'
-              onChange={(value) => setInactivityFilter(value)}
-              options={filterDateOptions}
-              style={{ width: '35%' }}
-            />
-          </div>
+          <Select
+            defaultValue='any'
+            onChange={(value) => setInactivityFilter(value)}
+            options={filterDateOptions}
+            style={{ flex: 1, minWidth: 160 }}
+          />
         </div>
-        <Divider />
-        <AdminUserTable users={filteredUsers} roles={getRoles} />
-      </Col>
-    </Row>
+      </div>
+      <Divider />
+      <AdminUserTable users={filteredUsers} roles={getRoles} />
+    </>
   );
 }

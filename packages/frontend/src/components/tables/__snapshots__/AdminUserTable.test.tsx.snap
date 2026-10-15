@@ -5,6 +5,7 @@ exports[`test UserTable > should render table with correct fields 1`] = `
   <div>
     <div
       class="ant-table-wrapper"
+      style="width: 100%;"
     >
       <div
         class="ant-spin-nested-loading"
@@ -26,13 +27,16 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                 >
                   <colgroup>
                     <col
-                      style="width: 15%;"
+                      style="width: 10%;"
                     />
                     <col
-                      style="width: 30%;"
+                      style="width: 25%;"
                     />
                     <col
-                      style="width: 15%;"
+                      style="width: 20%;"
+                    />
+                    <col
+                      style="width: 12%;"
                     />
                     <col
                       style="width: 20%;"
@@ -56,6 +60,12 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         scope="col"
                       >
                         Email
+                      </th>
+                      <th
+                        class="ant-table-cell"
+                        scope="col"
+                      >
+                        Name
                       </th>
                       <th
                         class="ant-table-cell"
@@ -93,6 +103,11 @@ exports[`test UserTable > should render table with correct fields 1`] = `
                         class="ant-table-cell"
                       >
                         testEmail@test.com
+                      </td>
+                      <td
+                        class="ant-table-cell"
+                      >
+                        Test User
                       </td>
                       <td
                         class="ant-table-cell"
