@@ -201,6 +201,7 @@ export const exampleCourse: CourseData = {
       start_date: '2024-09-01',
       deadline: '2024-09-15',
       course_id: 1,
+      max_marks: 100,
       created_at: '2024-08-20T10:00:00Z',
     },
     {
@@ -209,6 +210,7 @@ export const exampleCourse: CourseData = {
       start_date: '2024-10-01',
       deadline: '2024-10-10',
       course_id: 1,
+      max_marks: 100,
       created_at: '2024-09-25T10:00:00Z',
     },
   ],

@@ -1,6 +1,7 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { assertCourseIdIsValid, getDefaultErrorRes } from '../helpers/error';
+import { UserSession } from '@prisma/client';
+import { assertCourseIdIsValid, assertMaxMarksIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertDateIsBefore,
   assertDateIsValid,
@@ -78,11 +79,21 @@ async function update(req: express.Request, res: express.Response) {
       assertDateIsValid(body.milestoneDeadline);
     }
 
+    const milestoneMaxMarks = body.milestoneMaxMarks !== undefined ? Number(body.milestoneMaxMarks) : undefined;
+    if (milestoneMaxMarks !== undefined) {
+      assertMaxMarksIsValid(milestoneMaxMarks);
+    }
+    const confirm = req.query.confirm === 'true';
+    const { userSession } = res.locals as { userSession: UserSession };
+
     const result = await milestoneService.update(
       Number(milestoneId),
       body.milestoneStartDate ? new Date(body.milestoneStartDate) : undefined,
       body.milestoneDeadline ? new Date(body.milestoneDeadline) : undefined,
       body.milestoneName,
+      milestoneMaxMarks,
+      confirm,
+      userSession.user_id,
     );
 
     return res.status(StatusCodes.OK).json(result);
@@ -96,8 +107,9 @@ async function remove(req: express.Request, res: express.Response) {
     const { milestoneId } = req.params;
 
     assertMilestoneIdIsValid(milestoneId);
+    const confirm = req.query.confirm === 'true';
 
-    const result = await milestoneService.remove(Number(milestoneId));
+    const result = await milestoneService.remove(Number(milestoneId), confirm);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

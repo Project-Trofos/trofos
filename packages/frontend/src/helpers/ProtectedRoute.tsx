@@ -6,6 +6,7 @@ import Container from '../components/layouts/Container';
 import { canDisplay } from './conditionalRender';
 import { COURSE_MANAGER_ACTIONS, UserPermissionActions, MANAGE_API_KEY_ACTIONS } from './constants';
 import { useGetUserInfoQuery } from '../api/auth';
+import { useGetFeatureFlagsQuery } from '../api/featureFlag';
 import LoadingComponent from '../components/common/LoadingComponent';
 
 /**
@@ -50,6 +51,35 @@ export function AdminProtected({ children }: { children: JSX.Element }): JSX.Ele
     return (
       <Container>
         <Empty description="You are not authorized to view this page!" />
+      </Container>
+    );
+  }
+
+  return children;
+}
+
+/**
+ * A react component that protects a route behind a feature flag — the route's page is only
+ * rendered while that flag is active.
+ */
+export function FeatureFlagProtected({
+  feature,
+  children,
+}: {
+  feature: string;
+  children: JSX.Element;
+}): JSX.Element {
+  const { data: featureFlags, isLoading } = useGetFeatureFlagsQuery();
+  const isFeatureEnabled = featureFlags?.some((flag) => flag.feature_name === feature && flag.active);
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (!isFeatureEnabled) {
+    return (
+      <Container>
+        <Empty description="This feature is currently disabled." />
       </Container>
     );
   }

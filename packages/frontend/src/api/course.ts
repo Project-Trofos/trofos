@@ -262,6 +262,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         milestoneName: string;
         milestoneStartDate: Date;
         milestoneDeadline: Date;
+        milestoneMaxMarks?: number;
       }
     >({
       query: (params) => ({
@@ -271,6 +272,7 @@ const extendedApi = trofosApiSlice.injectEndpoints({
           milestoneName: params.milestoneName,
           milestoneStartDate: params.milestoneStartDate.toString(),
           milestoneDeadline: params.milestoneDeadline.toString(),
+          milestoneMaxMarks: params.milestoneMaxMarks,
         },
         credentials: 'include',
       }),
@@ -282,10 +284,11 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       {
         courseId: string;
         milestoneId: number;
+        confirm?: boolean;
       }
     >({
       query: (params) => ({
-        url: `course/${params.courseId}/milestone/${params.milestoneId}`,
+        url: `course/${params.courseId}/milestone/${params.milestoneId}${params.confirm ? '?confirm=true' : ''}`,
         method: 'DELETE',
         credentials: 'include',
       }),
@@ -297,15 +300,17 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       {
         courseId: string;
         milestoneId: number;
+        confirm?: boolean;
         payload: {
           milestoneName?: string;
           milestoneStartDate?: Date;
           milestoneDeadline?: Date;
+          milestoneMaxMarks?: number;
         };
       }
     >({
       query: (params) => ({
-        url: `course/${params.courseId}/milestone/${params.milestoneId}`,
+        url: `course/${params.courseId}/milestone/${params.milestoneId}${params.confirm ? '?confirm=true' : ''}`,
         method: 'PUT',
         body: {
           ...params.payload,

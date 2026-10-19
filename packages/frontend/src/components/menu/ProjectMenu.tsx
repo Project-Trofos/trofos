@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
+import { useGetFeatureFlagsQuery } from '../../api/featureFlag';
 
 export default function ProjectMenu(): JSX.Element {
   const params = useParams();
@@ -16,6 +17,9 @@ export default function ProjectMenu(): JSX.Element {
     const split = location.pathname.split('/');
     return split[3];
   }, [location.pathname]);
+
+  const { data: featureFlags } = useGetFeatureFlagsQuery();
+  const isManualGradingEnabled = featureFlags?.some((flag) => flag.feature_name === 'manual_grading' && flag.active);
 
   return (
     <ConfigProvider
@@ -41,6 +45,7 @@ export default function ProjectMenu(): JSX.Element {
           { key: 'statistics', label: 'Statistics' },
           { key: 'report', label: 'Report' },
           { key: 'feedback', label: 'Feedback' },
+          ...(isManualGradingEnabled ? [{ key: 'grades', label: 'Grades' }] : []),
           { key: 'settings', label: 'Settings' },
         ]}
         selectedKeys={[selectedTab]}
