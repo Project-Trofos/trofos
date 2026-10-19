@@ -115,6 +115,44 @@ export type Milestone = {
   start_date: string;
   deadline: string;
   course_id: number;
+  max_marks: number;
+  created_at: string;
+};
+
+export type GradeStatus = 'DRAFT' | 'PUBLISHED';
+
+export type Grade = {
+  id: number;
+  project_id: number;
+  milestone_id: number;
+  score: number | null;
+  comment: string | null;
+  status: GradeStatus;
+  grader_id: number | null;
+  created_at: string;
+  updated_at: string;
+  milestone: Milestone;
+};
+
+export type GradeAuditAction =
+  | 'MILESTONE_GRADE_UPSERTED'
+  | 'MILESTONE_GRADE_PUBLISHED'
+  | 'MILESTONE_GRADE_UNPUBLISHED'
+  | 'MILESTONE_GRADE_DELETED'
+  | 'MILESTONE_MAX_MARKS_UPDATED'
+  | 'TA_ASSIGNED';
+
+export type GradeAuditLogEntry = {
+  id: number;
+  project_id: number;
+  milestone_id: number | null;
+  score: number | null;
+  assigned_ta_id: number | null;
+  action: GradeAuditAction;
+  comment: string | null;
+  status: GradeStatus | null;
+  actor_id: number | null;
+  actor: Pick<User, 'user_id' | 'user_display_name' | 'user_email'> | null;
   created_at: string;
 };
 

@@ -313,3 +313,33 @@ export function assertSortByIsValid(sortBy: string | undefined, allowedSortBy: s
     throw new BadRequestError('Invalid sortBy parameter, valid values are: ' + allowedSortBy.join(', '));
   }
 }
+
+// Assert gradeId is not undefined and it is a number
+export function assertGradeIdIsValid(gradeId: string | number | undefined): asserts gradeId is string | number {
+  if (!gradeId) {
+    throw new BadRequestError(getFieldUndefinedErrorMessage('gradeId'));
+  }
+  if (typeof gradeId !== 'number') {
+    assertStringIsNumberOrThrow(gradeId, getFieldNotNumberErrorMessage('gradeId'));
+  }
+}
+
+// Assert maxMarks is a non-negative number
+export function assertMaxMarksIsValid(maxMarks: number | undefined): asserts maxMarks is number {
+  if (maxMarks === undefined || Number.isNaN(maxMarks)) {
+    throw new BadRequestError(getFieldNotNumberErrorMessage('maxMarks'));
+  }
+  if (maxMarks < 0) {
+    throw new BadRequestError('maxMarks cannot be negative!');
+  }
+}
+
+// Assert score is a number between 0 and maxMarks (inclusive)
+export function assertScoreIsValid(score: number | undefined, maxMarks: number): asserts score is number {
+  if (score === undefined || Number.isNaN(score)) {
+    throw new BadRequestError(getFieldNotNumberErrorMessage('score'));
+  }
+  if (score < 0 || score > maxMarks) {
+    throw new BadRequestError(`score must be between 0 and ${maxMarks}!`);
+  }
+}

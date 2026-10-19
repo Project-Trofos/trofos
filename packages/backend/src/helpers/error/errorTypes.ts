@@ -20,4 +20,16 @@ class NotAuthorizedError extends Error {
   }
 }
 
-export { BadRequestError, NotAuthorizedError };
+class ConflictError extends Error {
+  statusCode: number;
+
+  details?: unknown;
+
+  public constructor(msg: string, details?: unknown) {
+    super(msg);
+    this.statusCode = StatusCodes.CONFLICT;
+    this.details = details;
+  }
+}
+
+export { BadRequestError, NotAuthorizedError, ConflictError };

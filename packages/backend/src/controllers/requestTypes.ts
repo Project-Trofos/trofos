@@ -65,6 +65,16 @@ export type MilestoneRequestBody = {
   milestoneName?: string;
   milestoneStartDate?: string;
   milestoneDeadline?: string;
+  milestoneMaxMarks?: string;
+};
+
+export type GradeRequestBody = {
+  score?: number;
+  comment?: string;
+};
+
+export type AssignTaRequestBody = {
+  assignedTaId?: number | null;
 };
 
 export type AnnouncementRequestBody = {

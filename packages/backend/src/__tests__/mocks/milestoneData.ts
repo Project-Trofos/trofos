@@ -7,6 +7,7 @@ export const milestoneData: Milestone[] = [
     name: 'Milestone 1',
     deadline: new Date(2023, 1, 15),
     start_date: new Date(2023, 1, 11),
+    max_marks: 100,
     created_at: new Date(),
   },
   {
@@ -15,6 +16,7 @@ export const milestoneData: Milestone[] = [
     name: 'Milestone 2',
     deadline: new Date(2023, 2, 15),
     start_date: new Date(2023, 2, 11),
+    max_marks: 100,
     created_at: new Date(),
   },
 ];

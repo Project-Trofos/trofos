@@ -126,6 +126,7 @@ describe('milestone controller tests', () => {
         },
       });
       const mockRes = createResponse();
+      mockRes.locals.userSession = { user_id: 7 };
 
       await milestoneController.update(mockReq, mockRes);
 
