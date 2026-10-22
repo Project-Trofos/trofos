@@ -20,6 +20,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
     "@prisma/client": "4.8.1",
     "@trofos-nus/common": "^1.0.26",
     "dotenv-cli": "^6.0.0",

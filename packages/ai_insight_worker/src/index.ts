@@ -1,5 +1,6 @@
 import './tracing';
 import { createClient } from 'redis';
+import { context, propagation, trace, Span, ROOT_CONTEXT } from '@opentelemetry/api';
 import {
   TASK_QUEUE_KEY,
   TASK_NOTIFICATIONS_CHANNEL,
@@ -11,6 +12,7 @@ import {
 import { handleAllInsights } from './service';
 
 const logger = getLogger();
+const tracer = trace.getTracer('trofos-ai-insight-worker');
 
 // Create a Redis client for publishing
 const redisClient = createClient({
@@ -25,25 +27,50 @@ const subscriber = createClient({
 subscriber.connect();
 
 logger.info('AI Insight Worker is running');
+
 // Subscribing to a channel
 subscriber.subscribe(TASK_NOTIFICATIONS_CHANNEL, async (message) => {
   let task: Task | null = null;
   try {
     logger.info(`Received message: ${message}`);
     task = JSON.parse(await redisClient.rPop(TASK_QUEUE_KEY) ?? 'null');
-    if (task !== null) {
-      logger.info(`Processing task: ${task.projectId} ${task.sprintId} ${task.user}`);
-      const wasAdded = await redisClient.sAdd(SPRINT_PROCESSING_SET, `${task.projectId}:${task.sprintId}`);
-      if (wasAdded === 0) {
-        logger.info(`Task ${task.projectId} ${task.sprintId} is already being processed`);
-        return;
-      }
 
-      // Process the task
-      await handleAllInsights(task.projectId, task.sprintId, task.user);
-      logger.info(`Task ${task.projectId} ${task.sprintId} processed`)
-      // Publish a message to the completed channel
-      await redisClient.publish(TASK_COMPLETED_CHANNEL, JSON.stringify(task));
+    if (task !== null) {
+      const currentTask = task;
+      const parentContext = propagation.extract(ROOT_CONTEXT, currentTask._traceContext || {});
+
+      await context.with(parentContext, async () => {
+        await tracer.startActiveSpan('ai_insight_worker.process_task', async (span: Span) => {
+          try {
+            span.setAttribute('project_id', currentTask.projectId);
+            span.setAttribute('sprint_id', currentTask.sprintId);
+            span.setAttribute('user_id', currentTask.user);
+
+            logger.info(`Processing task: ${currentTask.projectId} ${currentTask.sprintId} ${currentTask.user}`);
+
+            const wasAdded = await redisClient.sAdd(
+              SPRINT_PROCESSING_SET,
+              `${currentTask.projectId}:${currentTask.sprintId}`,
+            );
+            if (wasAdded === 0) {
+              logger.info(`Task ${currentTask.projectId} ${currentTask.sprintId} is already being processed`);
+              return;
+            }
+
+            // Process the task
+            await handleAllInsights(currentTask.projectId, currentTask.sprintId, currentTask.user);
+            logger.info(`Task ${currentTask.projectId} ${currentTask.sprintId} processed`);
+
+            // Publish a message to the completed channel
+            await redisClient.publish(TASK_COMPLETED_CHANNEL, JSON.stringify(currentTask));
+          } catch (error) {
+            span.recordException(error as Error);
+            throw error;
+          } finally {
+            span.end();
+          }
+        });
+      });
     } else {
       logger.info('No tasks to process');
     }

@@ -6,6 +6,7 @@ type Task = {
   projectId: number;
   sprintId: number;
   user: string;
+  _traceContext: Record<string, string>;
 };
 export type {
   Task

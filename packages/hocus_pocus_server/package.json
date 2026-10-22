@@ -17,6 +17,7 @@
     "@hocuspocus/extension-database": "^2.13.7",
     "@hocuspocus/extension-logger": "^2.13.7",
     "@hocuspocus/server": "^2.13.7",
+    "@opentelemetry/api": "^1.9.1",
     "@prisma/client": "4.8.1",
     "@trofos-nus/common": "^1.0.26",
     "dotenv-cli": "^6.0.0",

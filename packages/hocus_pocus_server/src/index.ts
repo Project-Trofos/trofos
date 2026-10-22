@@ -63,7 +63,7 @@ const server = Server.configure({
     })
   ],
   async onAuthenticate(data) {
-    return await tracer.startActiveSpan('hocuspocus.authenticate', async (span: Span) => {
+    return await tracer.startActiveSpan('hocus_pocus.authenticate', async (span: Span) => {
       try {
         span.setAttribute('sprint_id', data.documentName);
 
