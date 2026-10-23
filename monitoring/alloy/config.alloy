@@ -6,19 +6,9 @@ discovery.docker "trofos_containers" {
   }
 }
 
-discovery.relabel "container_labels" {
-  targets = discovery.docker.trofos_containers.targets
-
-  rule {
-    source_labels = ["__meta_docker_container_name"]
-    regex = "/(.*)"
-    target_label = "service_name"
-  }
-}
-
 loki.source.docker "container_logs" {
   host = "unix:///var/run/docker.sock"
-  targets = discovery.relabel.container_labels.output
+  targets = discovery.docker.trofos_containers.targets
   forward_to = [loki.process.pino_logs.receiver]
 }
 
@@ -28,6 +18,7 @@ loki.process "pino_logs" {
       level = "",
       timestamp = "",
       env = "",
+      service_name = "",
       request_method = "",
       request_url = "",
       response_status_code = "",
@@ -42,6 +33,7 @@ loki.process "pino_logs" {
     values = {
       level = "",
       env  = "",
+      service_name = "",
     }
   }
   stage.structured_metadata {

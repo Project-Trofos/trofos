@@ -49,6 +49,8 @@ services:
       - AI_DATABASE_URL=${E2E_AI_DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=${E2E_REDIS_URL}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=backend
     links:
       - postgres
     networks:
@@ -66,6 +68,8 @@ services:
       - DATABASE_URL=${E2E_DATABASE_URL}
       - BACKEND_URL=${BACKEND_URL}
       - NODE_ENV=${NODE_ENV}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=hocus_pocus_server
     networks:
       - application
   ai_insight_worker:
@@ -80,6 +84,8 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=${E2E_REDIS_URL}
       - NODE_ENV=${NODE_ENV}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=ai_insight_worker
     networks:
       - application
   postgres:

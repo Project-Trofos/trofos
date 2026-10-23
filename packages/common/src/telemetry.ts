@@ -7,7 +7,7 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 export function initTelemetry() {
   const sdk = new NodeSDK({
     resource: resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || process.env.npm_package_name || 'unknown-service',
+      [ATTR_SERVICE_NAME]: process.env.TELEMETRY_SERVICE_NAME || process.env.npm_package_name || 'unknown-service',
     }),
     traceExporter: new OTLPTraceExporter({
       url: `${process.env.OTEL_ENDPOINT}/v1/traces`,

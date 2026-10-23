@@ -25,6 +25,7 @@ function formatTimestamp() {
 
 const baseConfig: Record<string, string> = {
   env: process.env.NODE_ENV || ENVIRONMENTS.DEVELOPMENT,
+  service_name: process.env.TELEMETRY_SERVICE_NAME || process.env.npm_package_name || 'unknown-service',
 };
 
 const defaultConfig: LoggerConfig = {
@@ -48,10 +49,7 @@ const defaultConfig: LoggerConfig = {
           level: 'debug',
           options: {
             host: 'http://localhost:3100',
-            labels: {
-              service_name: process.env.npm_package_name || 'unknown-service',
-              ...baseConfig,
-            },
+            labels: baseConfig,
             propsToLabels: ['request_method', 'request_url', 'response_status_code'],
             silenceErrors: true,
           },
