@@ -1,6 +1,6 @@
 import pino, { Logger, LoggerOptions, Bindings } from 'pino';
 import defaultConfig from './config';
-import { ENVIRONMENTS } from './constants';
+import { ENVIRONMENTS } from '../constants';
 import { trace } from '@opentelemetry/api';
 
 // mixins

@@ -2,12 +2,14 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions';
+import { ENVIRONMENTS } from './constants';
 
 export function initTelemetry() {
   const sdk = new NodeSDK({
     resource: resourceFromAttributes({
       [ATTR_SERVICE_NAME]: process.env.TELEMETRY_SERVICE_NAME || process.env.npm_package_name || 'unknown-service',
+      [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: process.env.NODE_ENV || ENVIRONMENTS.DEVELOPMENT,
     }),
     traceExporter: new OTLPTraceExporter({
       url: `${process.env.OTEL_ENDPOINT}/v1/traces`,

@@ -1,5 +1,5 @@
 import type { LoggerOptions } from 'pino';
-import { ENVIRONMENTS } from './constants';
+import { ENVIRONMENTS } from '../constants';
 
 interface LoggerConfig {
   development: LoggerOptions;
