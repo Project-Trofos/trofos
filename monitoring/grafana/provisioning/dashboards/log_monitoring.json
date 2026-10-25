@@ -13,38 +13,16 @@
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "afxcoxgriat4wd",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerId": "Monitoring Dashboards",
       "grafana.app/sourceChecksum": "3ff01bda8d145ced0e2ca3fe10efb384",
-      "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/logs/loki.json",
+      "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/log_monitoring.json",
       "grafana.app/sourceTimestamp": "1788622611000",
-      "grafana.app/folderTitle": "logs",
-      "grafana.app/folderUrl": "/dashboards/f/afxcoxgriat4wd/logs"
+      "grafana.app/folder": ""
     }
   },
   "spec": {
-    "annotations": [
-      {
-        "kind": "AnnotationQuery",
-        "spec": {
-          "builtIn": true,
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "query": {
-            "datasource": {
-              "name": "-- Grafana --"
-            },
-            "group": "grafana",
-            "kind": "DataQuery",
-            "spec": {},
-            "version": "v0"
-          }
-        }
-      }
-    ],
+    "annotations": [],
     "cursorSync": "Off",
     "editable": true,
     "elements": {
@@ -699,7 +677,7 @@
                       "spec": {
                         "direction": "backward",
                         "editorMode": "code",
-                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"debug\"} | json |= \"$filter\" | line_format `{{.service_name}} {{if .request_method}}{{.request_method}} {{.request_url}} → {{.response_status_code}} ({{.responseTime}}ms){{else}}{{.msg}}{{end}}`",
+                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"debug\"} | json",
                         "queryType": "range"
                       },
                       "version": "v0"
@@ -720,7 +698,7 @@
                       "spec": {
                         "direction": "backward",
                         "editorMode": "code",
-                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"info\"} | json |= \"$filter\" | line_format `{{.service_name}} {{if .request_method}}{{.request_method}} {{.request_url}} → {{.response_status_code}} ({{.responseTime}}ms){{else}}{{.msg}}{{end}}`",
+                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"info\"} | json",
                         "queryType": "range"
                       },
                       "version": "v0"
@@ -741,7 +719,7 @@
                       "spec": {
                         "direction": "backward",
                         "editorMode": "code",
-                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"warn\"} | json |= \"$filter\" | line_format `{{.service_name}} {{if .request_method}}{{.request_method}} {{.request_url}} → {{.response_status_code}} ({{.responseTime}}ms){{else}}{{.msg}}{{end}}`",
+                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"warn\"} | json",
                         "queryType": "range"
                       },
                       "version": "v0"
@@ -762,7 +740,7 @@
                       "spec": {
                         "direction": "backward",
                         "editorMode": "code",
-                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"error\"} | json |= \"$filter\" | line_format `{{.service_name}} {{.err_type}}: {{.err_message}}`",
+                        "expr": "{env=\"$env\", service_name=~\"$service_name\", level=\"error\"} | json",
                         "queryType": "range"
                       },
                       "version": "v0"
@@ -790,17 +768,25 @@
               "options": {
                 "dedupStrategy": "none",
                 "detailsMode": "sidebar",
+                "displayedFields": [
+                  "detected_level",
+                  "service_name",
+                  "request_method",
+                  "request_url",
+                  "response_status_code",
+                  "msg"
+                ],
                 "enableInfiniteScrolling": false,
                 "enableLogDetails": true,
-                "prettifyLogMessage": false,
+                "prettifyLogMessage": true,
                 "showCommonLabels": false,
                 "showControls": true,
-                "showFieldSelector": false,
+                "showFieldSelector": true,
                 "showLabels": false,
                 "showLevel": true,
                 "showTime": true,
                 "sortOrder": "Descending",
-                "syntaxHighlighting": false,
+                "syntaxHighlighting": true,
                 "timestampResolution": "ms",
                 "unwrappedColumns": false,
                 "wrapLogMessage": false
@@ -922,7 +908,7 @@
       "timezone": "browser",
       "to": "now"
     },
-    "title": "Loki Monitoring - Logs and Metrics",
+    "title": "Log Monitoring",
     "variables": [
       {
         "kind": "QueryVariable",
