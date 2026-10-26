@@ -4,6 +4,7 @@ import coursePolicy from '../../policies/constraints/course.constraint';
 import milestoneService from '../../services/milestone.service';
 import { milestoneData } from '../mocks/milestoneData';
 import milestoneController from '../../controllers/milestone';
+import featureFlagService from '../../services/featureFlag.service';
 
 const spies = {
   get: jest.spyOn(milestoneService, 'get'),
@@ -11,9 +12,14 @@ const spies = {
   create: jest.spyOn(milestoneService, 'create'),
   update: jest.spyOn(milestoneService, 'update'),
   remove: jest.spyOn(milestoneService, 'remove'),
+  flag: jest.spyOn(featureFlagService, 'checkFeatureFlagActive'),
 };
 
 describe('milestone controller tests', () => {
+  beforeEach(() => {
+    spies.flag.mockResolvedValue(true);
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -133,6 +139,35 @@ describe('milestone controller tests', () => {
       expect(spies.update).toHaveBeenCalled();
       expect(mockRes.statusCode).toEqual(StatusCodes.OK);
       expect(mockRes._getData()).toEqual(JSON.stringify(updated));
+    });
+  });
+
+  describe('manual_grading flag off', () => {
+    it('update ignores milestoneMaxMarks', async () => {
+      spies.flag.mockResolvedValue(false);
+      spies.update.mockResolvedValueOnce(milestoneData[0]);
+      const mockReq = createRequest({
+        params: { milestoneId: milestoneData[0].id },
+        body: { milestoneMaxMarks: 50 },
+      });
+      const mockRes = createResponse();
+      mockRes.locals.userSession = { user_id: 7 };
+
+      await milestoneController.update(mockReq, mockRes);
+
+      expect(spies.update.mock.calls[0][4]).toBeUndefined();
+      expect(mockRes.statusCode).toEqual(StatusCodes.OK);
+    });
+
+    it('remove skips the grade confirmation', async () => {
+      spies.flag.mockResolvedValue(false);
+      spies.remove.mockResolvedValueOnce(milestoneData[0]);
+      const mockReq = createRequest({ params: { milestoneId: milestoneData[0].id } });
+      const mockRes = createResponse();
+
+      await milestoneController.remove(mockReq, mockRes);
+
+      expect(spies.remove).toHaveBeenCalledWith(Number(milestoneData[0].id), true);
     });
   });
 

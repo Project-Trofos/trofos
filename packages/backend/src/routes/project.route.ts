@@ -201,6 +201,22 @@ router.put(
   grade.assignTa,
 );
 
+// Upsert the grade for a project's sprint
+router.put(
+  `/:projectId/sprint/:sprintId/grade`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.upsertSprintGrade,
+);
+
+// Assign (or clear) the TA responsible for grading a project's sprint
+router.put(
+  `/:projectId/sprint/:sprintId/grade/assign-ta`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.assignTaForSprint,
+);
+
 // Set the telegram id for notifications for a project
 router.put(
   `/:projectId/telegramId`,

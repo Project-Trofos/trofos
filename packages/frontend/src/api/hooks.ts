@@ -16,6 +16,7 @@ import {
   useDeleteAnnouncementMutation,
   useUpdateAnnouncementMutation,
 } from './course';
+import { useGetFeatureFlagsQuery } from './featureFlag';
 import { isCurrent, isFuture, isPast } from './currentTime';
 import {
   useAddProjectUserMutation,
@@ -248,6 +249,8 @@ export function useProject(projectId: number) {
 // Get course information by id
 export const useCourse = (courseId?: string) => {
   const navigate = useNavigate();
+  const { data: featureFlags } = useGetFeatureFlagsQuery();
+  const isManualGradingEnabled = !!featureFlags?.some((flag) => flag.feature_name === 'manual_grading' && flag.active);
   const courseIdNumber = courseId ? Number(courseId) : undefined;
   const { data: courses, isLoading: isCoursesLoading } = useGetAllCoursesQuery({
     ids: courseIdNumber ? [courseIdNumber] : undefined,
@@ -355,13 +358,14 @@ export const useCourse = (courseId?: string) => {
         message.success('Milestone deleted!');
       } catch (e) {
         const err = e as { status?: number; data?: { details?: { gradeCount: number; publishedGradeCount: number } } };
-        if (err.status === 409 && err.data?.details) {
+        if (isManualGradingEnabled && err.status === 409 && err.data?.details) {
           confirmDeleteMilestone(
             async () => {
               await deleteMilestone({ courseId: course.id.toString(), milestoneId, confirm: true }).unwrap();
               message.success('Milestone deleted!');
             },
             () => navigate(`/course/${course.id}/grading?milestoneId=${milestoneId}`),
+            isManualGradingEnabled,
           );
           return;
         }
@@ -369,7 +373,7 @@ export const useCourse = (courseId?: string) => {
         message.error('Failed to delete milestone');
       }
     },
-    [deleteMilestone, course, navigate],
+    [deleteMilestone, course, navigate, isManualGradingEnabled],
   );
 
   const handleUpdateMilestone = useCallback(
@@ -390,7 +394,7 @@ export const useCourse = (courseId?: string) => {
         milestoneName,
         milestoneDeadline: milestoneDeadline?.toDate(),
         milestoneStartDate: milestoneStartDate?.toDate(),
-        milestoneMaxMarks,
+        milestoneMaxMarks: isManualGradingEnabled ? milestoneMaxMarks : undefined,
       };
       try {
         await updateMilestone({
@@ -401,7 +405,7 @@ export const useCourse = (courseId?: string) => {
         message.success('Milestone updated!');
       } catch (e) {
         const err = e as { status?: number; data?: { details?: { affectedGradeCount: number } } };
-        if (err.status === 409 && err.data?.details) {
+        if (isManualGradingEnabled && err.status === 409 && err.data?.details) {
           confirmResetGradesOnMaxMarksChange(err.data.details.affectedGradeCount, async () => {
             await updateMilestone({
               courseId: course.id.toString(),
@@ -414,10 +418,10 @@ export const useCourse = (courseId?: string) => {
           return;
         }
         console.log(getErrorMessage(e));
-        message.error(getErrorMessage(e));
+        message.error(isManualGradingEnabled ? getErrorMessage(e) : 'Failed to update milestone');
       }
     },
-    [updateMilestone, course],
+    [updateMilestone, course, isManualGradingEnabled],
   );
 
   const handleDeleteAnnouncement = useCallback(

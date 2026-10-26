@@ -18,6 +18,7 @@ const mockGrades: Grade[] = [
     id: 1,
     project_id: 1,
     milestone_id: 1,
+    sprint_id: null,
     score: 80,
     comment: 'Good work',
     status: 'PUBLISHED',
@@ -25,11 +26,13 @@ const mockGrades: Grade[] = [
     created_at: '2022-01-01',
     updated_at: '2022-01-01',
     milestone: mockMilestones[0],
+    sprint: null,
   },
   {
     id: 2,
     project_id: 1,
     milestone_id: 2,
+    sprint_id: null,
     score: 40,
     comment: null,
     status: 'DRAFT',
@@ -37,6 +40,7 @@ const mockGrades: Grade[] = [
     created_at: '2022-01-01',
     updated_at: '2022-01-01',
     milestone: mockMilestones[1],
+    sprint: null,
   },
 ];
 
@@ -60,6 +64,7 @@ const mockHistory: GradeAuditLogEntry[] = [
     id: 1,
     project_id: 1,
     milestone_id: 1,
+    sprint_id: null,
     score: 80,
     assigned_ta_id: null,
     action: 'MILESTONE_GRADE_PUBLISHED',
@@ -73,6 +78,7 @@ const mockHistory: GradeAuditLogEntry[] = [
     id: 2,
     project_id: 1,
     milestone_id: 1,
+    sprint_id: null,
     score: null,
     assigned_ta_id: 2,
     action: 'TA_ASSIGNED',
@@ -86,6 +92,7 @@ const mockHistory: GradeAuditLogEntry[] = [
     id: 3,
     project_id: 1,
     milestone_id: 1,
+    sprint_id: null,
     score: null,
     assigned_ta_id: null,
     action: 'MILESTONE_MAX_MARKS_UPDATED',
@@ -128,7 +135,12 @@ vi.mock('../../api/hooks/gradeHooks', () => ({
     grades: mockGrades,
     isLoading: false,
     handleUpsertMilestoneGrade: mockHandleUpsertMilestoneGrade,
+    handleUpsertSprintGrade: vi.fn(),
   }),
+}));
+
+vi.mock('../../api/sprint', () => ({
+  useGetSprintsByProjectIdQuery: () => ({ data: { sprints: [], unassignedBacklogs: [] }, isLoading: false }),
 }));
 
 describe('ProjectGrades', () => {
@@ -138,14 +150,26 @@ describe('ProjectGrades', () => {
     mockUseGetGradeHistoryQuery.mockClear();
   });
 
-  const setup = () =>
+  const setup = (initialEntry = '/project/1/grades') =>
     render(
-      <MemoryRouter initialEntries={['/project/1/grades']}>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <Routes>
           <Route path="project/:projectId/grades" element={<ProjectGrades />} />
         </Routes>
       </MemoryRouter>,
     );
+
+  it('opens the Sprints tab when the ?tab=sprints query param is present', () => {
+    setup('/project/1/grades?tab=sprints');
+
+    expect(screen.getByRole('tab', { name: 'Sprints' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('opens the Milestones tab by default', () => {
+    setup();
+
+    expect(screen.getByRole('tab', { name: 'Milestones' })).toHaveAttribute('aria-selected', 'true');
+  });
 
   it('shows the assigned TA name for each milestone row', () => {
     setup();

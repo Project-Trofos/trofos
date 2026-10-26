@@ -103,9 +103,71 @@ async function canEditGradeValue(
   return grade?.grader_id === userId;
 }
 
+/*
+      Assigning a TA to a sprint's grade is open to any course FACULTY (or an admin), mirroring
+      canAssignTa. Sprint is inherently project-scoped (unlike Milestone), so there's no
+      cross-course check to make here beyond "is this project in a course this user manages".
+*/
+async function canAssignTaForSprint(userId: number, projectId: number, isUserAdmin: boolean): Promise<boolean> {
+  if (isUserAdmin) return true;
+
+  const projects = await prisma.project.findMany({
+    where: {
+      AND: [
+        {
+          course: {
+            courseRoles: {
+              some: { user_id: userId, role_id: FACULTY_ROLE_ID },
+            },
+          },
+        },
+        { id: projectId },
+      ],
+    },
+  });
+
+  return projects.length === 1;
+}
+
+/*
+      Editing a sprint Grade's score/comment is restricted to the grade's assigned TA (or an
+      admin), mirroring canEditGradeValue.
+*/
+async function canEditSprintGradeValue(
+  userId: number,
+  projectId: number,
+  sprintId: number,
+  isUserAdmin: boolean,
+): Promise<boolean> {
+  if (isUserAdmin) return true;
+
+  const grade = await prisma.grade.findUnique({
+    where: { project_id_sprint_id: { project_id: projectId, sprint_id: sprintId } },
+  });
+
+  return grade?.grader_id === userId;
+}
+
+/*
+      Bulk-setting sprint max marks is a course-manager action, open to any course FACULTY
+      (or an admin) for that course.
+*/
+async function canBulkSetSprintMaxMarks(userId: number, courseId: number, isUserAdmin: boolean): Promise<boolean> {
+  if (isUserAdmin) return true;
+
+  const roles = await prisma.usersOnRolesOnCourses.findMany({
+    where: { user_id: userId, course_id: courseId, role_id: FACULTY_ROLE_ID },
+  });
+
+  return roles.length > 0;
+}
+
 export default {
   gradePolicyConstraint,
   canManageGrade,
   canAssignTa,
   canEditGradeValue,
+  canAssignTaForSprint,
+  canEditSprintGradeValue,
+  canBulkSetSprintMaxMarks,
 };

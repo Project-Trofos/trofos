@@ -7,7 +7,7 @@ import gradeConstraint from './constraints/grade.constraint';
 const POLICY_NAME = 'GRADE_POLICY';
 
 async function applyGradePolicy(req: express.Request, userSession: UserSession): Promise<PolicyOutcome> {
-  const { gradeId, projectId, milestoneId } = req.params;
+  const { gradeId, projectId, milestoneId, sprintId, courseId } = req.params;
   const isUserAdmin = userSession.user_is_admin;
   const policyConstraint = gradeConstraint.gradePolicyConstraint(userSession.user_id, isUserAdmin);
 
@@ -40,6 +40,38 @@ async function applyGradePolicy(req: express.Request, userSession: UserSession):
         Number(milestoneId),
         isUserAdmin,
       ),
+      policyConstraint,
+    };
+  }
+
+  // A sprint's grade is keyed by (projectId, sprintId), mirroring the milestone shape above.
+  if (projectId !== undefined && sprintId !== undefined) {
+    assertStringIsNumberOrThrow(projectId, 'projectId must be a string!');
+    assertStringIsNumberOrThrow(sprintId, 'sprintId must be a string!');
+
+    if (req.path.endsWith('/assign-ta')) {
+      return {
+        isPolicyValid: await gradeConstraint.canAssignTaForSprint(userSession.user_id, Number(projectId), isUserAdmin),
+        policyConstraint,
+      };
+    }
+
+    return {
+      isPolicyValid: await gradeConstraint.canEditSprintGradeValue(
+        userSession.user_id,
+        Number(projectId),
+        Number(sprintId),
+        isUserAdmin,
+      ),
+      policyConstraint,
+    };
+  }
+
+  // Course-level bulk max-marks route: only courseId is present, no gradeId/projectId/sprintId.
+  if (courseId !== undefined && req.path.endsWith('/sprint/grade/max-marks')) {
+    assertStringIsNumberOrThrow(courseId, 'courseId must be a string!');
+    return {
+      isPolicyValid: await gradeConstraint.canBulkSetSprintMaxMarks(userSession.user_id, Number(courseId), isUserAdmin),
       policyConstraint,
     };
   }

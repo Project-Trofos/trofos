@@ -305,6 +305,9 @@ model Sprint {
   feedback        Feedback[]
   collab_notes    Bytes?
   sprintInsights  SprintInsight[]
+  max_marks       Float?
+  grades          Grade[]
+  gradeAuditLogs  GradeAuditLog[]
 }
 
 model Feedback {
@@ -322,8 +325,10 @@ model Grade {
   id           Int         @id @default(autoincrement())
   project_id   Int
   project      Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  milestone_id Int
-  milestone    Milestone   @relation(fields: [milestone_id], references: [id], onDelete: Cascade)
+  milestone_id Int?
+  milestone    Milestone?  @relation(fields: [milestone_id], references: [id], onDelete: Cascade)
+  sprint_id    Int?
+  sprint       Sprint?     @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
   score        Float?
   comment      String?
   status       GradeStatus @default(DRAFT)
@@ -333,6 +338,7 @@ model Grade {
   updated_at   DateTime    @updatedAt
 
   @@unique([project_id, milestone_id])
+  @@unique([project_id, sprint_id])
 }
 
 model GradeAuditLog {
@@ -343,6 +349,11 @@ model GradeAuditLog {
   // Milestone-grade and TA-assignment events
   milestone_id Int?
   milestone    Milestone? @relation(fields: [milestone_id], references: [id], onDelete: Cascade)
+
+  // Sprint-grade and TA-assignment events
+  sprint_id Int?
+  sprint    Sprint? @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+
   score        Float?
 
   // TA-assignment events only
@@ -587,6 +598,12 @@ enum GradeAuditAction {
   MILESTONE_GRADE_DELETED
   MILESTONE_MAX_MARKS_UPDATED
   TA_ASSIGNED
+  SPRINT_GRADE_UPSERTED
+  SPRINT_GRADE_PUBLISHED
+  SPRINT_GRADE_UNPUBLISHED
+  SPRINT_GRADE_DELETED
+  SPRINT_MAX_MARKS_UPDATED
+  SPRINT_TA_ASSIGNED
 }
 
 enum BacklogType {

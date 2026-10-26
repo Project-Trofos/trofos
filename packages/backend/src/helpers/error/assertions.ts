@@ -343,3 +343,13 @@ export function assertScoreIsValid(score: number | undefined, maxMarks: number):
     throw new BadRequestError(`score must be between 0 and ${maxMarks}!`);
   }
 }
+
+// Assert sprintIds is a non-empty array of integers (for bulk sprint-grading operations)
+export function assertSprintIdsAreValid(sprintIds: unknown): asserts sprintIds is number[] {
+  if (!Array.isArray(sprintIds) || sprintIds.length === 0) {
+    throw new BadRequestError('Please provide a non-empty array of sprintIds.');
+  }
+  if (!sprintIds.every((id) => typeof id === 'number' && Number.isInteger(id))) {
+    throw new BadRequestError('All sprintIds must be integers.');
+  }
+}

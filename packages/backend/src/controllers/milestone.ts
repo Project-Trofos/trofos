@@ -1,6 +1,7 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { UserSession } from '@prisma/client';
+import { Feature, UserSession } from '@prisma/client';
+import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
 import { assertCourseIdIsValid, assertMaxMarksIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertDateIsBefore,
@@ -79,7 +80,10 @@ async function update(req: express.Request, res: express.Response) {
       assertDateIsValid(body.milestoneDeadline);
     }
 
-    const milestoneMaxMarks = body.milestoneMaxMarks !== undefined ? Number(body.milestoneMaxMarks) : undefined;
+    // max_marks (and its grade-reset side effects) only apply when manual grading is enabled
+    const isManualGradingEnabled = await checkFeatureFlagInCode(Feature.manual_grading);
+    const milestoneMaxMarks =
+      isManualGradingEnabled && body.milestoneMaxMarks !== undefined ? Number(body.milestoneMaxMarks) : undefined;
     if (milestoneMaxMarks !== undefined) {
       assertMaxMarksIsValid(milestoneMaxMarks);
     }
@@ -107,7 +111,9 @@ async function remove(req: express.Request, res: express.Response) {
     const { milestoneId } = req.params;
 
     assertMilestoneIdIsValid(milestoneId);
-    const confirm = req.query.confirm === 'true';
+    // With manual grading off, skip the grade-deletion confirmation and delete as before
+    const isManualGradingEnabled = await checkFeatureFlagInCode(Feature.manual_grading);
+    const confirm = !isManualGradingEnabled || req.query.confirm === 'true';
 
     const result = await milestoneService.remove(Number(milestoneId), confirm);
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown, message, Modal, Space } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import { useDeleteSprintMutation } from '../../api/socket/sprintHooks';
+import { useGetFeatureFlagsQuery } from '../../api/featureFlag';
 
 function SprintMenu(props: {
   sprintId: number;
@@ -11,6 +12,8 @@ function SprintMenu(props: {
 }): JSX.Element {
   const { sprintId, projectId, handleSprintOnClick, disableClickEvent } = props;
   const [deleteSprint] = useDeleteSprintMutation();
+  const { data: featureFlags } = useGetFeatureFlagsQuery();
+  const isManualGradingEnabled = featureFlags?.some((flag) => flag.feature_name === 'manual_grading' && flag.active);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -66,6 +69,7 @@ function SprintMenu(props: {
         <p>Are you sure you want to delete this sprint?</p>
         <p>Once this action is done, the sprint will be permenantly removed.</p>
         <p>Backlogs in this sprint will automatically be unassigned.</p>
+        {isManualGradingEnabled && <p>Grades associated with this sprint will also be permanently deleted.</p>}
       </Modal>
     </>
   );

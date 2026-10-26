@@ -108,4 +108,76 @@ describe('grade.constraint tests', () => {
       });
     });
   });
+
+  describe('canAssignTaForSprint', () => {
+    it('should return true if the user is an admin', async () => {
+      await expect(gradeConstraint.canAssignTaForSprint(1, 1, true)).resolves.toEqual(true);
+    });
+
+    it('should return true if the user has a FACULTY course role for the project', async () => {
+      const testProject = {} as Project;
+      prismaMock.project.findMany.mockResolvedValueOnce([testProject]);
+      await expect(gradeConstraint.canAssignTaForSprint(1, 1, false)).resolves.toEqual(true);
+    });
+
+    it('should return false if the user has no course role for the project', async () => {
+      prismaMock.project.findMany.mockResolvedValueOnce([]);
+      await expect(gradeConstraint.canAssignTaForSprint(1, 1, false)).resolves.toEqual(false);
+    });
+  });
+
+  describe('canEditSprintGradeValue', () => {
+    it('should return true if the user is an admin', async () => {
+      await expect(gradeConstraint.canEditSprintGradeValue(1, 1, 1, true)).resolves.toEqual(true);
+    });
+
+    it("should return true if the user is the sprint grade's assigned TA (grader_id)", async () => {
+      const testGrade = { grader_id: 1 } as Grade;
+      prismaMock.grade.findUnique.mockResolvedValueOnce(testGrade);
+      await expect(gradeConstraint.canEditSprintGradeValue(1, 1, 1, false)).resolves.toEqual(true);
+    });
+
+    it("should return false if the user is not the sprint grade's assigned TA", async () => {
+      const testGrade = { grader_id: 2 } as Grade;
+      prismaMock.grade.findUnique.mockResolvedValueOnce(testGrade);
+      await expect(gradeConstraint.canEditSprintGradeValue(1, 1, 1, false)).resolves.toEqual(false);
+    });
+
+    it('should return false if the project+sprint has no Grade record yet', async () => {
+      prismaMock.grade.findUnique.mockResolvedValueOnce(null);
+      await expect(gradeConstraint.canEditSprintGradeValue(1, 1, 1, false)).resolves.toEqual(false);
+    });
+
+    it('should query by the (project_id, sprint_id) composite key', async () => {
+      prismaMock.grade.findUnique.mockResolvedValueOnce({ grader_id: 1 } as Grade);
+      await gradeConstraint.canEditSprintGradeValue(1, 5, 9, false);
+      expect(prismaMock.grade.findUnique).toHaveBeenCalledWith({
+        where: { project_id_sprint_id: { project_id: 5, sprint_id: 9 } },
+      });
+    });
+  });
+
+  describe('canBulkSetSprintMaxMarks', () => {
+    it('should return true if the user is an admin', async () => {
+      await expect(gradeConstraint.canBulkSetSprintMaxMarks(1, 1, true)).resolves.toEqual(true);
+    });
+
+    it('should return true if the user has a FACULTY course role for the course', async () => {
+      prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce([{} as any]);
+      await expect(gradeConstraint.canBulkSetSprintMaxMarks(1, 1, false)).resolves.toEqual(true);
+    });
+
+    it('should return false if the user has no FACULTY course role for the course', async () => {
+      prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce([]);
+      await expect(gradeConstraint.canBulkSetSprintMaxMarks(1, 1, false)).resolves.toEqual(false);
+    });
+
+    it('should query for a FACULTY course role scoped to the given course', async () => {
+      prismaMock.usersOnRolesOnCourses.findMany.mockResolvedValueOnce([{} as any]);
+      await gradeConstraint.canBulkSetSprintMaxMarks(1, 5, false);
+      expect(prismaMock.usersOnRolesOnCourses.findMany).toHaveBeenCalledWith({
+        where: { user_id: 1, course_id: 5, role_id: FACULTY_ROLE_ID },
+      });
+    });
+  });
 });

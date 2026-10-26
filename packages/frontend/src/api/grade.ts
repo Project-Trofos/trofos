@@ -67,6 +67,39 @@ const extendedApi = trofosApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Grade'],
     }),
+
+    upsertSprintGrade: builder.mutation<Grade, { projectId: number; sprintId: number; score?: number; comment?: string }>({
+      query: ({ projectId, sprintId, ...payload }) => ({
+        url: `project/${projectId}/sprint/${sprintId}/grade`,
+        method: 'PUT',
+        body: payload,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Grade'],
+    }),
+
+    assignTaForSprint: builder.mutation<Grade, { projectId: number; sprintId: number; assignedTaId: number | null }>({
+      query: ({ projectId, sprintId, assignedTaId }) => ({
+        url: `project/${projectId}/sprint/${sprintId}/grade/assign-ta`,
+        method: 'PUT',
+        body: { assignedTaId },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Grade'],
+    }),
+
+    bulkSetSprintMaxMarks: builder.mutation<
+      { updatedCount: number },
+      { courseId: number; sprintIds: number[]; maxMarks: number; confirm?: boolean }
+    >({
+      query: ({ courseId, confirm, ...body }) => ({
+        url: `course/${courseId}/sprint/grade/max-marks${confirm ? '?confirm=true' : ''}`,
+        method: 'PUT',
+        body,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Grade', 'Sprint'],
+    }),
   }),
   overrideExisting: false,
 });
@@ -79,4 +112,7 @@ export const {
   usePublishGradeMutation,
   useUnpublishGradeMutation,
   useAssignTaMutation,
+  useUpsertSprintGradeMutation,
+  useAssignTaForSprintMutation,
+  useBulkSetSprintMaxMarksMutation,
 } = extendedApi;

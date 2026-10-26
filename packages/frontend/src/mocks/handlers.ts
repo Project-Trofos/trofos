@@ -160,6 +160,7 @@ export const MSW_SPRINT: Sprint[] = [
     goals: null,
     status: 'closed',
     backlogs: [],
+    max_marks: null,
   },
   {
     id: 3,
@@ -170,6 +171,7 @@ export const MSW_SPRINT: Sprint[] = [
     project_id: 1,
     goals: null,
     status: 'current',
+    max_marks: null,
     backlogs: [
       {
         backlog_id: 2,
@@ -327,6 +329,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 5,
@@ -338,6 +341,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 3,
@@ -349,6 +353,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 1,
@@ -360,6 +365,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
   ],
   unassignedBacklogs: [],

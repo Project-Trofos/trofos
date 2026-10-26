@@ -77,6 +77,11 @@ export type AssignTaRequestBody = {
   assignedTaId?: number | null;
 };
 
+export type BulkSetSprintMaxMarksRequestBody = {
+  sprintIds?: number[];
+  maxMarks?: number;
+};
+
 export type AnnouncementRequestBody = {
   courseId?: string;
   announcementTitle?: string;

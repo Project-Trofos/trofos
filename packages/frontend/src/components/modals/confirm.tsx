@@ -157,7 +157,14 @@ export function confirmUnpublishGrades(onOk: () => Promise<void>) {
 /**
  * Shows a modal warning that deleting a milestone will also delete its grades.
  */
-export function confirmDeleteMilestone(onOk: () => Promise<void>, onViewGrades: () => void) {
+export function confirmDeleteMilestone(
+  onOk: () => Promise<void>,
+  onViewGrades: () => void,
+  showGradeInfo = true,
+) {
+  if (!showGradeInfo) {
+    return confirm('Are you sure you want to delete this milestone?', onOk);
+  }
   const modal = confirm(
     <>
       <div>Are you sure you want to delete this milestone?</div>
@@ -184,6 +191,21 @@ export function confirmDeleteMilestone(onOk: () => Promise<void>, onViewGrades: 
 export function confirmResetGradesOnMaxMarksChange(affectedCount: number, onOk: () => Promise<void>) {
   return confirm(
     `Changing the total marks will reset the score and comment of ${affectedCount} existing grade(s) on this milestone. Are you sure you want to continue?`,
+    onOk,
+  );
+}
+
+/**
+ * Shows a modal warning that changing total marks for several selected sprints will reset
+ * existing grades on those sprints.
+ */
+export function confirmBulkResetSprintGradesOnMaxMarksChange(
+  sprintCount: number,
+  affectedCount: number,
+  onOk: () => Promise<void>,
+) {
+  return confirm(
+    `Changing total marks for ${sprintCount} selected sprint(s) will reset the score and comment of ${affectedCount} existing grade(s). Are you sure you want to continue?`,
     onOk,
   );
 }

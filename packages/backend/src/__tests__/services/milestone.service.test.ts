@@ -1,5 +1,6 @@
 import { Milestone } from '@prisma/client';
 import { prismaMock } from '../../models/mock/mockPrismaClient';
+import { HAS_GRADE_CONTENT } from '../../helpers/gradeFilters';
 import milestoneService from '../../services/milestone.service';
 
 import coursePolicy from '../../policies/constraints/course.constraint';
@@ -137,8 +138,12 @@ describe('milestone.service tests', () => {
       const result = await milestoneService.update(milestone.id, undefined, undefined, undefined, 50, true, 7);
 
       expect(result).toEqual<Milestone>(updatedMilestone);
+      expect(prismaMock.grade.findMany).toHaveBeenCalledWith({
+        where: { milestone_id: milestone.id, ...HAS_GRADE_CONTENT },
+        select: { project_id: true, id: true },
+      });
       expect(prismaMock.grade.updateMany).toHaveBeenCalledWith({
-        where: { milestone_id: milestone.id },
+        where: { milestone_id: milestone.id, ...HAS_GRADE_CONTENT },
         data: { score: null, comment: null },
       });
       expect(prismaMock.gradeAuditLog.createMany).toHaveBeenCalledWith({

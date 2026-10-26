@@ -5,6 +5,7 @@ import announcement from '../controllers/announcement';
 import course from '../controllers/course';
 import milestone from '../controllers/milestone';
 import grade from '../controllers/grade';
+import sprint from '../controllers/sprint';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
 import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import coursePolicy from '../policies/course.policy';
@@ -47,6 +48,22 @@ router.get(
   hasAuthForCourse(Action.read_grade, gradePolicy.POLICY_NAME),
   checkFeatureFlag(Feature.manual_grading),
   grade.listByCourse,
+);
+
+// Bulk-set total marks for selected sprints across the course's projects
+router.put(
+  '/:courseId/sprint/grade/max-marks',
+  hasAuthForCourse(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.bulkSetSprintMaxMarks,
+);
+
+// List all sprints across all of a course's projects (for the course-level sprint grading view)
+router.get(
+  '/:courseId/sprint',
+  hasAuthForCourse(Action.read_course, projectPolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  sprint.listSprintsByCourseId,
 );
 
 

@@ -2,6 +2,7 @@ import { accessibleBy } from '@casl/prisma';
 import { GradeAuditAction, GradeStatus, Milestone } from '@prisma/client';
 import { assertDateIsBefore } from '../helpers/error/assertions';
 import { BadRequestError, ConflictError } from '../helpers/error';
+import { HAS_GRADE_CONTENT } from '../helpers/gradeFilters';
 import prisma from '../models/prismaClient';
 import { AppAbility } from '../policies/policyTypes';
 
@@ -77,7 +78,10 @@ async function update(
   if (isMaxMarksChanging) {
     const [publishedCount, affectedGrades] = await Promise.all([
       prisma.grade.count({ where: { milestone_id: milestoneId, status: GradeStatus.PUBLISHED } }),
-      prisma.grade.findMany({ where: { milestone_id: milestoneId }, select: { project_id: true, id: true } }),
+      prisma.grade.findMany({
+        where: { milestone_id: milestoneId, ...HAS_GRADE_CONTENT },
+        select: { project_id: true, id: true },
+      }),
     ]);
 
     if (publishedCount > 0) {
@@ -96,7 +100,7 @@ async function update(
     return prisma.$transaction(async (tx) => {
       if (affectedGrades.length > 0) {
         await tx.grade.updateMany({
-          where: { milestone_id: milestoneId },
+          where: { milestone_id: milestoneId, ...HAS_GRADE_CONTENT },
           data: { score: null, comment: null },
         });
 

@@ -1,10 +1,10 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserSession } from '@prisma/client';
-import { assertCourseIdIsValid, assertProjectIdIsValid, assertGradeIdIsValid, getDefaultErrorRes } from '../helpers/error';
-import { assertMilestoneIdIsValid } from '../helpers/error/assertions';
+import { assertCourseIdIsValid, assertProjectIdIsValid, assertGradeIdIsValid, assertMaxMarksIsValid, getDefaultErrorRes } from '../helpers/error';
+import { assertMilestoneIdIsValid, assertSprintIdIsValid, assertSprintIdsAreValid } from '../helpers/error/assertions';
 import gradeService from '../services/grade.service';
-import { GradeRequestBody, AssignTaRequestBody } from './requestTypes';
+import { GradeRequestBody, AssignTaRequestBody, BulkSetSprintMaxMarksRequestBody } from './requestTypes';
 
 async function listByCourse(req: express.Request, res: express.Response) {
   try {
@@ -40,6 +40,25 @@ async function upsertMilestoneGrade(req: express.Request, res: express.Response)
     assertMilestoneIdIsValid(milestoneId);
 
     const result = await gradeService.upsertMilestoneGrade(Number(projectId), Number(milestoneId), userSession.user_id, {
+      score: body.score,
+      comment: body.comment,
+    });
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function upsertSprintGrade(req: express.Request, res: express.Response) {
+  try {
+    const { projectId, sprintId } = req.params;
+    const body = req.body as GradeRequestBody;
+    const { userSession } = res.locals as { userSession: UserSession };
+
+    assertProjectIdIsValid(projectId);
+    assertSprintIdIsValid(sprintId);
+
+    const result = await gradeService.upsertSprintGrade(Number(projectId), Number(sprintId), userSession.user_id, {
       score: body.score,
       comment: body.comment,
     });
@@ -96,6 +115,51 @@ async function assignTa(req: express.Request, res: express.Response) {
   }
 }
 
+async function assignTaForSprint(req: express.Request, res: express.Response) {
+  try {
+    const { projectId, sprintId } = req.params;
+    const body = req.body as AssignTaRequestBody;
+    const { userSession } = res.locals as { userSession: UserSession };
+
+    assertProjectIdIsValid(projectId);
+    assertSprintIdIsValid(sprintId);
+
+    const result = await gradeService.assignTaForSprint(
+      Number(projectId),
+      Number(sprintId),
+      body.assignedTaId ?? null,
+      userSession.user_id,
+    );
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
+async function bulkSetSprintMaxMarks(req: express.Request, res: express.Response) {
+  try {
+    const { courseId } = req.params;
+    const { confirm } = req.query;
+    const body = req.body as BulkSetSprintMaxMarksRequestBody;
+    const { userSession } = res.locals as { userSession: UserSession };
+
+    assertCourseIdIsValid(courseId);
+    assertSprintIdsAreValid(body.sprintIds);
+    assertMaxMarksIsValid(body.maxMarks);
+
+    const result = await gradeService.bulkSetSprintMaxMarks(
+      Number(courseId),
+      body.sprintIds,
+      body.maxMarks,
+      confirm === 'true',
+      userSession.user_id,
+    );
+    return res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+}
+
 async function getGradeHistory(req: express.Request, res: express.Response) {
   try {
     const { projectId } = req.params;
@@ -112,8 +176,11 @@ export default {
   listByCourse,
   listByProject,
   upsertMilestoneGrade,
+  upsertSprintGrade,
   publishGrade,
   unpublishGrade,
   assignTa,
+  assignTaForSprint,
+  bulkSetSprintMaxMarks,
   getGradeHistory,
 };

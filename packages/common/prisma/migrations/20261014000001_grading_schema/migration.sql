@@ -1,24 +1,8 @@
--- Grading feature schema (squashed).
---
--- This consolidates what was originally four migrations (add_milestone_grading,
--- insert_grading_actions_into_actions_on_roles, add_grade_audit_log,
--- remove_project_total_grade) into the feature's final shape directly: there is no
--- ProjectTotalGrade model and no TOTAL_GRADE_* audit actions in this history, since
--- that sub-feature was designed, built, and removed again before ever shipping.
--- TA assignment lives on Grade.grader_id (per project+milestone) instead.
---
--- Also adds the `manual_grading` Feature enum value, so this and the Action enum
--- additions below are both available to the data migration that follows.
---
--- GradeAuditAction also includes MILESTONE_MAX_MARKS_UPDATED here directly (folded in
--- from a later standalone migration) rather than as a separate ALTER TYPE ADD VALUE,
--- since a migration that only adds an enum value has no reason to be its own step.
-
 -- CreateEnum
 CREATE TYPE "GradeStatus" AS ENUM ('DRAFT', 'PUBLISHED');
 
 -- CreateEnum
-CREATE TYPE "GradeAuditAction" AS ENUM ('MILESTONE_GRADE_UPSERTED', 'MILESTONE_GRADE_PUBLISHED', 'MILESTONE_GRADE_UNPUBLISHED', 'MILESTONE_GRADE_DELETED', 'MILESTONE_MAX_MARKS_UPDATED', 'TA_ASSIGNED');
+CREATE TYPE "GradeAuditAction" AS ENUM ('MILESTONE_GRADE_UPSERTED', 'MILESTONE_GRADE_PUBLISHED', 'MILESTONE_GRADE_UNPUBLISHED', 'MILESTONE_GRADE_DELETED', 'MILESTONE_MAX_MARKS_UPDATED', 'TA_ASSIGNED', 'SPRINT_GRADE_UPSERTED', 'SPRINT_GRADE_PUBLISHED', 'SPRINT_GRADE_UNPUBLISHED', 'SPRINT_GRADE_DELETED', 'SPRINT_MAX_MARKS_UPDATED', 'SPRINT_TA_ASSIGNED');
 
 -- AlterEnum
 ALTER TYPE "Action" ADD VALUE 'create_grade';
@@ -32,6 +16,9 @@ ALTER TYPE "Feature" ADD VALUE 'manual_grading';
 -- AlterTable
 ALTER TABLE "Milestone" ADD COLUMN "max_marks" DOUBLE PRECISION NOT NULL DEFAULT 100;
 
+-- AlterTable
+ALTER TABLE "Sprint" ADD COLUMN "max_marks" DOUBLE PRECISION;
+
 -- Unrelated schema drift carried over from history (originally bundled into
 -- add_grade_audit_log) — kept here so squashing these migrations doesn't lose it.
 ALTER TABLE "Invite" ALTER COLUMN "expiry_date" SET DEFAULT NOW() + interval '1 week';
@@ -41,7 +28,8 @@ ALTER TABLE "UserSession" ALTER COLUMN "session_expiry" SET DEFAULT NOW() + inte
 CREATE TABLE "Grade" (
     "id" SERIAL NOT NULL,
     "project_id" INTEGER NOT NULL,
-    "milestone_id" INTEGER NOT NULL,
+    "milestone_id" INTEGER,
+    "sprint_id" INTEGER,
     "score" DOUBLE PRECISION,
     "comment" TEXT,
     "status" "GradeStatus" NOT NULL DEFAULT 'DRAFT',
@@ -57,6 +45,7 @@ CREATE TABLE "GradeAuditLog" (
     "id" SERIAL NOT NULL,
     "project_id" INTEGER NOT NULL,
     "milestone_id" INTEGER,
+    "sprint_id" INTEGER,
     "score" DOUBLE PRECISION,
     "assigned_ta_id" INTEGER,
     "action" "GradeAuditAction" NOT NULL,
@@ -70,6 +59,9 @@ CREATE TABLE "GradeAuditLog" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Grade_project_id_milestone_id_key" ON "Grade"("project_id", "milestone_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Grade_project_id_sprint_id_key" ON "Grade"("project_id", "sprint_id");
 
 -- CreateIndex
 CREATE INDEX "GradeAuditLog_project_id_created_at_idx" ON "GradeAuditLog"("project_id", "created_at");
@@ -94,3 +86,16 @@ ALTER TABLE "GradeAuditLog" ADD CONSTRAINT "GradeAuditLog_assigned_ta_id_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "GradeAuditLog" ADD CONSTRAINT "GradeAuditLog_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "User"("user_id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Grade" ADD CONSTRAINT "Grade_sprint_id_fkey" FOREIGN KEY ("sprint_id") REFERENCES "Sprint"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "GradeAuditLog" ADD CONSTRAINT "GradeAuditLog_sprint_id_fkey" FOREIGN KEY ("sprint_id") REFERENCES "Sprint"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CheckConstraint: a Grade row targets exactly one of a milestone or a sprint.
+ALTER TABLE "Grade" ADD CONSTRAINT "Grade_exactly_one_target_check"
+  CHECK (
+    (milestone_id IS NOT NULL AND sprint_id IS NULL)
+    OR (milestone_id IS NULL AND sprint_id IS NOT NULL)
+  );
