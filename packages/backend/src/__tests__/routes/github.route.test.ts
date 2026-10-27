@@ -1,6 +1,7 @@
 import { createHmac } from 'crypto';
 import express from 'express';
 import request from 'supertest';
+import { prismaMock } from '../../models/mock/mockPrismaClient';
 import githubRouter from '../../routes/github.route';
 import githubService from '../../services/github.service';
 import { mockOpenedPRGithubPayload } from '../mocks/githubData';
@@ -29,6 +30,16 @@ const send = (body = JSON.stringify(mockOpenedPRGithubPayload), event = 'pull_re
     .send(body);
 
 describe('GitHub webhook HTTP security', () => {
+  it('deactivates connections when an installation is deleted', async () => {
+    const body = JSON.stringify({ action: 'deleted', installation: { id: 22 } });
+    expect((await send(body, 'installation')).status).toBe(200);
+    expect(prismaMock.projectGitLink.updateMany).toHaveBeenCalledWith({ where: { installation_id: '22' }, data: { active: false } });
+  });
+  it('only deactivates repositories removed from the matching installation', async () => {
+    const body = JSON.stringify({ action: 'removed', installation: { id: 22 }, repositories_removed: [{ id: 33 }] });
+    expect((await send(body, 'installation_repositories')).status).toBe(200);
+    expect(prismaMock.projectGitLink.updateMany).toHaveBeenCalledWith({ where: { installation_id: '22', repository_id: { in: ['33'] } }, data: { active: false } });
+  });
   beforeEach(() => {
     process.env.GITHUB_WEBHOOK_SECRET = secret;
     handleWebhook.mockReset().mockResolvedValue([]);
@@ -48,7 +59,7 @@ describe('GitHub webhook HTTP security', () => {
       2,
     );
     expect((await send(body)).status).toBe(200);
-    expect(handleWebhook).toHaveBeenCalledWith(mockOpenedPRGithubPayload.repository.clone_url, 2, 'in_progress');
+    expect(handleWebhook).toHaveBeenCalledWith(mockOpenedPRGithubPayload.repository.clone_url, 2, 'in_progress', undefined, undefined);
     expect((await send(`${body} `, 'pull_request', signature(body))).status).toBe(401);
     expect(handleWebhook).toHaveBeenCalledTimes(1);
   });
@@ -77,7 +88,7 @@ describe('GitHub webhook HTTP security', () => {
     expect((await send(JSON.stringify({ text: 'x'.repeat(1024 * 1024) }))).status).toBe(413);
     expect(handleWebhook).not.toHaveBeenCalled();
   });
-  it.each(['ping', 'push', 'installation'])('acknowledges %s without writes', async (event) => {
+  it.each(['ping', 'push'])('acknowledges %s without writes', async (event) => {
     expect((await send('{}', event)).status).toBe(200);
     expect(handleWebhook).not.toHaveBeenCalled();
   });
@@ -110,7 +121,7 @@ describe('GitHub webhook HTTP security', () => {
     expect(handleWebhook).not.toHaveBeenCalled();
     closed.pull_request = { ...closed.pull_request, merged: true };
     expect((await send(JSON.stringify(closed))).status).toBe(200);
-    expect(handleWebhook).toHaveBeenCalledWith(closed.repository.clone_url, 2, 'done');
+    expect(handleWebhook).toHaveBeenCalledWith(closed.repository.clone_url, 2, 'done', undefined, undefined);
   });
   it('waits for the transaction and reports database failures', async () => {
     let rejectTransaction!: (error: Error) => void;

@@ -3,6 +3,7 @@ import express from 'express';
 import { getDefaultErrorRes } from '../helpers/error';
 import { assertGithubPayloadIsValid } from '../helpers/error/assertions';
 import githubService from '../services/github.service';
+import prisma from '../models/prismaClient';
 
 // Support the existing [123] and [PROJECT-123] PR title conventions.
 function extractBacklogId(title: string): number | null {
@@ -20,6 +21,28 @@ async function handleWebhook(req: express.Request, res: express.Response) {
     }
     // Log routing metadata only, never payloads or authentication headers.
     console.info('GitHub webhook', { event, deliveryId: req.get('x-github-delivery') });
+    if (event === 'installation' || event === 'installation_repositories') {
+      const payload = req.body;
+      if (!Number.isSafeInteger(payload?.installation?.id) || typeof payload?.action !== 'string') {
+        res.status(400).json({ error: 'Invalid installation event' });
+        return;
+      }
+      if (event === 'installation' && ['deleted', 'suspend'].includes(payload.action)) {
+        await prisma.projectGitLink.updateMany({ where: { installation_id: String(payload.installation.id) }, data: { active: false } });
+      }
+      if (event === 'installation_repositories' && payload.action === 'removed') {
+        if (!Array.isArray(payload.repositories_removed) || !payload.repositories_removed.every((r: { id?: number }) => Number.isSafeInteger(r?.id))) {
+          res.status(400).json({ error: 'Invalid removed repositories' });
+          return;
+        }
+        await prisma.projectGitLink.updateMany({ where: {
+          installation_id: String(payload.installation.id),
+          repository_id: { in: payload.repositories_removed.map((r: { id: number }) => String(r.id)) },
+        }, data: { active: false } });
+      }
+      res.json({ message: 'Installation event processed. Reconnect to restore removed access.' });
+      return;
+    }
     if (event !== 'pull_request') {
       res.json({ message: event === 'ping' ? 'Webhook ping received' : 'Webhook event ignored' });
       return;
@@ -43,7 +66,7 @@ async function handleWebhook(req: express.Request, res: express.Response) {
       }
 
       const status = payload.action === 'opened' ? BacklogStatusType.in_progress : BacklogStatusType.done;
-      await githubService.handleWebhook(payload.repository.clone_url, backlogId, status);
+      await githubService.handleWebhook(payload.repository.clone_url, backlogId, status, payload.installation?.id, payload.repository.id);
     }
 
     res.json({ message: 'Webhook processed' });

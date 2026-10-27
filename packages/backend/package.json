@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "github-app:verify": "dotenv -e .env.development.local -- ts-node src/scripts/verifyGithubApp.ts",
     "prisma-generate": "dotenv -e .env.production.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.production.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-generate-dev": "dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma/schema.prisma && dotenv -e .env.development.local -- pnpm exec prisma generate --schema node_modules/@trofos-nus/common/prisma_pgvector/schema_ai.prisma",
     "prisma-seed-dev": "pnpm exec prisma db seed",

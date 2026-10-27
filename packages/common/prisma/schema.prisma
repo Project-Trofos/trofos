@@ -336,6 +336,10 @@ model ProjectGitLink {
   project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
   project_id Int     @id
   repo       String
+  installation_id String?
+  repository_id String?
+  connected_by Int?
+  active Boolean @default(true)
 }
 
 model UsersOnRolesOnCourses {

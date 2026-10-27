@@ -6,6 +6,15 @@ import { mockOpenedPRGithubPayload } from '../mocks/githubData';
 import { mockDoneBacklogStatus, mockInProgressBacklogStatus, mockReturnedProjectGitLink } from '../mocks/projectData';
 
 describe('github.service tests', () => {
+  it('routes App links by stable identity and only falls back to URL for legacy links', async () => {
+    prismaMock.$transaction.mockImplementationOnce((async (fn: any) => fn(prismaMock)) as any);
+    prismaMock.projectGitLink.findMany.mockResolvedValue([]);
+    await github.handleWebhook('https://github.com/new/name.git', 1, BacklogStatusType.done, 22, 33);
+    expect(prismaMock.projectGitLink.findMany).toHaveBeenCalledWith({ where: { active: true, OR: [
+      { repo: 'https://github.com/new/name.git', installation_id: null },
+      { installation_id: '22', repository_id: '33' },
+    ] } });
+  });
   describe('handleWebhook', () => {
     it('should update backlog from todo to in_progress status', async () => {
       const MOCK_BACKLOG_ID = 2;

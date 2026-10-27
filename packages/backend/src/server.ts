@@ -10,6 +10,7 @@ import sprintRouter from './routes/sprint.route';
 import feedbackRouter from './routes/feedback.route';
 import roleRouter from './routes/role.route';
 import githubRouter from './routes/github.route';
+import githubConnectRouter from './routes/githubConnect.route';
 import settingsRouter from './routes/settings.route';
 import epicRouter from './routes/epic.route';
 import inviteRouter from './routes/invite.route';
@@ -58,6 +59,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
+app.use('/api/github-connect', githubConnectRouter);
 
 // prometheus middleware to get metrics of response time
 app.use((req, res, next) => {

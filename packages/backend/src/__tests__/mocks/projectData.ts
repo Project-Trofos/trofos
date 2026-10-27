@@ -89,6 +89,10 @@ export const mockDoneBacklogStatus: BacklogStatus = {
 };
 
 export const mockReturnedProjectGitLink: ProjectGitLink = {
+  installation_id: null,
+  repository_id: null,
+  connected_by: null,
+  active: true,
   project_id: 1,
   repo: 'https://github.com/Project-Trofos/trofos.git',
 };

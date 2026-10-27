@@ -9,7 +9,7 @@ import ProjectNameFormInput from '../../components/forms/ProjectNameFormItem';
 import { Subheading } from '../../components/typography';
 import { getErrorMessage } from '../../helpers/error';
 import ProjectBacklogStatusForm from '../../components/forms/ProjectBacklogStatusForm';
-import ProjectGitLinkForm from '../../components/forms/ProjectGitLinkForm';
+import ProjectGitLinkForm from '../../components/forms/GithubConnectionForm';
 import ProjectUserSettingsForm from '../../components/forms/ProjectUserSettingsForm';
 import ProjectTelegramForm from '../../components/forms/ProjectTelegramForm';
 import GenericBoxWithBackground from '../../components/layouts/GenericBoxWithBackground';

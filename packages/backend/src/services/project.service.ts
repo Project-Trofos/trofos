@@ -597,6 +597,10 @@ async function updateGitUrl(projectId: number, repoLink: string): Promise<Projec
     },
     data: {
       repo: repoLink,
+      installation_id: null,
+      repository_id: null,
+      connected_by: null,
+      active: true,
     },
   });
 
