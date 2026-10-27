@@ -1,5 +1,5 @@
 import trofosApiSlice from '.';
-import { UserGuideQueryResponse, UserGuideRecommendation } from './types';
+import { CourseAutofillResponse, SprintAutofillResponse, UserGuideQueryResponse, UserGuideRecommendation } from './types';
 
 const extendedApi = trofosApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,6 +11,14 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         body: { query, isEnableMemory },
       }),
     }),
+    autofillCourse: builder.mutation<CourseAutofillResponse, { text: string }>({
+      query: ({ text }) => ({
+        url: `ai/courseAutofill`,
+        credentials: 'include',
+        method: 'POST',
+        body: { text },
+      }),
+    }),
     recommendUserGuideSections: builder.mutation<UserGuideRecommendation[], void>({
       query: () => ({
         url: `ai/recommendUserGuide`,
@@ -18,7 +26,20 @@ const extendedApi = trofosApiSlice.injectEndpoints({
         credentials: 'include',
       }),
     }),
+    autofillSprint: builder.mutation<SprintAutofillResponse, { text: string }>({
+      query: ({ text }) => ({
+        url: `ai/sprintAutofill`,
+        credentials: 'include',
+        method: 'POST',
+        body: { text },
+      }),
+    }),
   }),
 });
 
-export const { useAnswerUserGuideQueryMutation, useRecommendUserGuideSectionsMutation } = extendedApi;
+export const {
+  useAnswerUserGuideQueryMutation,
+  useRecommendUserGuideSectionsMutation,
+  useAutofillCourseMutation,
+  useAutofillSprintMutation,
+} = extendedApi;

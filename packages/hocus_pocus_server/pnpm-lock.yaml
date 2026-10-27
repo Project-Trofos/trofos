@@ -21,8 +21,8 @@ importers:
         specifier: 4.8.1
         version: 4.8.1(prisma@4.8.1)
       '@trofos-nus/common':
-        specifier: ^1.0.19
-        version: 1.0.19(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
+        specifier: ^1.0.26
+        version: 1.0.26(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -92,8 +92,8 @@ packages:
   '@prisma/engines@4.8.1':
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
 
-  '@trofos-nus/common@1.0.19':
-    resolution: {integrity: sha512-7ybQt3oUWMvg5AfpCCmPen8kP6mp2VhlNsDo9Vi3kKLIXm8nVbv8dCH36u/ZYBxnYyfgfvOLBEROBmE/65zTiQ==}
+  '@trofos-nus/common@1.0.26':
+    resolution: {integrity: sha512-lq3dQ3D3X0pDD0ShmfPndafkusEMCuVwirfoT6nkAwcFH+BRgNOC2DM00pEPMJBdKAJbKySF3B0gw2lp45MmhA==}
     peerDependencies:
       '@prisma/client': '>=4.8.1'
       '@types/bcryptjs': ^2.4.4
@@ -583,6 +583,7 @@ packages:
 
   uuid@10.0.0:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   vary@1.1.2:
@@ -676,7 +677,7 @@ snapshots:
 
   '@prisma/engines@4.8.1': {}
 
-  '@trofos-nus/common@1.0.19(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
+  '@trofos-nus/common@1.0.26(@prisma/client@4.8.1(prisma@4.8.1))(@types/bcryptjs@2.4.6)(bcryptjs@2.4.3)(dotenv-cli@6.0.0)':
     dependencies:
       '@prisma/client': 4.8.1(prisma@4.8.1)
       '@types/bcryptjs': 2.4.6

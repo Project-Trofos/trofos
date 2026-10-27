@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, message, Modal, Select, DatePicker } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Form, Input, message, Modal, Select, DatePicker, Typography } from 'antd';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useAddSprintMutation, useUpdateSprintMutation } from '../../api/socket/sprintHooks';
+import { useGetFeatureFlagsQuery } from '../../api/featureFlag';
+import { useAutofillSprintMutation } from '../../api/ai';
 import type { Sprint } from '../../api/sprint';
 import type { SprintFormFields, SprintUpdatePayload, AutoSprintTypes } from '../../helpers/SprintModal.types';
 import './SprintCreationModal.css';
 import { STEP_PROP, StepTarget } from '../tour/TourSteps';
+import AiAssist from '../forms/AiAssist';
 
 const DURATION = [
   { id: 1, name: '1 Week' },
@@ -26,6 +29,29 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   const [addSprint] = useAddSprintMutation();
   const [updateSprint] = useUpdateSprintMutation();
+  const { data: featureFlags } = useGetFeatureFlagsQuery();
+  const isAiAssistEnabled = featureFlags?.some((flag) => flag.feature_name === 'ai_autofill' && flag.active);
+  const [autofillSprint] = useAutofillSprintMutation();
+
+  const autofill = useCallback(
+    async (text: string) => {
+      const { name, duration, startDate, endDate, goals } = await autofillSprint({ text }).unwrap();
+      const values: Record<string, unknown> = {};
+      if (name !== undefined) values.name = name;
+      if (duration === 0 && startDate !== undefined && endDate !== undefined) {
+        // A custom duration switches the form to the start-and-end date range picker
+        values.duration = 0;
+        values.dates = [dayjs(startDate), dayjs(endDate)];
+      } else if (duration !== undefined && duration > 0) {
+        // The start-date picker only applies once a whole-week duration is selected
+        values.duration = duration;
+        if (startDate !== undefined) values.startDate = dayjs(startDate);
+      }
+      if (goals !== undefined) values.goals = goals;
+      return values;
+    },
+    [autofillSprint],
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -157,6 +183,15 @@ function SprintCreationModal(props: SprintCreationModalPropsTypes): JSX.Element 
 
   const renderContent = (): JSX.Element => (
     <Form id="newSprint" form={form} onFinish={sprint ? handleUpdateSprint : handleFormSubmit} layout="vertical">
+      {!sprint && isAiAssistEnabled && (
+        <AiAssist
+          autofill={autofill}
+          subject="sprint"
+          placeholder="Describe your sprint, e.g. Sprint 3, 2 weeks starting next Monday, or Sprint 7 from Monday to Friday, focus on checkout flow"
+        >
+          <Typography.Text>Please input the details for your sprint.</Typography.Text>
+        </AiAssist>
+      )}
       <Form.Item name="name" rules={[{ required: true }]} label="Sprint Name">
         <Input />
       </Form.Item>
