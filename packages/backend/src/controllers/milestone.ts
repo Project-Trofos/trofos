@@ -1,6 +1,8 @@
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { assertCourseIdIsValid, getDefaultErrorRes } from '../helpers/error';
+import { Feature, UserSession } from '@prisma/client';
+import { checkFeatureFlagInCode } from '../middleware/feature_flag.middleware';
+import { assertCourseIdIsValid, assertMaxMarksIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertDateIsBefore,
   assertDateIsValid,
@@ -78,11 +80,24 @@ async function update(req: express.Request, res: express.Response) {
       assertDateIsValid(body.milestoneDeadline);
     }
 
+    // max_marks (and its grade-reset side effects) only apply when manual grading is enabled
+    const isManualGradingEnabled = await checkFeatureFlagInCode(Feature.manual_grading);
+    const milestoneMaxMarks =
+      isManualGradingEnabled && body.milestoneMaxMarks !== undefined ? Number(body.milestoneMaxMarks) : undefined;
+    if (milestoneMaxMarks !== undefined) {
+      assertMaxMarksIsValid(milestoneMaxMarks);
+    }
+    const confirm = req.query.confirm === 'true';
+    const { userSession } = res.locals as { userSession: UserSession };
+
     const result = await milestoneService.update(
       Number(milestoneId),
       body.milestoneStartDate ? new Date(body.milestoneStartDate) : undefined,
       body.milestoneDeadline ? new Date(body.milestoneDeadline) : undefined,
       body.milestoneName,
+      milestoneMaxMarks,
+      confirm,
+      userSession.user_id,
     );
 
     return res.status(StatusCodes.OK).json(result);
@@ -96,8 +111,11 @@ async function remove(req: express.Request, res: express.Response) {
     const { milestoneId } = req.params;
 
     assertMilestoneIdIsValid(milestoneId);
+    // With manual grading off, skip the grade-deletion confirmation and delete as before
+    const isManualGradingEnabled = await checkFeatureFlagInCode(Feature.manual_grading);
+    const confirm = !isManualGradingEnabled || req.query.confirm === 'true';
 
-    const result = await milestoneService.remove(Number(milestoneId));
+    const result = await milestoneService.remove(Number(milestoneId), confirm);
 
     return res.status(StatusCodes.OK).json(result);
   } catch (error) {

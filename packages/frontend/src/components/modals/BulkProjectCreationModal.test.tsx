@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import '../../mocks/antd';
 
 import store from '../../app/store';
@@ -69,7 +70,9 @@ describe('test course creation modal', () => {
   const setup = (course: CourseData, projects: ProjectData[]) => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <BulkProjectCreationModal course={course} projects={projects} />
+        <MemoryRouter>
+          <BulkProjectCreationModal course={course} projects={projects} />
+        </MemoryRouter>
       </Provider>,
     );
 

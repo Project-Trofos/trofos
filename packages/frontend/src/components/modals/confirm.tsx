@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { message, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { getErrorMessage } from '../../helpers/error';
 
 /**
@@ -11,7 +11,7 @@ import { getErrorMessage } from '../../helpers/error';
  * @param onCancel callback function after user clicks cancel
  * @returns modal's destroy and update function
  */
-export default function confirm(content: string, onOk: () => Promise<void>, onCancel?: () => void) {
+export default function confirm(content: React.ReactNode, onOk: () => Promise<void>, onCancel?: () => void) {
   return Modal.confirm({
     title: 'Confirm',
     icon: <ExclamationCircleOutlined />,
@@ -132,4 +132,80 @@ export function confirmInviteNonExistingUserToProject(onOk: () => Promise<void>)
  */
 export function confirmDeleteIssue(onOk: () => Promise<void>) {
   return confirm('Are you sure you want to delete this issue?', onOk);
+}
+
+/**
+ * Shows a modal with prompt for publishing the grades of the selected projects.
+ */
+export function confirmPublishGrades(onOk: () => Promise<void>) {
+  return confirm(
+    'Are you sure you want to publish the grades of the selected projects? Students will be able to see their published grades immediately.',
+    onOk,
+  );
+}
+
+/**
+ * Shows a modal with prompt for unpublishing the grades of the selected projects.
+ */
+export function confirmUnpublishGrades(onOk: () => Promise<void>) {
+  return confirm(
+    'Are you sure you want to unpublish the grades of the selected projects? Students will no longer be able to see them.',
+    onOk,
+  );
+}
+
+/**
+ * Shows a modal warning that deleting a milestone will also delete its grades.
+ */
+export function confirmDeleteMilestone(
+  onOk: () => Promise<void>,
+  onViewGrades: () => void,
+  showGradeInfo = true,
+) {
+  if (!showGradeInfo) {
+    return confirm('Are you sure you want to delete this milestone?', onOk);
+  }
+  const modal = confirm(
+    <>
+      <div>Are you sure you want to delete this milestone?</div>
+      <div>Please note that grades associated with this milestone will also be permanently deleted.</div>
+      <Button
+        type="link"
+        style={{ padding: 0, marginTop: 8 }}
+        onClick={() => {
+          modal.destroy();
+          onViewGrades();
+        }}
+      >
+        View Grades
+      </Button>
+    </>,
+    onOk,
+  );
+  return modal;
+}
+
+/**
+ * Shows a modal warning that changing a milestone's total marks will reset existing grades.
+ */
+export function confirmResetGradesOnMaxMarksChange(affectedCount: number, onOk: () => Promise<void>) {
+  return confirm(
+    `Changing the total marks will reset the score and comment of ${affectedCount} existing grade(s) on this milestone. Are you sure you want to continue?`,
+    onOk,
+  );
+}
+
+/**
+ * Shows a modal warning that changing total marks for several selected sprints will reset
+ * existing grades on those sprints.
+ */
+export function confirmBulkResetSprintGradesOnMaxMarksChange(
+  sprintCount: number,
+  affectedCount: number,
+  onOk: () => Promise<void>,
+) {
+  return confirm(
+    `Changing total marks for ${sprintCount} selected sprint(s) will reset the score and comment of ${affectedCount} existing grade(s). Are you sure you want to continue?`,
+    onOk,
+  );
 }

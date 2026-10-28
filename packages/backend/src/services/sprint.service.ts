@@ -85,6 +85,21 @@ async function listSprints(policyConstraint: AppAbility): Promise<Omit<Sprint, '
   return sprintsWithoutNotes;
 }
 
+async function listSprintsByCourseId(
+  courseId: number,
+  policyConstraint: AppAbility,
+): Promise<Omit<Sprint, 'notes'>[]> {
+  const sprints = await prisma.sprint.findMany({
+    where: {
+      project: {
+        AND: [accessibleBy(policyConstraint).Project, { course_id: courseId }],
+      },
+    },
+  });
+
+  return removeNotesFromSprints(sprints);
+}
+
 async function listSprintsByProjectId(projectId: number): Promise<Omit<Sprint, 'notes'>[]> {
   const sprints = await prisma.sprint.findMany({
     where: {
@@ -499,6 +514,7 @@ async function regenerateSprintInsight(sprintId: number, user: string): Promise<
 export default {
   newSprint,
   listSprints,
+  listSprintsByCourseId,
   listSprintsByProjectId,
   listActiveSprint,
   updateSprint,

@@ -1,10 +1,13 @@
 import express from 'express';
-import { Action } from '@prisma/client';
+import { Action, Feature } from '@prisma/client';
 import project from '../controllers/project';
 import { hasAuth, hasAuthForProject } from '../middleware/auth.middleware';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import projectPolicy from '../policies/project.policy';
 import feedbackPolicy from '../policies/feedback.policy';
 import feedback from '../controllers/feedback';
+import gradePolicy from '../policies/grade.policy';
+import grade from '../controllers/grade';
 import standupRouter from './standup.route';
 import projectAssignment from '../controllers/projectAssignment';
 import issue from '../controllers/issue';
@@ -150,6 +153,68 @@ router.delete(
   `/:projectId/feedback/:feedbackId`,
   hasAuthForProject(Action.delete_feedback, feedbackPolicy.POLICY_NAME),
   feedback.remove,
+);
+
+// Get all grades of a project
+router.get(
+  `/:projectId/grade`,
+  hasAuthForProject(Action.read_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.listByProject,
+);
+
+// Get the grade audit log history of a project
+router.get(
+  `/:projectId/grade/history`,
+  hasAuthForProject(Action.read_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.getGradeHistory,
+);
+
+// Upsert the grade for a project's milestone
+router.put(
+  `/:projectId/milestone/:milestoneId/grade`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.upsertMilestoneGrade,
+);
+
+// Publish/unpublish a milestone grade
+router.put(
+  `/:projectId/grade/:gradeId/publish`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.publishGrade,
+);
+router.put(
+  `/:projectId/grade/:gradeId/unpublish`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.unpublishGrade,
+);
+
+// Assign (or clear) the TA responsible for grading a project's milestone
+router.put(
+  `/:projectId/milestone/:milestoneId/grade/assign-ta`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.assignTa,
+);
+
+// Upsert the grade for a project's sprint
+router.put(
+  `/:projectId/sprint/:sprintId/grade`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.upsertSprintGrade,
+);
+
+// Assign (or clear) the TA responsible for grading a project's sprint
+router.put(
+  `/:projectId/sprint/:sprintId/grade/assign-ta`,
+  hasAuthForProject(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.assignTaForSprint,
 );
 
 // Set the telegram id for notifications for a project

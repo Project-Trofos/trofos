@@ -25,8 +25,10 @@ import ProjectPeople from '../pages/projectPages/ProjectPeople';
 import Retrospective from '../pages/Retrospective';
 import ProjectFeedbacks from '../pages/projectPages/ProjectFeedbacks';
 import CourseStatistics from '../pages/coursePages/CourseStatistics';
-import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected } from '../helpers/ProtectedRoute';
+import { AdminProtected, ApiKeyManagerProtected, CourseManagerProtected, FeatureFlagProtected } from '../helpers/ProtectedRoute';
 import CourseMilestones from '../pages/coursePages/CourseMilestones';
+import CourseGrading from '../pages/coursePages/CourseGrading';
+import ProjectGrades from '../pages/projectPages/ProjectGrades';
 import Callback from '../pages/Callback';
 import ProjectStatistics from '../pages/projectPages/ProjectStatistics';
 import ThemeProvider from '../components/theming/ThemeProvider';
@@ -80,6 +82,14 @@ function App() {
                 <Route path="standup/:standUpId" element={<StandUpBoardPage />} />
                 <Route path="board/:sprintId" element={<SprintScrumBoardPage />} />
                 <Route path="feedback" element={<ProjectFeedbacks />} />
+                <Route
+                  path="grades"
+                  element={
+                    <FeatureFlagProtected feature="manual_grading">
+                      <ProjectGrades />
+                    </FeatureFlagProtected>
+                  }
+                />
                 <Route path="issues" element={<ProjectIssues />} />
                 <Route path="statistics" element={<ProjectStatistics />} />
                 <Route path="report" element={<ProjectReportPage />} />
@@ -112,6 +122,16 @@ function App() {
                   element={
                     <CourseManagerProtected>
                       <CourseStatistics />
+                    </CourseManagerProtected>
+                  }
+                />
+                <Route
+                  path="grading"
+                  element={
+                    <CourseManagerProtected>
+                      <FeatureFlagProtected feature="manual_grading">
+                        <CourseGrading />
+                      </FeatureFlagProtected>
                     </CourseManagerProtected>
                   }
                 />

@@ -59,6 +59,41 @@ describe('sprint.service tests', () => {
     });
   });
 
+  describe('get sprints by course id', () => {
+    it('should return sprints when called with a valid course id and project policy constraint', async () => {
+      const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, true);
+
+      const mockReturnedSprints: Sprint[] = [
+        mockSprintData,
+        {
+          ...mockSprintData,
+          id: 2,
+          name: 'Sprint 2',
+        },
+      ];
+      prismaMock.sprint.findMany.mockResolvedValueOnce(mockReturnedSprints);
+      await expect(sprintService.listSprintsByCourseId(1, projectPolicyConstraint)).resolves.toEqual(
+        mockReturnedSprints,
+      );
+    });
+
+    it('should scope the Project accessibility constraint under the project relation, not at the top level of Sprint.where', async () => {
+      // Sprint has no `users`/`course` fields of its own — the Project-shaped accessibility
+      // constraint from accessibleBy(...).Project must be nested under `project`, mirroring
+      // listSprints, or Prisma would reject it as referencing unknown fields on Sprint.
+      const projectPolicyConstraint = projectConstraint.projectPolicyConstraint(1, false);
+      prismaMock.sprint.findMany.mockResolvedValueOnce([]);
+
+      await sprintService.listSprintsByCourseId(1, projectPolicyConstraint);
+
+      const queryArg = prismaMock.sprint.findMany.mock.calls[0][0] as any;
+      expect(queryArg.where).toHaveProperty('project');
+      expect(queryArg.where).not.toHaveProperty('users');
+      expect(queryArg.where).not.toHaveProperty('course');
+      expect(queryArg.where.project.AND).toContainEqual({ course_id: 1 });
+    });
+  });
+
   describe('get sprints by project id', () => {
     it('should return sprints when called with valid project id', async () => {
       const mockReturnedSprints: Sprint[] = [

@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Menu, ConfigProvider } from 'antd';
 import { useCourse } from '../../api/hooks';
 import { useIsCourseManager } from '../../api/hooks/roleHooks';
+import { useGetFeatureFlagsQuery } from '../../api/featureFlag';
 import LoadingComponent from '../common/LoadingComponent';
 
 export default function CourseMenu(): JSX.Element {
@@ -18,6 +19,8 @@ export default function CourseMenu(): JSX.Element {
 
   const { course, isLoading } = useCourse(params.courseId);
   const { isCourseManager } = useIsCourseManager();
+  const { data: featureFlags } = useGetFeatureFlagsQuery();
+  const isManualGradingEnabled = featureFlags?.some((flag) => flag.feature_name === 'manual_grading' && flag.active);
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -44,6 +47,7 @@ export default function CourseMenu(): JSX.Element {
           ...(isCourseManager
             ? [
                 { key: 'milestones', label: 'Milestones' },
+                ...(isManualGradingEnabled ? [{ key: 'grading', label: 'Grading' }] : []),
                 { key: 'statistics', label: 'Statistics' },
                 { key: 'settings', label: 'Settings' },
               ]

@@ -115,6 +115,61 @@ export type Milestone = {
   start_date: string;
   deadline: string;
   course_id: number;
+  max_marks: number;
+  created_at: string;
+};
+
+export type GradeStatus = 'DRAFT' | 'PUBLISHED';
+
+// Minimal shape of a Sprint needed as a Grade's target; the full Sprint type lives in api/sprint.ts
+export type GradeSprintTarget = {
+  id: number;
+  name: string;
+  project_id: number;
+  max_marks: number | null;
+};
+
+export type Grade = {
+  id: number;
+  project_id: number;
+  milestone_id: number | null;
+  sprint_id: number | null;
+  score: number | null;
+  comment: string | null;
+  status: GradeStatus;
+  grader_id: number | null;
+  created_at: string;
+  updated_at: string;
+  milestone: Milestone | null;
+  sprint: GradeSprintTarget | null;
+};
+
+export type GradeAuditAction =
+  | 'MILESTONE_GRADE_UPSERTED'
+  | 'MILESTONE_GRADE_PUBLISHED'
+  | 'MILESTONE_GRADE_UNPUBLISHED'
+  | 'MILESTONE_GRADE_DELETED'
+  | 'MILESTONE_MAX_MARKS_UPDATED'
+  | 'TA_ASSIGNED'
+  | 'SPRINT_GRADE_UPSERTED'
+  | 'SPRINT_GRADE_PUBLISHED'
+  | 'SPRINT_GRADE_UNPUBLISHED'
+  | 'SPRINT_GRADE_DELETED'
+  | 'SPRINT_MAX_MARKS_UPDATED'
+  | 'SPRINT_TA_ASSIGNED';
+
+export type GradeAuditLogEntry = {
+  id: number;
+  project_id: number;
+  milestone_id: number | null;
+  sprint_id: number | null;
+  score: number | null;
+  assigned_ta_id: number | null;
+  action: GradeAuditAction;
+  comment: string | null;
+  status: GradeStatus | null;
+  actor_id: number | null;
+  actor: Pick<User, 'user_id' | 'user_display_name' | 'user_email'> | null;
   created_at: string;
 };
 

@@ -23,6 +23,7 @@ export const MSW_COURSE: CourseData = {
       id: 1,
       name: 'Milestone 1',
       course_id: 1,
+      max_marks: 100,
       start_date: '2022-12-31',
       deadline: '2022-01-09',
       created_at: '2021-12-18',
@@ -31,6 +32,7 @@ export const MSW_COURSE: CourseData = {
       id: 2,
       name: 'Milestone 2',
       course_id: 1,
+      max_marks: 100,
       start_date: '2022-01-10',
       deadline: '2022-01-19',
       created_at: '2021-12-18',
@@ -39,6 +41,7 @@ export const MSW_COURSE: CourseData = {
       id: 3,
       name: 'Milestone 3',
       course_id: 1,
+      max_marks: 100,
       start_date: '2022-01-20',
       deadline: '2022-01-30',
       created_at: '2021-12-18',
@@ -157,6 +160,7 @@ export const MSW_SPRINT: Sprint[] = [
     goals: null,
     status: 'closed',
     backlogs: [],
+    max_marks: null,
   },
   {
     id: 3,
@@ -167,6 +171,7 @@ export const MSW_SPRINT: Sprint[] = [
     project_id: 1,
     goals: null,
     status: 'current',
+    max_marks: null,
     backlogs: [
       {
         backlog_id: 2,
@@ -324,6 +329,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 5,
@@ -335,6 +341,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 3,
@@ -346,6 +353,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
     {
       id: 1,
@@ -357,6 +365,7 @@ export const MSW_SPRINT_WITH_BACKLOGS: SprintWithBacklogs = {
       goals: '',
       status: 'closed',
       backlogs: [],
+      max_marks: null,
     },
   ],
   unassignedBacklogs: [],

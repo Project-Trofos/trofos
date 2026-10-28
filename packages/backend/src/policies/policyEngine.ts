@@ -5,6 +5,7 @@ import coursePolicy from './course.policy';
 import projectPolicy from './project.policy';
 import userPolicy from './user.policy';
 import feedbackPolicy from './feedback.policy';
+import gradePolicy from './grade.policy';
 import { ApiKeyAuthIsValid } from '../services/types/apiKey.service.types';
 
 const commandMap: { [policyName: string]: any } = {};
@@ -12,6 +13,7 @@ commandMap[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicy;
 commandMap[projectPolicy.POLICY_NAME] = projectPolicy.applyProjectPolicy;
 commandMap[userPolicy.POLICY_NAME] = userPolicy.applyUserPolicy;
 commandMap[feedbackPolicy.POLICY_NAME] = feedbackPolicy.applyFeedbackPolicy;
+commandMap[gradePolicy.POLICY_NAME] = gradePolicy.applyGradePolicy;
 
 const commandMapExternalApiCall: { [policyName: string]: any } = {};
 commandMapExternalApiCall[coursePolicy.POLICY_NAME] = coursePolicy.applyCoursePolicyExternalApiCall;

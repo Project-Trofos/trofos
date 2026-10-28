@@ -12,6 +12,7 @@ export const mockSprintData: Sprint = {
   notes: '',
   status: 'upcoming',
   collab_notes: null,
+  max_marks: null,
 };
 
 export const mockSprintFields: SprintFields = {

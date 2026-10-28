@@ -1,12 +1,16 @@
-import { Action } from '@prisma/client';
+import { Action, Feature } from '@prisma/client';
 import express from 'express';
 import multer from 'multer';
 import announcement from '../controllers/announcement';
 import course from '../controllers/course';
 import milestone from '../controllers/milestone';
+import grade from '../controllers/grade';
+import sprint from '../controllers/sprint';
 import { hasAuth, hasAuthForCourse } from '../middleware/auth.middleware';
+import { checkFeatureFlag } from '../middleware/feature_flag.middleware';
 import coursePolicy from '../policies/course.policy';
 import projectPolicy from '../policies/project.policy';
+import gradePolicy from '../policies/grade.policy';
 
 const router = express.Router();
 const upload = multer({ dest: 'tmp/csv' });
@@ -37,6 +41,31 @@ router.put('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_c
 
 // Delete milestone
 router.delete('/:courseId/milestone/:milestoneId', hasAuthForCourse(Action.create_course, null), milestone.remove);
+
+// Get the full grading matrix (all projects x milestones) for a course
+router.get(
+  '/:courseId/grade',
+  hasAuthForCourse(Action.read_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.listByCourse,
+);
+
+// Bulk-set total marks for selected sprints across the course's projects
+router.put(
+  '/:courseId/sprint/grade/max-marks',
+  hasAuthForCourse(Action.update_grade, gradePolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  grade.bulkSetSprintMaxMarks,
+);
+
+// List all sprints across all of a course's projects (for the course-level sprint grading view)
+router.get(
+  '/:courseId/sprint',
+  hasAuthForCourse(Action.read_course, projectPolicy.POLICY_NAME),
+  checkFeatureFlag(Feature.manual_grading),
+  sprint.listSprintsByCourseId,
+);
+
 
 // Get announcement
 router.get('/:courseId/announcement/:announcementId', hasAuthForCourse(Action.read_course, null), announcement.get);
