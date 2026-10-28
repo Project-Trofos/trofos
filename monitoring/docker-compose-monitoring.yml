@@ -46,6 +46,7 @@ services:
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
+      - '--web.enable-remote-write-receiver'
     ports:
       - 9090:9090
     expose:
@@ -56,7 +57,7 @@ services:
       - node-exporter
       - cadvisor
       - postgres-exporter
-  
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor

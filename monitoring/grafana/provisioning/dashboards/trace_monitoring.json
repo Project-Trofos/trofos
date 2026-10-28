@@ -257,7 +257,7 @@
                 "defaults": {
                   "color": {
                     "fixedColor": "red",
-                    "mode": "palette-classic-by-name"
+                    "mode": "palette-classic"
                   }
                 },
                 "overrides": []

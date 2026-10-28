@@ -62,8 +62,7 @@ metrics_generator:
 overrides:
   defaults:
     metrics_generator:
-      generate_native_histograms: native
+      generate_native_histograms: both
       processors:
         - service-graphs
-        - span-metrics-latency
-        - span-metrics-count
+        - span-metrics
