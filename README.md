@@ -53,11 +53,12 @@ EMAIL_SERVICE=
 AWS_SES_FROM_EMAIL=
 
 BACKEND_URL="http://backend:3003"
+REDIS_URL="redis://redis:6379"
 
 OPENAI_API_KEY=<api key>
 AI_DATABASE_URL="postgresql://admin:admin@postgres:5432/pgvector?schema=public"
 
-
+OTEL_ENDPOINT="http://alloy:4318"
 ```
 
 At project root:

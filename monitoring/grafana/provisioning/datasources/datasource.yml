@@ -10,3 +10,41 @@ datasources:
     isDefault: true
     editable: true
     uid: ds-prometheus
+
+  - name: Loki
+    type: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    basicAuth: false
+    editable: true
+    uid: ds-loki
+    jsonData:
+      derivedFields:
+        - datasourceUid: ds-tempo
+          matcherRegex: '"trace_id":"(\w+)"'
+          name: TraceID
+          url: '$${__value.raw}'
+          urlDisplayLabel: 'View Trace'
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    editable: true
+    uid: ds-tempo
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: ds-loki
+        filterByTraceID: true
+        filterBySpanID: false
+        spanStartTimeShift: '-1m'
+        spanEndTimeShift: '1m'
+      tracesToMetrics:
+        datasourceUid: ds-prometheus
+      nodeGraph:
+        enabled: true
+      serviceMap:
+        datasourceUid: ds-prometheus

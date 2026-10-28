@@ -2,7 +2,7 @@ apiVersion: 1
 groups:
     - orgId: 1
       name: Backend restarts
-      folder: Metric Monitoring
+      folder: metrics
       interval: 30s
       rules:
         - uid: fe11auxrwqpkwd
@@ -118,7 +118,7 @@ groups:
           isPaused: false
     - orgId: 1
       name: VM metrics
-      folder: Metric Monitoring
+      folder: metrics
       interval: 1m
       rules:
         - uid: de14ze4vshfcwe
@@ -293,7 +293,7 @@ groups:
           annotations:
             __dashboardUid__: rYdddlPWk
             __panelId__: "154"
-            description: DIsk usage has reached 90%
+            description: Disk usage has reached 90%
             summary: Low disk space
           labels:
             policy: VM metrics

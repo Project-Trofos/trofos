@@ -6,7 +6,14 @@ type Task = {
   projectId: number;
   sprintId: number;
   user: string;
+  _traceContext: Record<string, string>;
 };
 export type {
   Task
 };
+
+export * from './logger/loggerProvider';
+export { default as loggerProvider } from './logger/loggerProvider';
+export { default as requestLogger } from './middleware/request_logger.middleware';
+
+export * from './telemetry';

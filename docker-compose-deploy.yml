@@ -44,6 +44,8 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - AI_DATABASE_URL=${AI_DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=backend
     depends_on:
       postgres:
         condition: service_healthy
@@ -60,6 +62,9 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - BACKEND_URL=${BACKEND_URL}
+      - NODE_ENV=${NODE_ENV}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=hocus_pocus_server
     networks:
       - application
   ai_insight_worker:
@@ -70,6 +75,9 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - REDIS_URL=${REDIS_URL}
+      - NODE_ENV=${NODE_ENV}
+      - OTEL_ENDPOINT=${OTEL_ENDPOINT}
+      - TELEMETRY_SERVICE_NAME=ai_insight_worker
     networks:
       - application
   postgres:
