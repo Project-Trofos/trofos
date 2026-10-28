@@ -22,7 +22,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
     "@prisma/client": "4.8.1",
-    "@trofos-nus/common": "^1.0.27",
+    "@trofos-nus/common": "^1.0.28",
     "dotenv-cli": "^6.0.0",
     "openai": "^4.78.1",
     "prisma": "4.8.1",
