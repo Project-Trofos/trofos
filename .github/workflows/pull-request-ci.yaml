@@ -15,6 +15,7 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB_CI }}
       AI_DATABASE_URL: ${{ secrets.AI_DATABASE_URL_CI }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
+      OTEL_ENDPOINT: ${{ secrets.OTEL_ENDPOINT }}
       COMPOSE_BAKE: false
     steps:
       - name: Checkout
