@@ -109,6 +109,7 @@ export const exampleSprints: Sprint[] = [
     end_date: '2025-02-14',
     project_id: 1,
     status: 'completed',
+    max_marks: null,
     backlogs: [
       {
         backlog_id: 1,
@@ -143,6 +144,7 @@ export const exampleSprints: Sprint[] = [
     end_date: '2025-02-28',
     project_id: 1,
     status: 'current',
+    max_marks: null,
     backlogs: [
       {
         backlog_id: 2,
@@ -177,6 +179,7 @@ export const exampleSprints: Sprint[] = [
     end_date: '2025-03-14',
     project_id: 1,
     status: 'upcoming',
+    max_marks: null,
     backlogs: [],
   },
 ];
@@ -201,6 +204,7 @@ export const exampleCourse: CourseData = {
       start_date: '2024-09-01',
       deadline: '2024-09-15',
       course_id: 1,
+      max_marks: 100,
       created_at: '2024-08-20T10:00:00Z',
     },
     {
@@ -209,6 +213,7 @@ export const exampleCourse: CourseData = {
       start_date: '2024-10-01',
       deadline: '2024-10-10',
       course_id: 1,
+      max_marks: 100,
       created_at: '2024-09-25T10:00:00Z',
     },
   ],

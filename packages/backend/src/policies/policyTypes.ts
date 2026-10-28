@@ -1,4 +1,4 @@
-import { Project, Course, User, Feedback } from '@prisma/client';
+import { Project, Course, User, Feedback, Grade } from '@prisma/client';
 import { PureAbility } from '@casl/ability';
 import { PrismaQuery, Subjects } from '@casl/prisma';
 
@@ -10,6 +10,7 @@ export type AppAbility = PureAbility<
       Feedback: Feedback;
       Course: Course;
       User: User;
+      Grade: Grade;
     }>,
   ],
   PrismaQuery

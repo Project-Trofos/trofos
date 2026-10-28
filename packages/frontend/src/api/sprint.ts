@@ -12,6 +12,7 @@ export type Sprint = {
   project_id: number;
   status: 'upcoming' | 'current' | 'completed' | 'closed';
   backlogs: Backlog[];
+  max_marks: number | null;
 };
 
 export type SprintWithBacklogs = { sprints: Sprint[]; unassignedBacklogs: Backlog[] };
@@ -28,6 +29,13 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
     getSprintsByProjectId: builder.query<SprintWithBacklogs, number>({
       query: (projectId) => ({
         url: `sprint/listSprints/${projectId}`,
+        credentials: 'include',
+      }),
+      providesTags: ['Sprint'],
+    }),
+    getSprintsByCourseId: builder.query<Sprint[], number>({
+      query: (courseId) => ({
+        url: `course/${courseId}/sprint`,
         credentials: 'include',
       }),
       providesTags: ['Sprint'],
@@ -177,6 +185,7 @@ export const extendedApi = trofosApiSlice.injectEndpoints({
 export const {
   useGetSprintsQuery,
   useGetSprintsByProjectIdQuery,
+  useGetSprintsByCourseIdQuery,
   useGetActiveSprintQuery,
   useGetSprintNotesQuery,
   useAddSprintMutation,

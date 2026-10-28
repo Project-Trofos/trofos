@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 import '../../mocks/antd';
 
 import store from '../../app/store';
@@ -16,7 +17,9 @@ describe('test milestone creation modal', () => {
   const setup = () => {
     const { baseElement, debug } = render(
       <Provider store={store}>
-        <MilestoneCard course={MSW_COURSE} />
+        <MemoryRouter>
+          <MilestoneCard course={MSW_COURSE} />
+        </MemoryRouter>
       </Provider>,
     );
     return { baseElement, debug };

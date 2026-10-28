@@ -18,6 +18,7 @@ describe('useBurndownChart hook test', () => {
     project_id: 903,
     status: 'current',
     backlogs: [],
+    max_marks: null,
   };
   const mockBacklogHistory: BacklogHistory[] = [
     {

@@ -3,7 +3,7 @@ import StatusCodes from 'http-status-codes';
 import express from 'express';
 import sprintService from '../services/sprint.service';
 import backlogService from '../services/backlog.service';
-import { assertProjectIdIsValid, getDefaultErrorRes } from '../helpers/error';
+import { assertCourseIdIsValid, assertProjectIdIsValid, getDefaultErrorRes } from '../helpers/error';
 import {
   assertRetroIdIsValid,
   assertRetrospectiveContentIsValid,
@@ -30,6 +30,20 @@ const newSprint = async (req: express.Request, res: express.Response) => {
 const listSprints = async (req: express.Request, res: express.Response) => {
   try {
     const sprints: Omit<Sprint, 'notes'>[] = await sprintService.listSprints(res.locals.policyConstraint);
+    return res.status(StatusCodes.OK).json(sprints);
+  } catch (error) {
+    return getDefaultErrorRes(error, res);
+  }
+};
+
+const listSprintsByCourseId = async (req: express.Request, res: express.Response) => {
+  try {
+    const { courseId } = req.params;
+    assertCourseIdIsValid(courseId);
+    const sprints: Omit<Sprint, 'notes'>[] = await sprintService.listSprintsByCourseId(
+      Number(courseId),
+      res.locals.policyConstraint,
+    );
     return res.status(StatusCodes.OK).json(sprints);
   } catch (error) {
     return getDefaultErrorRes(error, res);
@@ -238,6 +252,7 @@ const regenerateSprintInsight = async (req: express.Request, res: express.Respon
 export default {
   newSprint,
   listSprints,
+  listSprintsByCourseId,
   listSprintsByProjectId,
   listActiveSprint,
   getSprintNotes,

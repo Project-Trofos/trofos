@@ -18,6 +18,7 @@ describe('SprintCard test', () => {
     goals: 'Some test goals',
     status: 'upcoming',
     backlogs: [],
+    max_marks: null,
   };
 
   const mockSprintListingCardProps = {

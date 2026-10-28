@@ -78,6 +78,7 @@ describe('SprintModal AI assist', () => {
     project_id: 1,
     status: 'upcoming',
     backlogs: [],
+    max_marks: null,
   };
 
   const renderModal = (sprint?: Sprint) =>

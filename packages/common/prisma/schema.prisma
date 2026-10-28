@@ -27,6 +27,9 @@ model User {
   api_usages         ApiUsage[]
   user_api_key       UserApiKey?
   comments           IssueComment[]
+  gradesGiven        Grade[]                 @relation("GradeGrader")
+  gradeAuditLogsMade GradeAuditLog[]         @relation("GradeAuditActor")
+  gradeAuditLogsAsTa GradeAuditLog[]         @relation("GradeAuditAssignedTa")
 }
 
 model UserSession {
@@ -99,6 +102,9 @@ model Project {
 
   /// All projects that are assigned to act upon this project.
   targetProjects ProjectAssignment[] @relation("TargetProject")
+
+  grades     Grade[]
+  gradeAuditLogs GradeAuditLog[]
 }
 
 /// Represents an assignment relationship between two projects, 
@@ -144,8 +150,11 @@ model Milestone {
   course     Course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
   start_date DateTime
   deadline   DateTime
+  max_marks  Float    @default(100)
 
   created_at DateTime @default(now())
+  grades     Grade[]
+  gradeAuditLogs GradeAuditLog[]
 }
 
 model UsersOnProjects {
@@ -296,6 +305,9 @@ model Sprint {
   feedback        Feedback[]
   collab_notes    Bytes?
   sprintInsights  SprintInsight[]
+  max_marks       Float?
+  grades          Grade[]
+  gradeAuditLogs  GradeAuditLog[]
 }
 
 model Feedback {
@@ -307,6 +319,58 @@ model Feedback {
   content    String
   created_at DateTime  @default(now())
   updated_at DateTime?
+}
+
+model Grade {
+  id           Int         @id @default(autoincrement())
+  project_id   Int
+  project      Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  milestone_id Int?
+  milestone    Milestone?  @relation(fields: [milestone_id], references: [id], onDelete: Cascade)
+  sprint_id    Int?
+  sprint       Sprint?     @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  score        Float?
+  comment      String?
+  status       GradeStatus @default(DRAFT)
+  grader_id    Int?
+  grader       User?       @relation("GradeGrader", fields: [grader_id], references: [user_id], onDelete: SetNull)
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+
+  @@unique([project_id, milestone_id])
+  @@unique([project_id, sprint_id])
+}
+
+model GradeAuditLog {
+  id         Int     @id @default(autoincrement())
+  project_id Int
+  project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  // Milestone-grade and TA-assignment events
+  milestone_id Int?
+  milestone    Milestone? @relation(fields: [milestone_id], references: [id], onDelete: Cascade)
+
+  // Sprint-grade and TA-assignment events
+  sprint_id Int?
+  sprint    Sprint? @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+
+  score        Float?
+
+  // TA-assignment events only
+  assigned_ta_id Int?
+  assignedTa     User?   @relation("GradeAuditAssignedTa", fields: [assigned_ta_id], references: [user_id], onDelete: SetNull)
+
+  // Shared across all event kinds
+  action  GradeAuditAction
+  comment String?
+  status  GradeStatus?
+
+  actor_id Int?
+  actor    User? @relation("GradeAuditActor", fields: [actor_id], references: [user_id], onDelete: SetNull)
+
+  created_at DateTime @default(now())
+
+  @@index([project_id, created_at])
 }
 
 model Role {
@@ -484,6 +548,7 @@ enum Feature {
   ai_insights
   user_guide_recommender
   ai_autofill
+  manual_grading
 }
 
 enum Action {
@@ -514,6 +579,31 @@ enum Action {
   read_api_key
   // Invite actions
   send_invite
+  // Grading
+  create_grade
+  read_grade
+  update_grade
+  delete_grade
+}
+
+enum GradeStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum GradeAuditAction {
+  MILESTONE_GRADE_UPSERTED
+  MILESTONE_GRADE_PUBLISHED
+  MILESTONE_GRADE_UNPUBLISHED
+  MILESTONE_GRADE_DELETED
+  MILESTONE_MAX_MARKS_UPDATED
+  TA_ASSIGNED
+  SPRINT_GRADE_UPSERTED
+  SPRINT_GRADE_PUBLISHED
+  SPRINT_GRADE_UNPUBLISHED
+  SPRINT_GRADE_DELETED
+  SPRINT_MAX_MARKS_UPDATED
+  SPRINT_TA_ASSIGNED
 }
 
 enum BacklogType {
