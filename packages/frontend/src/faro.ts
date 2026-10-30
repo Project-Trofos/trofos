@@ -1,10 +1,10 @@
 import { FetchTransport, getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 
-const isTestEnv = import.meta.env.VITE_APP_ENV === 'test' || import.meta.env.MODE === 'test';
+const faroEnabled = import.meta.env.VITE_ENABLE_FARO !== 'false';
 const faroEndpoint = '/api/faro/collect';
 
-export const faro = !isTestEnv
+export const faro = faroEnabled
   ? initializeFaro({
       app: {
         name: 'frontend',
