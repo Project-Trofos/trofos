@@ -25,6 +25,12 @@ export default defineConfig({
           return path.replace('/api', '');
         },
       },
+      '/api/faro': {
+        target: 'http://localhost:12347',
+        rewrite(path) {
+          return path.replace('/api/faro', '');
+        },
+      },
       '/api': {
         target: 'http://localhost:3003',
       },
@@ -51,7 +57,7 @@ export default defineConfig({
   resolve: {
     mainFields: ['module', 'main'],
     alias: {
-      yjs: resolve("./node_modules/yjs/src/index.js")
-    }
+      yjs: resolve('./node_modules/yjs/src/index.js'),
+    },
   },
 });

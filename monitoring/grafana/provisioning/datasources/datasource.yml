@@ -22,7 +22,7 @@ datasources:
     jsonData:
       derivedFields:
         - datasourceUid: ds-tempo
-          matcherRegex: '"trace_id":"(\w+)"'
+          matcherRegex: '"trace(?:_id|ID)":"(\w+)"'
           name: TraceID
           url: '$${__value.raw}'
           urlDisplayLabel: 'View Trace'
