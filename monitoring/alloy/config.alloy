@@ -46,6 +46,41 @@ loki.process "pino_logs" {
   forward_to = [loki.write.grafana_loki.receiver]
 }
 
+faro.receiver "faro_frontend" {
+  server {
+    listen_address = "0.0.0.0"
+    listen_port = 12347
+    cors_allowed_origins = ["http://localhost:3000", "http://localhost:3001", "http://localhost"]
+  }
+  log_format = "json"
+  output {
+    logs = [loki.process.faro_logs.receiver]
+    traces = [otelcol.exporter.otlp.grafana_tempo.input]
+  }
+}
+
+loki.process "faro_logs" {
+  stage.json {
+    expressions = {
+      env = "app_environment",
+      service_name = "app_name",
+      kind="",
+    }
+  }
+  stage.labels {
+    values = {
+      env = "",
+      service_name = "",
+    }
+  }
+  stage.structured_metadata {
+    values = {
+      kind="",
+    }
+  }
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
 loki.write "grafana_loki" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"

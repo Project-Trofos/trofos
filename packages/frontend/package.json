@@ -6,6 +6,8 @@
     "@ant-design/icons": "^5.6.0",
     "@ant-design/plots": "^1.2.5",
     "@ant-design/x": "^1.0.4",
+    "@grafana/faro-web-sdk": "^2.13.0",
+    "@grafana/faro-web-tracing": "^2.13.0",
     "@hocuspocus/provider": "^2.13.7",
     "@lexical/code": "^0.12.5",
     "@lexical/html": "^0.12.5",

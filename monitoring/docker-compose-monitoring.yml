@@ -162,10 +162,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 12345:12345
+      - 12347:12347 # Faro receiver
       - 4317:4317 # OTLP gRPC receiver
       - 4318:4318 # OTLP HTTP receiver
     expose:
       - 12345
+      - 12347
       - 4317
       - 4318
     networks:

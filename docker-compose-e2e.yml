@@ -13,6 +13,8 @@ services:
       context: ./packages/frontend
       dockerfile: ./local_dev_docker/Dockerfile.dev
       target: prod
+      args:
+        VITE_ENABLE_FARO: 'false'
     ports:
       - '3000:80'
     container_name: trofos-frontend-production

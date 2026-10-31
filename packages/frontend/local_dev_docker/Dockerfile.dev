@@ -12,7 +12,9 @@ RUN mkdir -p /usr/src/app/frontend
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/frontend
 
-COPY . . 
+COPY . .
+ARG VITE_ENABLE_FARO
+ENV VITE_ENABLE_FARO=$VITE_ENABLE_FARO
 RUN pnpm i --frozen-lockfile
 RUN pnpm run build
 
